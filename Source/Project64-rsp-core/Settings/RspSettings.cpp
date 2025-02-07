@@ -9,13 +9,15 @@ bool CRSPSettings::m_RomOpen = false;
 
 #if defined(_M_IX86) && defined(_MSC_VER)
 RSPCpuMethod CRSPSettings::m_CPUMethod = RSPCpuMethod::Recompiler;
+bool HleAlistTask = false;
 #else
-RSPCpuMethod CRSPSettings::m_CPUMethod = RSPCpuMethod::Interpreter;
+RSPCpuMethod CRSPSettings::m_CPUMethod = RSPCpuMethod::HighLevelEmulation;
+bool HleAlistTask = true;
 #endif
 
 uint16_t Set_AudioHle = 0, Set_GraphicsHle = 0, Set_MultiThreaded = 0, Set_AllocatedRdramSize = 0, Set_DirectoryLog = 0;
-bool GraphicsHle = true, AudioHle, ConditionalMove, SyncCPU = false, HleAlistTask = false, RspMultiThreaded = false;
-bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false, LogX86Code = false;
+bool GraphicsHle = true, AudioHle, ConditionalMove, SyncCPU = false, RspMultiThreaded = false, LogX86Code = false;
+bool DebuggingEnabled = false, Profiling, IndvidualBlock, ShowErrors, BreakOnStart = false, LogRDP = false;
 
 void CRSPSettings::EnableDebugging(bool Enabled)
 {
@@ -78,7 +80,7 @@ void CRSPSettings::RefreshSettings(void)
 #if defined(_M_IX86) && defined(_MSC_VER)
     m_CPUMethod = m_DebuggingEnabled ? (RSPCpuMethod)GetSetting(Set_CPUCore) : RSPCpuMethod::Recompiler;
 #else
-    m_CPUMethod = m_DebuggingEnabled ? (RSPCpuMethod)GetSetting(Set_CPUCore) : RSPCpuMethod::Interpreter;
+    m_CPUMethod = m_DebuggingEnabled ? (RSPCpuMethod)GetSetting(Set_CPUCore) : RSPCpuMethod::HighLevelEmulation;
 #endif
 }
 

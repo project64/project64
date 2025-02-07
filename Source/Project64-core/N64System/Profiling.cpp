@@ -64,7 +64,10 @@ void CProfiling::ShowCPU_Usage()
 {
     PROFILE_TIMERS PreviousType = StopTimer();
     uint64_t TotalTime = m_Timers[Timer_R4300] + m_Timers[Timer_RSP_Dlist] + m_Timers[Timer_RSP_Alist] + m_Timers[Timer_Idel];
-
+    if (TotalTime == 0)
+    {
+        return;
+    }
     if (m_CurrentDisplayCount > 0)
     {
         m_CurrentDisplayCount -= 1;

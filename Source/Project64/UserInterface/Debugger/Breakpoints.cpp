@@ -318,6 +318,7 @@ void CBreakpoints::ToggleMemLock(uint32_t address)
     if (m_MemLocks.count(address) == 0)
     {
         m_MemLocks.insert(address);
+        g_Settings->SaveBool(Debugger_TrackCPUStepStarted, true);
         return;
     }
     m_MemLocks.erase(address);
@@ -348,6 +349,10 @@ size_t CBreakpoints::NumMemLocks()
 void CBreakpoints::UpdateHaveRegBP(void)
 {
     m_bHaveRegBP = HaveAnyGPRWriteBP() || HaveAnyGPRReadBP() || HaveHIWriteBP() || HaveHIReadBP() || HaveLOWriteBP() || HaveLOReadBP();
+    if (m_bHaveRegBP)
+    {
+        g_Settings->SaveBool(Debugger_TrackCPUStepStarted, true);
+    }
 }
 
 void CBreakpoints::ToggleGPRWriteBP(int nReg)

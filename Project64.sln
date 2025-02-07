@@ -96,6 +96,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ticpp", "Source\GLideN64\ti
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ts2lang", "Source\GLideN64\ts2lang.vcxproj", "{5480BC17-9C40-4E41-8AD4-AE12316D4CA4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "softfloat", "Source\3rdParty\softfloat-3e\softfloat.vcxproj", "{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -334,6 +336,14 @@ Global
 		{5480BC17-9C40-4E41-8AD4-AE12316D4CA4}.Release|Win32.Build.0 = Release|Win32
 		{5480BC17-9C40-4E41-8AD4-AE12316D4CA4}.Release|x64.ActiveCfg = Release|x64
 		{5480BC17-9C40-4E41-8AD4-AE12316D4CA4}.Release|x64.Build.0 = Release|x64
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Debug|Win32.Build.0 = Debug|Win32
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Debug|x64.ActiveCfg = Debug|x64
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Debug|x64.Build.0 = Debug|x64
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Release|Win32.ActiveCfg = Release|Win32
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Release|Win32.Build.0 = Release|Win32
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Release|x64.ActiveCfg = Release|x64
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -355,6 +365,7 @@ Global
 		{DA965BCF-2219-47AF-ACE7-EAF76D5D4756} = {31AE6C95-A997-4C7C-B592-BC202A29996F}
 		{4F28B56B-F4B0-41B0-A785-597F6EF0163A} = {31AE6C95-A997-4C7C-B592-BC202A29996F}
 		{5480BC17-9C40-4E41-8AD4-AE12316D4CA4} = {31AE6C95-A997-4C7C-B592-BC202A29996F}
+		{2C54E724-7C6B-4A70-B4FB-421CF5CDDD79} = {AA8F7F8E-5377-4911-859D-8A8817B0DB26}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F0EC030A-58B3-4FC1-B6B6-E5CF5CD885E3}

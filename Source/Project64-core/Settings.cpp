@@ -344,6 +344,8 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Debugger_AppLogFlush, new CSettingTypeApplication("Logging", "Log Auto Flush", (uint32_t) false));
     AddHandler(Debugger_RecordRecompilerAsm, new CSettingTypeApplication("Debugger", "Record Recompiler Asm", false));
     AddHandler(Debugger_AutorunScripts, new CSettingTypeApplication("Debugger", "Autorun Scripts", ""));
+    AddHandler(Debugger_TrackCPUStepStarted, new CSettingTypeTempBool(false));
+    AddHandler(Debugger_TrackCPUStepEnded, new CSettingTypeTempBool(false));
 
     // Logging
     AddHandler(Debugger_TraceMD5, new CSettingTypeApplication("Logging", "MD5", (uint32_t)g_ModuleLogLevel[TraceMD5]));

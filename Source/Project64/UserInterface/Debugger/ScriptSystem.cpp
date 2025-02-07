@@ -487,6 +487,7 @@ JSAppCallbackID CScriptSystem::RawAddAppCallback(JSAppHookID hookId, JSAppCallba
         return JS_INVALID_CALLBACK;
     }
 
+    g_Settings->SaveBool(Debugger_TrackCPUStepStarted, true);
     callback.m_Instance->IncRefCount();
     callback.m_CallbackId = m_NextAppCallbackId++;
     m_AppCallbackHooks[hookId].push_back(callback);

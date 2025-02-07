@@ -466,11 +466,10 @@ void CRSP_Plugin::RunRSP()
     }
 
     uint32_t DataPtr = 0;
-    Memory.MemoryValue32(0xA4000FC0, DataPtr);
+    Memory.MemoryValue32(0xA4000FF0, DataPtr);
     bool ExecuteCycles = true;
     if (TaskType == 1 && UseHleGfx() && DataPtr != 0)
     {
-        Memory.MemoryValue32(0xA4000FF0, TaskType);
         if (m_Plugins->Gfx()->ProcessDList != nullptr)
         {
             m_Plugins->Gfx()->ProcessDList();

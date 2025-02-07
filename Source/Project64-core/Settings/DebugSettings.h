@@ -93,6 +93,21 @@ public:
         return m_StepOnBreakOpCode;
     }
 
+    static inline bool TrackCPUStepStarted(void)
+    {
+        return m_TrackCPUStepStarted;
+    }
+
+    static inline bool TrackCPUStepEnded(void)
+    {
+        return m_TrackCPUStepEnded;
+    }
+
+    static inline bool TrackCPUStep(void)
+    {
+        return m_bCPULoggingEnabled;
+    }
+
 private:
     static void StaticRefreshSettings(CDebugSettings * _this)
     {
@@ -122,6 +137,8 @@ private:
     static bool m_BreakOnUnhandledMemory;
     static bool m_BreakOnAddressError;
     static bool m_StepOnBreakOpCode;
+    static bool m_TrackCPUStepStarted;
+    static bool m_TrackCPUStepEnded;
 
     static int32_t m_RefCount;
     static bool m_Registered;

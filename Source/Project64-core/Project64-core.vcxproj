@@ -39,7 +39,7 @@
       <AdditionalOptions>/ignore:4221%(AdditionalOptions)</AdditionalOptions>
     </Lib>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Source\3rdParty\asmjit\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\3rdParty\SoftFloat-3e\source\include;$(SolutionDir)Source\3rdParty\asmjit\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -283,6 +283,9 @@
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\asmjit\asmjit.vcxproj">
       <Project>{a72c9f08-ebb4-443d-9982-da21ae8b367d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\softfloat-3e\softfloat.vcxproj">
+      <Project>{2c54e724-7c6b-4a70-b4fb-421cf5cddd79}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>

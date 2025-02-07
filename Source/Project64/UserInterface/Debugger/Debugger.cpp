@@ -427,6 +427,7 @@ void CDebuggerUI::OpenStackTraceWindow(void)
     if (m_StackTrace == nullptr)
     {
         m_StackTrace = new CDebugStackTrace(this);
+        g_Settings->SaveBool(Debugger_TrackCPUStepEnded, true);
     }
     m_StackTrace->ShowWindow();
 }

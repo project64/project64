@@ -270,6 +270,8 @@ enum SettingID
     Debugger_IntrBreakpoints,
     Debugger_RcpIntrBreakpoints,
     Debugger_AutorunScripts,
+    Debugger_TrackCPUStepStarted,
+    Debugger_TrackCPUStepEnded,
 
     // Trace
     Debugger_TraceMD5,

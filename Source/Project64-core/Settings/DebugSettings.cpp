@@ -26,6 +26,8 @@ bool CDebugSettings::m_EndOnPermLoop = false;
 bool CDebugSettings::m_BreakOnUnhandledMemory = false;
 bool CDebugSettings::m_BreakOnAddressError = false;
 bool CDebugSettings::m_StepOnBreakOpCode = false;
+bool CDebugSettings::m_TrackCPUStepStarted = false;
+bool CDebugSettings::m_TrackCPUStepEnded = false;
 
 CDebugSettings::CDebugSettings()
 {
@@ -52,6 +54,8 @@ CDebugSettings::CDebugSettings()
         g_Settings->RegisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->RegisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_TrackCPUStepStarted, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->RegisterChangeCB(Debugger_TrackCPUStepEnded, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
 
         RefreshSettings();
     }
@@ -80,6 +84,8 @@ CDebugSettings::~CDebugSettings()
         g_Settings->UnregisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
         g_Settings->UnregisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepStarted, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepEnded, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
     }
 }
 
@@ -104,6 +110,8 @@ void CDebugSettings::RefreshSettings()
     m_BreakOnUnhandledMemory = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
     m_BreakOnAddressError = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
     m_StepOnBreakOpCode = m_HaveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
+    m_TrackCPUStepStarted = m_Stepping || m_ExceptionBreakpoints || (m_HaveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
+    m_TrackCPUStepEnded = m_HaveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepEnded);
 
     m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
 }

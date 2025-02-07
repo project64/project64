@@ -256,6 +256,9 @@
     <ProjectReference Include="..\3rdParty\png\png.vcxproj">
       <Project>{17836496-31b0-46f2-b1b1-366d7df6f04c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\3rdParty\softfloat-3e\softfloat.vcxproj">
+      <Project>{2c54e724-7c6b-4a70-b4fb-421cf5cddd79}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\3rdParty\zlib\zlib.vcxproj">
       <Project>{731bd205-2826-4631-b7af-117658e88dbc}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
