@@ -346,9 +346,7 @@ LRESULT CCheatList::OnTreeRClicked(NMHDR * lpnmh)
 
     GetCursorPos(&Mouse);
 
-    MenuSetText(hPopupMenu, 0, wGS(CHEAT_ADDNEW).c_str(), nullptr);
-    MenuSetText(hPopupMenu, 1, wGS(CHEAT_EDIT).c_str(), nullptr);
-    MenuSetText(hPopupMenu, 3, wGS(CHEAT_DELETE).c_str(), nullptr);
+    MenuSetText(hPopupMenu, 0, wGS(CHEAT_DELETE).c_str(), nullptr);
 
     if (m_hSelectedItem != nullptr && m_hCheatTree.GetChildItem(m_hSelectedItem) == nullptr)
     {

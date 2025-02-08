@@ -1962,9 +1962,6 @@ IDR_CHEAT_MENU MENU
 BEGIN
     POPUP "Popup"
     BEGIN
-        MENUITEM "Add New Cheat...",            ID_POPUP_ADDNEWCHEAT
-        MENUITEM "Edit",                        ID_POPUP_EDIT
-        MENUITEM SEPARATOR
         MENUITEM "Delete",                      ID_POPUP_DELETE
     END
 END
