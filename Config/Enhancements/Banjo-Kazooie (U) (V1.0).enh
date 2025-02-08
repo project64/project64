@@ -1,6 +1,18 @@
 [A4BF9306-BF0CDFD1-C:45]
 Name=Banjo-Kazooie (U) (V1.0)
 
+$16:9 Widescreen
+Note=For 16:9 aspect ratios. Do not use with other widescreen enhancements or hacks.
+81277A0C 4334
+81277A10 4334
+81275D24 3FE6
+
+$21:9 Widescreen
+Note=For 21:9 aspect ratios. Do not use with other widescreen enhancements or hacks.
+81277A0C 4334
+81277A10 4334
+81275D24 4019
+
 $Better Special Fix pt1
 D3371E60 0000
 81326930 0811
@@ -463,14 +475,3 @@ D3371E60 0000
 81375654 4049
 81375658 3FC6
 8137565C 40B3
-
-$Ultra Widescreen
-Note=For 21:9 aspect ratios. Do not use with other widescreen enhancements.
-81277A0C 4334
-81277A10 4334
-81275D24 4019
-
-$Widescreen
-81277A0C 4334
-81277A10 4334
-81275D24 3FE6
