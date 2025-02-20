@@ -388,8 +388,7 @@ TCHAR * GetN64ButtonNameFromButtonCode( int Button )
 {
     using namespace N64_BUTTONS;
 
-    TCHAR *btnName;
-    btnName = new TCHAR[10];
+    static TCHAR btnName[10];
 
     switch( Button )
     {
@@ -444,10 +443,9 @@ TCHAR * GetN64ButtonArrayFromXAnalog( LPXCONTROLLER gController, int XThStickOrX
     using namespace N64_BUTTONS;
 
     if( !gController || !gController->bConfigured )
-        return NULL;
+        return _T("");
 
-    TCHAR *name;
-    name = new TCHAR[15];
+    static TCHAR name[15];
 
     switch( XThStickOrXDpad )
     {
