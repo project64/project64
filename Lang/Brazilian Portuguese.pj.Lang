@@ -1,4 +1,4 @@
-// Meta information
+﻿// Meta information
 #1  #  "Português (Brasil)"		// Language ID
 #2  #  "Marcos Spíndula, Felipe e Darkaiser"			// Author
 #3  #  "3.01"			// Version
@@ -38,7 +38,7 @@
 #135#  "Trocar &disco"
 #136#  "&Melhorias..."
 
-//Options menu
+// Options menu
 #140#  "&Opções"
 #141#  "&Tela inteira"
 #142#  "Sempre no &topo"
@@ -49,13 +49,13 @@
 #147#  "Mostrar as estatísticas da &CPU"
 #148#  "Configura&ções..."
 
-//Debugger menu
+// Debugger menu
 #160#  "&Depurador"
 
-//Language menu
+// Language menu
 #175#  "&Idioma"
 
-//Help menu
+// Help menu
 #180#  "&Ajuda"
 #182#  "&Sobre o Project 64"
 #184# "&Página da Web"
@@ -162,10 +162,10 @@
 #319#  "Formato do arquivo"
 #321#  "Nome"
 
-//Select ROM
+// Select ROM
 #320#  "Selecionar o diretório atual das ROMs"
 
-//Messages
+// Messages
 #340#  "ROM corrompida? Use o GoodN64 e verifique se o RDB está atualizado"
 
 /*** Options ***/
@@ -198,7 +198,7 @@
 #426#  "Áudio HLE"
 #427#  "** Usar plugin do sistema **"
 
-//Directory dialog
+// Directory dialog
 #440#  " Diretório dos plugins: "
 #441#  " Diretório das ROMs: "
 #442#  " Diretório dos salvamentos nativos do N64: "
@@ -213,7 +213,7 @@
 #451#  " Diretório do pacote das texturas: "
 #452#  "Selecionar o diretório do pacote das texturas"
 
-//Options (general) tab
+// Options (general) tab
 #460#  "Pausar emulação quando a janela não está ativa"
 #461#  "Entrar no modo de tela inteira ao carregar uma ROM"
 #462#  "Ocultar configurações avançadas"
@@ -248,7 +248,7 @@
 #492#  "Atualizar explorador automaticamente"
 #493#  "Mostrar extensão dos arquivos"
 
-//Advanced options
+// Advanced options
 #500#  "A maioria destas alterações não terão efeito até que uma nova ROM seja aberta ou a ROM atual seja reiniciada."
 #501#  "Padrões do núcleo"
 #502#  "Estilo do núcleo da CPU:"
@@ -266,7 +266,7 @@
 #514#  "Desmapear o TLB"
 #515#  "Usar sempre o núcleo do interpretador"
 
-//ROM options
+// ROM options
 #520#  "Estilo do núcleo da CPU:"
 #521#  "Taxa de atualização da VI:"
 #522#  "Tamanho da memória:"
@@ -296,12 +296,12 @@
 #5444# "Tamanho da memória (desconhecido):"
 #5445# "Cache do registro do FPU:"
 
-//Core styles
+// Core styles
 #540#  "Interpretador"
 #541#  "Recompilador"
 #542#  "Sincronizar núcleos"
 
-//Self-mod methods
+// Self-mod methods
 #560#  "Nenhum"
 #561#  "Cache"
 #562#  "Proteger memória"
@@ -310,20 +310,20 @@
 #565#  "Verificar avanço da memória"
 #566#  "Limpar código no cache"
 
-//Function lookup method
+// Function lookup method
 #570#  "Tabela de procura física"
 #571#  "Tabela de procura virtual"
 #572#  "Alterar memória"
 
-//RDRAM size
+// RDRAM size
 #580#  "4 MB"
 #581#  "8 MB"
 
-//Advanced block linking
+// Advanced block linking
 #600#  "Ligado"
 #601#  "Desligado"
 
-//Save type
+// Save type
 #620#  "Usar o tipo de salvamento usado pela primeira vez"
 #621#  "EEPROM de 4 kbits"
 #622#  "EEPROM de 16 kbits"
@@ -359,13 +359,13 @@
 #710#  "Aumentar a velocidade do jogo"
 #711#  "Diminuir a velocidade do jogo"
 
-//Bottom page buttons
+// Bottom page buttons
 #720#  "Redefinir página"
 #721#  "Redefinir tudo"
 #722#  "Aplicar"
 #723#  "Fechar"
 
-//Disk save type
+// Disk save type
 #730#  "Cópia completa do disco"
 #731#  "Apenas a área de salvamento"
 
@@ -374,7 +374,7 @@
 // ROM info title
 #800#  "Informações da ROM"
 
-//ROM info text
+// ROM info text
 #801#  "Nome da ROM:"
 #802#  "Nome do arquivo:"
 #803#  "Local:"
@@ -396,7 +396,7 @@
 #1003#  "Marcar tudo"
 #1004#  "Desmarcar tudo"
 
-//Add cheat
+// Add cheat
 #1005#  "Adicionar trapaça"
 #1006#  "Nome:"
 #1007#  "Código:"
@@ -405,13 +405,13 @@
 #1010#  " Notas da trapaça: "
 #1011#  "Adicionar ao banco de dados"
 
-//Code extension
+// Code extension
 #1012#  "Extensões do código"
 #1013#  "Escolha um valor a ser utilizado para:"
 #1014#  "OK"
 #1015#  "Cancelar"
 
-//Digital value
+// Digital value
 #1016#  "Dígito da quantidade"
 #1017#  "Escolha um valor para:"
 #1018#  "&Valor"
