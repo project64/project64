@@ -1,12 +1,12 @@
 // Meta information
 #1  #  "Português (Brasil)"		// Language ID
-#2  #  "Marcos Spíndula, Felipe e Darkaiser"   // Author
-#3  #  "3.01"			            // Version
+#2  #  "Marcos Spíndula, Felipe e Darkaiser"			// Author
+#3  #  "3.01"			// Version
 #4  #  "08 de julho de 2023"		// Date
 
 /*** Menu ***/
 
-//File menu
+// File menu
 #100#  "&Arquivo"
 #101#  "&Abrir ROM"
 #102#  "Informação &da ROM...."
@@ -19,7 +19,7 @@
 #109#  "S&air"
 #110#  "Abrir &combinação"
 
-//System menu
+// System menu
 #120#  "&Sistema"
 #121#  "&Reiniciar"
 #122#  "&Pausar"
