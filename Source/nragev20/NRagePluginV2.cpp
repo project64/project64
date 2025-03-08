@@ -1305,3 +1305,95 @@ DWORD WINAPI DelayedShortcut(LPVOID lpParam)
     P_free(lpParam);
     return 0;
 }
+
+void OctagonProj(float& outputX, float& outputY, float CARDINAL_MAX, float ANGLE_THRESHOLD)
+{
+    constexpr float DIAG_RATIO = 2.448f; //CARDINAL_MAX * 0.71f / (CARDINAL_MAX - CARDINAL_MAX * 0.71f); max 71% diagonal
+    const float C = CARDINAL_MAX * DIAG_RATIO;
+
+    float ax = fabs(outputX);
+    float ay = fabs(outputY);
+    float r = hypotf(ax, ay);
+
+    if (r > EPSILON)
+    {
+        float theta = atan2f(ay, ax);
+        float r_max = (theta <= OCTAGON_ANGLE)
+            ? (C / (sinf(theta) + DIAG_RATIO * cosf(theta)))
+            : (C / (cosf(theta) + DIAG_RATIO * sinf(theta)));
+
+        if (r >= r_max)
+        {
+            float new_r = r_max;
+            float new_ax = new_r * cosf(theta);
+            float new_ay = new_r * sinf(theta);
+
+            outputX = (outputX < 0) ? -new_ax : new_ax;
+            outputY = (outputY < 0) ? -new_ay : new_ay;
+        }
+
+        if( ANGLE_THRESHOLD > 0)
+        {
+            float angles[8] = { 0.0f, OCTAGON_ANGLE, 2 * OCTAGON_ANGLE, 3 * OCTAGON_ANGLE, 4 * OCTAGON_ANGLE, 5 * OCTAGON_ANGLE, 6 * OCTAGON_ANGLE, 7 * OCTAGON_ANGLE };
+            if (r >= r_max)
+            {
+                for (int i = 0; i < 8; ++i)
+                {
+                    float angle = angles[i];
+                    float angleLowerBound = angle - ANGLE_THRESHOLD;
+                    float angleUpperBound = angle + ANGLE_THRESHOLD;
+
+                    // Check if we need to lock
+                    if (theta >= angleLowerBound && theta < angleUpperBound)
+                    {
+                        outputX = (outputX < 0) ? -CARDINAL_MAX * cosf(angle) : CARDINAL_MAX * cosf(angle);
+                        outputY = (outputY < 0) ? -CARDINAL_MAX * sinf(angle) : CARDINAL_MAX * sinf(angle);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void processStickInput(CONTROLLER* pcController, short inputX, short inputY, float& outputX, float& outputY)
+{
+    float DEADZONE = (XC_ANALOG_MAX * (pcController->bPadDeadZone / 100.f));
+    float ANGLE_THRESHOLD = pcController->bVirtualCorners / 100.f;
+    float stickRange =  pcController->bStickRange / 100.f;
+    float magnitude = hypotf(static_cast<float>(inputX), static_cast<float>(inputY));
+    float SENSITIVITY = ((1.5f - 0.1f) * (pcController->bPadSensitivity - 1) / (100 - 1)) + 0.1f;
+
+    if (magnitude == 0.0f || magnitude <= DEADZONE)
+    {
+        outputX = 0.0f;
+        outputY = 0.0f;
+        return;
+    }
+
+    float adjustedMagnitude = magnitude - DEADZONE;
+    float normalizedMagnitude = adjustedMagnitude / (XC_ANALOG_MAX - DEADZONE);
+
+    if (normalizedMagnitude < stickRange)
+        normalizedMagnitude = normalizedMagnitude / stickRange;
+    else
+        normalizedMagnitude = 1.0f;
+
+    normalizedMagnitude *= 1.0f + (SENSITIVITY - 1.0f) * (1.0f - normalizedMagnitude);
+
+    //normalizedMagnitude = fmaxf(0.0f, fminf(1.0f, normalizedMagnitude * (1.0f + (SENSITIVITY - 1.0f) * (1.0f - normalizedMagnitude))));
+
+    outputX = (inputX / magnitude) * normalizedMagnitude * XC_ANALOG_MAX;
+    outputY = (inputY / magnitude) * normalizedMagnitude * XC_ANALOG_MAX;
+
+    if (pcController->fRealN64Range) {
+        OctagonProj(outputX, outputY, XC_ANALOG_MAX, ANGLE_THRESHOLD);
+    }
+
+    if (pcController->xiController.stAnalogs.iInvertLX)
+        outputX = -outputX;
+    if (pcController->xiController.stAnalogs.iInvertLY)
+        outputY = -outputY;
+}
+

@@ -145,34 +145,18 @@ LCleanup:
     return bIsXinputDevice;
 }
 
-void AxisDeadzone( SHORT &AxisValue, long  lDeadZoneValue, float fDeadZoneRelation )
-{
-    short sign = AxisValue < 0 ? -1 : 1;
-    float value = (float)(AxisValue < 0 ? -AxisValue : AxisValue);
-
-    if(value < lDeadZoneValue)
-        value = 0;
-    else
-    {
-        value = (value - lDeadZoneValue) * fDeadZoneRelation;
-        value = value > 32767.0f ? 32767.0f : value;
-    }
-
-    AxisValue = (SHORT)(value * sign);
-}
-
 void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
 {
-	
-	if (fnXInputGetState == NULL)
+
+    if (fnXInputGetState == NULL)
     {
         return;
     }
-	
+
     using namespace N64_BUTTONS;
 
     LPCONTROLLER pcController = &g_pcControllers[indexController];
-    LPXCONTROLLER gController = &g_pcControllers[indexController].xiController;
+    LPXCONTROLLER gController = &pcController->xiController;
 
     *Keys = 0;
 
@@ -183,44 +167,52 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
     XINPUT_STATE state;
 
     ULONGLONG time = GetTickCount() / 1000;
-    if (g_pcControllers[indexController].XcheckTime != NULL && (time - g_pcControllers[indexController].XcheckTime) < 3)
+    if (pcController->XcheckTime != NULL && (time - pcController->XcheckTime) < 3)
         return;
 
     result = fnXInputGetState(gController->nControl, &state);
 
     if (result == ERROR_DEVICE_NOT_CONNECTED) {
-        g_pcControllers[indexController].XcheckTime = time;
+        pcController->XcheckTime = time;
     }
     else {
-        g_pcControllers[indexController].XcheckTime = NULL;
+        pcController->XcheckTime = NULL;
     }
 
     if( result != ERROR_SUCCESS )
         return;
-    
+
     DWORD wButtons = state.Gamepad.wButtons;
 
-    if( pcController->bPadDeadZone > 0 )
-    {
-        const int RANGERELATIVE = 32767;
-        long lDeadZoneValue = pcController->bPadDeadZone * RANGERELATIVE / 100;
-        float fDeadZoneRelation = (float)RANGERELATIVE  / (float)( RANGERELATIVE - lDeadZoneValue );
+    float LX, LY, RX, RY;
+    short XAx, YAx;
+    float N64Range = (float)pcController->bN64Range;
 
-        AxisDeadzone(state.Gamepad.sThumbLX, lDeadZoneValue, fDeadZoneRelation);
-        AxisDeadzone(state.Gamepad.sThumbLY, lDeadZoneValue, fDeadZoneRelation);
-        AxisDeadzone(state.Gamepad.sThumbRX, lDeadZoneValue, fDeadZoneRelation);
-        AxisDeadzone(state.Gamepad.sThumbRY, lDeadZoneValue, fDeadZoneRelation);
+    if (gController->stAnalogs.iLXAxis == XAxis){
+        processStickInput(pcController, state.Gamepad.sThumbLX, state.Gamepad.sThumbLY, LX , LY);
+        LX *= N64Range / (float)XC_ANALOG_MAX;
+        LY *= N64Range / (float)XC_ANALOG_MAX;
+        RY = state.Gamepad.sThumbRY * N64_ANALOG_MAX / XC_ANALOG_MAX;
+        RX = state.Gamepad.sThumbRX * N64_ANALOG_MAX / XC_ANALOG_MAX;
+        XAx = LX;
+        YAx = LY;
+        if (pcController->xiController.stAnalogs.iInvertRX)
+            RX = -RX;
+        if (pcController->xiController.stAnalogs.iInvertRY)
+            RY = -RY;
+    }else{
+        processStickInput(pcController, state.Gamepad.sThumbRX, state.Gamepad.sThumbRY, RX, RY);
+        RX *= N64Range / (float)XC_ANALOG_MAX;
+        RY *= N64Range / (float)XC_ANALOG_MAX;
+        LY = state.Gamepad.sThumbLY * N64_ANALOG_MAX / XC_ANALOG_MAX;
+        LX = state.Gamepad.sThumbLX * N64_ANALOG_MAX / XC_ANALOG_MAX;
+        XAx = RX;
+        YAx = RY;
+        if (pcController->xiController.stAnalogs.iInvertLX)
+            LX = -LX;
+        if (pcController->xiController.stAnalogs.iInvertLY)
+            LY = -LY;
     }
-
-    short LY = state.Gamepad.sThumbLY * N64_ANALOG_MAX / XC_ANALOG_MAX;
-    short LX = state.Gamepad.sThumbLX * N64_ANALOG_MAX / XC_ANALOG_MAX;
-
-    short RY = state.Gamepad.sThumbRY * N64_ANALOG_MAX / XC_ANALOG_MAX;
-    short RX = state.Gamepad.sThumbRX * N64_ANALOG_MAX / XC_ANALOG_MAX;
-
-    short XAx = 0, XAxc = 0;
-    short YAx = 0, YAxc = 0;
-
     WORD valButtons = 0;
     valButtons |= ( wButtons & gController->stButtons.iDRight ) ? DRight : 0;
     valButtons |= ( wButtons & gController->stButtons.iDLeft ) ? DLeft : 0;
@@ -258,32 +250,6 @@ void GetXInputControllerKeys( const int indexController, LPDWORD Keys )
     if (RY <= -BUTTON_ANALOG_VALUE)
         valButtons |= gController->stAnalogs.iRYAxis & (CDown | DDown) ? gController->stAnalogs.iRYAxis : 0;
 
-    if (gController->stAnalogs.iLXAxis == XAxis)
-    {
-        XAx += LX;
-        XAxc += LX > 0 ? 1 : 0;
-    }
-    if (gController->stAnalogs.iRXAxis == XAxis)
-    {
-        XAx += RX;
-        XAxc += RX > 0 ? 1 : 0;
-    }
-    if( XAxc )
-        XAx /= XAxc;
-
-    if (gController->stAnalogs.iLYAxis == YAxis)
-    {
-        YAx += LY;
-        YAxc += LY > 0 ? 1 : 0;
-    }
-    if (gController->stAnalogs.iRYAxis == YAxis)
-    {
-        YAx += RY;
-        YAxc += RY > 0 ? 1 : 0;
-    }
-    if( YAxc )
-        YAx /= YAxc;
-
     *Keys = MAKELONG(valButtons, MAKEWORD(XAx, YAx));
 }
 
@@ -307,6 +273,10 @@ void DefaultXInputControllerKeys( LPXCONTROLLER gController)
     gController->stAnalogs.iLXAxis = XAxis;
     gController->stAnalogs.iLYAxis = YAxis;
     gController->bConfigured = true;
+    gController->stAnalogs.iInvertLX = false;
+    gController->stAnalogs.iInvertLY = false;
+    gController->stAnalogs.iInvertRX = false;
+    gController->stAnalogs.iInvertRY = false;
 }
 
 void VibrateXInputController( DWORD nController, int LeftMotorVal, int RightMotorVal )
@@ -387,7 +357,6 @@ bool InitiateXInputController( LPXCONTROLLER gController, int nControl )
 TCHAR * GetN64ButtonNameFromButtonCode( int Button )
 {
     using namespace N64_BUTTONS;
-
     static TCHAR btnName[10];
 
     switch( Button )
@@ -509,6 +478,12 @@ bool ReadXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController )
     SendDlgItemMessage( hDlg, IDC_XC_LTS, CB_SELECTSTRING, -1, (LPARAM)GetN64ButtonArrayFromXAnalog( gController, XC_LTBS ));
     SendDlgItemMessage( hDlg, IDC_XC_RTS, CB_SELECTSTRING, -1, (LPARAM)GetN64ButtonArrayFromXAnalog( gController, XC_RTBS ));
 
+    SendDlgItemMessage(hDlg, IDC_XC_INVERT_LX, BM_SETCHECK, (gController->stAnalogs.iInvertLX ? BST_CHECKED : BST_UNCHECKED), 0);
+    SendDlgItemMessage(hDlg, IDC_XC_INVERT_LY, BM_SETCHECK, (gController->stAnalogs.iInvertLY ? BST_CHECKED : BST_UNCHECKED), 0);
+    SendDlgItemMessage(hDlg, IDC_XC_INVERT_RX, BM_SETCHECK, (gController->stAnalogs.iInvertRX ? BST_CHECKED : BST_UNCHECKED), 0);
+    SendDlgItemMessage(hDlg, IDC_XC_INVERT_RY, BM_SETCHECK, (gController->stAnalogs.iInvertRY ? BST_CHECKED : BST_UNCHECKED), 0);
+
+
     return true;
 }
 
@@ -536,8 +511,8 @@ int GetComboBoxXInputKey( int ComboBox )
 }
 
 int GetN64ButtonCode( TCHAR *btnName )  //esta wea esta muy fea, hay que buscar una mejor manera definitivamente..
-{										// ^ This translated means "This wea is very ugly, we must definitely find a better way"
-										// I'm assuming there must be some perceived "better way to handle this, so maybe TODO: ?"
+{                                       // ^ This translated means "This wea is very ugly, we must definitely find a better way"
+                                        // I'm assuming there must be some perceived "better way to handle this, so maybe TODO: ?"
     using namespace N64_BUTTONS;
 
     int value = 0;
@@ -597,6 +572,11 @@ void ResetXInputControllerKeys( LPXCONTROLLER gController )
     gController->stAnalogs.iRightTrigger = 0;
     gController->stAnalogs.iRXAxis = 0;
     gController->stAnalogs.iRYAxis = 0;
+
+    gController->stAnalogs.iInvertLX = false;
+    gController->stAnalogs.iInvertLY = false;
+    gController->stAnalogs.iInvertRX = false;
+    gController->stAnalogs.iInvertRY = false;
 }
 
 void StoreAnalogConfig( LPXCONTROLLER gController, int ComboBox, int index )
@@ -663,6 +643,10 @@ void StoreXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController )
 {
     LRESULT index = -1;
     DWORD value = 0;
+    int invertLX = gController->stAnalogs.iInvertLX;
+    int invertLY = gController->stAnalogs.iInvertLY;
+    int invertRX = gController->stAnalogs.iInvertRX;
+    int invertRY = gController->stAnalogs.iInvertRY;
 
     ResetXInputControllerKeys( gController );
 
@@ -711,6 +695,10 @@ void StoreXInputControllerKeys( HWND hDlg, LPXCONTROLLER gController )
         case 14:    gController->stButtons.iDRight  |= value;   break;
         }
     }
+    gController->stAnalogs.iInvertLX = invertLX;
+    gController->stAnalogs.iInvertLY = invertLY;
+    gController->stAnalogs.iInvertRX = invertRX;
+    gController->stAnalogs.iInvertRY = invertRY;
     gController->bConfigured = true;
 }
 
@@ -738,7 +726,11 @@ void SaveXInputConfigToFile( FILE *file, LPXCONTROLLER gController )
     fprintf( file, "LeftXAxis=%lu\n", gController->stAnalogs.iLXAxis );
     fprintf( file, "LeftYAxis=%lu\n", gController->stAnalogs.iLYAxis );
     fprintf( file, "RightXAxis=%lu\n", gController->stAnalogs.iRXAxis );
-    fprintf( file, "RightYAxis=%lu\n\n", gController->stAnalogs.iRYAxis );
+    fprintf( file, "RightYAxis=%lu\n", gController->stAnalogs.iRYAxis );
+    fprintf( file, "InvertLX=%lu\n", gController->stAnalogs.iInvertLX );
+    fprintf( file, "InvertLY=%lu\n", gController->stAnalogs.iInvertLY );
+    fprintf( file, "InvertRX=%lu\n", gController->stAnalogs.iInvertRX );
+    fprintf( file, "InvertRY=%lu\n\n", gController->stAnalogs.iInvertRY );
 }
 
 void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController )
@@ -781,6 +773,30 @@ void LoadXInputConfigFromFile( FILE *file, LPXCONTROLLER gController )
                 sscanf(buffer, "DLeft=%lu", &gController->stButtons.iDLeft); break;
             case 'R':
                 sscanf(buffer, "DRight=%lu", &gController->stButtons.iDRight); break;
+            }
+            break;
+        case 'I':
+            switch( buffer[6] )
+            {
+                case 'L':
+                    switch( buffer[7] )
+                    {
+                        case 'X':
+                            sscanf(buffer, "InvertLX=%lu", &gController->stAnalogs.iInvertLX);
+                            break;
+                        case 'Y':
+                            sscanf(buffer, "InvertLY=%lu", &gController->stAnalogs.iInvertLY); break;
+                    }
+                break;
+                case 'R':
+                    switch( buffer[7] )
+                    {
+                        case 'X':
+                            sscanf(buffer, "InvertRX=%lu", &gController->stAnalogs.iInvertRX); break;
+                        case 'Y':
+                            sscanf(buffer, "InvertRY=%lu", &gController->stAnalogs.iInvertRY); break;
+                    }
+                break;
             }
             break;
         case 'L':

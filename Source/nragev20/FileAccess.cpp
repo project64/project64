@@ -307,6 +307,18 @@ bool ProcessKey( DWORD dwKey, DWORD dwSection, LPCSTR pszLine, LPTSTR pszFFDevic
         if (pController)
             pController->bPadDeadZone = atoi(pszLine);
         break;
+    case CHK_SENSITIVITY:
+        if (pController)
+            pController->bPadSensitivity = atoi(pszLine);
+        break;
+    case CHK_VIRTUALCORNERS:
+        if (pController)
+            pController->bVirtualCorners = atoi(pszLine);
+        break;
+    case CHK_N64RANGE:
+        if (pController)
+            pController->bN64Range = atoi(pszLine);
+        break;
     case CHK_MOUSESENSITIVITYX:
         if (pController)
             pController->wMouseSensitivityX = atoi(pszLine);
@@ -1501,6 +1513,8 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
     fprintf(fFile, STRING_INI_RAPIDFIREENABLED "=%u\n", g_ivConfig->Controllers[i].bRapidFireEnabled);
     fprintf(fFile, STRING_INI_RAPIDFIRERATE "=%u\n", g_ivConfig->Controllers[i].bRapidFireRate);
     fprintf(fFile, STRING_INI_STICKRANGE "=%u\n", g_ivConfig->Controllers[i].bStickRange);
+    fprintf(fFile, STRING_INI_N64RANGE "=%u\n", g_ivConfig->Controllers[i].bN64Range);
+    fprintf(fFile, STRING_INI_VIRTUALCORNERS "=%u\n", g_ivConfig->Controllers[i].bVirtualCorners);
     fprintf(fFile, STRING_INI_MOUSEMOVEX "=%u\n", g_ivConfig->Controllers[i].bMouseMoveX);
     fprintf(fFile, STRING_INI_MOUSEMOVEY "=%u\n", g_ivConfig->Controllers[i].bMouseMoveY);
     fprintf(fFile, STRING_INI_AXISSET "=%u\n", g_ivConfig->Controllers[i].bAxisSet);
@@ -1512,6 +1526,7 @@ void DumpControllerSettings(FILE * fFile, int i, bool bIsINI)
     fprintf(fFile, STRING_INI_RUMBLETYPE "=%u\n", g_ivConfig->Controllers[i].bRumbleTyp);
     fprintf(fFile, STRING_INI_RUMBLESTRENGTH "=%u\n", g_ivConfig->Controllers[i].bRumbleStrength);
     fprintf(fFile, STRING_INI_VISUALRUMBLE "=%u\n", g_ivConfig->Controllers[i].fVisualRumble);
+    fprintf(fFile, STRING_INI_SENSITIVITY "=%u\n", g_ivConfig->Controllers[i].bPadSensitivity);
 
     if (bIsINI)
     {

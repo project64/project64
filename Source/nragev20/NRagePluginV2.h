@@ -36,8 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // Maximum number of modifiers
 #define MAX_MODIFIERS   256
 
-#define DEFAULT_STICKRANGE      66
+#define DEFAULT_STICKRANGE      100
+#define DEFAULT_N64RANGE        88
 #define DEFAULT_DEADZONE        5
+#define DEFAULT_SENSITIVITY     50
 #define DEFAULT_RUMBLETYP       RUMBLE_EFF1
 #define DEFAULT_RUMBLESTRENGTH  80
 #define DEFAULT_MOUSESENSIVITY  100
@@ -153,13 +155,13 @@ typedef struct _CONTROLLER      // An N64 controller
 
     unsigned bBackgroundInput;  // Allow input while main window isn't focused?
 
-	unsigned XcheckTime;		// Checks for newly connected gamepads timer
+    unsigned XcheckTime;        // Checks for newly connected gamepads timer
 
     BYTE bRumbleTyp;                // What type of rumble effect? None, constant, ramp, or direct?
 
     GUID guidFFDevice;              // GUID of the device that rumble gets sent to
 
-    BYTE bStickRange;               // Our "range modifier"
+    BYTE bStickRange;               // Stick Range
 
     long wAxeBuffer[4];             // Makes pseudo-relative movement possible through keyboard or buttons and also acts as a mouse buffer
 
@@ -167,6 +169,9 @@ typedef struct _CONTROLLER      // An N64 controller
     WORD wMouseSensitivityY;
     BYTE bPadDeadZone;              // Our manual dead zone, set per N64 controller
     BYTE bRumbleStrength;           // Set per N64 controller
+    BYTE bPadSensitivity;           // Analog Sensitivity
+    BYTE bN64Range;                 // N64 Stick Range
+    BYTE bVirtualCorners;           // Octagon Virtual Corners
     unsigned short nModifiers;      // Number of modifiers
 
     bool bRapidFireEnabled;
@@ -390,5 +395,24 @@ void freePakData(CONTROLLER *pcController);
 void freeModifiers(CONTROLLER *pcController);
 void CheckShortcuts();
 bool ErrorMessage(UINT uID, DWORD dwError, bool fUserChoose);
+
+// Analog Input Management
+constexpr float PI = 3.14159265358979323846;
+constexpr float EPSILON = 1e-6f;
+constexpr float OCTAGON_ANGLE = PI / 4.0;
+
+typedef struct _ANALOGWIN {
+    int SIZE_W;
+    int SIZE_H;
+    int X;
+    int Y;
+    int CENTER_X;
+    int CENTER_Y;
+    float RADIUS;
+    float TRIANGLE_HEIGHT;
+} ANALOGWIN;
+
+void OctagonProj(float& outputX, float& outputY, float CARDINAL_MAX, float ANGLE_THRESHOLD);
+void processStickInput(CONTROLLER* pcController, short inputX, short inputY, float& outputX, float& outputY);
 
 #endif

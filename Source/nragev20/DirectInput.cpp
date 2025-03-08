@@ -149,7 +149,6 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
     *pdwData = 0;
     WORD w_Buttons = 0;
     // WORD w_Axes = 0;
-
     LPCONTROLLER pcController = &g_pcControllers[indexController]; // Still needs to be here, but not as important (comment by rabid)
 
     bool b_Value;
@@ -157,11 +156,9 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
 
     long lAxisValueX = ZEROVALUE;
     long lAxisValueY = ZEROVALUE;
-
     // Take this info from the N64 controller struct, regardless of input devices
-    float d_ModifierX = (float)pcController->bStickRange / 100.0f;
-    float d_ModifierY = (float)pcController->bStickRange / 100.0f;
-
+    float d_ModifierX = 0;
+    float d_ModifierY = 0;
     int i;
 
     // Do N64-Buttons / modifiers
@@ -210,8 +207,8 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
             case MDT_MOVE:
             {
                 LPMODSPEC_MOVE args = (LPMODSPEC_MOVE)&pcController->pModifiers[i].dwSpecific;
-                d_ModifierX *= args->XModification / 100.0f;
-                d_ModifierY *= args->YModification / 100.0f;
+                d_ModifierX = args->XModification / 100.0f;
+                d_ModifierY = args->YModification / 100.0f;
             }
                 break;
             case MDT_MACRO:
@@ -228,7 +225,7 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
                     if(!args->fPrevFireState) // This round, a firing is needed
                     {
                         w_Buttons |= args->aButtons;
-                        if( args->fAnalogRight )
+                         if( args->fAnalogRight )
                             lAxisValueX += MAXAXISVALUE;
                         else if( args->fAnalogLeft )
                             lAxisValueX -= MAXAXISVALUE;
@@ -324,9 +321,6 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
         w_Buttons |= (((WORD)b_Value) << i);
     } // End N64 buttons for
 
-    long lDeadZoneValue = pcController->bPadDeadZone * RANGERELATIVE / 100;
-    float fDeadZoneRelation = (float)RANGERELATIVE  / (float)( RANGERELATIVE - lDeadZoneValue );
-
     // Do N64 joystick axes
     for ( i = 0; i < 4; i++ )
     {
@@ -350,21 +344,16 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
         case DT_JOYSLIDER:
         case DT_JOYAXE:
             l_Value = plRawState[btnButton.bOffset] - ZEROVALUE;
-
             if( btnButton.bAxisID ) // Negative range
             {
                 fNegInput = !fNegInput;
-
-                b_Value = ( l_Value <= -lDeadZoneValue );
-                if( b_Value )
-                    l_Value = (long) ((float)(l_Value + lDeadZoneValue ) * fDeadZoneRelation );
+                b_Value = ( l_Value <= -ZEROVALUE );
             }
             else
             {
-                b_Value = ( l_Value >= lDeadZoneValue );
-                if( b_Value )
-                    l_Value = (long) ((float)(l_Value - lDeadZoneValue ) * fDeadZoneRelation );
+                b_Value = ( l_Value >= ZEROVALUE );
             }
+
             break;
 
         case DT_JOYPOV:
@@ -517,44 +506,18 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
         }
     }
 
-    if( pcController->fRealN64Range && ( lAxisValueX || lAxisValueY ))
+    if( ( lAxisValueX || lAxisValueY ) )
     {
-        long lAbsoluteX = ( lAxisValueX > 0 ) ? lAxisValueX : -lAxisValueX;
-        long lAbsoluteY = ( lAxisValueY > 0 ) ? lAxisValueY : -lAxisValueY;
+        float LX, LY;
+        float modX =  lAxisValueX * (d_ModifierX == 0 ? d_ModifierX = 1 : d_ModifierX);
+        float modY =  lAxisValueY * (d_ModifierY == 0 ? d_ModifierY = 1 : d_ModifierY);
+        lAxisValueX = (min<long>( max<long>( MINAXISVALUE, modX), MAXAXISVALUE));
+        lAxisValueY = (min<long>( max<long>( MINAXISVALUE, modY), MAXAXISVALUE));
+        processStickInput(pcController, lAxisValueX , lAxisValueY, LX, LY);
 
-        long lRangeX;
-        long lRangeY;
-
-        if( lAbsoluteX > lAbsoluteY )
-        {
-            lRangeX = MAXAXISVALUE;
-            lRangeY = lRangeX * lAbsoluteY / lAbsoluteX;
-        }
-        else
-        {
-            lRangeY = MAXAXISVALUE;
-            lRangeX = lRangeY * lAbsoluteX / lAbsoluteY;
-        }
-
-        // TODO: We should optimize this (comment by rabid)
-        double dRangeDiagonal = sqrt((double)(lRangeX * lRangeX + lRangeY * lRangeY));
-//      __asm{
-//          fld fRangeDiagonal
-//          fsqrt
-//          fstp fRangeDiagonal
-//          fwait
-//      }
-        double dRel = MAXAXISVALUE / dRangeDiagonal;
-
-        *pdwData = MAKELONG(w_Buttons,
-                            MAKEWORD(   (BYTE)(min<long>( max<long>( MINAXISVALUE, (long)(lAxisValueX * d_ModifierX * dRel )), MAXAXISVALUE) / N64DIVIDER ),
-                                        (BYTE)(min<long>( max<long>( MINAXISVALUE, (long)(lAxisValueY * d_ModifierY * dRel )), MAXAXISVALUE) / N64DIVIDER )));
-    }
-    else
-    {
-        *pdwData = MAKELONG(w_Buttons,
-                            MAKEWORD(   (BYTE)(min<long>( max<long>( MINAXISVALUE, (long)(lAxisValueX * d_ModifierX )), MAXAXISVALUE) / N64DIVIDER ),
-                                        (BYTE)(min<long>( max<long>( MINAXISVALUE, (long)(lAxisValueY * d_ModifierY )), MAXAXISVALUE) / N64DIVIDER )));
+        *pdwData = MAKELONG(w_Buttons, MAKEWORD( LX  * pcController->bN64Range  / MAXAXISVALUE, LY  * pcController->bN64Range / MAXAXISVALUE) );
+    else{
+        *pdwData = MAKELONG(w_Buttons, MAKEWORD(ZEROVALUE, ZEROVALUE));
     }
 
     return true;

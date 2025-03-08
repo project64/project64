@@ -61,7 +61,7 @@ number, ie. first XInput controller is first N64 player, etc.
 #include <xinput.h>
 
 // Defines
-#define N64_ANALOG_MAX 88
+#define N64_ANALOG_MAX 127
 #define XC_ANALOG_MAX 32767
 #define BUTTON_ANALOG_VALUE 60
 
@@ -95,6 +95,7 @@ typedef struct _XCONTROLLER     // XInput controller struct
     {
         int iLeftTrigger, iRightTrigger;
         unsigned int iRXAxis, iRYAxis, iLXAxis, iLYAxis;
+        unsigned int iInvertLX, iInvertLY, iInvertRX, iInvertRY;
     }stAnalogs;
 
 }XCONTROLLER;

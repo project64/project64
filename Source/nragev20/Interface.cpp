@@ -67,6 +67,10 @@ INTERFACEVALUES *g_ivConfig = NULL;                 // This structure holds all 
 LPDIRECTINPUTDEVICE8 g_pConfigDevice = NULL;        // One device handle for current force feedback device; between messages so it needs to be persistent
 LPDIRECTINPUTEFFECT  g_pConfigEffect = NULL;        // Force feedback effect handle
 HWND g_hMainDialog = NULL;                          // Handle of base dialog
+short inputX = 0;
+short inputY = 0;
+
+ANALOGWIN AnalogW = {0};
 
 // Main dialog control handler
 BOOL CALLBACK MainDlgProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -400,7 +404,6 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         // Call routine to show content (recursive call)
         ControllerTabProc( hDlg, WM_USER_UPDATE, 0, 0 );
 
-
         return FALSE; // Don't give it focus
 
     case WM_NOTIFY:
@@ -529,6 +532,7 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 pcController->fXInput = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
                 if( hTabControl )
                         DestroyWindow( hTabControl );
+                        TabCtrl_SetCurSel(GetDlgItem(hDlg, IDC_CONTROLLERTAB), TAB_CONTROLS); // select the right tab !
                 if( pcController->fXInput )
                     hTabControl = CreateDialog(g_hResourceDLL, MAKEINTRESOURCE(IDD_XCONTROLS), hDlg, (DLGPROC)XControlsTabProc);
                 else
@@ -591,6 +595,7 @@ BOOL CALLBACK ControllerTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
             MoveWindow( hTabControl, rectWindow.left + (rectTab.left - rectMain.left), rectWindow.top + (rectTab.top - rectMain.top), rectWindow.right - rectWindow.left, rectWindow.bottom - rectWindow.top, FALSE );
             ShowWindow( hTabControl, SW_SHOW );
+            TabCtrl_SetCurSel(GetDlgItem(hDlg, IDC_CONTROLLERTAB), TAB_CONTROLS); // select the right tab !
         }
 
         // Call child dialog(s) to update their content as well
@@ -619,12 +624,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     switch(uMsg)
     {
     case WM_INITDIALOG:
-        // SetTicks on TrackBar
-        hDlgItem = GetDlgItem( hDlg, IDC_CTRRANGE );
-        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM) TRUE, (LPARAM) MAKELONG( 0, 100 ));
-        SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM) 10, 0 );
-        SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM) 0, 1 );
-
         // SetTicks on RapidFire Bar
         hDlgItem = GetDlgItem( hDlg, IDC_RAPIDFIRERATE );
         SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM) TRUE, (LPARAM) MAKELONG( 0, 32 ));
@@ -640,10 +639,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
         switch( LOWORD(wParam) )
         {
-        case IDC_N64RANGE:
-            g_ivConfig->Controllers[g_ivConfig->ChosenTab].fRealN64Range = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
-            return TRUE;
-
         case IDC_RAPIDFIREENABLE:
             g_ivConfig->Controllers[g_ivConfig->ChosenTab].bRapidFireEnabled = (IsDlgButtonChecked( hDlg, LOWORD(wParam)) == BST_CHECKED);
             return TRUE;
@@ -760,14 +755,6 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_VSCROLL:
         switch ( GetWindowLong( (HWND)lParam, GWL_ID ) )
         {
-        case IDC_CTRRANGE:
-            TCHAR tszText[DEFAULT_BUFFER];
-
-            LoadString( g_hResourceDLL, IDS_C_RANGE, tszText, DEFAULT_BUFFER );
-            g_ivConfig->Controllers[g_ivConfig->ChosenTab].bStickRange = (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
-            wsprintf( szBuffer, tszText, g_ivConfig->Controllers[g_ivConfig->ChosenTab].bStickRange );
-            SendMessage( GetDlgItem( hDlg, IDT_RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
-            return TRUE;
         case IDC_RAPIDFIRERATE:
             g_ivConfig->Controllers[g_ivConfig->ChosenTab].bRapidFireRate = 33 - (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
             return TRUE;
@@ -784,16 +771,11 @@ BOOL CALLBACK ControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
         if( wParam == 0 )
         {
-            CheckDlgButton( hDlg, IDC_N64RANGE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].fRealN64Range ? BST_CHECKED : BST_UNCHECKED );
+            CheckDlgButton( hDlg, IDC_N64REALRANGE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].fRealN64Range ? BST_CHECKED : BST_UNCHECKED );
             CheckDlgButton( hDlg, IDC_RAPIDFIREENABLE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].bRapidFireEnabled ? BST_CHECKED : BST_UNCHECKED );
             CheckDlgButton( hDlg, IDC_CONFIG1, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 0 ) ? BST_CHECKED : BST_UNCHECKED );
             CheckDlgButton( hDlg, IDC_CONFIG2, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 1 ) ? BST_CHECKED : BST_UNCHECKED );
             CheckDlgButton( hDlg, IDC_CONFIG3, ( g_ivConfig->Controllers[g_ivConfig->ChosenTab].bAxisSet == 2 ) ? BST_CHECKED : BST_UNCHECKED );
-
-            SendMessage( GetDlgItem( hDlg, IDC_CTRRANGE ), TBM_SETPOS, TRUE, g_ivConfig->Controllers[g_ivConfig->ChosenTab].bStickRange );
-            LoadString( g_hResourceDLL, IDS_C_RANGE, szTemp, 40 );
-            wsprintf( szBuffer, szTemp, g_ivConfig->Controllers[g_ivConfig->ChosenTab].bStickRange );
-            SendMessage( GetDlgItem( hDlg, IDT_RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
             SendMessage( GetDlgItem( hDlg, IDC_RAPIDFIRERATE ), TBM_SETPOS, TRUE, 33 - g_ivConfig->Controllers[g_ivConfig->ChosenTab].bRapidFireRate );
 
             i = 0;
@@ -857,6 +839,18 @@ BOOL CALLBACK XControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
     case WM_COMMAND:
         switch( LOWORD( wParam ))
         {
+        case IDC_XC_INVERT_LX:
+            gController->stAnalogs.iInvertLX = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
+            return TRUE;
+        case IDC_XC_INVERT_LY:
+            gController->stAnalogs.iInvertLY = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
+            return TRUE;
+        case IDC_XC_INVERT_RX:
+            gController->stAnalogs.iInvertRX = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
+            return TRUE;
+        case IDC_XC_INVERT_RY:
+            gController->stAnalogs.iInvertRY = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
+            return TRUE;
         case IDC_XC_USE:
             StoreXInputControllerKeys( hDlg, gController );
             {
@@ -870,6 +864,7 @@ BOOL CALLBACK XControlsTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
             return TRUE;
         }
         return FALSE;
+
     default:
         return FALSE;
     }
@@ -884,12 +879,16 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
     switch(uMsg)
     {
+
     case WM_INITDIALOG:
+    {
+
+        SetTimer( hDlg, 999, 33, NULL );
 
         // TrackBars
         hDlgItem = GetDlgItem( hDlg, IDC_DEADZONE );
 
-        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM) TRUE, (LPARAM) MAKELONG( 0, 100 ));
+        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM) TRUE, (LPARAM) MAKELONG( 0, 50 ));
         SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM) 10, 0 );
         SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM) 0, 1 );
 
@@ -907,11 +906,242 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             for( i = 0; i < (sizeof(sTics) / sizeof(short)); ++i )
                 SendMessage( hDlgItem, TBM_SETTIC, 0, sTics[i] );
         }
-        // TrackBars End
 
+        hDlgItem = GetDlgItem( hDlg, IDC_CTRRANGE );
+        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM) TRUE, (LPARAM) MAKELONG( 10, 100 ));
+        SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM) 10, 0 );
+        SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM) 0, 1 );
+
+        hDlgItem = GetDlgItem( hDlg, IDC_SENSITIVITY );
+        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM)TRUE, (LPARAM)MAKELONG(1, 100) );
+        SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM)10, 0 );
+        SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM)0, 1 );
+
+        hDlgItem = GetDlgItem( hDlg, IDC_N64RANGE );
+        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM)TRUE, (LPARAM)MAKELONG(10, 127) );
+        SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM)10, 0 );
+        SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM)0, 1 );
+
+        hDlgItem = GetDlgItem( hDlg, IDC_VIRTUALCORNERS );
+        SendMessage( hDlgItem, TBM_SETRANGE, (WPARAM)TRUE, (LPARAM)MAKELONG(0, 45) );
+        SendMessage( hDlgItem, TBM_SETTICFREQ, (WPARAM)10, 0 );
+        SendMessage( hDlgItem, TBM_SETPAGESIZE, (WPARAM)0, 1 );
+        // TrackBars End
         DevicesTabProc( hDlg, WM_USER_UPDATE, 0, 0 ); // Setting values
 
         return FALSE; // Don't give it focus
+    }
+    case WM_SIZE:
+    {
+        RECT rect;
+        GetClientRect(hDlg, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+        RECT rcLast;
+        HWND hLastCtrl = GetDlgItem(hDlg, IDC_VIRTUALCORNERS);
+        if (hLastCtrl && GetWindowRect(hLastCtrl, &rcLast))
+        {
+            MapWindowPoints(NULL, hDlg, (LPPOINT)&rcLast, 2);
+            AnalogW.Y = rcLast.bottom + 5;
+            AnalogW.SIZE_W = height - rcLast.bottom - 10;
+            AnalogW.SIZE_H = height - rcLast.bottom - 10;
+            AnalogW.X = (width * 0.75) - (AnalogW.SIZE_W) / 2;
+        }
+        AnalogW.CENTER_X = AnalogW.SIZE_W / 2.0f;
+        AnalogW.CENTER_Y = AnalogW.SIZE_H / 2.0f;
+        AnalogW.RADIUS = AnalogW.SIZE_W * 0.49f;
+        AnalogW.TRIANGLE_HEIGHT = 3.0f;
+
+        return FALSE;
+    }
+
+    case WM_TIMER:
+
+        if (wParam == 999)
+        {
+
+            if (pcController->fXInput && pcController->fPlugged){
+                XINPUT_STATE state;
+                ZeroMemory(&state, sizeof(XINPUT_STATE));
+                DWORD result = XInputGetState(pcController->xiController.nControl, &state);
+                if (result == ERROR_SUCCESS) {
+                    if (pcController->xiController.stAnalogs.iLXAxis == 0x4000){
+                        inputX = state.Gamepad.sThumbLX;
+                        inputY = state.Gamepad.sThumbLY;
+                    }else{
+                        inputX = state.Gamepad.sThumbRX;
+                        inputY = state.Gamepad.sThumbRY;
+                    }
+                }
+
+            } else {
+                if(pcController->fPlugged)
+                {
+                    LPDEVICE lpDevice = nullptr;
+                    for (int i = 0; i < 14 + PF_AXESETS * 4; i++)
+                        if (pcController->aButton[i].bBtnType == DT_JOYAXE)
+                            lpDevice = pcController->aButton[i].parentDevice;
+
+                    if (lpDevice != nullptr) {
+                        HRESULT hr = lpDevice->didHandle->Poll();
+                        if (FAILED(hr)) {
+                            hr = lpDevice->didHandle->Acquire();
+                        }
+                        if (SUCCEEDED(hr)) {
+                            hr = lpDevice->didHandle->GetDeviceState(sizeof(DIJOYSTATE), &lpDevice->stateAs.joyState);
+                            if (hr == DI_OK) {
+                                inputX = lpDevice->stateAs.joyState.lX;
+                                inputY = -lpDevice->stateAs.joyState.lY;
+                            }
+                        }
+                    }
+                }
+            }
+
+            RECT rectToInvalidate = {AnalogW.X, AnalogW.Y, AnalogW.X + AnalogW.SIZE_W, AnalogW.Y + AnalogW.SIZE_H};
+            InvalidateRect(hDlg, &rectToInvalidate, TRUE);
+
+            }
+        break;
+
+    case WM_PAINT:
+    {
+        const float OCTAGON_RADIUS = AnalogW.RADIUS * (pcController->bStickRange / 100.0f);
+        const float ANGLE_THRESHOLD = pcController->bVirtualCorners / 100.0f;
+
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hDlg, &ps);
+        HDC hdcMem = CreateCompatibleDC(hdc);
+        HBITMAP hbmMem = CreateCompatibleBitmap(hdc, AnalogW.SIZE_W, AnalogW.SIZE_H);
+        HBITMAP hbmOrigin = (HBITMAP)SelectObject(hdcMem, hbmMem);
+
+        HPEN hOldPen = nullptr;
+        HBRUSH hOldBrush = nullptr;
+
+        HBRUSH hBrushBackground = CreateSolidBrush(RGB(240, 240, 240));
+        RECT rect = {0, 0, AnalogW.SIZE_W, AnalogW.SIZE_H};
+        FillRect(hdcMem, &rect, hBrushBackground);
+        DeleteObject(hBrushBackground);
+
+        // Gamepad Range
+        HPEN outhPen = CreatePen(PS_SOLID, 1, RGB(55, 55, 55));
+        HBRUSH outhBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+        hOldPen = (HPEN)SelectObject(hdcMem, outhPen);
+        hOldBrush = (HBRUSH)SelectObject(hdcMem, outhBrush);
+        RoundRect(hdcMem, AnalogW.CENTER_X - AnalogW.RADIUS, AnalogW.CENTER_Y - AnalogW.RADIUS, AnalogW.CENTER_X + AnalogW.RADIUS, AnalogW.CENTER_Y + AnalogW.RADIUS, AnalogW.RADIUS, AnalogW.RADIUS);
+        SelectObject(hdcMem, hOldPen);
+        SelectObject(hdcMem, hOldBrush);
+        DeleteObject(outhPen);
+
+        // Octagon
+        if (pcController->fRealN64Range)
+        {
+            HBRUSH hGrayBrush = CreateSolidBrush(RGB(215, 215, 215));
+            hOldBrush = (HBRUSH)SelectObject(hdcMem, hGrayBrush);
+
+            POINT octagon[8];
+            for (int i = 0; i < 8; ++i) {
+                double angle = i * OCTAGON_ANGLE;
+                double cosA = cos(angle);
+                double sinA = sin(angle);
+                octagon[i].x = AnalogW.CENTER_X + OCTAGON_RADIUS * cosA;
+                octagon[i].y = AnalogW.CENTER_Y - OCTAGON_RADIUS * sinA;
+            }
+
+            Polygon(hdcMem, octagon, 8);
+            SelectObject(hdcMem, hOldBrush);
+            DeleteObject(hGrayBrush);
+
+            // Virtual Corners
+            HBRUSH hTriangleBrush = CreateSolidBrush(RGB(255, 100, 0));
+            hOldBrush = (HBRUSH)SelectObject(hdcMem, hTriangleBrush);
+            for (int i = 0; i < 8; ++i) {
+                double angle = i * OCTAGON_ANGLE;
+                double cosA = cos(angle);
+                double sinA = sin(angle);
+                double cosM = cos(angle - ANGLE_THRESHOLD);
+                double sinM = sin(angle - ANGLE_THRESHOLD);
+                double cosP = cos(angle + ANGLE_THRESHOLD);
+                double sinP = sin(angle + ANGLE_THRESHOLD);
+
+                POINT triangle[3] = {
+                    {AnalogW.CENTER_X + OCTAGON_RADIUS * cosA, AnalogW.CENTER_Y - OCTAGON_RADIUS * sinA},
+                    {AnalogW.CENTER_X + (OCTAGON_RADIUS - AnalogW.TRIANGLE_HEIGHT) * cosM, AnalogW.CENTER_Y - (OCTAGON_RADIUS - AnalogW.TRIANGLE_HEIGHT) * sinM},
+                    {AnalogW.CENTER_X + (OCTAGON_RADIUS - AnalogW.TRIANGLE_HEIGHT) * cosP, AnalogW.CENTER_Y - (OCTAGON_RADIUS - AnalogW.TRIANGLE_HEIGHT) * sinP}
+                };
+                Polygon(hdcMem, triangle, 3);
+            }
+            SelectObject(hdcMem, hOldBrush);
+            DeleteObject(hTriangleBrush);
+        }
+
+        // DeadZone
+        float DEADZONE_RADIUS = pcController->bPadDeadZone * AnalogW.RADIUS / 100.0f;
+        HBRUSH hBrushHatched = CreateHatchBrush(HS_BDIAGONAL, RGB(50, 50, 50));
+        hOldBrush = (HBRUSH)SelectObject(hdcMem, hBrushHatched);
+        HPEN deadZonePen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+        hOldPen = (HPEN)SelectObject(hdcMem, deadZonePen);
+        Ellipse(hdcMem, AnalogW.CENTER_X - DEADZONE_RADIUS, AnalogW.CENTER_Y - DEADZONE_RADIUS, AnalogW.CENTER_X + DEADZONE_RADIUS, AnalogW.CENTER_Y + DEADZONE_RADIUS);
+
+        SelectObject(hdcMem, hOldBrush);
+        SelectObject(hdcMem, hOldPen);
+        DeleteObject(hBrushHatched);
+        DeleteObject(deadZonePen);
+
+        //Stick Position
+        float outputX = 0.0f, outputY = 0.0f;
+        processStickInput(pcController, inputX, inputY, outputX, outputY);
+        POINT position = {AnalogW.CENTER_X, AnalogW.CENTER_Y};
+        POINT real_pos = {AnalogW.CENTER_X, AnalogW.CENTER_Y};
+        position.x = AnalogW.CENTER_X + (outputX / (float)XC_ANALOG_MAX) * OCTAGON_RADIUS;
+        position.y = AnalogW.CENTER_Y - (outputY / (float)XC_ANALOG_MAX) * OCTAGON_RADIUS;
+
+        if (!pcController->xiController.stAnalogs.iInvertLX)
+            real_pos.x = AnalogW.CENTER_X + (inputX / (float)XC_ANALOG_MAX) * AnalogW.RADIUS;
+        else
+            real_pos.x = AnalogW.CENTER_X + (-inputX / (float)XC_ANALOG_MAX) * AnalogW.RADIUS;
+
+        if (!pcController->xiController.stAnalogs.iInvertLY)
+            real_pos.y = AnalogW.CENTER_Y - (inputY / (float)XC_ANALOG_MAX) * AnalogW.RADIUS;
+        else
+            real_pos.y = AnalogW.CENTER_Y - (-inputY / (float)XC_ANALOG_MAX) * AnalogW.RADIUS;
+
+        // Points
+        HBRUSH pointBrush = CreateSolidBrush(RGB(0, 255, 0));
+        hOldBrush = (HBRUSH)SelectObject(hdcMem, pointBrush);
+        Ellipse(hdcMem, position.x - 3, position.y - 3, position.x + 3, position.y + 3);
+        SelectObject(hdcMem, hOldBrush);
+        DeleteObject(pointBrush);
+
+        HBRUSH pointBrush2 = CreateSolidBrush(RGB(0, 0, 0));
+        hOldBrush = (HBRUSH)SelectObject(hdcMem, pointBrush2);
+        Ellipse(hdcMem, real_pos.x - 3, real_pos.y - 3, real_pos.x + 3, real_pos.y + 3);
+        SelectObject(hdcMem, hOldBrush);
+        DeleteObject(pointBrush2);
+
+        BitBlt(hdc, AnalogW.X, AnalogW.Y, AnalogW.SIZE_W, AnalogW.SIZE_H, hdcMem, 0, 0, SRCCOPY);
+
+        SelectObject(hdcMem, hbmOrigin);
+        DeleteObject(hbmMem);
+        DeleteDC(hdcMem);
+        EndPaint(hDlg, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+    {
+        HDC hdc = (HDC)wParam;
+        RECT rc;
+        GetClientRect(hDlg, &rc);
+        HBRUSH hbr = CreateSolidBrush(RGB(240, 240, 240));
+        FillRect(hdc, &rc, hbr);
+        DeleteObject(hbr);
+        return 1;
+    }
+
+    case WM_DESTROY:
+        KillTimer( hDlg, TIMER_BUTTON );
+        return 0;
 
     case WM_COMMAND:
         hDlgItem = GetDlgItem( hDlg, LOWORD(wParam) );
@@ -950,6 +1180,9 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         case IDC_ACCELERATEY:
             pcController->fKeyAbsoluteY = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
             return TRUE;
+        case IDC_N64REALRANGE:
+            pcController->fRealN64Range = ( IsDlgButtonChecked( hDlg, LOWORD(wParam) ) == BST_CHECKED );
+            return TRUE;
 
         default:
             return FALSE;
@@ -980,11 +1213,41 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             wsprintf( szBuffer, szTemp, pcController->bPadDeadZone );
             SendMessage( GetDlgItem( hDlg, IDT_DEADZONE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
             return TRUE;
+
+        case IDC_SENSITIVITY:
+            pcController->bPadSensitivity = (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
+            LoadString( g_hResourceDLL, IDS_SENSITIVITY, szTemp, DEFAULT_BUFFER );
+            wsprintf( szBuffer, szTemp, pcController->bPadSensitivity );
+            SendMessage( GetDlgItem(hDlg, IDT_SENSITIVITY), WM_SETTEXT, 0, (LPARAM)szBuffer );
+            return TRUE;
+
+        case IDC_CTRRANGE:
+            pcController->bStickRange = (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
+            LoadString( g_hResourceDLL, IDS_C_RANGE, szTemp, DEFAULT_BUFFER );
+            wsprintf( szBuffer, szTemp, pcController->bStickRange );
+            SendMessage( GetDlgItem( hDlg, IDT_RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+            return TRUE;
+
+        case IDC_N64RANGE:
+            pcController->bN64Range = (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
+            LoadString( g_hResourceDLL, IDS_N64RANGE, szTemp, DEFAULT_BUFFER );
+            wsprintf( szBuffer, szTemp, pcController->bN64Range );
+            SendMessage( GetDlgItem( hDlg, IDT_N64RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+            return TRUE;
+
+        case IDC_VIRTUALCORNERS:
+            pcController->bVirtualCorners = (BYTE)SendMessage( (HWND)lParam, TBM_GETPOS, 0, 0 );
+            LoadString( g_hResourceDLL, IDS_VIRTUALCORNERS, szTemp, DEFAULT_BUFFER );
+            wsprintf( szBuffer, szTemp, pcController->bVirtualCorners );
+            SendMessage( GetDlgItem( hDlg, IDT_VIRTUALCORNERS ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+            return TRUE;
+
         default:
             return FALSE;
         }
 
     case WM_USER_UPDATE:
+
         if( pcController->bMouseMoveX == MM_DEAD )
             CheckDlgButton( hDlg, IDC_DEADPANMOUSEX, BST_CHECKED );
         else
@@ -1017,6 +1280,7 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
         CheckDlgButton( hDlg, IDC_ACCELERATEX, pcController->fKeyAbsoluteX ? BST_CHECKED : BST_UNCHECKED );
         CheckDlgButton( hDlg, IDC_ACCELERATEY, pcController->fKeyAbsoluteY ? BST_CHECKED : BST_UNCHECKED );
+        CheckDlgButton( hDlg, IDC_N64REALRANGE, pcController->fRealN64Range ? BST_CHECKED : BST_UNCHECKED );
 
         // TrackBars
         SendMessage( GetDlgItem( hDlg, IDC_DEADZONE ), TBM_SETPOS, TRUE, pcController->bPadDeadZone );
@@ -1033,6 +1297,26 @@ BOOL CALLBACK DevicesTabProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         LoadString( g_hResourceDLL, IDS_D_MSY, szTemp, DEFAULT_BUFFER );
         wsprintf( szBuffer, szTemp, pcController->wMouseSensitivityY );
         SendMessage( GetDlgItem( hDlg, IDT_MSSENSITIVITY_Y ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+
+        SendMessage( GetDlgItem( hDlg, IDC_SENSITIVITY), TBM_SETPOS, TRUE, pcController->bPadSensitivity );
+        LoadString( g_hResourceDLL, IDS_SENSITIVITY, szTemp, DEFAULT_BUFFER );
+        wsprintf( szBuffer, szTemp, pcController->bPadSensitivity );
+        SendMessage( GetDlgItem( hDlg, IDT_SENSITIVITY), WM_SETTEXT, 0, (LPARAM)szBuffer );
+
+        SendMessage( GetDlgItem( hDlg, IDC_CTRRANGE ), TBM_SETPOS, TRUE, pcController->bStickRange );
+        LoadString( g_hResourceDLL, IDS_C_RANGE, szTemp, DEFAULT_BUFFER );
+        wsprintf( szBuffer, szTemp, pcController->bStickRange );
+        SendMessage( GetDlgItem( hDlg, IDT_RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+
+        SendMessage( GetDlgItem( hDlg, IDC_N64RANGE ), TBM_SETPOS, TRUE, pcController->bN64Range );
+        LoadString( g_hResourceDLL, IDS_N64RANGE, szTemp, DEFAULT_BUFFER );
+        wsprintf( szBuffer, szTemp, pcController->bN64Range );
+        SendMessage( GetDlgItem( hDlg, IDT_N64RANGE ), WM_SETTEXT , 0, (LPARAM)szBuffer );
+
+        SendMessage( GetDlgItem( hDlg, IDC_VIRTUALCORNERS ), TBM_SETPOS, TRUE, pcController->bVirtualCorners );
+        LoadString( g_hResourceDLL, IDS_VIRTUALCORNERS, szTemp, DEFAULT_BUFFER );
+        wsprintf( szBuffer, szTemp, pcController->bVirtualCorners );
+        SendMessage( GetDlgItem( hDlg, IDT_VIRTUALCORNERS ), WM_SETTEXT , 0, (LPARAM)szBuffer );
         // TrackBars End
         return TRUE;
 
@@ -3331,7 +3615,7 @@ BOOL CALLBACK FoldersDialogProc( HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 // This function is confusing, but not much I can do to fix it now. I'm sorry. (comment by rabid)
 bool GetButtonID( LPDWORD ButtonID, const BYTE bIndex, const BYTE bButtonSet )
 {
-	// TODO: Check this
+    // TODO: Check this
     // TODO: make these constant, read from a resource or a define, or something...I don't know
     LPDWORD ButtonTable = NULL;
     int nEntries = 0;
@@ -3809,7 +4093,9 @@ void SetControllerDefaults( LPCONTROLLER pcController )
     pcController->bRapidFireEnabled =   false;
     pcController->bRapidFireRate =      3; // Set default rapid fire rate here
     pcController->bStickRange =         DEFAULT_STICKRANGE;
+    pcController->bN64Range =           DEFAULT_N64RANGE;
     pcController->bPadDeadZone =        DEFAULT_DEADZONE;
+    pcController->bPadSensitivity =     DEFAULT_SENSITIVITY;
     pcController->bRumbleTyp =          DEFAULT_RUMBLETYP;
     pcController->bRumbleStrength =     DEFAULT_RUMBLESTRENGTH;
     pcController->wMouseSensitivityX =  DEFAULT_MOUSESENSIVITY;

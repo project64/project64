@@ -209,7 +209,6 @@
 #define IDC_RUMBLE3                     1036
 #define IDC_RUMBLESTRENGTH              1037
 #define IDC_MSSENSITIVITY_X             1038
-#define IDC_N64RANGE                    1039
 #define IDC_MSSENSITIVITY_Y             1039
 #define IDC_PLUGGED                     1040
 #define IDC_CTRRANGE                    1041
@@ -363,6 +362,20 @@
 #define IDC_XC_RTS                      1195
 #define IDC_N64MOUSE                    1196
 #define IDC_BACKGROUNDINPUT             1197
+#define IDC_N64REALRANGE                1198
+#define IDC_SENSITIVITY                 1199
+#define IDT_SENSITIVITY                 1200
+#define IDS_SENSITIVITY                 1201
+#define IDC_N64RANGE                    1202
+#define IDT_N64RANGE                    1203
+#define IDS_N64RANGE                    1204
+#define IDC_VIRTUALCORNERS              1205
+#define IDT_VIRTUALCORNERS              1206
+#define IDS_VIRTUALCORNERS              1207
+#define IDC_XC_INVERT_LX                1208
+#define IDC_XC_INVERT_LY                1209
+#define IDC_XC_INVERT_RX                1210
+#define IDC_XC_INVERT_RY                1211
 
 // Next default values for new objects
 //
@@ -370,7 +383,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        149
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1198
+#define _APS_NEXT_CONTROL_VALUE         1300
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
