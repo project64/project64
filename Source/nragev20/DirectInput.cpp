@@ -516,7 +516,7 @@ bool GetNControllerInput ( const int indexController, LPDWORD pdwData )
         processStickInput(pcController, lAxisValueX , lAxisValueY, LX, LY);
 
         *pdwData = MAKELONG(w_Buttons, MAKEWORD( LX  * pcController->bN64Range  / MAXAXISVALUE, LY  * pcController->bN64Range / MAXAXISVALUE) );
-    else{
+    }else{
         *pdwData = MAKELONG(w_Buttons, MAKEWORD(ZEROVALUE, ZEROVALUE));
     }
 
