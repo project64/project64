@@ -15,7 +15,7 @@ Project64 is a free and open-source emulator for the Nintendo 64 and Nintendo 64
   * [Dependencies](#dependencies)
   * [Contributing](#contributing)
   * [Maintainers and contributors](#maintainers-and-contributors)
-  * [🔗 Links](#---links)
+  * [Links](#links)
   * [License](#license)
 
 ## Features
@@ -98,7 +98,7 @@ See the [contributing](./.github/CONTRIBUTING.md) file for ways to get started.
 
 Also see the list of [community contributors](https://github.com/project64/project64/contributors).
 
-## 🔗 Links
+## Links
 - [Website](https://pj64-emu.com)
 - [Discord](https://discord.gg/Cg3zquF)
 
