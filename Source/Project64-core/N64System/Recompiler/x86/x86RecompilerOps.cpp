@@ -332,14 +332,14 @@ void CX86RecompilerOps::PostCompileOpcode(void)
 void CX86RecompilerOps::CompileReadTLBMiss(uint32_t VirtualAddress, x86Reg LookUpReg)
 {
     MoveConstToVariable(VirtualAddress, g_TLBLoadAddress, "TLBLoadAddress");
-    TestX86RegToX86Reg(LookUpReg, LookUpReg);
+    CompConstToX86reg(LookUpReg, -1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 
 void CX86RecompilerOps::CompileReadTLBMiss(x86Reg AddressReg, x86Reg LookUpReg)
 {
     MoveX86regToVariable(AddressReg, g_TLBLoadAddress, "TLBLoadAddress");
-    TestX86RegToX86Reg(LookUpReg, LookUpReg);
+    CompConstToX86reg(LookUpReg, -1);
     CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet, CExitInfo::TLBReadMiss, false, JeLabel32);
 }
 

@@ -106,8 +106,8 @@ public:
 
 private:
     CMipsMemoryVM();
-    CMipsMemoryVM(const CMipsMemoryVM&);
-    CMipsMemoryVM& operator=(const CMipsMemoryVM&);
+    CMipsMemoryVM(const CMipsMemoryVM &);
+    CMipsMemoryVM & operator=(const CMipsMemoryVM &);
 
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;
@@ -208,8 +208,8 @@ private:
     mutable char m_strLabelName[100];
 
     // Big look up table to quickly translate the TLB to real memory addresses
-    size_t * m_TLB_ReadMap;
-    size_t * m_TLB_WriteMap;
+    uint32_t * m_TLB_ReadMap;
+    uint32_t * m_TLB_WriteMap;
 
     static uint32_t m_MemLookupAddress;
     static MIPS_DWORD m_MemLookupValue;
