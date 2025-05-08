@@ -3524,7 +3524,7 @@ bool GetButtonText( const BUTTON& btnButton, LPTSTR Buffer )
 DWORD ScanKeyboard( LPDEVICE lpDevice, LPDWORD lpdwCounter, LPBUTTON pButton )
 {
     HRESULT hr;
-    BYTE cKeys[256];
+    BYTE cKeys[256] = {0};
 
     hr = lpDevice->didHandle->GetDeviceState( sizeof( cKeys ), (LPVOID)&cKeys );
     if ( FAILED(hr) )
@@ -3534,9 +3534,8 @@ DWORD ScanKeyboard( LPDEVICE lpDevice, LPDWORD lpdwCounter, LPBUTTON pButton )
     }
 
     int iGotKey = FALSE;
-    int i = 0;
 
-    for( i = 0; i < ARRAYSIZE( cKeys ); ++i )
+    for( int i = 1; i < ARRAYSIZE( cKeys ); ++i )
     {
         if (( cKeys[i] & 0x80 ) )
         {

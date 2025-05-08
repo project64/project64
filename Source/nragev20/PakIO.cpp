@@ -1329,19 +1329,19 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
         int len = lstrlenA( szLine );
 
         i = 16;
-        while(( szLine[i] != '}' ) && (i < len))
+        while((i < len) && ( szLine[i] != '}' ))
             i++;
 
         szLine[i] = '\0';
         i += ReverseNotesA( &szLine[16], &pBlock[12] );
 
-        while(( szLine[i] != '{' ) && (i < len))
+        while((i < len) && ( szLine[i] != '{' ))
             i++;
 
         if(i < len)
         {
             int start = i+1;
-            while(( szLine[i] != '}' ) && (i < len))
+            while((i < len) && ( szLine[i] != '}' ))
                 i++;
             if(i < len)
             {
@@ -1350,7 +1350,7 @@ bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName )
             }
         }
 
-        while(( szLine[i] != '}' ) && (i < len))
+        while((i < len) && ( szLine[i] != '}' ))
             i++;
         szLine[i] = '\0';
 

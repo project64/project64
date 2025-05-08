@@ -346,6 +346,12 @@ bool LoadCart(LPGBCART Cart, LPCTSTR RomFileName, LPCTSTR RamFileName, LPCTSTR T
     case 0x06:
         Cart->iNumRomBanks = 128;
         break;
+    case 0x07:
+        Cart->iNumRomBanks = 256;
+        break;
+    case 0x08:
+        Cart->iNumRomBanks = 512;
+        break;        
     case 0x52:
         Cart->iNumRomBanks = 72;
         break;
@@ -889,7 +895,7 @@ bool WriteCartMBC3(LPGBCART Cart, WORD dwAddress, BYTE *Data)
     {
         if (Cart->bHasRam)
         {
-            Cart->iCurrentRamBankNo = Data[0] & 0x03;
+            Cart->iCurrentRamBankNo = Data[0] & 0x07;
             DebugWriteA("Set RAM Bank: %02X\n", Cart->iCurrentRamBankNo);
             if (Cart->bHasTimer && (Data[0] >= 0x08 && Data[0] <= 0x0c))
             {

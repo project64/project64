@@ -105,10 +105,10 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
                         // If it does, then get the VID/PID from var.bstrVal
                         DWORD dwPid = 0, dwVid = 0;
                         WCHAR* strVid = wcsstr( var.bstrVal, L"VID_" );
-                        if (strVid && wscanf(strVid, L"VID_%4X", &dwVid) != 1)
+                        if (strVid && swscanf(strVid, L"VID_%4X", &dwVid) != 1)
                             dwVid = 0;
                         WCHAR* strPid = wcsstr( var.bstrVal, L"PID_" );
-                        if (strPid && wscanf(strPid, L"PID_%4X", &dwPid) != 1)
+                        if (strPid && swscanf(strPid, L"PID_%4X", &dwPid) != 1)
                             dwPid = 0;
 
                         // Compare the VID/PID to the DInput device
@@ -388,8 +388,7 @@ TCHAR * GetN64ButtonNameFromButtonCode( int Button )
 {
     using namespace N64_BUTTONS;
 
-    TCHAR *btnName;
-    btnName = new TCHAR[10];
+    static TCHAR btnName[10];
 
     switch( Button )
     {
@@ -444,10 +443,9 @@ TCHAR * GetN64ButtonArrayFromXAnalog( LPXCONTROLLER gController, int XThStickOrX
     using namespace N64_BUTTONS;
 
     if( !gController || !gController->bConfigured )
-        return NULL;
+        return _T("");
 
-    TCHAR *name;
-    name = new TCHAR[15];
+    static TCHAR name[15];
 
     switch( XThStickOrXDpad )
     {
