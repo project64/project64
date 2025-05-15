@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include "SettingsType-SelectedDirectory.h"
+#include <Common/path.h>
 
 CSettingTypeSelectedDirectory::CSettingTypeSelectedDirectory(const char * Name, SettingID InitialDir, SettingID SelectedDir, SettingID UseSelected, SettingID NotifyChangeId) :
     m_Name(Name),
@@ -41,7 +43,12 @@ bool CSettingTypeSelectedDirectory::Load(uint32_t /*Index*/, uint32_t & /*Value*
 bool CSettingTypeSelectedDirectory::Load(uint32_t /*Index*/, std::string & Value) const
 {
     SettingID DirSettingId = g_Settings->LoadBool(m_UseSelected) ? m_SelectedDir : m_InitialDir;
-    return g_Settings->LoadStringVal(DirSettingId, Value);
+    if (g_Settings->LoadStringVal(DirSettingId, Value))
+    {
+        Value = (const char *)(CPath(Value).NormalizePath(CPath(CPath::MODULE_DIRECTORY)));
+        return true;
+    }
+    return false;
 }
 
 // Return the default values

@@ -1404,7 +1404,7 @@ bool CPath::ChangeDirectory()
 #endif
 }
 
-void CPath::NormalizePath(CPath BaseDir)
+CPath & CPath::NormalizePath(CPath BaseDir)
 {
 #ifdef _WIN32
 	stdstr Directory = BaseDir.GetDriveDirectory();
@@ -1449,6 +1449,7 @@ void CPath::NormalizePath(CPath BaseDir)
 		SetDirectory(Directory.c_str());
 #endif
 	}
+    return *this;
 }
 
 // Pre: If bCreateIntermediates is TRUE, create all eventually missing parent directories too

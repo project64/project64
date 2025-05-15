@@ -127,7 +127,7 @@ public:
     // Directory operations
     bool DirectoryCreate(bool bCreateIntermediates = true);
     bool ChangeDirectory();
-	void NormalizePath(CPath BaseDir);
+    CPath & NormalizePath(CPath BaseDir);
 
     // File operations
     bool Delete(bool bEvenIfReadOnly = true) const;
