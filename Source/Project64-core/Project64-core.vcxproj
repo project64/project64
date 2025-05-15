@@ -132,6 +132,8 @@
     <ClInclude Include="..\3rdParty\zlib\contrib\minizip\zip.h" />
     <ClInclude Include="..\3rdParty\zlib\zconf.h" />
     <ClInclude Include="..\3rdParty\zlib\zlib.h" />
+    <ClInclude Include="..\Project64-plugin-spec\Base.h" />
+    <ClInclude Include="..\Project64-plugin-spec\Input.h" />
     <ClInclude Include="3rdParty\7zip.h" />
     <ClInclude Include="3rdParty\zip.h" />
     <ClInclude Include="AppInit.h" />

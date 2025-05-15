@@ -209,15 +209,15 @@ Output: None
 
 EXPORT void GetDllInfo(PLUGIN_INFO * PluginInfo)
 {
-	PluginInfo->Version = 0x0103;
-	PluginInfo->Type = PLUGIN_TYPE_RSP;
+    PluginInfo->Version = 0x0103;
+    PluginInfo->Type = PLUGIN_TYPE_RSP;
 #ifdef _DEBUG
-	sprintf(PluginInfo->Name, "RSP debug plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "RSP debug plugin %s", VER_FILE_VERSION_STR);
 #else
-	sprintf(PluginInfo->Name, "RSP plugin %s", VER_FILE_VERSION_STR);
+    sprintf(PluginInfo->Name, "RSP plugin %s", VER_FILE_VERSION_STR);
 #endif
-	PluginInfo->NormalMemory = FALSE;
-	PluginInfo->MemoryBswaped = TRUE;
+    PluginInfo->Reserved2 = false;
+    PluginInfo->Reserved1 = true;
 }
 
 /*

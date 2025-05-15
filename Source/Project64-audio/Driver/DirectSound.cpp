@@ -42,7 +42,7 @@ bool DirectSoundDriver::Initialize()
         return false;
     }
 
-    hr = lpds->SetCooperativeLevel((HWND)g_AudioInfo.hwnd, DSSCL_PRIORITY);
+    hr = lpds->SetCooperativeLevel((HWND)g_AudioInfo.hWnd, DSSCL_PRIORITY);
     if (FAILED(hr))
     {
         WriteTrace(TraceAudioDriver, TraceWarning, "Failed to SetCooperativeLevel (hr: 0x%08X)", hr);

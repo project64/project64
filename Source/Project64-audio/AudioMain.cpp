@@ -14,7 +14,7 @@
 #else
 #include <Project64-audio/Driver/OpenSLES.h>
 #endif
-#include "audio_1.1.h"
+#include <Project64-plugin-spec/Audio.h>
 #include "Version.h"
 #include <stdio.h>
 #include <string.h>
@@ -43,6 +43,13 @@ DirectSoundDriver * g_SoundDriver = nullptr;
 #else
 OpenSLESDriver * g_SoundDriver = nullptr;
 #endif
+
+enum SYSTEM_TYPE
+{
+    SYSTEM_NTSC = 0,
+    SYSTEM_PAL = 1,
+    SYSTEM_MPAL = 2,
+};
 
 void PluginInit(void)
 {
@@ -115,7 +122,7 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 
         BufferSize = (Frequency / divider) + 3 & ~0x3;
 
-        if (hack == 'BH' && SystemType != SYSTEM_PAL) BufferSize -= 16;
+        if (hack == 0x4248 /*BH*/ && SystemType != SYSTEM_PAL) BufferSize -= 16;
 
         g_SoundDriver->AI_SetFrequency(Frequency, BufferSize);
     }
@@ -205,8 +212,8 @@ EXPORT void CALL GetDllInfo(PLUGIN_INFO * PluginInfo)
 #else
     sprintf(PluginInfo->Name, "Project64 audio plugin: %s", VER_FILE_VERSION_STR);
 #endif
-    PluginInfo->MemoryBswaped = true;
-    PluginInfo->NormalMemory = false;
+    PluginInfo->Reserved1 = false;
+    PluginInfo->Reserved2 = true;
 }
 
 EXPORT int32_t CALL InitiateAudio(AUDIO_INFO Audio_Info)

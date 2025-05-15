@@ -8,6 +8,16 @@
 #include <Common/SyncEvent.h>
 #include <Common/CriticalSection.h>
 
+enum
+{
+    AI_STATUS_FIFO_FULL = 0x80000000,	// Bit 31: full
+    AI_STATUS_DMA_BUSY = 0x40000000,	// Bit 30: busy
+
+    MI_INTR_AI = 0x04,		// Bit 2: AI INTR
+    AI_CONTROL_DMA_ON = 0x01,
+    AI_CONTROL_DMA_OFF = 0x00,
+};
+
 class SoundDriverBase
 {
 public:

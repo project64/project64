@@ -94,6 +94,9 @@
     <Filter Include="Header Files\N64 System\Enhancement">
       <UniqueIdentifier>{ec73ae9e-54e8-4cbe-93fb-1d98d6755619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Plugin Spec">
+      <UniqueIdentifier>{65f0fadd-3c4e-4491-b941-797478303ce8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -667,6 +670,12 @@
     </ClInclude>
     <ClInclude Include="N64System\Enhancement\EnhancementList.h">
       <Filter>Header Files\N64 System\Enhancement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Base.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Input.h">
+      <Filter>Header Files\Plugin Spec</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
