@@ -15,6 +15,13 @@ enum PluginType
     PLUGIN_RAW = 5,
 };
 
+enum PresentType
+{
+    PRESENT_NONE = 0,
+    PRESENT_CONT = 1,
+    PRESENT_MOUSE = 2,
+};
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -120,6 +127,15 @@ data.
 EXPORT void CALL ReadController(int Control, uint8_t * Command);
 
 /*
+Function: EmulationPaused
+Purpose: This function is called when the emulation is paused. (from the
+emulation thread)
+Input: None
+Output: None
+*/
+EXPORT void CALL EmulationPaused(void);
+
+/*
 Function: WM_KeyDown
 Purpose: To pass the WM_KeyDown message from the emulator to the
 plugin.
@@ -136,6 +152,15 @@ Input: wParam and lParam of the WM_KEYDOWN message.
 Output: None
 */
 EXPORT void CALL WM_KeyUp(uint32_t wParam, uint32_t lParam);
+
+/*
+Function: WM_KillFocus
+Purpose: To pass the WM_KILLFOCUS message from the emulator to the
+plugin.
+Input: wParam and lParam of the WM_KILLFOCUS message.
+Output: None
+*/
+EXPORT void CALL WM_KillFocus(uint32_t wParam, uint32_t lParam);
 
 #if defined(__cplusplus)
 }

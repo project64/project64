@@ -90,6 +90,28 @@ void CDirectInput::MapControllerDevice(N64CONTROLLER & Controller)
     }
 }
 
+void CDirectInput::MapShortcutDevice(SHORTCUTS& Shortcuts)
+{
+    BUTTON* Buttons[] =
+    {
+        &Shortcuts.LOCKMOUSE,
+    };
+
+    CGuard Guard(m_DeviceCS);
+    for (size_t i = 0, n = sizeof(Buttons) / sizeof(Buttons[0]); i < n; i++)
+    {
+        DEVICE_MAP::iterator itr = m_Devices.find(Buttons[i]->DeviceGuid);
+        if (itr != m_Devices.end())
+        {
+            Buttons[i]->Device = &itr->second;
+        }
+        else
+        {
+            Buttons[i]->Device = nullptr;
+        }
+    }
+}
+
 BOOL CDirectInput::stEnumMakeDeviceList(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
     return ((CDirectInput *)pvRef)->EnumMakeDeviceList(lpddi);
@@ -231,6 +253,13 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
         " \\/",
         " <" 
     };
+    static const char* iMouse[] =
+    {
+        "X-axis",
+        "Y-axis",
+        "Z-axis",
+        "Button"
+    };
 
     if (Button.BtnType == BTNTYPE_JOYBUTTON)
     {
@@ -277,6 +306,24 @@ std::wstring CDirectInput::ButtonAssignment(BUTTON & Button)
             }
             return L"Keyboard: ???";
         }
+    }
+    if (Button.BtnType == BTNTYPE_MOUSEAXE)
+    {
+        stdstr_f Offset("%u", Button.Offset);
+        if (Button.Offset < (sizeof(iMouse) / sizeof(iMouse[0])))
+        {
+            Offset = iMouse[Button.Offset];
+        }
+        stdstr_f AxisId(" %u", Button.AxisID);
+        if (Button.AxisID < (sizeof(AxeID) / sizeof(AxeID[0])))
+        {
+            AxisId = AxeID[Button.AxisID];
+        }
+        return stdstr_f("%s%s", Offset.c_str(), AxisId.c_str()).ToUTF16();
+    }
+    if (Button.BtnType == BTNTYPE_MOUSEBUTTON)
+    {
+        return stdstr_f("Button %u", Button.Offset).ToUTF16();
     }
     if (Button.BtnType == BTNTYPE_UNASSIGNED)
     {
@@ -361,11 +408,15 @@ bool CDirectInput::IsButtonPressed(BUTTON & Button)
         return (Device.State.Keyboard[Button.Offset] & 0x80) != 0;
     case BTNTYPE_JOYBUTTON:
         return (Device.State.Joy.rgbButtons[Button.Offset] & 0x80) != 0;
+    case BTNTYPE_MOUSEBUTTON:
+        return (Device.State.Mouse.rgbButtons[Button.Offset] & 0x80) != 0;
     case BTNTYPE_JOYPOV:
         return JoyPadPovPressed((AI_POV)Button.AxisID, ((uint32_t *)&Device.State.Joy)[Button.Offset]);
     case BTNTYPE_JOYSLIDER:
     case BTNTYPE_JOYAXE:
         return Button.AxisID ? ((uint32_t*)&Device.State.Joy)[Button.Offset] > AXIS_BOTTOM_VALUE : ((uint32_t *)&Device.State.Joy)[Button.Offset] < AXIS_TOP_VALUE;
+    case BTNTYPE_MOUSEAXE:
+        return Button.AxisID ? ((uint32_t*)&Device.State.Mouse)[Button.Offset] > AXIS_BOTTOM_VALUE : ((uint32_t*)&Device.State.Mouse)[Button.Offset] < AXIS_TOP_VALUE;
     }
     return false;
 }
@@ -413,12 +464,27 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
         }
         DEVICE & Device = *(DEVICE *)Button.Device;
         LPLONG plRawState = (LPLONG)&Device.State.Joy;
+        LPLONG plRawStateMouse = (LPLONG)&Device.State.Mouse;
 
         switch (Button.BtnType)
         {
         case BTNTYPE_JOYSLIDER:
         case BTNTYPE_JOYAXE:
             l_Value = (plRawState[Button.Offset] - MAX_AXIS_VALUE) * -1;
+
+            if (Button.AxisID == AI_AXE_NEGATIVE)
+            {
+                fNegInput = !fNegInput;
+                b_Value = (l_Value < 0);
+            }
+            else
+            {
+                b_Value = (l_Value > 0);
+            }
+            break;
+        case BTNTYPE_MOUSEAXE:
+            l_Value = (plRawStateMouse[Button.Offset]) * -1;
+            l_Value *= Controller.Sensitivity * MOUSESCALEVALUE;
 
             if (Button.AxisID == AI_AXE_NEGATIVE)
             {
@@ -439,6 +505,13 @@ void CDirectInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
             break;
         case BTNTYPE_JOYBUTTON:
             b_Value = (Device.State.Joy.rgbButtons[Button.Offset] & 0x80) != 0;
+            if (b_Value)
+            {
+                l_Value = MAX_AXIS_VALUE;
+            }
+            break;
+        case BTNTYPE_MOUSEBUTTON:
+            b_Value = (Device.State.Mouse.rgbButtons[Button.Offset] & 0x80) != 0;
             if (b_Value)
             {
                 l_Value = MAX_AXIS_VALUE;
@@ -698,6 +771,93 @@ CDirectInput::ScanResult CDirectInput::ScanGamePad(const GUID & DeviceGuid, LPDI
         pButton.Offset = i;
         pButton.AxisID = 0;
         pButton.BtnType = BTNTYPE_JOYBUTTON;
+        pButton.DeviceGuid = DeviceGuid;
+        pButton.Device = nullptr;
+        return SCAN_SUCCEED;
+    }
+    return SCAN_FAILED;
+}
+
+CDirectInput::ScanResult CDirectInput::ScanMouse(const GUID& DeviceGuid, LPDIRECTINPUTDEVICE8 didHandle, DIMOUSESTATE2& BaseState, BUTTON& pButton)
+{
+    DIJOYSTATE MouseState = { 0 };
+    HRESULT hr = didHandle->GetDeviceState(sizeof(DIMOUSESTATE2), &MouseState);
+    if (FAILED(hr))
+    {
+        didHandle->Acquire();
+        return SCAN_FAILED;
+    }
+
+    uint32_t Mouse[][2] =
+    {
+        { DIMOFS_X / sizeof(uint32_t), BTNTYPE_MOUSEAXE },
+        { DIMOFS_Y / sizeof(uint32_t), BTNTYPE_MOUSEAXE },
+        { DIMOFS_Z / sizeof(uint32_t), BTNTYPE_MOUSEAXE }
+    };
+
+    uint8_t bAxeDirection = 0;
+    int32_t foundJoyPad = -1;
+
+    for (int32_t i = 0, n = sizeof(Mouse) / sizeof(Mouse[0]); i < n; i++)
+    {
+        uint32_t lValue = ((int32_t*)&MouseState)[Mouse[i][0]];
+        uint32_t BaseValue = ((int32_t*)&BaseState)[Mouse[i][0]];
+
+        if (Mouse[i][1] == BTNTYPE_MOUSEAXE)
+        {
+            if ((lValue < AXIS_TOP_VALUE && BaseValue < AXIS_TOP_VALUE) || (lValue > AXIS_BOTTOM_VALUE && BaseValue > AXIS_BOTTOM_VALUE))
+            {
+                continue;
+            }
+            ((int32_t*)&(BaseState))[Mouse[i][0]] = lValue;
+            if (lValue < AXIS_TOP_VALUE)
+            {
+                bAxeDirection = AI_AXE_POSITIVE;
+                foundJoyPad = i;
+                break;
+            }
+            else if (lValue > AXIS_BOTTOM_VALUE)
+            {
+                bAxeDirection = AI_AXE_NEGATIVE;
+                foundJoyPad = i;
+                break;
+            }
+        }
+        else
+        {
+            if (lValue == BaseValue)
+            {
+                continue;
+            }
+            ((int32_t*)&(BaseState))[Mouse[i][0]] = lValue;
+        }
+    }
+
+    if (foundJoyPad >= 0)
+    {
+        pButton.Offset = (uint8_t)Mouse[foundJoyPad][0];
+        pButton.AxisID = (uint8_t)bAxeDirection;
+        pButton.BtnType = (BtnType)Mouse[foundJoyPad][1];
+        pButton.DeviceGuid = DeviceGuid;
+        pButton.Device = nullptr;
+        return SCAN_SUCCEED;
+    }
+
+    for (uint8_t i = 0, n = sizeof(MouseState.rgbButtons) / sizeof(MouseState.rgbButtons[0]); i < n; i++)
+    {
+        if (BaseState.rgbButtons[i] == MouseState.rgbButtons[i])
+        {
+            continue;
+        }
+        BaseState.rgbButtons[i] = MouseState.rgbButtons[i];
+
+        if ((MouseState.rgbButtons[i] & 0x80) == 0)
+        {
+            continue;
+        }
+        pButton.Offset = i;
+        pButton.AxisID = 0;
+        pButton.BtnType = BTNTYPE_MOUSEBUTTON;
         pButton.DeviceGuid = DeviceGuid;
         pButton.Device = nullptr;
         return SCAN_SUCCEED;

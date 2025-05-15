@@ -763,6 +763,10 @@ void CN64System::EndEmulation(void)
 
 void CN64System::Pause()
 {
+    if (m_Plugins && m_Plugins->Control()->EmulationPaused)
+    {
+        m_Plugins->Control()->EmulationPaused();
+    }
     if (m_EndEmulation)
     {
         return;

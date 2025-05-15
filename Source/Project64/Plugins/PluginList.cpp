@@ -1,11 +1,13 @@
 #include "stdafx.h"
-#include <io.h>
+
 #include "PluginList.h"
 #include <Project64-core/Plugins/PluginBase.h>
+#include <io.h>
 
 CPluginList::CPluginList(bool bAutoFill /* = true */) :
-m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin), "")
+    m_PluginDir(g_Settings->LoadStringVal(Directory_Plugin), "")
 {
+    m_PluginDir.NormalizePath(CPath(CPath::MODULE_DIRECTORY));
     if (bAutoFill)
     {
         LoadList();
@@ -18,7 +20,7 @@ CPluginList::~CPluginList()
 
 int CPluginList::GetPluginCount() const
 {
-    return m_PluginList.size();
+    return (int)((INT_PTR)m_PluginList.size());
 }
 
 const CPluginList::PLUGIN * CPluginList::GetPluginInfo(int indx) const
@@ -75,15 +77,15 @@ void CPluginList::AddPluginFromDir(CPath Dir)
                 continue;
             }
 
-            void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
+            void(CALL * GetDllInfo)(PLUGIN_INFO * PluginInfo);
             GetDllInfo = (void(CALL *)(PLUGIN_INFO *))GetProcAddress(hLib, "GetDllInfo");
             if (GetDllInfo == nullptr)
             {
                 continue;
             }
 
-            PLUGIN Plugin = { 0 };
-            Plugin.Info.MemoryBswaped = true;
+            PLUGIN Plugin = {0};
+            Plugin.Info.Reserved2 = true;
             GetDllInfo(&Plugin.Info);
             if (!CPlugin::ValidPluginVersion(Plugin.Info))
             {

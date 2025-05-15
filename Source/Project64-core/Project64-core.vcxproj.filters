@@ -677,6 +677,15 @@
     <ClInclude Include="..\Project64-plugin-spec\Input.h">
       <Filter>Header Files\Plugin Spec</Filter>
     </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Audio.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Rsp.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Project64-plugin-spec\Video.h">
+      <Filter>Header Files\Plugin Spec</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Version.h.in">

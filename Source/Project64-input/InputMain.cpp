@@ -60,6 +60,10 @@ Output: None
 #ifdef _WIN32
 EXPORT void CALL DllConfig(void * hParent)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
     ConfigInput(hParent);
 }
 #endif
@@ -154,6 +158,10 @@ Output: None
 
 EXPORT void CALL RomClosed(void)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
 }
 
 /*
@@ -166,6 +174,26 @@ Output: None
 
 EXPORT void CALL RomOpen(void)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->LockMouse();
+    }
+}
+
+/*
+Function: EmulationPaused
+Purpose: This function is called when the emulation is paused. (from the
+emulation thread)
+Input: None
+Output: None
+*/
+
+EXPORT void CALL EmulationPaused(void)
+{
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
 }
 
 /*
@@ -190,6 +218,22 @@ Output: None
 
 EXPORT void CALL WM_KeyUp(uint32_t /*wParam*/, uint32_t /*lParam*/)
 {
+}
+
+/*
+Function: WM_KillFocus
+Purpose: To pass the WM_KILLFOCUS message from the emulator to the
+plugin.
+Input: wParam and lParam of the WM_KILLFOCUS message.
+Output: None
+*/
+
+EXPORT void CALL WM_KillFocus(uint32_t /*wParam*/, uint32_t /*lParam*/)
+{
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
 }
 
 EXPORT void CALL PluginLoaded(void)

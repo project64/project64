@@ -6,6 +6,7 @@ enum InputSettingID
     Set_Control0_Plugin,
     Set_Control0_Range,
     Set_Control0_Deadzone,
+    Set_Control0_Sensitivity,
     Set_Control0_RealN64Range,
     Set_Control0_RemoveDuplicate,
     Set_Control0_U_DPAD,
@@ -31,6 +32,7 @@ enum InputSettingID
     Set_Control1_Plugin,
     Set_Control1_Range,
     Set_Control1_Deadzone,
+    Set_Control1_Sensitivity,
     Set_Control1_RealN64Range,
     Set_Control1_RemoveDuplicate,
     Set_Control1_U_DPAD,
@@ -56,6 +58,7 @@ enum InputSettingID
     Set_Control2_Plugin,
     Set_Control2_Range,
     Set_Control2_Deadzone,
+    Set_Control2_Sensitivity,
     Set_Control2_RealN64Range,
     Set_Control2_RemoveDuplicate,
     Set_Control2_U_DPAD,
@@ -81,6 +84,7 @@ enum InputSettingID
     Set_Control3_Plugin,
     Set_Control3_Range,
     Set_Control3_Deadzone,
+    Set_Control3_Sensitivity,
     Set_Control3_RealN64Range,
     Set_Control3_RemoveDuplicate,
     Set_Control3_U_DPAD,
@@ -101,4 +105,6 @@ enum InputSettingID
     Set_Control3_D_ANALOG,
     Set_Control3_L_ANALOG,
     Set_Control3_R_ANALOG,
+
+    Set_Shortcut_LOCKMOUSE,
 };

@@ -23,6 +23,7 @@ typedef struct
     BUTTON R_ANALOG;
     uint8_t Range;
     uint8_t DeadZone;
+    uint8_t Sensitivity;
     bool RealN64Range;
     bool RemoveDuplicate;
 } N64CONTROLLER;

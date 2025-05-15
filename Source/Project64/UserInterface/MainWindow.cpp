@@ -822,13 +822,21 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, DWORD wParam, DWO
                 break;
             }
 
-            if (_this->m_bMainWindow && bCPURunning() && bAutoSleep())
+        if (_this->m_bMainWindow && bCPURunning())
+        {
+            if (g_BaseSystem)
             {
-                if (g_BaseSystem)
+                if (bAutoSleep())
                 {
                     g_BaseSystem->ExternalEvent(SysEvent_PauseCPU_AppLostFocus);
                 }
+
+                if (g_Plugins && g_Plugins->Control()->WM_KillFocus)
+                {
+                    g_Plugins->Control()->WM_KillFocus((uint32_t)((UINT_PTR)wParam), (uint32_t)((UINT_PTR)lParam));
+                }
             }
+        }
         }
         break;
     case WM_ACTIVATEAPP:

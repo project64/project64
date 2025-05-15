@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include <Project64-core/Plugins/PluginBase.h>
 #include <Common/path.h>
+#include <Project64-core/Plugins/PluginBase.h>
 
 CPlugin::CPlugin() :
-DllAbout(nullptr),
-DllConfig(nullptr),
-CloseDLL(nullptr),
-RomOpen(nullptr),
-RomClosed(nullptr),
-PluginOpened(nullptr),
-SetSettingInfo(nullptr),
-SetSettingInfo2(nullptr),
-SetSettingInfo3(nullptr),
-m_LibHandle(nullptr),
-m_Initialized(false),
-m_RomOpen(false)
+    DllAbout(nullptr),
+    DllConfig(nullptr),
+    CloseDLL(nullptr),
+    RomOpen(nullptr),
+    RomClosed(nullptr),
+    PluginOpened(nullptr),
+    SetSettingInfo(nullptr),
+    SetSettingInfo2(nullptr),
+    SetSettingInfo3(nullptr),
+    m_LibHandle(nullptr),
+    m_Initialized(false),
+    m_RomOpen(false)
 {
     memset(&m_PluginInfo, 0, sizeof(m_PluginInfo));
 }
@@ -46,13 +46,22 @@ bool CPlugin::Load(const char * FileName)
     }
 
     // Get DLL information
-    void(CALL *GetDllInfo) (PLUGIN_INFO * PluginInfo);
+    void(CALL * GetDllInfo)(PLUGIN_INFO * PluginInfo);
     LoadFunction(GetDllInfo);
-    if (GetDllInfo == nullptr) { return false; }
+    if (GetDllInfo == nullptr)
+    {
+        return false;
+    }
 
     GetDllInfo(&m_PluginInfo);
-    if (!ValidPluginVersion(m_PluginInfo)) { return false; }
-    if (m_PluginInfo.Type != type()) { return false; }
+    if (!ValidPluginVersion(m_PluginInfo))
+    {
+        return false;
+    }
+    if (m_PluginInfo.Type != type())
+    {
+        return false;
+    }
 
     LoadFunction(CloseDLL);
     LoadFunction(RomOpen);
@@ -79,8 +88,8 @@ bool CPlugin::Load(const char * FileName)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingNotificationInfo");
         PLUGIN_SETTINGS_NOTIFICATION info;
-        info.RegisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
-        info.UnregisterChangeCB = (void(*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
+        info.RegisterChangeCB = (void (*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sRegisterChangeCB;
+        info.UnregisterChangeCB = (void (*)(void *, int ID, void * Data, PLUGIN_SETTINGS_NOTIFICATION::SettingChangedFunc Func))CSettings::sUnregisterChangeCB;
         SetSettingNotificationInfo(&info);
     }
 
@@ -89,7 +98,7 @@ bool CPlugin::Load(const char * FileName)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Found SetSettingInfo3");
         PLUGIN_SETTINGS3 info;
-        info.FlushSettings = (void(*)(void * handle))CSettings::FlushSettings;
+        info.FlushSettings = (void (*)(void * handle))CSettings::FlushSettings;
         SetSettingInfo3(&info);
     }
 
@@ -114,11 +123,11 @@ bool CPlugin::Load(const char * FileName)
         info.NoDefault = Default_None;
         info.DefaultLocation = g_Settings->LoadDword(Setting_UseFromRegistry) ? SettingType_Registry : SettingType_CfgFile;
         info.handle = g_Settings;
-        info.RegisterSetting = (void(*)(void *, int, int, SettingDataType, SettingType, const char *, const char *, uint32_t))&CSettings::RegisterSetting;
-        info.GetSetting = (uint32_t(*)(void *, int))&CSettings::GetSetting;
-        info.GetSettingSz = (const char * (*)(void *, int, char *, int))&CSettings::GetSettingSz;
-        info.SetSetting = (void(*)(void *, int, uint32_t))&CSettings::SetSetting;
-        info.SetSettingSz = (void(*)(void *, int, const char *))&CSettings::SetSettingSz;
+        info.RegisterSetting = (void (*)(void *, int, int, SettingDataType, SettingType, const char *, const char *, uint32_t)) & CSettings::RegisterSetting;
+        info.GetSetting = (uint32_t(*)(void *, int)) & CSettings::GetSetting;
+        info.GetSettingSz = (const char * (*)(void *, int, char *, int)) & CSettings::GetSettingSz;
+        info.SetSetting = (void (*)(void *, int, uint32_t)) & CSettings::SetSetting;
+        info.SetSettingSz = (void (*)(void *, int, const char *)) & CSettings::SetSettingSz;
         info.UseUnregisteredSetting = nullptr;
 
         SetSettingInfo(&info);
@@ -154,7 +163,7 @@ void CPlugin::RomOpened(RenderWindow * Render)
     }
 
 #ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    if (m_PluginInfo.Type == PLUGIN_TYPE_VIDEO)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
         if (Render != nullptr)
@@ -186,7 +195,7 @@ void CPlugin::RomClose(RenderWindow * Render)
     }
 
 #ifdef ANDROID
-    if (m_PluginInfo.Type == PLUGIN_TYPE_GFX)
+    if (m_PluginInfo.Type == PLUGIN_TYPE_VIDEO)
     {
         WriteTrace(PluginTraceType(), TraceDebug, "Render = %p", Render);
         if (Render != NULL)
@@ -220,10 +229,10 @@ void CPlugin::Close(RenderWindow * Render)
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Start", PluginType());
     RomClose(Render);
     m_Initialized = false;
-	if (CloseDLL != nullptr)
-	{
-		CloseDLL();
-	}
+    if (CloseDLL != nullptr)
+    {
+        CloseDLL();
+    }
     WriteTrace(PluginTraceType(), TraceDebug, "(%s): Done", PluginType());
 }
 
@@ -258,7 +267,7 @@ const char * CPlugin::PluginType() const
     switch (m_PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP: return "RSP";
-    case PLUGIN_TYPE_GFX: return "GFX";
+    case PLUGIN_TYPE_VIDEO: return "Video";
     case PLUGIN_TYPE_AUDIO: return "Audio";
     case PLUGIN_TYPE_CONTROLLER: return "Control";
     }
@@ -270,7 +279,7 @@ TraceModuleProject64 CPlugin::PluginTraceType() const
     switch (m_PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP: return TraceRSPPlugin;
-    case PLUGIN_TYPE_GFX: return TraceGFXPlugin;
+    case PLUGIN_TYPE_VIDEO: return TraceGFXPlugin;
     case PLUGIN_TYPE_AUDIO: return TraceAudioPlugin;
     case PLUGIN_TYPE_CONTROLLER: return TraceControllerPlugin;
     }
@@ -282,28 +291,64 @@ bool CPlugin::ValidPluginVersion(PLUGIN_INFO & PluginInfo)
     switch (PluginInfo.Type)
     {
     case PLUGIN_TYPE_RSP:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0001) { return true; }
-        if (PluginInfo.Version == 0x0100) { return true; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        if (PluginInfo.Version == 0x0103) { return true; }
+        if (PluginInfo.Version == 0x0001)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0100)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0101)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0102)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0103)
+        {
+            return true;
+        }
         break;
-    case PLUGIN_TYPE_GFX:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0102) { return true; }
-        if (PluginInfo.Version == 0x0103) { return true; }
-        if (PluginInfo.Version == 0x0104) { return true; }
+    case PLUGIN_TYPE_VIDEO:
+        if (PluginInfo.Version == 0x0102)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0103)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0104)
+        {
+            return true;
+        }
         break;
     case PLUGIN_TYPE_AUDIO:
-        if (!PluginInfo.MemoryBswaped)	  { return false; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
+        if (PluginInfo.Version == 0x0101)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0102)
+        {
+            return true;
+        }
         break;
     case PLUGIN_TYPE_CONTROLLER:
-        if (PluginInfo.Version == 0x0100) { return true; }
-        if (PluginInfo.Version == 0x0101) { return true; }
-        if (PluginInfo.Version == 0x0102) { return true; }
+        if (PluginInfo.Version == 0x0100)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0101)
+        {
+            return true;
+        }
+        if (PluginInfo.Version == 0x0102)
+        {
+            return true;
+        }
         break;
     }
     return false;

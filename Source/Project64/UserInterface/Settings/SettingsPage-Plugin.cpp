@@ -28,7 +28,7 @@ COptionPluginPage::COptionPluginPage(HWND hParent, const RECT & rcDispay)
     m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
     m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
 
-    AddPlugins(GFX_LIST, Plugin_GFX_Current, PLUGIN_TYPE_GFX);
+    AddPlugins(GFX_LIST, Plugin_GFX_Current, PLUGIN_TYPE_VIDEO);
     AddPlugins(AUDIO_LIST, Plugin_AUDIO_Current, PLUGIN_TYPE_AUDIO);
     AddPlugins(CONT_LIST, Plugin_CONT_Current, PLUGIN_TYPE_CONTROLLER);
     AddPlugins(RSP_LIST, Plugin_RSP_Current, PLUGIN_TYPE_RSP);

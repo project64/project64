@@ -29,7 +29,7 @@ CGamePluginPage::CGamePluginPage(HWND hParent, const RECT & rcDispay)
     m_ControlGroup.Attach(GetDlgItem(IDC_CONT_NAME));
     m_RspGroup.Attach(GetDlgItem(IDC_RSP_NAME));
 
-    AddPlugins(GFX_LIST, Game_EditPlugin_Gfx, PLUGIN_TYPE_GFX);
+    AddPlugins(GFX_LIST, Game_EditPlugin_Gfx, PLUGIN_TYPE_VIDEO);
     AddPlugins(AUDIO_LIST, Game_EditPlugin_Audio, PLUGIN_TYPE_AUDIO);
     AddPlugins(CONT_LIST, Game_EditPlugin_Contr, PLUGIN_TYPE_CONTROLLER);
     AddPlugins(RSP_LIST, Game_EditPlugin_RSP, PLUGIN_TYPE_RSP);

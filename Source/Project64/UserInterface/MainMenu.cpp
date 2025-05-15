@@ -468,7 +468,7 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_OPTIONS_CONFIG_GFX:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_GFX");
-        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_GFX);
+        g_Plugins->ConfigPlugin(hWnd, PLUGIN_TYPE_VIDEO);
         break;
     case ID_OPTIONS_CONFIG_AUDIO:
         WriteTrace(TraceUserInterface, TraceDebug, "ID_OPTIONS_CONFIG_AUDIO");
