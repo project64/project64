@@ -212,7 +212,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
 
     CPifRam::Reset();
 
-    m_TLB_ReadMap = new size_t[0x100000];
+    m_TLB_ReadMap = new uint32_t[0x100000];
     if (m_TLB_ReadMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_ReadMap (Size: 0x%X)", 0x100000 * sizeof(size_t));
@@ -220,7 +220,7 @@ bool CMipsMemoryVM::Initialize(bool SyncSystem)
         return false;
     }
 
-    m_TLB_WriteMap = new size_t[0x100000];
+    m_TLB_WriteMap = new uint32_t[0x100000];
     if (m_TLB_WriteMap == nullptr)
     {
         WriteTrace(TraceN64System, TraceError, "Failed to allocate m_TLB_WriteMap (Size: 0x%X)", 0xFFFFF * sizeof(size_t));
