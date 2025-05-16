@@ -9609,7 +9609,7 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     if (TestTimer)
     {
-        m_Assembler.MoveConstToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
+        m_Assembler.MoveConstByteToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
     }
 
     m_Assembler.PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
