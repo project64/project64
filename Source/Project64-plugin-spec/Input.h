@@ -127,15 +127,6 @@ data.
 EXPORT void CALL ReadController(int Control, uint8_t * Command);
 
 /*
-Function: EmulationPaused
-Purpose: This function is called when the emulation is paused. (from the
-emulation thread)
-Input: None
-Output: None
-*/
-EXPORT void CALL EmulationPaused(void);
-
-/*
 Function: WM_KeyDown
 Purpose: To pass the WM_KeyDown message from the emulator to the
 plugin.

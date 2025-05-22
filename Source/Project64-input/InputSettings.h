@@ -28,7 +28,11 @@ private:
     static std::string ButtonToStr(const BUTTON & Button);
     static std::string GUIDtoString(const GUID & guid);
 
+    static void CpuPausedChanged(CInputSettings * _this);
+
     void RegisterSettings(void);
+
+    uint16_t Set_CpuPaused;
 };
 
 extern CInputSettings * g_Settings;

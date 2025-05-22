@@ -181,22 +181,6 @@ EXPORT void CALL RomOpen(void)
 }
 
 /*
-Function: EmulationPaused
-Purpose: This function is called when the emulation is paused. (from the
-emulation thread)
-Input: None
-Output: None
-*/
-
-EXPORT void CALL EmulationPaused(void)
-{
-    if (g_InputPlugin != nullptr)
-    {
-        g_InputPlugin->UnlockMouse();
-    }
-}
-
-/*
 Function: WM_KeyDown
 Purpose: To pass the WM_KeyDown message from the emulator to the
 plugin.

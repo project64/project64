@@ -310,7 +310,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 
     AddHandler(GameRunning_LoadingInProgress, new CSettingTypeTempBool(false));
     AddHandler(GameRunning_CPU_Running, new CSettingTypeTempBool(false));
-    AddHandler(GameRunning_CPU_Paused, new CSettingTypeTempBool(false));
+    AddHandler(GameRunning_CPU_Paused, new CSettingTypeTempBool(false, "CPU Paused"));
     AddHandler(GameRunning_CPU_PausedType, new CSettingTypeTempNumber(PauseType_None));
     AddHandler(GameRunning_InstantSaveFile, new CSettingTypeTempString(""));
     AddHandler(GameRunning_LimitFPS, new CSettingTypeTempBool(true, "Limit FPS"));

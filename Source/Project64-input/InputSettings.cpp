@@ -2,6 +2,7 @@
 #include <Common/StdString.h>
 #include "InputSettingsID.h"
 #include "InputSettings.h"
+#include "CProject64Input.h"
 
 CInputSettings * g_Settings = nullptr;
 
@@ -48,7 +49,8 @@ static const bool DefaultMouse_RemoveDuplicate = true;
 /* Default Shortcuts Setup */
 static char* Shortcuts_LOCKMOUSE_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 0F 0 5";
 
-CInputSettings::CInputSettings()
+CInputSettings::CInputSettings() :
+    Set_CpuPaused(0)
 {
     RegisterSettings();
 }
@@ -543,6 +545,14 @@ std::string CInputSettings::GUIDtoString(const GUID & guid)
     return stdstr_f("{%08.8lX-%04.4hX-%04.4hX-%02.2X%02.2X-%02.2X%02.2X%02.2X%02.2X%02.2X%02.2X}", guid.Data1, guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
 }
 
+void CInputSettings::CpuPausedChanged(CInputSettings * _this)
+{
+    if (GetSystemSetting(_this->Set_CpuPaused) != 0 && g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->UnlockMouse();
+    }
+}
+
 void CInputSettings::RegisterSettings(void)
 {
     SetModuleName("Input");
@@ -651,6 +661,12 @@ void CInputSettings::RegisterSettings(void)
     RegisterSetting(Set_Control3_R_ANALOG, Data_String_General, "AnalogRight", "Controller 4", 0, "");
 
     RegisterSetting(Set_Shortcut_LOCKMOUSE, Data_String_General, "LockMouse", "Shortcuts", 0, Shortcuts_LOCKMOUSE_Default);
+
+    Set_CpuPaused = FindSystemSettingId("CPU Paused");
+    if (Set_CpuPaused != 0)
+    {
+        SettingsRegisterChange(true, Set_CpuPaused, this, (SettingChangedFunc)CpuPausedChanged);
+    }
 }
 
 void SetupInputSettings(void)

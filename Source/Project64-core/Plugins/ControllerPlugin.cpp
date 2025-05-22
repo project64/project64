@@ -36,7 +36,6 @@ bool CControl_Plugin::LoadFunctions(void)
     LoadFunction(WM_KeyUp);
     LoadFunction(RumbleCommand);
     LoadFunction(WM_KillFocus);
-    LoadFunction(EmulationPaused);
 
     // Make sure DLL had all needed functions
     if (InitiateControllers == nullptr)
