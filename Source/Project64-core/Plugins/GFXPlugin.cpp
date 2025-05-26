@@ -56,7 +56,11 @@ bool CGfxPlugin::LoadFunctions(void)
 #endif
 
     // Version 0x104 functions
-    _LoadFunction("DrawFullScreenStatus", DrawStatus);
+    LoadFunction(DrawStatus);
+    if (DrawStatus == nullptr)
+    {
+        _LoadFunction("DrawFullScreenStatus", DrawStatus); // For Jabo D3D8 1.7
+    }
 
     // ROM browser
     LoadFunction(GetRomBrowserMenu);
@@ -110,7 +114,7 @@ bool CGfxPlugin::LoadFunctions(void)
         LoadFunction(CaptureScreen);
         LoadFunction(ShowCFB);
         LoadFunction(GetDebugInfo);
-        _LoadFunction("InitiateGFXDebugger", InitiateDebugger);
+        LoadFunction(InitiateDebugger);
 
         if (ProcessRDPList == nullptr)
         {
@@ -221,7 +225,7 @@ bool CGfxPlugin::Initiate_1_4(CN64System * System, RenderWindow * Window)
 
     // Get function from DLL
     int32_t(CALL * InitiateGFX)(GFX_INFO Gfx_Info);
-    _LoadFunction("InitiateGFX", InitiateGFX);
+    LoadFunction(InitiateGFX);
     if (InitiateGFX == nullptr)
     {
         WriteTrace(TraceVideoPlugin, TraceDebug, "Failed to find InitiateGFX");
@@ -392,7 +396,7 @@ bool CGfxPlugin::Initiate_1_5(CN64System * System, RenderWindow * Window)
 
     // Get function from DLL
     int32_t(CALL * InitiateGFX)(GFX_INFO Gfx_Info);
-    _LoadFunction("InitiateGFX", InitiateGFX);
+    LoadFunction(InitiateGFX);
     if (InitiateGFX == nullptr)
     {
         WriteTrace(TraceVideoPlugin, TraceDebug, "Failed to find InitiateGFX");
