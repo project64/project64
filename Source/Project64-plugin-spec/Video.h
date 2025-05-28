@@ -138,8 +138,8 @@ hParent - handle to the parent window
 HEADER - pointer to the ROM header
 Output: none
 */
-EXPORT void(CALL * OnRomBrowserMenuItem)(int32_t MenuID, void * hParent, uint8_t * HEADER);
-EXPORT void *(CALL * GetRomBrowserMenu)(void); // Items should have an ID between 4101 and 4200
+extern void (CALL * OnRomBrowserMenuItem)(int32_t MenuID, void * hParent, uint8_t * HEADER);
+extern void * (CALL * GetRomBrowserMenu)(void); // Items should have an ID between 4101 and 4200
     
 /*
 Function: ProcessDList
