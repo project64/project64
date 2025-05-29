@@ -280,11 +280,72 @@ void CEnhancements::LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins)
     m_OverClock = false;
     m_OverClockModifier = 1;
 
+    // Track enhancement overrides for each setting
+    bool hasCounterFactor = false;
+    uint32_t counterFactor = 2;
+    bool hasViRefresh = false;
+    uint32_t viRefresh = 1500;
+    bool hasRdramSize = false;
+    uint32_t rdramSize = 0;
+    bool hasSmmProtect = false;
+    bool smmProtect = false;
+    bool hasFixedAudio = false;
+    bool fixedAudio = true;
+    bool hasSyncAudio = false;
+    bool syncAudio = true;
+
     ResetCodes(MMU);
     LoadActive(m_Cheats, nullptr);
     LoadActive(m_Enhancements, Plugins);
 
+    // Scan all active enhancements for overrides
+    for (const auto & list : {m_Cheats, m_Enhancements})
+    {
+        for (const auto & pair : list)
+        {
+            const CEnhancement & enh = pair.second;
+            if (!enh.Valid() || !enh.Active()) continue;
+            if (enh.HasCounterFactor())
+            {
+                hasCounterFactor = true;
+                counterFactor = enh.CounterFactor();
+            }
+            if (enh.HasViRefresh())
+            {
+                hasViRefresh = true;
+                viRefresh = enh.ViRefresh();
+            }
+            if (enh.HasRdramSize())
+            {
+                hasRdramSize = true;
+                rdramSize = enh.RdramSize();
+            }
+            if (enh.HasSmmProtect())
+            {
+                hasSmmProtect = true;
+                smmProtect = enh.SmmProtect();
+            }
+            if (enh.HasFixedAudio())
+            {
+                hasFixedAudio = true;
+                fixedAudio = enh.FixedAudio();
+            }
+            if (enh.HasSyncAudio())
+            {
+                hasSyncAudio = true;
+                syncAudio = enh.SyncAudio();
+            }
+        }
+    }
+
+    // Apply enhancement overrides
     CGameSettings::SetOverClockModifier(m_OverClock, m_OverClockModifier);
+    CGameSettings::SetCountPerOp(hasCounterFactor, counterFactor);
+    CGameSettings::SetViRefreshRate(hasViRefresh, viRefresh);
+    CGameSettings::SetRdramSize(hasRdramSize, rdramSize);
+    CGameSettings::SetSmmProtect(hasSmmProtect, smmProtect);
+    CGameSettings::SetFixedAudio(hasFixedAudio, fixedAudio);
+    CGameSettings::SetSyncAudio(hasSyncAudio, syncAudio);
 }
 
 CEnhancementList CEnhancements::Cheats(void)

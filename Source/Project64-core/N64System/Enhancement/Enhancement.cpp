@@ -188,13 +188,41 @@ CEnhancement::CEnhancement(const char * Ident, const char * Entry) :
         {
             m_Note = &Pos[1];
         }
+        else if (stricmp(Key.c_str(), "WIP") == 0)
+        {
+            // TODO
+        }
         else if (stricmp(Key.c_str(), "OnByDefault") == 0 || stricmp(Key.c_str(), "On By Default") == 0)
         {
             m_OnByDefault = Pos[1] == '1';
         }
+        else if (stricmp(Key.c_str(), "Counter Factor") == 0)
+        {
+            SetCounterFactor(true, atoi(&Pos[1]));
+        }
         else if (stricmp(Key.c_str(), "Overclock") == 0)
         {
             SetOverClock(true, atoi(&Pos[1]));
+        }
+        else if (stricmp(Key.c_str(), "VI Refresh") == 0)
+        {
+            SetViRefresh(true, atoi(&Pos[1]));
+        }
+        else if (stricmp(Key.c_str(), "RDRAM Size") == 0)
+        {
+            SetRdramSize(true, atoi(&Pos[1]));
+        }
+        else if (stricmp(Key.c_str(), "SMM-Protect") == 0)
+        {
+            SetSmmProtect(true, Pos[1] == '1');
+        }
+        else if (stricmp(Key.c_str(), "Fixed Audio") == 0)
+        {
+            SetFixedAudio(true, Pos[1] == '1');
+        }
+        else if (stricmp(Key.c_str(), "Sync Audio") == 0)
+        {
+            SetSyncAudio(true, Pos[1] == '1');
         }
         else
         {
@@ -367,6 +395,42 @@ void CEnhancement::SetOverClock(bool OverClock, uint32_t OverClockModifier)
     {
         m_OverClockModifier = 100;
     }
+}
+
+void CEnhancement::SetCounterFactor(bool hasValue, uint32_t value)
+{
+    m_HasCounterFactor = hasValue;
+    m_CounterFactor = value;
+}
+
+void CEnhancement::SetViRefresh(bool hasValue, uint32_t value)
+{
+    m_HasViRefresh = hasValue;
+    m_ViRefresh = value;
+}
+
+void CEnhancement::SetRdramSize(bool hasValue, uint32_t value)
+{
+    m_HasRdramSize = hasValue;
+    m_RdramSize = value;
+}
+
+void CEnhancement::SetSmmProtect(bool hasValue, bool value)
+{
+    m_HasSmmProtect = hasValue;
+    m_SmmProtect = value;
+}
+
+void CEnhancement::SetFixedAudio(bool hasValue, bool value)
+{
+    m_HasFixedAudio = hasValue;
+    m_FixedAudio = value;
+}
+
+void CEnhancement::SetSyncAudio(bool hasValue, bool value)
+{
+    m_HasSyncAudio = hasValue;
+    m_SyncAudio = value;
 }
 
 void CEnhancement::CheckValid(void)

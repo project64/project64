@@ -134,6 +134,12 @@ public:
 
     void RefreshSyncToAudio(void);
     static void SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier);
+    static void SetCountPerOp(bool enhancementActive, uint32_t value);
+    static void SetViRefreshRate(bool enhancementActive, uint32_t value);
+    static void SetRdramSize(bool enhancementActive, uint32_t value);
+    static void SetFixedAudio(bool enhancementActive, bool value);
+    static void SetSyncAudio(bool enhancementActive, bool value);
+    static void SetSmmProtect(bool enhancementActive, bool value);
 
 protected:
     static void SpeedChanged(int32_t SpeedLimit);

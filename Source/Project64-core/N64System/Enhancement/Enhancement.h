@@ -35,6 +35,12 @@ public:
     void SetActive(bool Active);
     void SetOnByDefault(bool OnByDefault);
     void SetOverClock(bool OverClock, uint32_t OverClockModifier);
+    void SetCounterFactor(bool hasValue, uint32_t value);
+    void SetViRefresh(bool hasValue, uint32_t value);
+    void SetRdramSize(bool hasValue, uint32_t value);
+    void SetSmmProtect(bool hasValue, bool value);
+    void SetFixedAudio(bool hasValue, bool value);
+    void SetSyncAudio(bool hasValue, bool value);
 
     inline const std::string & GetName(void) const
     {
@@ -88,6 +94,54 @@ public:
     {
         return m_OverClockModifier;
     }
+    inline bool HasCounterFactor() const
+    {
+        return m_HasCounterFactor;
+    }
+    inline uint32_t CounterFactor() const
+    {
+        return m_CounterFactor;
+    }
+    inline bool HasViRefresh() const
+    {
+        return m_HasViRefresh;
+    }
+    inline uint32_t ViRefresh() const
+    {
+        return m_ViRefresh;
+    }
+    inline bool HasRdramSize() const
+    {
+        return m_HasRdramSize;
+    }
+    inline uint32_t RdramSize() const
+    {
+        return m_RdramSize;
+    }
+    inline bool HasSmmProtect() const
+    {
+        return m_HasSmmProtect;
+    }
+    inline bool SmmProtect() const
+    {
+        return m_SmmProtect;
+    }
+    inline bool HasFixedAudio() const
+    {
+        return m_HasFixedAudio;
+    }
+    inline bool FixedAudio() const
+    {
+        return m_FixedAudio;
+    }
+    inline bool HasSyncAudio() const
+    {
+        return m_HasSyncAudio;
+    }
+    inline bool SyncAudio() const
+    {
+        return m_SyncAudio;
+    }
     bool OptionSelected() const
     {
         return (m_SelectedOption & 0xFFFF0000) == 0;
@@ -118,4 +172,16 @@ private:
     uint32_t m_OverClockModifier;
     bool m_Active;
     bool m_Valid;
+    bool m_HasCounterFactor = false;
+    uint32_t m_CounterFactor = 0;
+    bool m_HasViRefresh = false;
+    uint32_t m_ViRefresh = 0;
+    bool m_HasRdramSize = false;
+    uint32_t m_RdramSize = 0;
+    bool m_HasSmmProtect = false;
+    bool m_SmmProtect = false;
+    bool m_HasFixedAudio = false;
+    bool m_FixedAudio = false;
+    bool m_HasSyncAudio = false;
+    bool m_SyncAudio = false;
 };
