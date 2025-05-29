@@ -10202,7 +10202,7 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     if (TestTimer)
     {
-        MoveConstToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
+        MoveConstByteToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
     }
 
     PushImm32("g_System->CountPerOp()", g_System->CountPerOp());
