@@ -150,7 +150,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_RDRamSize, new CSettingTypeRDBRDRamSize("RDRAM Size", Default_RDRamSizeKnown));
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDB("Delay DP", true));
-    AddHandler(Rdb_DelaySi, new CSettingTypeRDB("Delay SI", false));
+    AddHandler(Rdb_DelaySi, new CSettingTypeRomDatabase("Delay SI", 0u));
     AddHandler(Rdb_32Bit, new CSettingTypeRDB("32bit", false));
     AddHandler(Rdb_FastSP, new CSettingTypeRDB("Fast SP", true));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", Default_FixedAudio));

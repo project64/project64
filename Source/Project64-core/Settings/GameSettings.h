@@ -55,7 +55,7 @@ public:
     {
         return m_DelayDP;
     }
-    inline static bool bDelaySI(void)
+    inline static uint32_t DelaySI(void)
     {
         return m_DelaySI;
     }
@@ -156,7 +156,7 @@ private:
     static uint32_t m_ViRefreshRate;
     static uint32_t m_AiCountPerBytes;
     static bool m_DelayDP;
-    static bool m_DelaySI;
+    static uint32_t m_DelaySI;
     static bool m_bRandomizeSIPIInterrupts;
     static uint32_t m_RdramSize;
     static bool m_bFixedAudio;

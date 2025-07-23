@@ -258,7 +258,7 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_COUNTER_FACTOR, "Counter factor:");
     DEF_STR(ROM_LARGE_BUFFER, "Larger compile buffer");
     DEF_STR(ROM_REG_CACHE, "Register caching");
-    DEF_STR(ROM_DELAY_SI, "Delay SI interrupt");
+    DEF_STR(ROM_DELAY_SI, "Delay SI interrupt:");
     DEF_STR(ROM_FAST_SP, "Fast SP");
     DEF_STR(ROM_DEFAULT, "Default");
     DEF_STR(ROM_AUDIO_SIGNAL, "RSP audio signal");

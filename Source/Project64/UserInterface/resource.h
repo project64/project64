@@ -283,10 +283,11 @@
 #define IDC_STEPOVER_BTN                1120
 #define IDC_CHEAT_LIST                  1121
 #define IDC_CHEAT_NAME                  1122
-#define IDC_DELAY_SI                    1123
-#define IDC_VALUE                       1124
-#define IDC_RANGE                       1125
-#define IDC_ADD                         1126
+#define IDC_DELAY_SI_TEXT               1123
+#define IDC_DELAY_SI                    1124
+#define IDC_VALUE                       1125
+#define IDC_RANGE                       1126
+#define IDC_ADD                         1127
 #define IDC_CODE_NAME                   1130
 #define IDC_AUTHOR                      1131
 #define IDC_CODE_AUTHOR                 1132

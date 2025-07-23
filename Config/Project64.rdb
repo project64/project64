@@ -821,7 +821,7 @@ Status=Compatible
 Clear Frame=2
 Counter Factor=1
 Culling=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [5326696F-FE9A99C3-C:45]
@@ -832,7 +832,7 @@ Status=Compatible
 Clear Frame=2
 Counter Factor=1
 Culling=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [B3D451C6-E1CB58E2-C:4A]
@@ -1245,7 +1245,7 @@ Internal Name=CITY TOUR GP
 Status=Compatible
 32bit=1
 Counter Factor=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -1380,7 +1380,7 @@ Good Name=Cruis'n USA (E)
 Internal Name=Cruis'n USA
 Status=Compatible
 32bit=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [FF2F2FB4-D161149A-C:45]
@@ -1389,14 +1389,14 @@ Internal Name=Cruis'n USA
 Status=Compatible
 32bit=1
 Culling=1
-Delay SI=1
+Delay SI=2304
 
 [5306CF45-CBC49250-C:45]
 Good Name=Cruis'n USA (U) (V1.1)
 Internal Name=Cruis'n USA
 Status=Compatible
 32bit=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [B3402554-7340C004-C:45]
@@ -1404,7 +1404,7 @@ Good Name=Cruis'n USA (U) (V1.2)
 Internal Name=Cruis'n USA
 Status=Compatible
 32bit=1
-Delay SI=1
+Delay SI=2304
 
 [83F3931E-CB72223D-C:50]
 Good Name=Cruis'n World (E)
@@ -2524,7 +2524,7 @@ Internal Name=GT64
 Status=Compatible
 32bit=1
 Counter Factor=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -2534,7 +2534,7 @@ Internal Name=GT64
 Status=Compatible
 32bit=1
 Counter Factor=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 Save Type=16kbit Eeprom
 
@@ -4438,7 +4438,7 @@ Good Name=Nightmare Creatures (U)
 Internal Name=NIGHTMARE CREATURES
 Status=Compatible
 32bit=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 ViRefresh=2200
 
@@ -4886,6 +4886,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 RDRAM Size=8
 
 [91C9E05D-AD3AAFB9-C:50]
@@ -4896,6 +4897,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [A23553A3-42BF2D39-C:46]
 Good Name=Pokemon Stadium (F)
@@ -4905,6 +4907,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [42011E1B-E3552DB5-C:44]
 Good Name=Pokemon Stadium (G)
@@ -4914,6 +4917,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 RDRAM Size=8
 
 [A53FA82D-DAE2C15D-C:49]
@@ -4924,6 +4928,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [665E8259-D098BD1D-C:4A]
 Good Name=Pokemon Stadium (J)
@@ -4933,6 +4938,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 RDRAM Size=8
 Save Type=Sram
 
@@ -4944,6 +4950,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [90F5D9B3-9D0EDCF0-C:45]
 Good Name=Pokemon Stadium (U) (V1.0)
@@ -4953,6 +4960,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [1A122D43-C17DAF0F-C:45]
 Good Name=Pokemon Stadium - Kiosk (U) (V1.1)
@@ -4962,6 +4970,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 RDRAM Size=8
 
 [9C8FB2FA-9B84A09B-C:45]
@@ -4972,6 +4981,7 @@ Status=Compatible
 Culling=1
 Emulate Clear=1
 Linking=Off
+Delay SI=8192
 
 [2952369C-B6E4C3A8-C:50]
 Good Name=Pokemon Stadium 2 (E)
@@ -5691,7 +5701,7 @@ Good Name=Shin Nihon Pro Wrestling Toukon Road - Brave Spirits (J)
 Internal Name=TOUKON ROAD
 Status=Compatible
 32bit=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [551C7F43-9149831C-C:4A]
@@ -7120,7 +7130,7 @@ Status=Compatible
 32bit=1
 Counter Factor=1
 Culling=1
-Delay SI=1
+Delay SI=2304
 RDRAM Size=8
 
 [636E6B19-E57DDC5F-C:50]
