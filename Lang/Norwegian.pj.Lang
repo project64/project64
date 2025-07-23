@@ -274,7 +274,7 @@
 #526#  "Større kompileringsbuffer"
 #527#  "Bruk TLB"
 #528#  "Registercaching"
-#529#  "Forsink SI-interrupt"
+#529#  "Forsink SI-interrupt:"
 #530#  "Rask SP"
 #531#  "Standardinnstilling"
 #532#  "RSP-lydsignal"

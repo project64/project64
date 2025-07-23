@@ -293,7 +293,7 @@
 #526#  "Grootte Compile Buffer"
 #527#  "Gebruik TLB"
 #528#  "Register caching"
-#529#  "Vertraag SI Interrupt"
+#529#  "Vertraag SI Interrupt:"
 #530#  "SP Hack"
 #531#  "Standaard"
 #532#  "RSP audio signaal"

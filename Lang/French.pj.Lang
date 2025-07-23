@@ -294,7 +294,7 @@
 #526#  "Plus grand tampon de compilation"
 #527#  "Utiliser le TLB"
 #528#  "Mettre en cache les registres"
-#529#  "Retarder l’interruption SI"
+#529#  "Retarder l’interruption SI:"
 #530#  "SP rapide"
 #531#  "Défaut"
 #532#  "Signal audio RSP"

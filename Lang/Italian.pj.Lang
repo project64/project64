@@ -294,7 +294,7 @@
 #526#  "Buffer di compilazione più grande"
 #527#  "Attiva TLB"
 #528#  "Cache del registro"
-#529#  "Ritardo Interrupt SI"
+#529#  "Ritardo Interrupt SI:"
 #530#  "Hack SP"
 #531#  "Predefinito"
 #532#  ""Segnale Audio RSP""
