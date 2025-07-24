@@ -81,10 +81,11 @@ Delay DP
 
 Delay SI
 --------
-- true
-- false (default)
+- 0 (default)
+- 0x900(2304) or 0x2000(8192) where applicable
 
 This option was added in v1.5 to help a small number of games that were broken in v1.4. It's simply either needed (for example Cruis'N USA) or it isn't. Usually it isn't.
+This option was changed from a Boolean to a Value after 3.0 because some games need a longer delay than 0x900(2304) when communicating with controller extensions such as the transferpak.
 
 Audio Signal
 ------------
