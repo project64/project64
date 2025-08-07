@@ -321,9 +321,9 @@ void CPifRam::SI_DMA_READ()
 
     if(g_System->bRandomizeSIPIInterrupts())
     {
-        if(g_System->bDelaySI())
+        if (g_System->DelaySI() != 0)
         {
-            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900 + (g_Random->next() % 0x40), false);
+            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI() + (g_Random->next() % 0x40), false);
         }
         else
         {
@@ -332,9 +332,9 @@ void CPifRam::SI_DMA_READ()
     }
     else
     {
-        if(g_System->bDelaySI())
+        if (g_System->DelaySI() != 0)
         {
-            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900, false);
+            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI(), false);
         }
         else
         {
@@ -422,9 +422,9 @@ void CPifRam::SI_DMA_WRITE()
 
     PifRamWrite();
 
-    if (g_System->bDelaySI())
+    if (g_System->DelaySI() != 0)
     {
-        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, 0x900, false);
+        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI(), false);
     }
     else
     {

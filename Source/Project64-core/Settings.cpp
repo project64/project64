@@ -148,7 +148,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_CounterFactor, new CSettingTypeRomDatabase("Counter Factor", Default_CounterFactor));
     AddHandler(Rdb_UseTlb, new CSettingTypeRDBYesNo("Use TLB", Default_UseTlb));
     AddHandler(Rdb_DelayDP, new CSettingTypeRDBYesNo("Delay DP", true));
-    AddHandler(Rdb_DelaySi, new CSettingTypeRDBYesNo("Delay SI", false));
+    AddHandler(Rdb_DelaySi, new CSettingTypeRomDatabase("Delay SI", 0u));
     AddHandler(Rdb_32Bit, new CSettingTypeRDBYesNo("32bit", Default_32Bit));
     AddHandler(Rdb_FastSP, new CSettingTypeRDBYesNo("Fast SP", true));
     AddHandler(Rdb_FixedAudio, new CSettingTypeRomDatabase("Fixed Audio", Default_FixedAudio));
