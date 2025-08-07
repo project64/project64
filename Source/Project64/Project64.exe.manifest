@@ -8,13 +8,15 @@
                         version="6.0.0.0"
                         processorArchitecture="*"
                         publicKeyToken="6595b64144ccf1df"
-                        language="*"/>
+                        language="*">
+      </assemblyIdentity>
     </dependentAssembly>
   </dependency>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>
-        <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+        <requestedExecutionLevel level="asInvoker" uiAccess="false">
+        </requestedExecutionLevel>
       </requestedPrivileges>
     </security>
   </trustInfo>
@@ -22,7 +24,7 @@
     <asmv3:windowsSettings>
       <!-- Legacy DPI awareness for Windows XP, Vista, 7 and 8 -->
       <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware>
-      <!-- Win10 Only: Falls back to per-monitor if per-monitor v2 is not supported -->
+      <!-- Win10+ fallback: permonitorv2 preferred, permonitor as fallback -->
       <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
         permonitorv2,permonitor
       </dpiAwareness>
