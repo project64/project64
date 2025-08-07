@@ -453,18 +453,28 @@ void CPifRam::ProcessControllerCommand(int32_t Control, uint8_t * Command)
                 g_Notify->DisplayError("What am I meant to do with this controller command?");
             }
         }
-        if (Controllers[Control].Present != 0)
+        if (Controllers[Control].Present != PRESENT_NONE)
         {
-            Command[3] = 0x05;
-            Command[4] = 0x00;
-            switch (Controllers[Control].Plugin)
+            if (Controllers[Control].Present != PRESENT_MOUSE)
             {
-            case PLUGIN_TRANSFER_PAK:
-            case PLUGIN_RUMBLE_PAK:
-            case PLUGIN_MEMPAK:
-            case PLUGIN_RAW:
-                Command[5] = 1; break;
-            default: Command[5] = 0; break;
+                Command[3] = 0x05;
+                Command[4] = 0x00;
+                switch (Controllers[Control].Plugin)
+                {
+                case PLUGIN_TRANSFER_PAK:
+                case PLUGIN_RUMBLE_PAK:
+                case PLUGIN_MEMPAK:
+                case PLUGIN_RAW:
+                    Command[5] = 1; break;
+                default: Command[5] = 0; break;
+                }
+            }
+            else //if (Controllers[Control].Present == PRESENT_MOUSE)
+            {
+                //N64 Mouse
+                Command[3] = 0x02;
+                Command[4] = 0x00;
+                Command[5] = 0x00;
             }
         }
         else
