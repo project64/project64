@@ -205,8 +205,7 @@ private:
     uint32_t *& m_DPC_CLOCK_REG;
     uint8_t *& m_DMEM;
     UWORD32 * m_GPR;
-    UDWORD * m_ACCUM;
-    UWORD32 * m_Flags;
+    RSPAccumulator & m_ACCUM;
     RSPVector * m_Vect;
     RSPFlag &VCOL, &VCOH;
     RSPFlag &VCCL, &VCCH;

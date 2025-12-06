@@ -73,12 +73,7 @@ CGPRRegisters::CGPRRegisters(UWORD32 (&m_GPR)[32]) :
 {
 }
 
-CRSPRegisters::CRSPRegisters() :
-    VCOL(m_Flags[0].UB[0]),
-    VCOH(m_Flags[0].UB[1]),
-    VCCL(m_Flags[1].UB[0]),
-    VCCH(m_Flags[1].UB[1]),
-    VCE(m_Flags[2].UB[0])
+CRSPRegisters::CRSPRegisters()
 {
     Reset();
 }
@@ -86,8 +81,12 @@ CRSPRegisters::CRSPRegisters() :
 void CRSPRegisters::Reset(void)
 {
     memset(m_GPR, 0, sizeof(m_GPR));
-    memset(m_Flags, 0, sizeof(m_Flags));
-    memset(m_ACCUM, 0, sizeof(m_ACCUM));
+    VCOL.Clear();
+    VCOH.Clear();
+    VCCL.Clear(); 
+    VCCH.Clear();
+    VCE.Clear();
+    m_ACCUM.Reset();
     for (size_t i = 0, n = sizeof(m_Vect) / sizeof(m_Vect[0]); i < n; i++)
     {
         m_Vect[i] = RSPVector();
@@ -111,36 +110,4 @@ void CRSPRegisters::Reset(void)
     m_Result = 0;
     m_In = 0;
     m_High = false;
-}
-
-int64_t CRSPRegisters::AccumulatorGet(uint8_t el)
-{
-    return (((int64_t)m_ACCUM[el].HW[3]) << 32) | (((int64_t)m_ACCUM[el].UHW[2]) << 16) | m_ACCUM[el].UHW[1];
-}
-
-void CRSPRegisters::AccumulatorSet(uint8_t el, int64_t Accumulator)
-{
-    m_ACCUM[el].HW[3] = (int16_t)(Accumulator >> 32);
-    m_ACCUM[el].HW[2] = (int16_t)(Accumulator >> 16);
-    m_ACCUM[el].HW[1] = (int16_t)(Accumulator);
-}
-
-uint16_t CRSPRegisters::AccumulatorSaturate(uint8_t el, bool High)
-{
-    if (m_ACCUM[el].HW[3] < 0)
-    {
-        if (m_ACCUM[el].UHW[3] != 0xFFFF || m_ACCUM[el].HW[2] >= 0)
-        {
-            return High ? 0x8000 : 0x0000;
-        }
-        else
-        {
-            return m_ACCUM[el].UHW[High ? 2 : 1];
-        }
-    }
-    if (m_ACCUM[el].UHW[3] != 0 || m_ACCUM[el].HW[2] < 0)
-    {
-        return High ? 0x7fff : 0xffff;
-    }
-    return m_ACCUM[el].UHW[High ? 2 : 1];
 }
