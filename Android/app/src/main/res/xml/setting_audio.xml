@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <CheckBoxPreference
-        android:key="audio_Enabled"
-        android:summary="@string/audioEnabled_summary"
-        android:title="@string/audioEnabled_title" />
-
-</PreferenceScreen>
