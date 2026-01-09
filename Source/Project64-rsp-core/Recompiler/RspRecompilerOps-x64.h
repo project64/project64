@@ -16,7 +16,7 @@ class CRSPRecompilerOps
 
     enum
     {
-        FunctionStackSize = 32,
+        FunctionStackSize = 40,
     };
 
     enum class AccumLocation

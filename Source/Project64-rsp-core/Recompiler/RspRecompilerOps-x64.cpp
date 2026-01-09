@@ -1301,10 +1301,9 @@ void CRSPRecompilerOps::Opcode_LQV(void)
         uint8_t Length = std::min((uint8_t)(((Address + 0x10) & ~0xF) - Address), (uint8_t)(16 - m_OpCode.del));
         if (Length == 16 && Address % 16 == 0 && m_OpCode.del == 0)
         {
-            m_Assembler->mov(asmjit::x86::r10, (uint64_t)m_DMEM);
-            m_Assembler->movdqu(asmjit::x86::xmm0, asmjit::x86::ptr(asmjit::x86::r10, Address));
-            m_Assembler->pshufd(asmjit::x86::xmm0, asmjit::x86::xmm0, 0x1B);
-            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)), asmjit::x86::xmm0);
+            asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt, false);
+            m_Assembler->movdqu(vt, asmjit::x86::ptr(asmjit::x86::r15, Address));
+            m_Assembler->pshufd(vt, vt, 0x1B);
         }
         else
         {
@@ -1424,6 +1423,7 @@ void CRSPRecompilerOps::UnknownOpcode(void)
 void CRSPRecompilerOps::EnterCodeBlock(void)
 {
     m_Assembler->push(asmjit::x86::r14);
+    m_Assembler->push(asmjit::x86::r15);
     m_Assembler->sub(asmjit::x86::rsp, FunctionStackSize);
     if (Profiling && m_CurrentBlock->CodeType() == RspCodeType_TASK)
     {
@@ -1431,6 +1431,7 @@ void CRSPRecompilerOps::EnterCodeBlock(void)
         m_Assembler->CallFunc(AddressOf(&StartTimer), "StartTimer");
     }
     m_Assembler->mov(asmjit::x86::r14, (uint64_t)&m_Reg);
+    m_Assembler->mov(asmjit::x86::r15, (uint64_t)m_DMEM);
 }
 
 void CRSPRecompilerOps::ExitCodeBlock(void)
@@ -1440,6 +1441,7 @@ void CRSPRecompilerOps::ExitCodeBlock(void)
         m_Assembler->CallFunc(AddressOf(&StopTimer), "StopTimer");
     }
     m_Assembler->add(asmjit::x86::rsp, FunctionStackSize);
+    m_Assembler->pop(asmjit::x86::r15);
     m_Assembler->pop(asmjit::x86::r14);
     m_Assembler->ret();
 }
