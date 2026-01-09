@@ -1,7 +1,6 @@
 #if defined(__amd64__) || defined(_M_X64)
 
 #include "RspAssembler.h"
-#include <Common/StdString.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Settings/Settings.h>
 
