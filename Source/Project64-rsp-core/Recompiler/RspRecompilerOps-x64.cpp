@@ -1288,7 +1288,51 @@ void CRSPRecompilerOps::Opcode_LLV(void)
 
 void CRSPRecompilerOps::Opcode_LDV(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    if ((m_OpCode.del & 0x3) != 0)
+    {
+        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
+        return;
+    }
+    if (m_RegState.IsGprConst(m_OpCode.base))
+    {
+        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
+        return;
+    }
+    bool vtWasMapped = m_RegState.VRegMapping(m_OpCode.vt).isValid();
+    asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt);
+    m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
+    if (m_OpCode.voffset != 0)
+    {
+        m_Assembler->add(asmjit::x86::eax, m_OpCode.voffset << 3);
+    }
+    m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+    m_Assembler->test(asmjit::x86::eax, 7);
+    asmjit::Label Unaligned = m_Assembler->newLabel();
+    m_Assembler->jnz(Unaligned);
+    m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax));
+    m_Assembler->mov(asmjit::x86::edx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax, 0, 4));
+    m_Assembler->shl(asmjit::x86::rcx, 32);
+    m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rdx);
+    if (m_OpCode.del == 0)
+    {
+        m_Assembler->pinsrq(vt, asmjit::x86::ecx, 1);
+    }
+    else
+    {
+        m_Assembler->pinsrq(vt, asmjit::x86::ecx, 0);
+    }
+    asmjit::Label EndLabel = m_Assembler->newLabel();
+    m_Assembler->jmp(EndLabel);
+    m_Assembler->bind(Unaligned);
+    if (vtWasMapped)
+    {
+        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)), vt);
+    }
+    m_Assembler->MoveConstToVariable(&m_System.m_OpCode.Value, "m_OpCode.Value", m_OpCode.Value);
+    m_Assembler->CallThis(&RSPSystem.m_Op, AddressOf(&RSPOp::LDV), "RSPOp::LDV");
+    m_Assembler->movdqa(vt, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
+    m_Assembler->bind(EndLabel);
 }
 
 void CRSPRecompilerOps::Opcode_LQV(void)
