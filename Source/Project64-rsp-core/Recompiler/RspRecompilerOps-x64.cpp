@@ -1100,7 +1100,40 @@ void CRSPRecompilerOps::Vector_VMUDL(void)
 
 void CRSPRecompilerOps::Vector_VMUDM(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDM, "RSPOp::Vector_VMUDM");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm sign = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm vta = m_RegState.MapXmmTemp(false, 0, 0);
+
+    // Phase 1: Multiply signed × unsigned
+    m_Assembler->movdqa(vta, vs);
+    m_Assembler->pmullw(vta, vte); // ACCL = low 16 bits
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), vta);
+
+    m_Assembler->movdqa(sign, vs);
+    m_Assembler->pmulhuw(sign, vte); // High 16 bits (unsigned)
+
+    // Phase 2: Correct for signed vs
+    m_Assembler->movdqa(vta, vs);
+    m_Assembler->psraw(vta, 15);   // sign = sign extend vs
+    m_Assembler->pand(vta, vte);   // vta = vte & sign
+    m_Assembler->psubw(sign, vta); // ACCM = high - correction
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), sign);
+
+    // Phase 3: Sign extend ACCM to ACCH
+    m_Assembler->movdqa(vta, sign);
+    m_Assembler->psraw(vta, 15); // ACCH = sign extend ACCM
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), vta);
+
+    // vd = ACCM
+    m_RegState.UnprotectXmm(vte);
+    m_RegState.UnprotectXmm(vs);
+    m_RegState.UnprotectXmm(sign);
+    m_RegState.UnprotectXmm(vta);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+    m_Assembler->movdqa(vd, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
 }
 
 void CRSPRecompilerOps::Vector_VMUDN(void)
