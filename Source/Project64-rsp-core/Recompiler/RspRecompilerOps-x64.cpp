@@ -1324,7 +1324,82 @@ void CRSPRecompilerOps::Vector_VMADM(void)
 
 void CRSPRecompilerOps::Vector_VMADN(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMADN, "RSPOp::Vector_VMADN");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm lo = m_RegState.MapSpecificXmmTemp(0, false, 0, 0);
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm hi = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm sign = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm vsa = m_RegState.MapXmmTemp(false, 0, 0);
+
+    // Phase 1: Multiply
+    m_Assembler->movdqa(lo, vs);
+    m_Assembler->pmullw(lo, vte);
+    m_Assembler->movdqa(hi, vs);
+    m_Assembler->pmulhuw(hi, vte);
+    m_Assembler->movdqa(sign, vte);
+    m_Assembler->psraw(sign, 15);
+    m_Assembler->movdqa(vsa, vs);
+    m_Assembler->pand(vsa, sign);
+    m_Assembler->psubw(hi, vsa);
+
+    // Phase 2: Accumulate - reuse sign as omask
+    asmjit::x86::Xmm omask = sign;
+
+    // Add to ACCL
+    m_Assembler->movdqa(omask, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddusw(omask, lo);
+    m_Assembler->movdqa(vsa, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddw(vsa, lo);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), vsa);
+    m_Assembler->pcmpeqw(omask, vsa);
+    // Invert omask without needing zero: NOT(omask)
+    m_Assembler->pcmpeqw(vsa, vsa); // vsa = all 1s
+    m_Assembler->pxor(omask, vsa);  // omask = NOT(omask)
+    m_Assembler->psubw(hi, omask);
+
+    // Add to ACCM
+    m_Assembler->movdqa(omask, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddusw(omask, hi);
+    m_Assembler->movdqa(vsa, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddw(vsa, hi);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), vsa);
+    m_Assembler->pcmpeqw(omask, vsa);
+    m_Assembler->pcmpeqw(vsa, vsa); // vsa = all 1s
+    m_Assembler->pxor(omask, vsa);  // omask = NOT(omask)
+
+    // Add to ACCH
+    m_Assembler->psraw(hi, 15);
+    m_Assembler->movdqa(vsa, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->paddw(vsa, hi);
+    m_Assembler->psubw(vsa, omask);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), vsa);
+
+    // Phase 3: Saturation
+    m_RegState.UnprotectXmm(sign);
+    m_RegState.UnprotectXmm(vsa);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+    asmjit::x86::Xmm nhi = vte;
+    asmjit::x86::Xmm nmd = vs;
+    asmjit::x86::Xmm cmask = lo;
+
+    m_Assembler->movdqa(nhi, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->psraw(nhi, 15);
+    m_Assembler->movdqa(nmd, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->psraw(nmd, 15);
+
+    m_Assembler->movdqa(cmask, nhi);
+    m_Assembler->pcmpeqw(cmask, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->movdqa(hi, nhi);
+    m_Assembler->pcmpeqw(hi, nmd);
+    m_Assembler->pand(cmask, hi);
+
+    // Create zero inline for final comparison
+    m_Assembler->pxor(hi, hi);     // hi = zero
+    m_Assembler->pcmpeqw(nhi, hi); // cval = (nhi == 0)
+    m_Assembler->movdqa(vd, nhi);
+    m_Assembler->pblendvb(vd, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), cmask);
 }
 
 void CRSPRecompilerOps::Vector_VMADH(void)
