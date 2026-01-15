@@ -1012,7 +1012,65 @@ void CRSPRecompilerOps::COP2_VECTOR(void)
 
 void CRSPRecompilerOps::Vector_VMULF(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMULF, "RSPOp::Vector_VMULF");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm lo = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm hi = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm round = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm sign1 = m_RegState.MapXmmTemp(false, 0, 0);
+
+    // Phase 1: Multiply and shift left by 1 (×2)
+    m_Assembler->movdqa(lo, vs);
+    m_Assembler->pmullw(lo, vte); // lo = vs * vte (low)
+
+    m_Assembler->pcmpeqw(round, round); // round = all 1s
+    m_Assembler->movdqa(sign1, lo);
+    m_Assembler->psrlw(sign1, 15); // sign1 = lo >> 15 (carry bit)
+
+    m_Assembler->paddw(lo, lo);    // lo *= 2
+    m_Assembler->psllw(round, 15); // round = 0x8000
+
+    m_Assembler->movdqa(hi, vs);
+    m_Assembler->pmulhw(hi, vte); // hi = vs * vte (high)
+
+    m_Assembler->movdqa(vs, lo);
+    m_Assembler->psrlw(vs, 15);    // vs = lo >> 15 (sign2)
+    m_Assembler->paddw(sign1, vs); // sign1 = sign1 + sign2 (total carry)
+
+    m_Assembler->psllw(hi, 1); // hi *= 2
+
+    // Phase 2: Add 0x8000 to ACCL
+    m_Assembler->paddw(lo, round); // ACCL = lo + 0x8000
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), lo);
+
+    // Phase 3: ACCM = hi + carry
+    m_Assembler->paddw(hi, sign1); // ACCM = hi + carry
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), hi);
+
+    // Phase 4: Calculate ACCH and saturate
+    m_Assembler->movdqa(vs, hi);
+    m_Assembler->psraw(vs, 15); // neg = sign extend ACCM
+
+    // Reload original vs for comparison
+    m_Assembler->movdqa(lo, asmjit::x86::xmmword_ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vs)));
+    m_Assembler->pcmpeqw(lo, vte); // neq = (vs == vte)
+
+    m_Assembler->movdqa(round, lo); // round = neq
+    m_Assembler->pandn(round, vs);  // ACCH = ~neq & neg (FIXED!)
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), round);
+
+    m_Assembler->pand(lo, vs);  // eq = neq & neg
+    m_Assembler->paddw(hi, lo); // vd = ACCM + eq
+
+    // Store result
+    m_RegState.UnprotectXmm(vte);
+    m_RegState.UnprotectXmm(sign1);
+    m_RegState.UnprotectXmm(round);
+    m_RegState.UnprotectXmm(lo);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+    m_Assembler->movdqa(vd, hi);
 }
 
 void CRSPRecompilerOps::Vector_VMULU(void)
