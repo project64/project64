@@ -1632,7 +1632,17 @@ void CRSPRecompilerOps::Vector_VXOR(void)
     }
     else
     {
-        Cheat_r4300iOpcode(&RSPOp::Vector_VXOR, "RSPOp::Vector_VXOR", false);
+        asmjit::x86::Xmm vs, vte;
+        if (writeToAccum || writeToDest)
+        {
+            vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+            vs = writeToDest ? m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vs) : m_RegState.MapXmmTemp(true, m_OpCode.vs);
+            m_Assembler->pxor(vs, vte);
+        }
+        if (writeToAccum)
+        {
+            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), vs);
+        }
     }
 }
 
