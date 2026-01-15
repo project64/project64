@@ -73,8 +73,8 @@ private:
     void DmaReadDone(uint32_t End);
     void SystemReset(void);
 
-    uint8_t m_IMEM[0x1000];
-    uint8_t m_DMEM[0x1000];
+    uint8_t m_IMEM[0x1000] alignas(16);
+    uint8_t m_DMEM[0x1000] alignas(16);
     CN64System & m_System;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
