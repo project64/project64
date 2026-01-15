@@ -1170,7 +1170,77 @@ void CRSPRecompilerOps::Vector_VMUDH(void)
 
 void CRSPRecompilerOps::Vector_VMACF(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMACF, "RSPOp::Vector_VMACF");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm lo = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm hi = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm md = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm carry = m_RegState.MapXmmTemp(false, 0, 0);
+
+    // Phase 1: Multiply signed × signed
+    m_Assembler->movdqa(lo, vs);
+    m_Assembler->pmullw(lo, vte); // lo = low 16 bits
+    m_Assembler->movdqa(hi, vs);
+    m_Assembler->pmulhw(hi, vte); // hi = high 16 bits (signed)
+
+    // Phase 2: Shift left by 1 (fraction multiply)
+    m_Assembler->movdqa(md, hi);
+    m_Assembler->psllw(md, 1); // md = hi << 1
+    m_Assembler->movdqa(carry, lo);
+    m_Assembler->psrlw(carry, 15); // carry = lo >> 15
+    m_Assembler->psraw(hi, 15);    // hi = sign extend
+    m_Assembler->por(md, carry);   // md |= carry (from lo to md)
+    m_Assembler->psllw(lo, 1);     // lo = lo << 1
+
+    // Phase 3: Add to ACCL (reuse vte as omask)
+    asmjit::x86::Xmm omask = vte;
+    m_Assembler->movdqa(omask, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddusw(omask, lo);
+    m_Assembler->movdqa(carry, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddw(carry, lo);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), carry);
+    m_Assembler->pcmpeqw(omask, carry);
+    m_Assembler->pcmpeqw(carry, carry); // all 1s
+    m_Assembler->pxor(omask, carry);    // invert
+    m_Assembler->psubw(md, omask);
+
+    // Propagate carry from md to hi
+    m_Assembler->pxor(carry, carry);
+    m_Assembler->pcmpeqw(carry, md); // carry = (md == 0)
+    m_Assembler->pand(carry, omask);
+    m_Assembler->psubw(hi, carry);
+
+    // Phase 4: Add to ACCM
+    m_Assembler->movdqa(omask, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddusw(omask, md);
+    m_Assembler->movdqa(carry, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddw(carry, md);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), carry);
+    m_Assembler->pcmpeqw(omask, carry);
+    m_Assembler->pcmpeqw(carry, carry);
+    m_Assembler->pxor(omask, carry);
+
+    // Phase 5: Add to ACCH
+    m_Assembler->movdqa(carry, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->paddw(carry, hi);
+    m_Assembler->psubw(carry, omask);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), carry);
+
+    // Phase 6: Signed saturation (pack ACCM:ACCH)
+    m_RegState.UnprotectXmm(vte);
+    m_RegState.UnprotectXmm(md);
+    m_RegState.UnprotectXmm(carry);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+
+    m_Assembler->movdqa(lo, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->movdqa(hi, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->movdqa(vs, lo);    // reuse vs
+    m_Assembler->punpcklwd(vs, hi); // vs = unpacklo(ACCM, ACCH)
+    m_Assembler->punpckhwd(lo, hi); // lo = unpackhi(ACCM, ACCH)
+    m_Assembler->packssdw(vs, lo);  // signed pack
+    m_Assembler->movdqa(vd, vs);
 }
 
 void CRSPRecompilerOps::Vector_VMACU(void)
