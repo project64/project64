@@ -1260,7 +1260,66 @@ void CRSPRecompilerOps::Vector_VMADL(void)
 
 void CRSPRecompilerOps::Vector_VMADM(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMADM, "RSPOp::Vector_VMADM");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm lo = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm hi = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm temp = m_RegState.MapXmmTemp(false, 0, 0);
+
+    // Phase 1: Multiply signed vs × unsigned vte
+    m_Assembler->movdqa(lo, vs);
+    m_Assembler->pmullw(lo, vte); // lo = low 16 bits
+
+    m_Assembler->movdqa(hi, vs);
+    m_Assembler->pmulhuw(hi, vte); // hi = high 16 bits (unsigned)
+
+    m_Assembler->movdqa(temp, vs);
+    m_Assembler->psraw(temp, 15); // temp = sign extend vs
+    m_Assembler->pand(temp, vte); // temp = vte & sign
+    m_Assembler->psubw(hi, temp); // hi -= correction
+
+    // Phase 2: Add to ACCL with overflow detection
+    m_Assembler->movdqa(temp, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddusw(temp, lo); // temp = saturated add
+    m_Assembler->movdqa(vs, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)));
+    m_Assembler->paddw(vs, lo); // vs = ACCL + lo
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), vs);
+    m_Assembler->pcmpeqw(temp, vs);
+    m_Assembler->pcmpeqw(lo, lo); // lo = all 1s
+    m_Assembler->pxor(temp, lo);  // temp = overflow mask
+    m_Assembler->psubw(hi, temp); // Carry propagation
+
+    // Phase 3: Add to ACCM with overflow detection
+    m_Assembler->movdqa(temp, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddusw(temp, hi); // temp = saturated add
+    m_Assembler->movdqa(vs, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->paddw(vs, hi); // vs = ACCM + hi
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), vs);
+    m_Assembler->pcmpeqw(temp, vs);
+    m_Assembler->pcmpeqw(lo, lo); // lo = all 1s (reuse)
+    m_Assembler->pxor(temp, lo);  // temp = overflow mask
+
+    // Phase 4: Add to ACCH
+    m_Assembler->psraw(hi, 15); // Sign extend hi
+    m_Assembler->movdqa(vs, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->paddw(vs, hi);
+    m_Assembler->psubw(vs, temp);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), vs);
+
+    // Phase 5: Saturate ACCM:ACCH for output
+    m_RegState.UnprotectXmm(vte);
+    m_RegState.UnprotectXmm(temp);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+
+    m_Assembler->movdqa(lo, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)));
+    m_Assembler->movdqa(hi, asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)));
+    m_Assembler->movdqa(vs, lo);
+    m_Assembler->punpcklwd(vs, hi);
+    m_Assembler->punpckhwd(lo, hi);
+    m_Assembler->packssdw(vs, lo);
+    m_Assembler->movdqa(vd, vs);
 }
 
 void CRSPRecompilerOps::Vector_VMADN(void)
