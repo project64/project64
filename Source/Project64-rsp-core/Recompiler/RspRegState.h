@@ -26,6 +26,7 @@ public:
     asmjit::x86::Xmm MapXmmZero();
     asmjit::x86::Xmm MapXmmReg(uint8_t vreg, uint8_t source, bool loadSource = true);
     asmjit::x86::Xmm MapXmmTemp(bool loadReg, uint8_t vreg, uint8_t e = 0);
+    asmjit::x86::Xmm MapSpecificXmmTemp(uint8_t xmmIndex, bool loadReg, uint8_t vreg, uint8_t e = 0);
     asmjit::x86::Xmm VRegMapping(uint8_t vreg);
     void ProtectXmm(asmjit::x86::Xmm reg);
     void UnprotectXmm(asmjit::x86::Xmm reg);
