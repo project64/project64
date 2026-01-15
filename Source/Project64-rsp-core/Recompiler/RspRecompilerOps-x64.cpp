@@ -1138,7 +1138,29 @@ void CRSPRecompilerOps::Vector_VMUDM(void)
 
 void CRSPRecompilerOps::Vector_VMUDN(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDN, "RSPOp::Vector_VMUDN");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+
+    asmjit::x86::Xmm sign = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm vsa = m_RegState.MapXmmTemp(false, 0, 0);
+
+    m_Assembler->movdqa(vd, vs);
+    m_Assembler->pmullw(vd, vte);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), vd);
+    m_Assembler->movdqa(vsa, vs);
+    m_Assembler->pmulhuw(vsa, vte);
+
+    m_Assembler->movdqa(sign, vte);
+    m_Assembler->psraw(sign, 15);
+    m_Assembler->pand(sign, vs);
+    m_Assembler->psubw(vsa, sign);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), vsa);
+
+    m_Assembler->psraw(vsa, 15);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), vsa);
 }
 
 void CRSPRecompilerOps::Vector_VMUDH(void)
