@@ -566,6 +566,8 @@ void CRSPRecompiler::CompileCodeBlock(RspCodeBlock & block)
 
     block.SetCompiledLocation(funcPtr);
     m_Assembler->finalize();
+    m_CodeHolder.flatten();
+    m_CodeHolder.resolveUnresolvedLinks();
     m_CodeHolder.relocateToBase((uint64_t)funcPtr);
     size_t codeSize = m_CodeHolder.codeSize();
     m_CodeHolder.copyFlattenedData(funcPtr, codeSize);

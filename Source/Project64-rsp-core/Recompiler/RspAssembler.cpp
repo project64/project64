@@ -14,6 +14,9 @@ RspAssembler::RspAssembler(asmjit::CodeHolder * CodeHolder, std::string & CodeLo
     addFlags(asmjit::FormatFlags::kExplainImms);
     setIndentation(asmjit::FormatIndentationGroup::kCode, 2);
     setIndentation(asmjit::FormatIndentationGroup::kComment, 2);
+
+    m_PrimarySection = CodeHolder->textSection();
+    CodeHolder->newSection(&m_SecondarySection, ".secondary", SIZE_MAX, asmjit::SectionFlags::kNone, 8);
 }
 
 void RspAssembler::handleError(asmjit::Error /*err*/, const char * /*message*/, asmjit::BaseEmitter * /*origin*/)
@@ -109,6 +112,16 @@ asmjit::Error RspAssembler::_log(const char * data, size_t size) noexcept
 void RspAssembler::Reset(void)
 {
     setLogger(LogAsmCode ? this : nullptr);
+}
+
+void RspAssembler::SetPrimarySection(void)
+{
+    section(m_PrimarySection);
+}
+
+void RspAssembler::SetSecondarySection(void)
+{
+    section(m_SecondarySection);
 }
 
 void RspAssembler::CallFunc(void * FunctPtr, const char * FunctName)

@@ -1749,7 +1749,7 @@ void CRSPRecompilerOps::Opcode_LDV(void)
         m_Assembler->pinsrq(vt, asmjit::x86::ecx, 0);
     }
     asmjit::Label EndLabel = m_Assembler->newLabel();
-    m_Assembler->jmp(EndLabel);
+    m_Assembler->SetSecondarySection();
     m_Assembler->bind(Unaligned);
     if (vtWasMapped)
     {
@@ -1758,6 +1758,8 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     m_Assembler->MoveConstToVariable(&m_System.m_OpCode.Value, "m_OpCode.Value", m_OpCode.Value);
     m_Assembler->CallThis(&RSPSystem.m_Op, AddressOf(&RSPOp::LDV), "RSPOp::LDV");
     m_Assembler->movdqa(vt, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
+    m_Assembler->jmp(EndLabel);
+    m_Assembler->SetPrimarySection();
     m_Assembler->bind(EndLabel);
 }
 

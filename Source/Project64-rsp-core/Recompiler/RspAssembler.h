@@ -14,6 +14,8 @@ public:
     RspAssembler(asmjit::CodeHolder * CodeHolder, std::string & CodeLog);
 
     void Reset(void);
+    void SetPrimarySection(void);
+    void SetSecondarySection(void);
 
     void CallFunc(void * FunctPtr, const char * FunctName);
     void CallThis(void * ThisPtr, void * FunctPtr, const char * FunctName);
@@ -55,6 +57,8 @@ private:
     std::string & m_CodeLog;
     LabelSymbolMap m_LabelSymbols;
     NumberSymbolMap m_NumberSymbols;
+    asmjit::Section * m_PrimarySection;
+    asmjit::Section * m_SecondarySection;
 };
 
 #endif
