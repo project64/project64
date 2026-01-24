@@ -58,7 +58,7 @@ asmjit::x86::Xmm CRspRegState::MapXmmZero()
         }
     }
 
-    XmmState searchOrder[] = { XmmState::Free, XmmState::Temp };
+    XmmState searchOrder[] = {XmmState::Free, XmmState::Temp};
     for (XmmState state : searchOrder)
     {
         for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
@@ -284,7 +284,7 @@ asmjit::x86::Xmm CRspRegState::MapSpecificXmmTemp(uint8_t xmmIndex, bool loadReg
         asmjit::x86::Xmm srcReg = VRegMapping(vreg);
         if (srcReg.isValid())
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler->movdqa(tempReg, srcReg);
         }
         else
         {
