@@ -1782,6 +1782,33 @@ void CRSPRecompilerOps::Opcode_LQV(void)
             Cheat_r4300iOpcode(&RSPOp::LQV, "RSPOp::LQV", false);
         }
     }
+    else if (m_OpCode.del == 0)
+    {
+        asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt, false);
+
+        asmjit::x86::Gpd addr = asmjit::x86::eax;
+        m_Assembler->mov(addr, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
+        m_Assembler->add(addr, m_OpCode.voffset << 4);
+        m_Assembler->and_(addr, 0xFFF);
+
+        asmjit::Label unaligned = m_Assembler->newLabel();
+        asmjit::Label done = m_Assembler->newLabel();
+        m_Assembler->test(addr, 0xF);
+        m_Assembler->jnz(unaligned);
+
+        m_Assembler->movdqu(vt, asmjit::x86::ptr(asmjit::x86::r15, addr));
+        m_Assembler->pshufd(vt, vt, 0x1B);
+
+        m_Assembler->SetSecondarySection();
+        m_Assembler->bind(unaligned);
+        m_Assembler->int3();
+        m_Assembler->MoveConstToVariable(&m_System.m_OpCode.Value, "m_OpCode.Value", m_OpCode.Value);
+        m_Assembler->CallThis(&RSPSystem.m_Op, AddressOf(&RSPOp::LQV), "RSPOp::LQV");
+        m_Assembler->movdqa(vt, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
+        m_Assembler->jmp(done);
+        m_Assembler->SetPrimarySection();
+        m_Assembler->bind(done);
+    }
     else
     {
         Cheat_r4300iOpcode(&RSPOp::LQV, "RSPOp::LQV", false);
