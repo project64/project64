@@ -58,10 +58,15 @@ asmjit::x86::Xmm CRspRegState::MapXmmZero()
         }
     }
 
-    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+    XmmState searchOrder[] = { XmmState::Free, XmmState::Temp };
+    for (XmmState state : searchOrder)
     {
-        if (m_XmmState[i] == XmmState::Free)
+        for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
         {
+            if (m_XmmState[i] != state || m_XmmProtected[i])
+            {
+                continue;
+            }
             m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d as zero", i).c_str());
             m_XmmState[i] = XmmState::Zero;
             m_XmmProtected[i] = true;
