@@ -285,6 +285,47 @@ asmjit::x86::Xmm CRspRegState::MapSpecificXmmTemp(uint8_t xmmIndex, bool loadReg
         if (srcReg.isValid())
         {
             m_Assembler->movdqa(tempReg, srcReg);
+            if (e >= 8)
+            {
+                uint8_t element = 7 - (e - 8);
+                if (element != 0)
+                {
+                    m_Assembler->psrldq(tempReg, element * 2); // Shift element to position 0
+                }
+                m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(0, 0, 0, 0));
+                m_Assembler->pshufd(tempReg, tempReg, _MM_SHUFFLE(0, 0, 0, 0));
+            }
+            else if (e > 1)
+            {
+                // Quarter/half modes
+                switch (e)
+                {
+                case 2: // 0q
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(3, 3, 1, 1));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(3, 3, 1, 1));
+                    break;
+                case 3: // 1q
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(2, 2, 0, 0));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(2, 2, 0, 0));
+                    break;
+                case 4: // 0h
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(3, 3, 3, 3));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(3, 3, 3, 3));
+                    break;
+                case 5: // 1h
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(2, 2, 2, 2));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(2, 2, 2, 2));
+                    break;
+                case 6: // 2h
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(1, 1, 1, 1));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(1, 1, 1, 1));
+                    break;
+                case 7: // 3h
+                    m_Assembler->pshuflw(tempReg, tempReg, _MM_SHUFFLE(0, 0, 0, 0));
+                    m_Assembler->pshufhw(tempReg, tempReg, _MM_SHUFFLE(0, 0, 0, 0));
+                    break;
+                }
+            }
         }
         else
         {
