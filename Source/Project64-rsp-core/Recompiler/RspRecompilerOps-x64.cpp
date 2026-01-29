@@ -1948,7 +1948,35 @@ void CRSPRecompilerOps::Opcode_SBV(void)
 
 void CRSPRecompilerOps::Opcode_SSV(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::SSV, "RSPOp::SSV");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    // Calculate address: (base + voffset << 1) & 0xFFF
+    m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
+    if (m_OpCode.voffset != 0)
+    {
+        m_Assembler->add(asmjit::x86::eax, m_OpCode.voffset << 1);
+    }
+    m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+
+    // Load the vector register
+    asmjit::x86::Xmm vt = m_RegState.MapXmmTemp(true, m_OpCode.vt, 0);
+
+    // Extract and store first byte: vt.u8[15 - (del & 0xF)]
+    uint8_t element = 15 - (m_OpCode.del & 0xF);
+    m_Assembler->pextrb(asmjit::x86::ecx, vt, element);
+
+    m_Assembler->mov(asmjit::x86::edx, asmjit::x86::eax);
+    m_Assembler->xor_(asmjit::x86::edx, 3);
+    m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rdx), asmjit::x86::cl);
+
+    // Extract and store second byte: vt.u8[15 - ((del+1) & 0xF)]
+    element = 15 - ((m_OpCode.del + 1) & 0xF);
+    m_Assembler->pextrb(asmjit::x86::ecx, vt, element);
+
+    m_Assembler->inc(asmjit::x86::eax);
+    m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+    m_Assembler->xor_(asmjit::x86::eax, 3);
+    m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rax), asmjit::x86::cl);
 }
 
 void CRSPRecompilerOps::Opcode_SLV(void)
