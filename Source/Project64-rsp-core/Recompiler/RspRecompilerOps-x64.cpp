@@ -1134,7 +1134,28 @@ void CRSPRecompilerOps::Vector_VMULQ(void)
 
 void CRSPRecompilerOps::Vector_VMUDL(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDL, "RSPOp::Vector_VMUDL");
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm accl = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm zero = m_RegState.MapXmmTemp(false, 0, 0);
+
+    m_Assembler->movdqa(accl, vs);
+    m_Assembler->pmulhuw(accl, vte);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Low)), accl);
+
+    // Zero out ACCM and ACCH
+    m_Assembler->pxor(zero, zero);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::Middle)), zero);
+    m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, AccumOffset(AccumLocation::High)), zero);
+
+    // Free temps before mapping vd
+    m_RegState.UnprotectXmm(vte);
+    m_RegState.UnprotectXmm(vs);
+    m_RegState.UnprotectXmm(zero);
+
+    // vd = ACCL
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+    m_Assembler->movdqa(vd, accl);
 }
 
 void CRSPRecompilerOps::Vector_VMUDM(void)
