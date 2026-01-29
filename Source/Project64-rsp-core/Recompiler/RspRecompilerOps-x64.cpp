@@ -1785,7 +1785,12 @@ void CRSPRecompilerOps::Opcode_LDV(void)
         Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
         return;
     }
-    bool vtWasMapped = m_RegState.VRegMapping(m_OpCode.vt).isValid();
+    uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - m_OpCode.del));
+    if (Length != 8)
+    {
+        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
+        return;
+    }
     asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt);
     m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
     if (m_OpCode.voffset != 0)
@@ -1795,9 +1800,46 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     m_Assembler->and_(asmjit::x86::eax, 0xFFF);
     m_Assembler->test(asmjit::x86::eax, 7);
     asmjit::Label Unaligned = m_Assembler->newLabel();
+    asmjit::Label LoadDoneLabel = m_Assembler->newLabel();
     m_Assembler->jnz(Unaligned);
     m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax));
     m_Assembler->mov(asmjit::x86::edx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax, 0, 4));
+    m_Assembler->SetSecondarySection();
+    m_Assembler->bind(Unaligned);
+
+    // rcx will hold the result, edi is counter
+    m_Assembler->xor_(asmjit::x86::rcx, asmjit::x86::rcx);
+    m_Assembler->xor_(asmjit::x86::edi, asmjit::x86::edi); // Start from 0
+
+    asmjit::Label LoopStart = m_Assembler->newLabel();
+    m_Assembler->bind(LoopStart);
+
+    // Shift previous bytes left (except first iteration)
+    m_Assembler->test(asmjit::x86::edi, asmjit::x86::edi);
+    asmjit::Label SkipShift = m_Assembler->newLabel();
+    m_Assembler->jz(SkipShift);
+    m_Assembler->shl(asmjit::x86::rcx, 8);
+    m_Assembler->bind(SkipShift);
+
+    // Load byte at (Address + edi) ^ 3
+    m_Assembler->mov(asmjit::x86::esi, asmjit::x86::eax);
+    m_Assembler->add(asmjit::x86::esi, asmjit::x86::edi);
+    m_Assembler->and_(asmjit::x86::esi, 0xFFF);
+    m_Assembler->xor_(asmjit::x86::esi, 3);
+    m_Assembler->movzx(asmjit::x86::esi, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rsi));
+    m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rsi);
+
+    // Increment and loop
+    m_Assembler->inc(asmjit::x86::edi);
+    m_Assembler->cmp(asmjit::x86::edi, Length);
+    m_Assembler->jl(LoopStart); // Loop while edi < Length
+
+    m_Assembler->mov(asmjit::x86::rdx, asmjit::x86::rcx);
+    m_Assembler->xor_(asmjit::x86::rcx, asmjit::x86::rcx);
+
+    m_Assembler->jmp(LoadDoneLabel);
+    m_Assembler->SetPrimarySection();
+    m_Assembler->bind(LoadDoneLabel);
     m_Assembler->shl(asmjit::x86::rcx, 32);
     m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rdx);
     if (m_OpCode.del == 0)
@@ -1808,19 +1850,6 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     {
         m_Assembler->pinsrq(vt, asmjit::x86::ecx, 0);
     }
-    asmjit::Label EndLabel = m_Assembler->newLabel();
-    m_Assembler->SetSecondarySection();
-    m_Assembler->bind(Unaligned);
-    if (vtWasMapped)
-    {
-        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)), vt);
-    }
-    m_Assembler->MoveConstToVariable(&m_System.m_OpCode.Value, "m_OpCode.Value", m_OpCode.Value);
-    m_Assembler->CallThis(&RSPSystem.m_Op, AddressOf(&RSPOp::LDV), "RSPOp::LDV");
-    m_Assembler->movdqa(vt, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
-    m_Assembler->jmp(EndLabel);
-    m_Assembler->SetPrimarySection();
-    m_Assembler->bind(EndLabel);
 }
 
 void CRSPRecompilerOps::Opcode_LQV(void)
