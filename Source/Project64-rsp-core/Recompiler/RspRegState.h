@@ -1,3 +1,5 @@
+#if defined(__amd64__) || defined(_M_X64)
+
 #pragma once
 #include <Project64-rsp-core/Recompiler/asmjit.h>
 #include <stdint.h>
@@ -66,3 +68,5 @@ private:
     uint32_t m_GprConstValue[32];
     bool m_FlagIsZero[static_cast<size_t>(RspFlags::MaxFlags)];
 };
+
+#endif

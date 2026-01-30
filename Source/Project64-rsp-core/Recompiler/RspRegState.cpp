@@ -1,3 +1,5 @@
+#if defined(__amd64__) || defined(_M_X64)
+
 #include "RspRegState.h"
 #include "Recompiler/RspAssembler.h"
 #include "Recompiler/RspRecompilerOps-x64.h"
@@ -441,3 +443,5 @@ void CRspRegState::WriteBackRegisters()
         FreeXmmReg(i);
     }
 }
+
+#endif
