@@ -18,13 +18,9 @@ CRspRegState::CRspRegState(CRSPRecompilerOps & RecompilerOps) :
     m_GprIsConst[0] = true;
     m_GprConstValue[0] = 0;
 
-    for (uint32_t i = 0; i < 6; i++)
+    for (uint32_t i = 0; i < 16; i++)
     {
         m_XmmState[i] = XmmState::Free;
-    }
-    for (uint32_t i = 6; i < 16; i++)
-    {
-        m_XmmState[i] = XmmState::Reserved;
     }
     for (uint32_t i = 0; i < 16; i++)
     {
