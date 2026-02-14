@@ -1134,6 +1134,8 @@ void CRSPRecompilerOps::Vector_VMULQ(void)
 
 void CRSPRecompilerOps::Vector_VMUDL(void)
 {
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
     asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
     asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
     asmjit::x86::Xmm accl = m_RegState.MapXmmTemp(false, 0, 0);
