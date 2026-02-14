@@ -73,6 +73,8 @@ private:
     void (*&ProcessDList)(void);
 
     CHle m_hle;
+    void * m_TaskEnter;
+    void * m_TaskLeave;
     TaskFunctionMap m_FunctionMap;
     const TaskFunctions * m_TaskFunctions;
     CRSPSystem & m_System;

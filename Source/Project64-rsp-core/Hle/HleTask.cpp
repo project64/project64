@@ -10,6 +10,8 @@
 CHleTask::CHleTask(CRSPSystem & System) :
     CGPRRegisters(System.m_Reg.m_GPR),
     m_hle(System),
+    m_TaskEnter(nullptr),
+    m_TaskLeave(nullptr),
     m_System(System),
     m_Recompiler(System.m_Recompiler),
     m_RSPRegisterHandler(System.m_RSPRegisterHandler),
@@ -98,6 +100,17 @@ void CHleTask::SetupCommandList(const TASK_INFO & TaskInfo, HLETaskBooter bootTy
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     m_TaskFunctions = nullptr;
+
+    if (m_TaskEnter == nullptr)
+    {
+        m_TaskEnter = m_Recompiler.CompileTaskEnter();
+        m_TaskLeave = m_Recompiler.CompileTaskLeave();
+        if (m_TaskEnter == nullptr || m_TaskLeave == nullptr)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+    }
 
     TaskFunctions JumpFunctions;
     RspCodeBlocks Functions;
@@ -235,6 +248,8 @@ void CHleTask::ExecuteTask_c2193700(const TASK_INFO & TaskInfo)
     {
         RSPSystem.BasicSyncCheck();
     }
+    typedef void (*FuncPtr)();
+    ((FuncPtr)m_TaskEnter)();
 
     do
     {
@@ -251,7 +266,7 @@ void CHleTask::ExecuteTask_c2193700(const TASK_INFO & TaskInfo)
         }
         TaskFunctionAddress FunctionAddress = (*m_TaskFunctions)[funcIndex];
         *m_SP_PC_REG = FunctionAddress.first;
-        typedef void (*FuncPtr)();
+
         FuncPtr func = (FuncPtr)FunctionAddress.second;
         if (func == nullptr)
         {
@@ -306,6 +321,7 @@ void CHleTask::ExecuteTask_c2193700(const TASK_INFO & TaskInfo)
         *m_MI_INTR_REG |= MI_INTR_SP;
         CheckInterrupts();
     }
+    ((FuncPtr)m_TaskLeave)();
 }
 
 void CHleTask::SetupTask_B4C62BFC(const TASK_INFO & TaskInfo)

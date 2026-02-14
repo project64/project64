@@ -13,6 +13,9 @@ class CRSPSystem;
 class RspAssembler;
 class RspCodeBlock;
 
+#pragma warning(push)
+#pragma warning(disable : 4324) // Padding due to alignment specifier
+
 class CRSPRecompiler :
     public asmjit::ErrorHandler
 {
@@ -25,6 +28,8 @@ public:
     ~CRSPRecompiler();
 
     void Reset();
+    void * CompileTaskEnter();
+    void * CompileTaskLeave();
     void * CompileHLETask(uint32_t Address, RspCodeBlocks & Functions, const uint32_t DispatchAddress);
     void Log(_Printf_format_string_ const char * Text, ...);
 
@@ -44,6 +49,7 @@ private:
     void CompileOpcode(uint32_t PC);
     void handleError(asmjit::Error err, const char * message, asmjit::BaseEmitter * origin);
     void SetupRspAssembler();
+    void FinalizeAssembler(void * funcPtr);
 
     CRSPSystem & m_System;
     CRSPRecompilerOps m_RecompilerOps;
@@ -58,7 +64,10 @@ private:
     RspAssembler * m_Assembler;
     BranchTargets m_BranchTargets;
     CRspRegState m_RegState;
+    alignas(16) uint8_t m_SaveBuffer[176];
 };
+
+#pragma warning(pop)
 
 #define AddressOf(Addr) CRSPRecompiler::GetAddressOf(5, (Addr))
 
