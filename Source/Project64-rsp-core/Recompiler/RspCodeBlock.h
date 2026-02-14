@@ -49,6 +49,7 @@ private:
 
     void Analyze();
     bool IsAddressInInstructions(uint32_t address) const;
+    void BuildInstructionIndex();
 
     RspCodeBlocks & m_Functions;
     const uint32_t m_DispatchAddress;

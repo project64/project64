@@ -13,6 +13,7 @@ RspCodeBlock::RspCodeBlock(CRSPSystem & System, uint32_t StartAddress, RspCodeTy
     m_Valid(true)
 {
     Analyze();
+    BuildInstructionIndex();
 }
 
 const RspCodeBlock::Addresses & RspCodeBlock::GetBranchTargets() const
@@ -275,6 +276,10 @@ void RspCodeBlock::Analyze(void)
             m_Functions[*itr] = std::move(FunctionCall);
         }
     }
+}
+
+void RspCodeBlock::BuildInstructionIndex()
+{
     for (size_t i = 0, n = m_Instructions.size(); i < n; i++)
     {
         m_InstructionIndex[m_Instructions[i].Address()] = i;
