@@ -43,11 +43,11 @@ public:
     void SetFlagUnknown(RspFlags flag);
 
     bool FreeXmmReg(uint32_t xmmIndex);
+    bool HasMappedRegisters() const;
     void WriteBackRegisters();
 
 private:
     CRspRegState() = delete;
-    CRspRegState(const CRspRegState &) = delete;
     CRspRegState & operator=(const CRspRegState &) = delete;
 
     enum class XmmState

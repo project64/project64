@@ -237,8 +237,21 @@ void CRSPRecompilerOps::BEQ(void)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
-                m_RegState.WriteBackRegisters();
-                m_Assembler->JeLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                if (m_RegState.HasMappedRegisters())
+                {
+                    asmjit::Label JumpCave = m_Assembler->newLabel();
+                    m_Assembler->JeLabel(stdstr_f("0x%X_From_0x%X", Target, m_CompilePC).c_str(), JumpCave);
+                    m_Assembler->SetSecondarySection();
+                    m_Assembler->bind(JumpCave);
+                    CRspRegState CaveState = m_RegState;
+                    CaveState.WriteBackRegisters();
+                    m_Assembler->JmpLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                    m_Assembler->SetPrimarySection();
+                }
+                else
+                {
+                    m_Assembler->JeLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                }
             }
         }
         else
@@ -342,7 +355,21 @@ void CRSPRecompilerOps::BNE(void)
             asmjit::Label Jump;
             if (m_Recompiler.FindBranchJump(Target, Jump))
             {
-                m_Assembler->JneLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                if (m_RegState.HasMappedRegisters())
+                {
+                    asmjit::Label JumpCave = m_Assembler->newLabel();
+                    m_Assembler->JneLabel(stdstr_f("0x%X_From_0x%X", Target, m_CompilePC).c_str(), JumpCave);
+                    m_Assembler->SetSecondarySection();
+                    m_Assembler->bind(JumpCave);
+                    CRspRegState CaveState = m_RegState;
+                    CaveState.WriteBackRegisters();
+                    m_Assembler->JmpLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                    m_Assembler->SetPrimarySection();
+                }
+                else
+                {
+                    m_Assembler->JneLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                }
             }
             else
             {
@@ -432,14 +459,27 @@ void CRSPRecompilerOps::BLEZ(void)
         }
         if (!m_DelayAffectBranch)
         {
-            m_RegState.WriteBackRegisters();
             m_Assembler->CompConstToVariable(&m_GPR[m_OpCode.rs].W, GPR_Name(m_OpCode.rs), 0);
             asmjit::Label Jump;
             if (!m_Recompiler.FindBranchJump(Target, Jump))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            m_Assembler->JleLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+            if (m_RegState.HasMappedRegisters())
+            {
+                asmjit::Label JumpCave = m_Assembler->newLabel();
+                m_Assembler->JleLabel(stdstr_f("0x%X_From_0x%X", Target, m_CompilePC).c_str(), JumpCave);
+                m_Assembler->SetSecondarySection();
+                m_Assembler->bind(JumpCave);
+                CRspRegState CaveState = m_RegState;
+                CaveState.WriteBackRegisters();
+                m_Assembler->JmpLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+                m_Assembler->SetPrimarySection();
+            }
+            else
+            {
+                m_Assembler->JleLabel(stdstr_f("0x%X", Target).c_str(), Jump);
+            }
         }
         else
         {

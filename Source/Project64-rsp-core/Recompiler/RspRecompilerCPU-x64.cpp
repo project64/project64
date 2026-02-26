@@ -515,6 +515,17 @@ void CRSPRecompiler::CompileCodeBlock(RspCodeBlock & block)
             if (m_NextInstruction == RSPPIPELINE_NORMAL)
             {
                 m_Assembler->bind(labelItr->second);
+                if (SyncCPU)
+                {
+                    m_Assembler->MoveConstToVariable(m_System.m_SP_PC_REG, "RSP PC", m_CompilePC);
+                    m_Assembler->mov(asmjit::x86::rdx, asmjit::imm(0x10000));
+                    m_Assembler->mov(asmjit::x86::r8, asmjit::imm(m_CompilePC & 0xFFC));
+                    m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
+                    m_Assembler->CallThis(&RSPSystem, AddressOf(&CRSPSystem::BasicSyncCheck), "CRSPSystem::BasicSyncCheck");
+                    m_Assembler->mov(asmjit::x86::rdx, asmjit::imm(1));
+                    m_Assembler->mov(asmjit::x86::r8, asmjit::imm(-1));
+                    m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
+                }
             }
             else if (m_NextInstruction == RSPPIPELINE_DELAY_SLOT)
             {

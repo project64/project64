@@ -416,6 +416,18 @@ bool CRspRegState::FreeXmmReg(uint32_t xmmIndex)
     return false;
 }
 
+bool CRspRegState::HasMappedRegisters() const
+{
+    for (uint32_t i = 0; i < sizeof(m_XmmState) / sizeof(m_XmmState[0]); i++)
+    {
+        if (m_XmmState[i] == XmmState::Mapped)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void CRspRegState::WriteBackRegisters()
 {
     for (uint32_t i = 0; i < 32; i++)

@@ -363,6 +363,7 @@ void CHleTask::SetupTask_B4C62BFC(const TASK_INFO & TaskInfo)
     }
     *m_SP_SEMAPHORE_REG = 0;
     GPR_SP = 0x2F0;
+    GPR_AT = 0x2F0;
     if (SyncCPU)
     {
         *m_SP_PC_REG = 0x58;
