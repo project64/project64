@@ -6,6 +6,17 @@
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
 
+static const char * AccumLocName(AccumLocation loc)
+{
+    switch (loc)
+    {
+    case AccumLocation::Low: return "ACCL";
+    case AccumLocation::Middle: return "ACCM";
+    case AccumLocation::High: return "ACCH";
+    }
+    return "ACC?";
+}
+
 CRspRegState::CRspRegState(CRSPRecompilerOps & RecompilerOps) :
     m_RecompilerOps(RecompilerOps),
     m_Assembler(RecompilerOps.m_Assembler)
@@ -72,6 +83,70 @@ asmjit::x86::Xmm CRspRegState::MapXmmZero()
             return asmjit::x86::Xmm(i);
         }
     }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return asmjit::x86::Xmm();
+}
+
+asmjit::x86::Xmm CRspRegState::MapXmmAccum(AccumLocation location, bool loadSource)
+{
+    uint8_t accumIndex = (uint8_t)location;
+
+    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+    {
+        if (m_XmmState[i] == XmmState::AccumMapped && m_XmmRegMapped[i] == accumIndex)
+        {
+            m_XmmProtected[i] = true;
+            return asmjit::x86::Xmm(i);
+        }
+    }
+
+    XmmState searchOrder[] = {XmmState::Free, XmmState::Temp, XmmState::Zero};
+    for (XmmState state : searchOrder)
+    {
+        for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+        {
+            if (m_XmmState[i] != state || m_XmmProtected[i])
+            {
+                continue;
+            }
+            if (state == XmmState::Zero || state == XmmState::Temp)
+            {
+                // These don't need writeback, just reclaim
+            }
+            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to %s", i, AccumLocName(location)).c_str());
+            m_XmmState[i] = XmmState::AccumMapped;
+            m_XmmRegMapped[i] = accumIndex;
+            m_XmmProtected[i] = true;
+            if (loadSource)
+            {
+                m_Assembler->movdqa(asmjit::x86::Xmm(i), asmjit::x86::xmmword_ptr(asmjit::x86::r14, m_RecompilerOps.AccumOffset(location)));
+            }
+            return asmjit::x86::Xmm(i);
+        }
+    }
+
+    // Last resort: evict a mapped register
+    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+    {
+        if (m_XmmProtected[i])
+        {
+            continue;
+        }
+        if (!FreeXmmReg(i))
+        {
+            continue;
+        }
+        m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to %s", i, AccumLocName(location)).c_str());
+        m_XmmState[i] = XmmState::AccumMapped;
+        m_XmmRegMapped[i] = accumIndex;
+        m_XmmProtected[i] = true;
+        if (loadSource)
+        {
+            m_Assembler->movdqa(asmjit::x86::Xmm(i), asmjit::x86::xmmword_ptr(asmjit::x86::r14, m_RecompilerOps.AccumOffset(location)));
+        }
+        return asmjit::x86::Xmm(i);
+    }
+
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return asmjit::x86::Xmm();
 }
@@ -408,6 +483,16 @@ bool CRspRegState::FreeXmmReg(uint32_t xmmIndex)
     {
         m_Assembler->comment(stdstr_f(" regcache: deallocate xmm%d from V%d", xmmIndex, m_XmmRegMapped[xmmIndex]).c_str());
         m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, m_RecompilerOps.VectorOffset(m_XmmRegMapped[xmmIndex])), asmjit::x86::Xmm(xmmIndex));
+        m_XmmState[xmmIndex] = XmmState::Free;
+        m_XmmRegMapped[xmmIndex] = (uint8_t)~0;
+        return true;
+    }
+
+    if (m_XmmState[xmmIndex] == XmmState::AccumMapped)
+    {
+        AccumLocation loc = (AccumLocation)m_XmmRegMapped[xmmIndex];
+        m_Assembler->comment(stdstr_f(" regcache: deallocate xmm%d from %s", xmmIndex, AccumLocName(loc)).c_str());
+        m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::r14, m_RecompilerOps.AccumOffset(loc)), asmjit::x86::Xmm(xmmIndex));
         m_XmmState[xmmIndex] = XmmState::Free;
         m_XmmRegMapped[xmmIndex] = (uint8_t)~0;
         return true;

@@ -19,14 +19,6 @@ class CRSPRecompilerOps
         FunctionStackSize = 40,
     };
 
-    enum class AccumLocation
-    {
-        High,
-        Middle,
-        Low,
-        Entire,
-    };
-
 public:
     CRSPRecompilerOps(CRSPSystem & System, CRSPRecompiler & Recompiler);
 
