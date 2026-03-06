@@ -1,8 +1,13 @@
+#include <Common/Log.h>
+#include <Common/StdString.h>
+#include <Common/path.h>
 #include <Project64-rsp-core/RSPDebugger.h>
 #include <Project64-rsp-core/RSPInfo.h>
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU-x86.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
+#include <Project64-rsp-core/cpu/RSPInstruction-x64.h>
+#include <Project64-rsp-core/cpu/RSPInstruction-x86.h>
 #include <Project64-rsp-core/cpu/RSPRegisters.h>
 #include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Settings/Settings.h>
@@ -46,6 +51,7 @@ CRSPSystem::CRSPSystem() :
     m_SyncReg(nullptr),
     m_RdramSize(0)
 {
+    memset(m_LastSuccessSyncPC, 0, sizeof(m_LastSuccessSyncPC));
     m_OpCode.Value = 0;
 }
 
@@ -276,7 +282,54 @@ CRSPSystem * CRSPSystem::SyncSystem(void)
     return m_SyncSystem;
 }
 
-void CRSPSystem::BasicSyncCheck(void)
+void CRSPSystem::DumpSyncErrors(void)
+{
+    char LogDir[260];
+    CPath LogFilePath(GetSystemSettingSz(Set_DirectoryLog, LogDir, sizeof(LogDir)), "RSP_SyncErrors.txt");
+
+    CLog Log;
+    Log.Open(LogFilePath);
+
+    // Vectors
+    Log.Log("Information:\r\n");
+    Log.Log("\r\n");
+    Log.LogF("PROGRAM_COUNTER,0x%X\r\n", *m_SP_PC_REG);
+    Log.Log("\r\n");
+    for (int i = 0; i < (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])); i++)
+    {
+        Log.LogF("LastSuccessSyncPC[%d],0x%X\r\n", i, m_LastSuccessSyncPC[i]);
+    }
+    Log.Log("\r\n");
+    Log.LogF("\n=== Vectors ===\n");
+    RSPVector *Vect = m_Reg.m_Vect, *VectSync = m_SyncSystem->m_Reg.m_Vect;
+    for (int32_t i = 0; i < 32; i++)
+    {
+        bool Match = (Vect[i].u64(0) == VectSync[i].u64(0) && Vect[i].u64(1) == VectSync[i].u64(1));
+        Log.LogF("V[%2d] %016llX%016llX | %016llX%016llX\n", i, Vect[i].u64(1), Vect[i].u64(0), VectSync[i].u64(1), VectSync[i].u64(0));
+    }
+
+    Log.Log("\r\n");
+    Log.Log("Code at PC:\r\n");
+    for (int32_t i = -10; i < 10; i++)
+    {
+        uint64_t Addr = *m_SP_PC_REG + (i << 2);
+        uint32_t OpcodeValue = *(uint32_t *)(RSPInfo.IMEM + (Addr & 0xFFF));
+        Log.LogF("%X: %s\r\n", (uint32_t)Addr, RSPInstruction(Addr, OpcodeValue).NameAndParam().c_str());
+    }
+    Log.Log("\r\n");
+    Log.Log("Code at last sync PC:\r\n");
+    for (uint32_t i = 0; i < 50; i++)
+    {
+        uint64_t Addr = m_LastSuccessSyncPC[0] + (i << 2);
+        uint32_t OpcodeValue = *(uint32_t *)(RSPInfo.IMEM + (Addr & 0xFFF));
+        Log.LogF("%X: %s\r\n", (uint32_t)Addr, RSPInstruction(Addr, OpcodeValue).NameAndParam().c_str());
+    }
+
+    Log.Flush();
+    __debugbreak();
+}
+
+bool CRSPSystem::BasicSyncCheck(void)
 {
     bool SyncFailed = false;
     RSPVector *Vect = m_Reg.m_Vect, *VectSync = m_SyncSystem->m_Reg.m_Vect;
@@ -346,8 +399,19 @@ void CRSPSystem::BasicSyncCheck(void)
     }
     if (SyncFailed)
     {
+        DumpSyncErrors();
         g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
     }
+    else
+    {
+        for (int i = (sizeof(m_LastSuccessSyncPC) / sizeof(m_LastSuccessSyncPC[0])) - 1; i > 0; i--)
+        {
+            m_LastSuccessSyncPC[i] = m_LastSuccessSyncPC[i - 1];
+        }
+        m_LastSuccessSyncPC[0] = *m_SP_PC_REG;
+    }
+    return true;
 }
 
 void * CRSPSystem::operator new(size_t size)

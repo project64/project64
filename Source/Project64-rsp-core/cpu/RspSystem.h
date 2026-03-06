@@ -41,7 +41,7 @@ public:
     void SetupSyncCPU();
     bool IsSyncSystem(void);
     CRSPSystem * SyncSystem(void);
-    void BasicSyncCheck(void);
+    bool BasicSyncCheck(void);
     void * operator new(size_t size);
     void operator delete(void * ptr);
 
@@ -49,12 +49,15 @@ private:
     CRSPSystem(const CRSPSystem &);
     CRSPSystem & operator=(const CRSPSystem &);
 
+    void DumpSyncErrors(void);
+
     static void NullProcessDList(void);
     static void NullProcessRdpList(void);
     static void NullCheckInterrupts(void);
 
     CRSPSystem * m_SyncSystem;
     CRSPSystem * m_BaseSystem;
+    uint64_t m_LastSuccessSyncPC[10];
     CRSPRecompiler m_Recompiler;
     RSPRegisterHandlerPlugin * m_RSPRegisterHandler;
     CRSPRegisters m_Reg;

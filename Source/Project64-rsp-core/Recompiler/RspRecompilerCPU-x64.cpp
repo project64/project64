@@ -522,6 +522,11 @@ void CRSPRecompiler::CompileCodeBlock(RspCodeBlock & block)
                     m_Assembler->mov(asmjit::x86::r8, asmjit::imm(m_CompilePC & 0xFFC));
                     m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
                     m_Assembler->CallThis(&RSPSystem, AddressOf(&CRSPSystem::BasicSyncCheck), "CRSPSystem::BasicSyncCheck");
+                    m_Assembler->test(asmjit::x86::al, asmjit::x86::al);
+                    asmjit::Label continueLabel = m_Assembler->newLabel();
+                    m_Assembler->jne(continueLabel);
+                    m_RecompilerOps.ExitCodeBlock();
+                    m_Assembler->bind(continueLabel);
                     m_Assembler->mov(asmjit::x86::rdx, asmjit::imm(1));
                     m_Assembler->mov(asmjit::x86::r8, asmjit::imm(-1));
                     m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
