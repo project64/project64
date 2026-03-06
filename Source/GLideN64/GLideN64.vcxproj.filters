@@ -799,9 +799,6 @@
     <ClInclude Include="Source\src\xxHash\xxhash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\src\ZilmarGFX_1_3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\src\ZlutTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>

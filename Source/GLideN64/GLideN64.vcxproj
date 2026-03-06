@@ -328,7 +328,6 @@ copy /y "$(ProjectDir)Source\ini\GLideN64.custom.ini" "$(SolutionDir)Plugin\$(Pl
     <ClInclude Include="Source\src\windows\GLideN64_windows.h" />
     <ClInclude Include="Source\src\wst.h" />
     <ClInclude Include="Source\src\xxHash\xxhash.h" />
-    <ClInclude Include="Source\src\ZilmarGFX_1_3.h" />
     <ClInclude Include="Source\src\ZlutTexture.h" />
   </ItemGroup>
   <ItemGroup>
