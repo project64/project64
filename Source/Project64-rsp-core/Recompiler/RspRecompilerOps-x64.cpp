@@ -2418,6 +2418,14 @@ void CRSPRecompilerOps::EnterCodeBlock(void)
         m_Assembler->mov(asmjit::x86::rcx, asmjit::imm((uintptr_t)m_CompilePC));
         m_Assembler->CallFunc(AddressOf(&StartTimer), "StartTimer");
     }
+    if (SyncCPU)
+    {
+        m_Assembler->MoveConstToVariable(m_System.m_SP_PC_REG, "RSP PC", m_CompilePC);
+        m_Assembler->mov(asmjit::x86::rdx, asmjit::imm(0x2000));
+        m_Assembler->mov(asmjit::x86::r8, asmjit::imm(m_CompilePC & 0xFFF));
+        m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
+        m_Assembler->CallThis(&RSPSystem, AddressOf(&CRSPSystem::BasicSyncCheck), "CRSPSystem::BasicSyncCheck");
+    }
 }
 
 void CRSPRecompilerOps::ExitCodeBlock(void)
