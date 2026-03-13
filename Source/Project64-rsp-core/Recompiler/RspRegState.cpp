@@ -337,7 +337,7 @@ asmjit::x86::Xmm CRspRegState::MapSpecificXmmTemp(uint8_t xmmIndex, bool loadReg
         return asmjit::x86::Xmm();
     }
 
-    if (m_XmmState[xmmIndex] == XmmState::Mapped || m_XmmState[xmmIndex] == XmmState::Zero)
+    if (m_XmmState[xmmIndex] != XmmState::Temp && m_XmmState[xmmIndex] != XmmState::Free)
     {
         if (!FreeXmmReg(xmmIndex))
         {
