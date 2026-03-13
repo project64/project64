@@ -1755,7 +1755,58 @@ void CRSPRecompilerOps::Vector_VADD(void)
 
 void CRSPRecompilerOps::Vector_VSUB(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VSUB, "RSPOp::Vector_VSUB");
+    bool writeToDest = WriteToVectorDest(m_OpCode.vd, m_CompilePC);
+    bool writeToAccum = WriteToAccum(AccumLocation::Low, m_CompilePC);
+
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    asmjit::x86::Xmm vs, vte, vcol;
+    if (writeToAccum || writeToDest)
+    {
+        vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+        vs = writeToDest ? m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vs) : m_RegState.MapXmmTemp(true, m_OpCode.vs);
+        if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+        {
+            vcol = m_RegState.MapXmmTemp(false, 0);
+            m_Assembler->movdqa(vcol, asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)));
+        }
+    }
+    if (writeToAccum)
+    {
+        asmjit::x86::Xmm accLo = m_RegState.MapXmmAccum(AccumLocation::Low, false);
+        m_Assembler->movdqa(accLo, vs);
+        m_Assembler->psubw(accLo, vte);
+        if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+        {
+            m_Assembler->psubw(accLo, vcol);
+        }
+    }
+    if (writeToDest)
+    {
+        m_Assembler->psubsw(vs, vte);
+        if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+        {
+            m_Assembler->psubsw(vs, vcol);
+        }
+    }
+    if (vcol.isValid())
+    {
+        m_RegState.UnprotectXmm(vcol);
+    }
+
+    if (!m_RegState.IsFlagZero(RspFlags::VCOL) || !m_RegState.IsFlagZero(RspFlags::VCOH))
+    {
+        asmjit::x86::Xmm zero = m_RegState.MapXmmZero();
+        if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+        {
+            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)), zero);
+            m_RegState.SetFlagZero(RspFlags::VCOL);
+        }
+        if (!m_RegState.IsFlagZero(RspFlags::VCOH))
+        {
+            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOH)), zero);
+            m_RegState.SetFlagZero(RspFlags::VCOH);
+        }
+    }
 }
 
 void CRSPRecompilerOps::Vector_VABS(void)
