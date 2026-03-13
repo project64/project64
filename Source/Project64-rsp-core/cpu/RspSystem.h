@@ -57,7 +57,7 @@ private:
 
     CRSPSystem * m_SyncSystem;
     CRSPSystem * m_BaseSystem;
-    uint64_t m_LastSuccessSyncPC[10];
+    uint32_t m_LastSuccessSyncPC[10];
     CRSPRecompiler m_Recompiler;
     RSPRegisterHandlerPlugin * m_RSPRegisterHandler;
     CRSPRegisters m_Reg;

@@ -300,19 +300,91 @@ void CRSPSystem::DumpSyncErrors(void)
         Log.LogF("LastSuccessSyncPC[%d],0x%X\r\n", i, m_LastSuccessSyncPC[i]);
     }
     Log.Log("\r\n");
+    // DMEM differences
+    Log.Log("\r\n=== DMEM Differences ===\r\n");
+    bool hasDmemDiff = false;
+    for (uint32_t addr = 0; addr < 0x1000; addr += 16)
+    {
+        bool match = true;
+        for (uint32_t b = 0; b < 16; b++)
+        {
+            if (m_DMEM[addr + b] != m_SyncSystem->m_DMEM[addr + b])
+            {
+                match = false;
+                break;
+            }
+        }
+        if (!match)
+        {
+            hasDmemDiff = true;
+            Log.LogF("  %03X: ", addr);
+            for (uint32_t b = 0; b < 16; b++)
+            {
+                Log.LogF("%02X", m_DMEM[addr + b]);
+            }
+            Log.Log(" | ");
+            for (uint32_t b = 0; b < 16; b++)
+            {
+                Log.LogF("%02X", m_SyncSystem->m_DMEM[addr + b]);
+            }
+            Log.Log("\r\n");
+        }
+    }
+    if (!hasDmemDiff)
+    {
+        Log.Log("  (no differences)\r\n");
+    }
+
+    // GPRs
+    Log.Log("\r\n=== GPRs ===\r\n");
+    for (int32_t i = 0; i < 32; i++)
+    {
+        uint32_t val = m_Reg.m_GPR[i].UW;
+        uint32_t valSync = m_SyncSystem->m_Reg.m_GPR[i].UW;
+        bool match = (val == valSync);
+        Log.LogF("%s R[%2d] %08X | %08X\r\n", match ? " " : "*", i, val, valSync);
+    }
     Log.LogF("\n=== Vectors ===\n");
     RSPVector *Vect = m_Reg.m_Vect, *VectSync = m_SyncSystem->m_Reg.m_Vect;
     for (int32_t i = 0; i < 32; i++)
     {
-        bool Match = (Vect[i].u64(0) == VectSync[i].u64(0) && Vect[i].u64(1) == VectSync[i].u64(1));
-        Log.LogF("V[%2d] %016llX%016llX | %016llX%016llX\n", i, Vect[i].u64(1), Vect[i].u64(0), VectSync[i].u64(1), VectSync[i].u64(0));
+        bool match = (Vect[i].u64(0) == VectSync[i].u64(0) && Vect[i].u64(1) == VectSync[i].u64(1));
+        Log.LogF("%s V[%2d] %016llX%016llX | %016llX%016llX\n", match ? " " : "*", i, Vect[i].u64(1), Vect[i].u64(0), VectSync[i].u64(1), VectSync[i].u64(0));
+    }
+    // Accumulator
+    Log.Log("\r\n=== Accumulator ===\r\n");
+    for (uint8_t el = 0; el < 8; el++)
+    {
+        uint16_t hi = m_Reg.m_ACCUM.High(el), hiS = m_SyncSystem->m_Reg.m_ACCUM.High(el);
+        uint16_t md = m_Reg.m_ACCUM.Mid(el), mdS = m_SyncSystem->m_Reg.m_ACCUM.Mid(el);
+        uint16_t lo = m_Reg.m_ACCUM.Low(el), loS = m_SyncSystem->m_Reg.m_ACCUM.Low(el);
+        bool match = (hi == hiS && md == mdS && lo == loS);
+        Log.LogF("%s ACC[%d] %04X:%04X:%04X | %04X:%04X:%04X\r\n", match ? " " : "*", el,
+                 hi, md, lo, hiS, mdS, loS);
+    }
+
+    // Flags
+    Log.Log("\r\n=== Flags ===\r\n");
+    const char * flagNames[] = {"VCOL", "VCOH", "VCCL", "VCCH", "VCE"};
+    RSPFlag * flagVals[] = {&m_Reg.m_VCOL, &m_Reg.m_VCOH, &m_Reg.m_VCCL, &m_Reg.m_VCCH, &m_Reg.m_VCE};
+    RSPFlag * flagSync[] = {&m_SyncSystem->m_Reg.m_VCOL, &m_SyncSystem->m_Reg.m_VCOH, &m_SyncSystem->m_Reg.m_VCCL, &m_SyncSystem->m_Reg.m_VCCH, &m_SyncSystem->m_Reg.m_VCE};
+    for (int f = 0; f < 5; f++)
+    {
+        uint16_t val = 0, valSync = 0;
+        for (uint8_t b = 0; b < 8; b++)
+        {
+            val |= (flagVals[f]->Get(b) ? 1 : 0) << b;
+            valSync |= (flagSync[f]->Get(b) ? 1 : 0) << b;
+        }
+        bool match = (val == valSync);
+        Log.LogF("%s %-4s %04X | %04X\r\n", match ? " " : "*", flagNames[f], val, valSync);
     }
 
     Log.Log("\r\n");
     Log.Log("Code at PC:\r\n");
     for (int32_t i = -10; i < 10; i++)
     {
-        uint64_t Addr = *m_SP_PC_REG + (i << 2);
+        uint32_t Addr = *m_SP_PC_REG + (i << 2);
         uint32_t OpcodeValue = *(uint32_t *)(RSPInfo.IMEM + (Addr & 0xFFF));
         Log.LogF("%X: %s\r\n", (uint32_t)Addr, RSPInstruction(Addr, OpcodeValue).NameAndParam().c_str());
     }
@@ -320,7 +392,7 @@ void CRSPSystem::DumpSyncErrors(void)
     Log.Log("Code at last sync PC:\r\n");
     for (uint32_t i = 0; i < 50; i++)
     {
-        uint64_t Addr = m_LastSuccessSyncPC[0] + (i << 2);
+        uint32_t Addr = m_LastSuccessSyncPC[0] + (i << 2);
         uint32_t OpcodeValue = *(uint32_t *)(RSPInfo.IMEM + (Addr & 0xFFF));
         Log.LogF("%X: %s\r\n", (uint32_t)Addr, RSPInstruction(Addr, OpcodeValue).NameAndParam().c_str());
     }
