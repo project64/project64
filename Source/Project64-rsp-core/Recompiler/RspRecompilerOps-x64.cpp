@@ -84,6 +84,7 @@ void CRSPRecompilerOps::J(void)
         if (m_CurrentBlock->IsEnd(m_CompilePC) && m_CurrentBlock->CodeType() == RspCodeType_TASK)
         {
             m_Assembler->MoveConstToVariable(m_System.m_SP_PC_REG, "RSP PC", Target);
+            m_RegState.WriteBackRegisters();
             ExitCodeBlock();
         }
         else if (m_Recompiler.FindBranchJump(Target, Jump))
