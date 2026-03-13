@@ -331,7 +331,7 @@ asmjit::x86::Xmm CRspRegState::MapXmmTemp(bool loadReg, uint8_t vreg, uint8_t e)
 
 asmjit::x86::Xmm CRspRegState::MapSpecificXmmTemp(uint8_t xmmIndex, bool loadReg, uint8_t vreg, uint8_t e)
 {
-    if (xmmIndex >= 16 || m_XmmProtected[xmmIndex] || m_XmmState[xmmIndex] == XmmState::Reserved)
+    if (xmmIndex >= 16 || m_XmmProtected[xmmIndex])
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return asmjit::x86::Xmm();
@@ -515,6 +515,19 @@ bool CRspRegState::HasMappedRegisters() const
 
 void CRspRegState::WriteBackRegisters()
 {
+    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+    {
+        if (m_XmmState[i] == XmmState::Free)
+        {
+            continue;
+        }
+        FreeXmmReg(i);
+    }
+    Reset();
+}
+
+void CRspRegState::Reset()
+{
     for (uint32_t i = 0; i < 32; i++)
     {
         m_GprIsConst[i] = false;
@@ -529,11 +542,7 @@ void CRspRegState::WriteBackRegisters()
     }
     for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
     {
-        if (m_XmmState[i] == XmmState::Free || m_XmmState[i] == XmmState::Reserved)
-        {
-            continue;
-        }
-        FreeXmmReg(i);
+        m_XmmState[i] = XmmState::Free;
     }
 }
 

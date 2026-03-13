@@ -755,6 +755,8 @@ void CRSPRecompiler::SetupRspAssembler()
 
     m_Assembler = new RspAssembler(&m_CodeHolder, m_CodeLog);
     m_CodeHolder.setLogger(LogAsmCode ? m_Assembler : nullptr);
+
+    m_RegState.Reset();
 }
 
 void CRSPRecompiler::FinalizeAssembler(void * funcPtr)

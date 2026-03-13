@@ -55,6 +55,8 @@ public:
     bool HasMappedRegisters() const;
     void WriteBackRegisters();
 
+    void Reset();
+
 private:
     CRspRegState() = delete;
     CRspRegState & operator=(const CRspRegState &) = delete;
@@ -66,7 +68,6 @@ private:
         Mapped,
         AccumMapped,
         Temp,
-        Reserved
     };
 
     CRSPRecompilerOps & m_RecompilerOps;
