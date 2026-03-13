@@ -1075,7 +1075,42 @@ void CRSPRecompilerOps::Cop2_CF(void)
 
 void CRSPRecompilerOps::Cop2_MT(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Cop2_MT, "RSPOp::Cop2_MT");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    asmjit::x86::Xmm vs = m_RegState.MapXmmReg(m_OpCode.vs, m_OpCode.vs, true);
+
+    uint8_t element = (uint8_t)(15 - (m_OpCode.sa >> 1));
+    if ((element & 1) != 0)
+    {
+        if (m_RegState.IsGprConst(m_OpCode.rt))
+        {
+            m_Assembler->mov(asmjit::x86::eax, m_RegState.GetGprConstValue(m_OpCode.rt) & 0xFFFF);
+            m_Assembler->pinsrw(vs, asmjit::x86::eax, element >> 1);
+        }
+        else
+        {
+            m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)));
+            m_Assembler->pinsrw(vs, asmjit::x86::eax, element >> 1);
+        }
+    }
+    else
+    {
+        if (m_RegState.IsGprConst(m_OpCode.rt))
+        {
+            uint32_t value = m_RegState.GetGprConstValue(m_OpCode.rt);
+            m_Assembler->mov(asmjit::x86::eax, (value >> 8) & 0xFF);
+            m_Assembler->pinsrb(vs, asmjit::x86::eax, element);
+            m_Assembler->mov(asmjit::x86::eax, value & 0xFF);
+            m_Assembler->pinsrb(vs, asmjit::x86::eax, element - 1);
+        }
+        else
+        {
+            m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)));
+            m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::eax);
+            m_Assembler->shr(asmjit::x86::ecx, 8);
+            m_Assembler->pinsrb(vs, asmjit::x86::ecx, element);
+            m_Assembler->pinsrb(vs, asmjit::x86::eax, element - 1);
+        }
+    }
 }
 
 void CRSPRecompilerOps::Cop2_CT(void)
