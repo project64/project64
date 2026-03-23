@@ -2502,21 +2502,13 @@ bool CRSPRecompilerOps::WriteToVectorDest(uint32_t DestReg, uint32_t PC)
         {
             n = i + 1;
         }
-        if (instruction.isVectorOp())
-        {
-            if (instruction.SourceReg0() == DestReg || instruction.SourceReg1() == DestReg)
-            {
-                return true;
-            }
-            if (instruction.DestReg() == DestReg)
-            {
-                return false;
-            }
-        }
-        if ((instruction.isVectorStoreOp() && instruction.SourceReg0() == DestReg) ||
-            (instruction.isMfCop2() && instruction.SourceReg0() == DestReg))
+        if (instruction.ReadVectorReg0() == DestReg || instruction.ReadVectorReg1() == DestReg)
         {
             return true;
+        }
+        if (instruction.WriteVectorReg() == DestReg)
+        {
+            return false;
         }
     }
     return true;
