@@ -307,7 +307,7 @@ void RspCodeBlock::ReOrderInstructions(void)
             g_Notify->BreakPoint(__FILE__, __LINE__);
             break;
         }
-        
+
         for (size_t i = 0; i + 2 < m_Instructions.size(); i++)
         {
             RSPInstruction & op0 = m_Instructions[i];

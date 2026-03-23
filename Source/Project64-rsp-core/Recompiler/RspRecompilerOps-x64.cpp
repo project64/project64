@@ -684,7 +684,9 @@ void CRSPRecompilerOps::LH(void)
 {
     m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
     if (m_OpCode.rt == 0)
+    {
         return;
+    }
 
     m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rs)));
     if (m_OpCode.offset != 0)
@@ -751,7 +753,68 @@ void CRSPRecompilerOps::SB(void)
 
 void CRSPRecompilerOps::SH(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::SH, "RSPOp::SH");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    if (m_RegState.IsGprConst(m_OpCode.rt))
+    {
+        m_Assembler->mov(asmjit::x86::ecx, m_RegState.GetGprConstValue(m_OpCode.rt) & 0xFFFF);
+    }
+    else
+    {
+        m_Assembler->movzx(asmjit::x86::ecx, asmjit::x86::word_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)));
+    }
+
+    if (m_RegState.IsGprConst(m_OpCode.base))
+    {
+        uint32_t Address = (m_RegState.GetGprConstValue(m_OpCode.base) + (int16_t)m_OpCode.offset) & 0xFFF;
+        if ((Address & 1) == 0)
+        {
+            m_Assembler->mov(asmjit::x86::word_ptr(asmjit::x86::r15, Address ^ 2), asmjit::x86::cx);
+        }
+        else
+        {
+            m_Assembler->mov(asmjit::x86::eax, asmjit::x86::ecx);
+            m_Assembler->shr(asmjit::x86::eax, 8);
+            m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, (Address ^ 3) & 0xFFF), asmjit::x86::al);
+            m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, ((Address + 1) ^ 3) & 0xFFF), asmjit::x86::cl);
+        }
+        return;
+    }
+    m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
+    if (m_OpCode.offset != 0)
+    {
+        m_Assembler->add(asmjit::x86::eax, (int16_t)m_OpCode.offset);
+    }
+    m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+
+    asmjit::Label unaligned = m_Assembler->newLabel();
+    asmjit::Label done = m_Assembler->newLabel();
+    m_Assembler->test(asmjit::x86::eax, 1);
+    m_Assembler->jnz(unaligned);
+
+    // Aligned path: DMEM[Address ^ 2] = rt.UHW[0]
+    m_Assembler->xor_(asmjit::x86::eax, 2);
+    m_Assembler->mov(asmjit::x86::word_ptr(asmjit::x86::r15, asmjit::x86::rax), asmjit::x86::cx);
+    m_Assembler->SetSecondarySection();
+    m_Assembler->bind(unaligned);
+
+    // DMEM[Address ^ 3] = high byte
+    m_Assembler->mov(asmjit::x86::edx, asmjit::x86::ecx);
+    m_Assembler->shr(asmjit::x86::edx, 8);
+    m_Assembler->mov(asmjit::x86::r8d, asmjit::x86::eax);
+    m_Assembler->xor_(asmjit::x86::r8d, 3);
+    m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::r8), asmjit::x86::dl);
+
+    // DMEM[(Address+1) ^ 3] = low byte
+    m_Assembler->mov(asmjit::x86::r8d, asmjit::x86::eax);
+    m_Assembler->add(asmjit::x86::r8d, 1);
+    m_Assembler->and_(asmjit::x86::r8d, 0xFFF);
+    m_Assembler->xor_(asmjit::x86::r8d, 3);
+    m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::r8), asmjit::x86::cl);
+
+    m_Assembler->jmp(done);
+    m_Assembler->SetPrimarySection();
+    m_Assembler->bind(done);
 }
 
 void CRSPRecompilerOps::SW(void)
