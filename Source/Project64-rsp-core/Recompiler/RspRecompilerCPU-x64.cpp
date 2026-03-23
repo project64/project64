@@ -537,6 +537,7 @@ void CRSPRecompiler::CompileCodeBlock(RspCodeBlock & block)
                 JumpTarget = true;
             }
         }
+        m_RegState.SetContext(m_CompilePC, &block);
         (m_RecompilerOps.*RSP_Recomp_Opcode[m_OpCode.op])();
         m_RegState.ResetRegProtection();
 
@@ -584,6 +585,7 @@ void CRSPRecompiler::CompileCodeBlock(RspCodeBlock & block)
     block.SetCompiledLocation(funcPtr);
     FinalizeAssembler(funcPtr);
     m_CurrentBlock = nullptr;
+    m_RegState.SetContext(0, nullptr);
 }
 
 void CRSPRecompiler::CompileOpcode(uint32_t PC)

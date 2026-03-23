@@ -2,6 +2,7 @@
 
 #include "RspRegState.h"
 #include "Recompiler/RspAssembler.h"
+#include "Recompiler/RspCodeBlock.h"
 #include "Recompiler/RspRecompilerOps-x64.h"
 #include <Common/StdString.h>
 #include <Settings/Settings.h>
@@ -19,7 +20,9 @@ static const char * AccumLocName(AccumLocation loc)
 
 CRspRegState::CRspRegState(CRSPRecompilerOps & RecompilerOps) :
     m_RecompilerOps(RecompilerOps),
-    m_Assembler(RecompilerOps.m_Assembler)
+    m_Assembler(RecompilerOps.m_Assembler),
+    m_CompilePC(0),
+    m_Block(nullptr)
 {
     for (uint32_t i = 0; i < 32; i++)
     {
@@ -48,6 +51,12 @@ CRspRegState::~CRspRegState()
 {
 }
 
+void CRspRegState::SetContext(uint32_t compilePC, const RspCodeBlock * block)
+{
+    m_CompilePC = compilePC;
+    m_Block = block;
+}
+
 void CRspRegState::ResetRegProtection()
 {
     for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
@@ -67,21 +76,18 @@ asmjit::x86::Xmm CRspRegState::MapXmmZero()
         }
     }
 
-    XmmState searchOrder[] = {XmmState::Free, XmmState::Temp};
-    for (XmmState state : searchOrder)
+    uint32_t i = GetNextXmmReg();
+    if (i < (sizeof(m_XmmState) / sizeof(m_XmmState[0])))
     {
-        for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+        if (m_XmmState[i] != XmmState::Free)
         {
-            if (m_XmmState[i] != state || m_XmmProtected[i])
-            {
-                continue;
-            }
-            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d as zero", i).c_str());
-            m_XmmState[i] = XmmState::Zero;
-            m_XmmProtected[i] = true;
-            m_Assembler->pxor(asmjit::x86::Xmm(i), asmjit::x86::Xmm(i));
-            return asmjit::x86::Xmm(i);
+            FreeXmmReg(i);
         }
+        m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d as zero", i).c_str());
+        m_XmmState[i] = XmmState::Zero;
+        m_XmmProtected[i] = true;
+        m_Assembler->pxor(asmjit::x86::Xmm(i), asmjit::x86::Xmm(i));
+        return asmjit::x86::Xmm(i);
     }
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return asmjit::x86::Xmm();
@@ -100,41 +106,16 @@ asmjit::x86::Xmm CRspRegState::MapXmmAccum(AccumLocation location, bool loadSour
         }
     }
 
-    XmmState searchOrder[] = {XmmState::Free, XmmState::Temp, XmmState::Zero};
-    for (XmmState state : searchOrder)
+    uint32_t i = GetNextXmmReg();
+    if (i < (sizeof(m_XmmState) / sizeof(m_XmmState[0])))
     {
-        for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+        if (m_XmmState[i] == XmmState::Zero || m_XmmState[i] == XmmState::Temp)
         {
-            if (m_XmmState[i] != state || m_XmmProtected[i])
-            {
-                continue;
-            }
-            if (state == XmmState::Zero || state == XmmState::Temp)
-            {
-                // These don't need writeback, just reclaim
-            }
-            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to %s", i, AccumLocName(location)).c_str());
-            m_XmmState[i] = XmmState::AccumMapped;
-            m_XmmRegMapped[i] = accumIndex;
-            m_XmmProtected[i] = true;
-            if (loadSource)
-            {
-                m_Assembler->movdqa(asmjit::x86::Xmm(i), asmjit::x86::xmmword_ptr(asmjit::x86::r14, m_RecompilerOps.AccumOffset(location)));
-            }
-            return asmjit::x86::Xmm(i);
+            // These don't need writeback, just reclaim
         }
-    }
-
-    // Last resort: evict a mapped register
-    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
-    {
-        if (m_XmmProtected[i])
+        else if (m_XmmState[i] != XmmState::Free)
         {
-            continue;
-        }
-        if (!FreeXmmReg(i))
-        {
-            continue;
+            FreeXmmReg(i);
         }
         m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to %s", i, AccumLocName(location)).c_str());
         m_XmmState[i] = XmmState::AccumMapped;
@@ -181,76 +162,21 @@ asmjit::x86::Xmm CRspRegState::MapXmmReg(uint8_t vreg, uint8_t source, bool load
             return asmjit::x86::Xmm(i);
         }
     }
-
+    uint32_t i = GetNextXmmReg();
     asmjit::x86::Xmm reg;
-    for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
+    if (i < (sizeof(m_XmmState) / sizeof(m_XmmState[0])))
     {
         if (m_XmmState[i] != XmmState::Free)
         {
-            continue;
+            FreeXmmReg(i);
         }
         m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to V%d", i, vreg).c_str());
         m_XmmState[i] = XmmState::Mapped;
         m_XmmRegMapped[i] = vreg;
         m_XmmProtected[i] = true;
         reg = asmjit::x86::Xmm(i);
-        break;
     }
 
-    if (!reg.isValid())
-    {
-        for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
-        {
-            if (m_XmmState[i] != XmmState::Temp || m_XmmProtected[i])
-            {
-                continue;
-            }
-            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to V%d", i, vreg).c_str());
-            m_XmmState[i] = XmmState::Mapped;
-            m_XmmRegMapped[i] = vreg;
-            m_XmmProtected[i] = true;
-            reg = asmjit::x86::Xmm(i);
-            break;
-        }
-    }
-
-    if (!reg.isValid())
-    {
-        for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
-        {
-            if (m_XmmState[i] != XmmState::Zero || m_XmmProtected[i])
-            {
-                continue;
-            }
-            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to V%d", i, vreg).c_str());
-            m_XmmState[i] = XmmState::Mapped;
-            m_XmmRegMapped[i] = vreg;
-            m_XmmProtected[i] = true;
-            reg = asmjit::x86::Xmm(i);
-            break;
-        }
-    }
-
-    if (!reg.isValid())
-    {
-        for (uint32_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
-        {
-            if (m_XmmProtected[i])
-            {
-                continue;
-            }
-            if (!FreeXmmReg(i))
-            {
-                continue;
-            }
-            m_Assembler->comment(stdstr_f(" regcache: allocate xmm%d to V%d", i, vreg).c_str());
-            m_XmmState[i] = XmmState::Mapped;
-            m_XmmRegMapped[i] = vreg;
-            m_XmmProtected[i] = true;
-            reg = asmjit::x86::Xmm(i);
-            break;
-        }
-    }
     if (loadSource && reg.isValid())
     {
         if (srcReg.isValid())
@@ -312,17 +238,10 @@ void CRspRegState::UnprotectXmm(asmjit::x86::Xmm xmm)
 
 asmjit::x86::Xmm CRspRegState::MapXmmTemp(bool loadReg, uint8_t vreg, uint8_t e)
 {
-    XmmState searchOrder[] = {XmmState::Temp, XmmState::Free, XmmState::Zero, XmmState::Mapped};
-    for (XmmState state : searchOrder)
+    uint32_t i = GetNextXmmReg();
+    if (i < (sizeof(m_XmmState) / sizeof(m_XmmState[0])))
     {
-        for (uint8_t i = 0, n = sizeof(m_XmmState) / sizeof(m_XmmState[0]); i < n; i++)
-        {
-            if (m_XmmState[i] != state || m_XmmProtected[i])
-            {
-                continue;
-            }
-            return MapSpecificXmmTemp(i, loadReg, vreg, e);
-        }
+        return MapSpecificXmmTemp((uint8_t)i, loadReg, vreg, e);
     }
 
     g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -544,6 +463,166 @@ void CRspRegState::Reset()
     {
         m_XmmState[i] = XmmState::Free;
     }
+}
+
+uint32_t CRspRegState::GetNextXmmReg() const
+{
+    XmmState searchOrder[] = {XmmState::Free, XmmState::Temp, XmmState::Zero};
+    for (XmmState state : searchOrder)
+    {
+        for (uint32_t i = 0; i < 16; i++)
+        {
+            if (m_XmmState[i] == state && !m_XmmProtected[i])
+            {
+                return i;
+            }
+        }
+    }
+
+    uint32_t bestIndex = UINT32_MAX;
+    uint32_t bestDistance = 0;
+
+    for (uint32_t i = 0; i < 16; i++)
+    {
+        if (m_XmmProtected[i])
+        {
+            continue;
+        }
+        if (m_XmmState[i] != XmmState::Mapped && m_XmmState[i] != XmmState::AccumMapped &&
+            m_XmmState[i] != XmmState::Zero)
+        {
+            continue;
+        }
+
+        uint32_t distance;
+        if (m_XmmState[i] == XmmState::Mapped)
+        {
+            distance = NextVRegUseDistance(m_XmmRegMapped[i]);
+        }
+        else if (m_XmmState[i] == XmmState::AccumMapped)
+        {
+            distance = NextAccumUseDistance();
+        }
+        else
+        {
+            distance = 1000;
+        }
+
+        if (distance > bestDistance)
+        {
+            bestDistance = distance;
+            bestIndex = i;
+        }
+    }
+    return bestIndex;
+}
+
+uint32_t CRspRegState::NextVRegUseDistance(uint8_t vreg) const
+{
+    if (m_Block == nullptr)
+    {
+        return 0;
+    }
+
+    const RSPInstructions & instructions = m_Block->GetInstructions();
+    size_t currentIndex = m_Block->InstructionIndex(m_CompilePC);
+    if (currentIndex >= instructions.size())
+    {
+        return 0;
+    }
+
+    const RspCodeBlock::Addresses & branchTargets = m_Block->GetBranchTargets();
+    uint32_t maxScan = 64;
+    uint32_t dist = 0;
+
+    for (size_t i = currentIndex + 1; i < instructions.size() && dist < maxScan; i++, dist++)
+    {
+        const RSPInstruction & instr = instructions[i];
+
+        if (branchTargets.find(instr.Address()) != branchTargets.end())
+        {
+            break;
+        }
+
+        if (instr.WriteVectorReg() == vreg || instr.ReadVectorReg0() == vreg || instr.ReadVectorReg1() == vreg)
+        {
+            return dist + 1;
+        }
+
+        if (instr.ChangesControlFlow())
+        {
+            if (i + 1 < instructions.size())
+            {
+                const RSPInstruction & delay = instructions[i + 1];
+                if (delay.WriteVectorReg() == vreg || delay.ReadVectorReg0() == vreg || delay.ReadVectorReg1() == vreg)
+                {
+                    return dist + 2;
+                }
+            }
+            break;
+        }
+
+        if (m_Block->IsEnd(instr.Address()))
+        {
+            break;
+        }
+    }
+    return maxScan + 1;
+}
+
+uint32_t CRspRegState::NextAccumUseDistance() const
+{
+    if (m_Block == nullptr)
+    {
+        return 0;
+    }
+
+    const RSPInstructions & instructions = m_Block->GetInstructions();
+    size_t currentIndex = m_Block->InstructionIndex(m_CompilePC);
+    if (currentIndex >= instructions.size())
+    {
+        return 0;
+    }
+
+    const RspCodeBlock::Addresses & branchTargets = m_Block->GetBranchTargets();
+    uint32_t maxScan = 64;
+    uint32_t dist = 0;
+
+    for (size_t i = currentIndex + 1; i < instructions.size() && dist < maxScan; i++, dist++)
+    {
+        const RSPInstruction & instr = instructions[i];
+
+        if (branchTargets.find(instr.Address()) != branchTargets.end())
+        {
+            break;
+        }
+
+        if (instr.ReadAccumLow() || instr.ReadAccumMid() || instr.ReadAccumHigh() ||
+            instr.SetAccumLow() || instr.SetAccumMid() || instr.SetAccumHigh())
+        {
+            return dist + 1;
+        }
+
+        if (instr.ChangesControlFlow())
+        {
+            if (i + 1 < instructions.size())
+            {
+                const RSPInstruction & delay = instructions[i + 1];
+                if (delay.ReadAccumLow() || delay.ReadAccumMid() || delay.ReadAccumHigh() ||
+                    delay.SetAccumLow() || delay.SetAccumMid() || delay.SetAccumHigh())
+                {
+                    return dist + 2;
+                }
+            }
+            break;
+        }
+
+        if (m_Block->IsEnd(instr.Address()))
+        {
+            break;
+        }
+    }
+    return maxScan + 1;
 }
 
 #endif
