@@ -13,6 +13,9 @@ RspCodeBlock::RspCodeBlock(CRSPSystem & System, uint32_t StartAddress, RspCodeTy
     m_Valid(true)
 {
     Analyze();
+#if defined(__amd64__) || defined(_M_X64)
+    ReOrderInstructions();
+#endif
     BuildInstructionIndex();
 }
 
@@ -277,6 +280,170 @@ void RspCodeBlock::Analyze(void)
         }
     }
 }
+
+#if defined(__amd64__) || defined(_M_X64)
+void RspCodeBlock::ReOrderInstructions(void)
+{
+    if (LogAsmCode)
+    {
+        CRSPRecompiler & Recompiler = m_System.m_Recompiler;
+
+        Recompiler.Log("=== Before reorder (0x%X) ===", m_StartAddress);
+        for (size_t i = 0; i < m_Instructions.size(); i++)
+        {
+            Recompiler.Log("  %X: %s", m_Instructions[i].Address(), m_Instructions[i].NameAndParam().c_str());
+        }
+    }
+
+    bool changed = true;
+    size_t iterations = 0;
+    while (changed)
+    {
+        changed = false;
+        iterations++;
+
+        if (iterations > 1000)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
+        }
+        
+        for (size_t i = 0; i + 2 < m_Instructions.size(); i++)
+        {
+            RSPInstruction & op0 = m_Instructions[i];
+            RSPInstruction & op1 = m_Instructions[i + 1];
+            RSPInstruction & op2 = m_Instructions[i + 2];
+
+            if (ShouldSwapInstructions(op0, op1, op2))
+            {
+                std::swap(m_Instructions[i + 1], m_Instructions[i + 2]);
+                changed = true;
+            }
+        }
+    }
+
+    if (LogAsmCode)
+    {
+        CRSPRecompiler & Recompiler = m_System.m_Recompiler;
+
+        Recompiler.Log("=== After reorder (%d iterations) ===", iterations);
+        for (size_t i = 0; i < m_Instructions.size(); i++)
+        {
+            Recompiler.Log("  %X: %s", m_Instructions[i].Address(), m_Instructions[i].NameAndParam().c_str());
+        }
+    }
+}
+
+bool RspCodeBlock::ShouldSwapInstructions(const RSPInstruction & op0, const RSPInstruction & op1, const RSPInstruction & op2)
+{
+    // Don't move instructions across branch targets
+    if (m_BranchTargets.find(op1.Address()) != m_BranchTargets.end() ||
+        m_BranchTargets.find(op2.Address()) != m_BranchTargets.end())
+    {
+        return false;
+    }
+
+    // Don't reorder around control flow
+    if (op0.ChangesControlFlow() || op1.ChangesControlFlow() || op2.ChangesControlFlow())
+    {
+        return false;
+    }
+
+    // Determine if op2 should come before op1
+    bool shouldSwap = false;
+
+    if (op2.ReadsMemory() && !op1.ReadsMemory())
+    {
+        // Pull loads ahead of non-loads
+        shouldSwap = true;
+    }
+    else if (op1.ReadsMemory() && op2.ReadsMemory())
+    {
+        // Both loads — sort by (op, base, offset)
+        if (op1.Op() != op2.Op())
+        {
+            shouldSwap = (op2.Op() < op1.Op());
+        }
+        else if (op1.Base() != op2.Base())
+        {
+            shouldSwap = (op2.Base() < op1.Base());
+        }
+        else
+        {
+            shouldSwap = (op2.Offset() < op1.Offset());
+        }
+    }
+
+    if (!shouldSwap)
+    {
+        return false;
+    }
+
+    // Dependency checks: after swap, execution order is op0, op2, op1
+    // op1 writes a register — does op2 read it?
+    if (op1.WritesGpr())
+    {
+        if (op2.ReadsGpr(op1.WriteGprReg()))
+        {
+            return false;
+        }
+    }
+
+    // op2 writes a register — does op1 read it?
+    if (op2.WritesGpr())
+    {
+        if (op1.ReadsGpr(op2.WriteGprReg()))
+        {
+            return false;
+        }
+    }
+
+    // Both write to the same register — order of writes matters
+    if (op1.WritesGpr() && op2.WritesGpr())
+    {
+        if (op1.WriteGprReg() == op2.WriteGprReg())
+        {
+            return false;
+        }
+    }
+
+    // Dependency checks: after swap, execution order is op0, op2, op1
+    // op1 writes a register — does op2 read it?
+    if (op1.WritesVector() && op2.ReadsVector(op1.WriteVectorReg()))
+    {
+        return false;
+    }
+
+    // op2 writes a register — does op1 read it?
+    if (op2.WritesVector() && op1.ReadsVector(op2.WriteVectorReg()))
+    {
+        return false;
+    }
+
+    // Both write to the same register — order of writes matters
+    if (op1.WritesVector() && op2.WritesVector() && op1.WriteVectorReg() == op2.WriteVectorReg())
+    {
+        return false;
+    }
+
+    // op1 writes to memory — don't move a load past a store
+    if (op1.WritesMemory() && op2.ReadsMemory())
+    {
+        return false;
+    }
+
+    // Don't reorder loads and stores
+    if (op1.WritesMemory() && op2.ReadsMemory())
+    {
+        return false;
+    }
+    if (op1.ReadsMemory() && op2.WritesMemory())
+    {
+        return false;
+    }
+    return true;
+}
+#endif
 
 void RspCodeBlock::BuildInstructionIndex()
 {

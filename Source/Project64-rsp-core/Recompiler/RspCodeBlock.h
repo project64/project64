@@ -48,6 +48,10 @@ private:
     RspCodeBlock & operator=(const RspCodeBlock &);
 
     void Analyze();
+#if defined(__amd64__) || defined(_M_X64)
+    void ReOrderInstructions(void);
+    bool ShouldSwapInstructions(const RSPInstruction & op0, const RSPInstruction & op1, const RSPInstruction & op2);
+#endif
     bool IsAddressInInstructions(uint32_t address) const;
     void BuildInstructionIndex();
 
