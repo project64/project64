@@ -738,7 +738,47 @@ void CRSPRecompilerOps::LBU(void)
 
 void CRSPRecompilerOps::LHU(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::LHU, "RSPOp::LHU");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    if (m_OpCode.rt == 0)
+    {
+        return;
+    }
+
+    m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rs)));
+    if (m_OpCode.offset != 0)
+    {
+        m_Assembler->add(asmjit::x86::eax, (int16_t)m_OpCode.offset);
+    }
+    m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+    m_Assembler->test(asmjit::x86::eax, 1);
+    asmjit::Label unaligned = m_Assembler->newLabel();
+    asmjit::Label done = m_Assembler->newLabel();
+
+    m_Assembler->jnz(unaligned);
+    // Aligned path
+    m_Assembler->xor_(asmjit::x86::eax, 2);
+    m_Assembler->movzx(asmjit::x86::eax, asmjit::x86::word_ptr(asmjit::x86::r15, asmjit::x86::rax));
+
+    // Unaligned path
+    m_Assembler->SetSecondarySection();
+    m_Assembler->bind(unaligned);
+    m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::eax);
+    m_Assembler->xor_(asmjit::x86::ecx, 3);
+    m_Assembler->movzx(asmjit::x86::edx, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rcx));
+    m_Assembler->shl(asmjit::x86::edx, 8);
+    m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::eax);
+    m_Assembler->add(asmjit::x86::ecx, 1);
+    m_Assembler->and_(asmjit::x86::ecx, 0xFFF);
+    m_Assembler->xor_(asmjit::x86::ecx, 3);
+    m_Assembler->movzx(asmjit::x86::ecx, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rcx));
+    m_Assembler->or_(asmjit::x86::edx, asmjit::x86::ecx);
+    m_Assembler->movzx(asmjit::x86::eax, asmjit::x86::dx);
+    m_Assembler->jmp(done);
+
+    m_Assembler->SetPrimarySection();
+    m_Assembler->bind(done);
+
+    m_Assembler->mov(asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)), asmjit::x86::eax);
 }
 
 void CRSPRecompilerOps::LWU(void)
