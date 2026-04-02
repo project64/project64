@@ -2282,53 +2282,96 @@ void CRSPRecompilerOps::Opcode_LLV(void)
 void CRSPRecompilerOps::Opcode_LDV(void)
 {
     m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
-    if ((m_OpCode.del & 0x3) != 0)
-    {
-        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
-        return;
-    }
-    if (m_RegState.IsGprConst(m_OpCode.base))
-    {
-        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
-        return;
-    }
+
     uint8_t Length = std::min((uint8_t)8, (uint8_t)(16 - m_OpCode.del));
-    if (Length != 8)
+    if (Length == 0)
     {
-        Cheat_r4300iOpcode(&RSPOp::LDV, "RSPOp::LDV", false);
         return;
     }
-    asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt);
+
+    asmjit::x86::Xmm vt = m_RegState.MapXmmReg(m_OpCode.vt, m_OpCode.vt, true);
+
+    if (m_RegState.IsGprConst(m_OpCode.base) && (m_OpCode.del & 0x3) == 0 && Length == 8)
+    {
+        uint32_t Address = (m_RegState.GetGprConstValue(m_OpCode.base) + (m_OpCode.voffset << 3)) & 0xFFF;
+
+        if ((Address & 7) == 0)
+        {
+            m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::dword_ptr(asmjit::x86::r15, Address));
+            m_Assembler->mov(asmjit::x86::edx, asmjit::x86::dword_ptr(asmjit::x86::r15, Address + 4));
+            m_Assembler->shl(asmjit::x86::rcx, 32);
+            m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rdx);
+            m_Assembler->pinsrq(vt, asmjit::x86::rcx, m_OpCode.del == 0 ? 1 : 0);
+            return;
+        }
+    }
+
+    if ((m_OpCode.del & 0x3) != 0 || Length != 8)
+    {
+        // Odd del or partial — write back, byte copy, reload
+        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)), vt);
+
+        m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
+        if (m_OpCode.voffset != 0)
+        {
+            m_Assembler->add(asmjit::x86::eax, m_OpCode.voffset << 3);
+        }
+        m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+
+        m_Assembler->mov(asmjit::x86::ecx, m_OpCode.del);
+        m_Assembler->mov(asmjit::x86::edx, m_OpCode.del + Length);
+
+        asmjit::Label loopStart = m_Assembler->newLabel();
+        asmjit::Label loopEnd = m_Assembler->newLabel();
+        m_Assembler->bind(loopStart);
+        m_Assembler->cmp(asmjit::x86::ecx, asmjit::x86::edx);
+        m_Assembler->jge(loopEnd);
+
+        m_Assembler->mov(asmjit::x86::r8d, asmjit::x86::eax);
+        m_Assembler->xor_(asmjit::x86::r8d, 3);
+        m_Assembler->and_(asmjit::x86::r8d, 0xFFF);
+        m_Assembler->mov(asmjit::x86::r9d, 15);
+        m_Assembler->sub(asmjit::x86::r9d, asmjit::x86::ecx);
+        m_Assembler->movzx(asmjit::x86::r8d, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::r8));
+        m_Assembler->lea(asmjit::x86::r10, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
+        m_Assembler->mov(asmjit::x86::byte_ptr(asmjit::x86::r10, asmjit::x86::r9), asmjit::x86::r8b);
+
+        m_Assembler->inc(asmjit::x86::eax);
+        m_Assembler->inc(asmjit::x86::ecx);
+        m_Assembler->jmp(loopStart);
+        m_Assembler->bind(loopEnd);
+
+        m_Assembler->movdqa(vt, asmjit::x86::ptr(asmjit::x86::r14, VectorOffset(m_OpCode.vt)));
+        return;
+    }
+
     m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.base)));
     if (m_OpCode.voffset != 0)
     {
         m_Assembler->add(asmjit::x86::eax, m_OpCode.voffset << 3);
     }
     m_Assembler->and_(asmjit::x86::eax, 0xFFF);
+
+    asmjit::Label unaligned = m_Assembler->newLabel();
+    asmjit::Label done = m_Assembler->newLabel();
     m_Assembler->test(asmjit::x86::eax, 7);
-    asmjit::Label Unaligned = m_Assembler->newLabel();
-    asmjit::Label LoadDoneLabel = m_Assembler->newLabel();
-    m_Assembler->jnz(Unaligned);
+    m_Assembler->jnz(unaligned);
+
     m_Assembler->mov(asmjit::x86::ecx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax));
     m_Assembler->mov(asmjit::x86::edx, asmjit::x86::dword_ptr(asmjit::x86::r15, asmjit::x86::rax, 0, 4));
     m_Assembler->SetSecondarySection();
-    m_Assembler->bind(Unaligned);
-
-    // rcx will hold the result, edi is counter
+    m_Assembler->bind(unaligned);
     m_Assembler->xor_(asmjit::x86::rcx, asmjit::x86::rcx);
-    m_Assembler->xor_(asmjit::x86::edi, asmjit::x86::edi); // Start from 0
+    m_Assembler->xor_(asmjit::x86::edi, asmjit::x86::edi);
 
-    asmjit::Label LoopStart = m_Assembler->newLabel();
-    m_Assembler->bind(LoopStart);
-
-    // Shift previous bytes left (except first iteration)
+    asmjit::Label loopStart = m_Assembler->newLabel();
+    asmjit::Label skipShift = m_Assembler->newLabel();
+    m_Assembler->bind(loopStart);
     m_Assembler->test(asmjit::x86::edi, asmjit::x86::edi);
-    asmjit::Label SkipShift = m_Assembler->newLabel();
-    m_Assembler->jz(SkipShift);
+    m_Assembler->jz(skipShift);
     m_Assembler->shl(asmjit::x86::rcx, 8);
-    m_Assembler->bind(SkipShift);
+    m_Assembler->bind(skipShift);
 
-    // Load byte at (Address + edi) ^ 3
     m_Assembler->mov(asmjit::x86::esi, asmjit::x86::eax);
     m_Assembler->add(asmjit::x86::esi, asmjit::x86::edi);
     m_Assembler->and_(asmjit::x86::esi, 0xFFF);
@@ -2336,27 +2379,19 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     m_Assembler->movzx(asmjit::x86::esi, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rsi));
     m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rsi);
 
-    // Increment and loop
     m_Assembler->inc(asmjit::x86::edi);
     m_Assembler->cmp(asmjit::x86::edi, Length);
-    m_Assembler->jl(LoopStart); // Loop while edi < Length
+    m_Assembler->jl(loopStart);
 
     m_Assembler->mov(asmjit::x86::rdx, asmjit::x86::rcx);
     m_Assembler->xor_(asmjit::x86::rcx, asmjit::x86::rcx);
-
-    m_Assembler->jmp(LoadDoneLabel);
+    m_Assembler->jmp(done);
     m_Assembler->SetPrimarySection();
-    m_Assembler->bind(LoadDoneLabel);
+    m_Assembler->bind(done);
+
     m_Assembler->shl(asmjit::x86::rcx, 32);
     m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rdx);
-    if (m_OpCode.del == 0)
-    {
-        m_Assembler->pinsrq(vt, asmjit::x86::ecx, 1);
-    }
-    else
-    {
-        m_Assembler->pinsrq(vt, asmjit::x86::ecx, 0);
-    }
+    m_Assembler->pinsrq(vt, asmjit::x86::rcx, m_OpCode.del == 0 ? 1 : 0);
 }
 
 void CRSPRecompilerOps::Opcode_LQV(void)
