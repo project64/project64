@@ -1985,7 +1985,30 @@ void CRSPRecompilerOps::Vector_VSUBC(void)
 
 void CRSPRecompilerOps::Vector_VSAW(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VSAW, "RSPOp::Vector_VSAW");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    bool writeToDest = WriteToVectorDest(m_OpCode.vd, m_CompilePC);
+    if (!writeToDest)
+    {
+        return;
+    }
+
+    asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+    switch ((m_OpCode.rs & 0xF))
+    {
+    case 8:
+        m_Assembler->movdqa(vd, m_RegState.MapXmmAccum(AccumLocation::High, true));
+        break;
+    case 9:
+        m_Assembler->movdqa(vd, m_RegState.MapXmmAccum(AccumLocation::Middle, true));
+        break;
+    case 10:
+        m_Assembler->movdqa(vd, m_RegState.MapXmmAccum(AccumLocation::Low, true));
+        break;
+    default:
+        m_Assembler->pxor(vd, vd);
+        break;
+    }
 }
 
 void CRSPRecompilerOps::Vector_VLT(void)
