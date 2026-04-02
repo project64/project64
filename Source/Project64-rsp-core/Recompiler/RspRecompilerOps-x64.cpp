@@ -1488,7 +1488,63 @@ void CRSPRecompilerOps::Vector_VMUDN(void)
 
 void CRSPRecompilerOps::Vector_VMUDH(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VMUDH, "RSPOp::Vector_VMUDH");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    bool writeToAccum = WriteToAccum(AccumLocation::Entire, m_CompilePC);
+    bool writeToDest = WriteToVectorDest(m_OpCode.vd, m_CompilePC);
+
+    if (!writeToAccum && !writeToDest)
+    {
+        return;
+    }
+
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+
+    if (writeToAccum)
+    {
+        asmjit::x86::Xmm accLo = m_RegState.MapXmmAccum(AccumLocation::Low, false);
+        m_Assembler->pxor(accLo, accLo);
+        asmjit::x86::Xmm accMid = m_RegState.MapXmmAccum(AccumLocation::Middle, false);
+        m_Assembler->movdqa(accMid, vs);
+        m_Assembler->pmullw(accMid, vte);
+        asmjit::x86::Xmm accHi = m_RegState.MapXmmAccum(AccumLocation::High, false);
+        m_Assembler->movdqa(accHi, vs);
+        m_Assembler->pmulhw(accHi, vte);
+
+        if (writeToDest)
+        {
+            m_RegState.UnprotectXmm(vte);
+            asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+
+            m_Assembler->movdqa(vs, accMid);
+            m_Assembler->punpcklwd(vs, accHi);
+            m_Assembler->punpckhwd(accMid, accHi);
+            m_Assembler->packssdw(vs, accMid);
+            m_Assembler->movdqa(vd, vs);
+        }
+    }
+    else
+    {
+        asmjit::x86::Xmm lo = m_RegState.MapXmmTemp(false, 0, 0);
+        asmjit::x86::Xmm hi = m_RegState.MapXmmTemp(false, 0, 0);
+
+        m_Assembler->movdqa(lo, vs);
+        m_Assembler->pmullw(lo, vte);
+        m_Assembler->movdqa(hi, vs);
+        m_Assembler->pmulhw(hi, vte);
+
+        m_RegState.UnprotectXmm(vte);
+        m_RegState.UnprotectXmm(vs);
+        asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+
+        m_Assembler->movdqa(vs, lo);
+        m_Assembler->punpcklwd(vs, hi);
+        m_Assembler->punpckhwd(lo, hi);
+        m_Assembler->packssdw(vs, lo);
+        m_Assembler->movdqa(vd, vs);
+        m_RegState.UnprotectXmm(hi);
+    }
 }
 
 void CRSPRecompilerOps::Vector_VMACF(void)
