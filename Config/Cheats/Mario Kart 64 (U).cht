@@ -133,22 +133,22 @@ $Infinite Items\3-4 player Mode\Player 4
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Press GS\For Full Debug Menu
-Note=Press GS at the Press Start Menu to access the Debug Menu
+$GameShark Button\Full Debug Menu
+Note=Press GameShark button at the Press Start Menu to access the Debug Menu
 8818EDEF 0002
 
-$Press L To Levitate\Player 1
+$Press L to Levitate\Player 1
 D00F6915 0020
 810F69C8 4000
 
-$Press L To Levitate\Player 2
+$Press L to Levitate\Player 2
 D00F6925 0020
 810F77A0 4000
 
-$Press L To Levitate\Player 3
+$Press L to Levitate\Player 3
 D00F6935 0020
 810F8578 4000
 
-$Press L To Levitate\Player 4
+$Press L to Levitate\Player 4
 D00F6945 0020
 810F9350 4000

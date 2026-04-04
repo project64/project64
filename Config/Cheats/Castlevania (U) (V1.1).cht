@@ -35,7 +35,7 @@ $Infinite\Throwing Weapon
 81389C48 0064
 
 $Level Select
-Note=You must use this code on a saved game, because the intro to the first level will mess up the game. Now select the saved game, and hold down the F9 button until the level loads. Some of the boss stages will not let you fight the boss unless you re-enter the area. Also, with the part of stage modifier, the second code modifies the part of the level that you are in, and 0000 is the level's start.
+Note=You must use this code on a saved game, because the intro to the first level will mess up the game. Now select the saved game, and hold down the GameShark button until the level loads. Some of the boss stages will not let you fight the boss unless you re-enter the area. Also, with the part of stage modifier, the second code modifies the part of the level that you are in, and 0000 is the level's start.
 89389C90 ????
 89389C92 0000
 0000 Forest of Silence
@@ -70,7 +70,7 @@ $Open All Doors and Gates,No Bosses
 50002A02 0000
 81389BD0 FFFF
 
-$Press L To Levitate
+$Press L to Levitate
 D0387D7F 0020
 81350810 3FCB
 
@@ -84,7 +84,7 @@ $Status
 1F V+P
 
 $Switch From
-Note=This Switch From Cheat lets you switch characters on a saved game For example, if you are Reindhart and you want to be Carrie in the middle of your game save it and then enable this Cheat and press F1. when you start your saved game back up you'll be Carrie instead of Reindhart.
+Note=This cheat lets you switch characters on a saved game. For example, if you are Reindhart and you want to be Carrie in the middle of your game, save it, enable this cheat and press F1 (reset). When you start your saved game back up you'll be Carrie instead of Reindhart.
 80389C3D 00??
 00 Carrie to Reindhart
 01 Reindhart to Carrie

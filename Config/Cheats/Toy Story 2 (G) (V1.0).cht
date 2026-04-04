@@ -7,11 +7,11 @@ $Have 99 coins
 $Have All 5 Collectables
 801C8542 0005
 
-$Hold jump to fly
+$Hold Jump to Fly
 810BBBCC 0002
 
-$Infinite Battery Power
+$Infinite\Battery Power
 810BBBD6 000E
 
-$Infinite Lives
+$Infinite\Lives
 800BBBDA 0009

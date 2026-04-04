@@ -6,7 +6,7 @@ $All Equipment Upgrades
 811EF7CA 201B
 
 $Beta World 1
-Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice.you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
+Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice. you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
 D01FBC91 0000
 801EF712 00??
 00 Mama's House non Beta
@@ -310,8 +310,8 @@ $Play As
 03 Deku Link
 04 Normal Link
 
-$Press L To Levitate
-Note=Press L To Levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D03E6FCB 0020
 814002C8 40CB
 

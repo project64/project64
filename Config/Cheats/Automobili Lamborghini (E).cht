@@ -7,7 +7,7 @@ $Access All Bonus Cars
 50000302 0000
 8009858B 0001
 
-$Always 1st Place
+$Always Place 1st
 810A5F30 0001
 
 $Infinite Time
@@ -21,7 +21,7 @@ $Speedometer Select
 00 KM/H
 01 MPH
 
-$Start On Lap Modifier
+$Start on Lap Modifier
 D00A5F35 0000
 810A5F34 00??
 00 Normal

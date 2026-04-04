@@ -1,12 +1,12 @@
 [641D3A7F-86820466-C:50]
 Name=Hybrid Heaven (E) (M3)
 
-$[Have Full Power and Max Combos]
-Note=Gives you full power and Max Combos in fights
+$Have Full Power & Max Combos
+Note=Gives you full power and Max Combos in fights.
 811C6052 03FC
 
-$[Unlock all Code Key Doors]
-Note=Code Key always Re-newed and Matching all Doors
+$Unlock All Code Key Doors
+Note=Code Key always renewed and matching all doors.
 801C5C16 00FF
 
 $Difficulty Select Options
@@ -47,7 +47,7 @@ $Infinite\Max Body Stats
 50000602 0000
 811816A6 270F
 
-$Infinite\Max Health
+$Infinite\Health
 81181630 270F
 81181632 270F
 
@@ -67,7 +67,7 @@ $Level 999
 81181678 270F
 
 $Level and Battle Select
-Note=The level and battle select screen can be accessed by pressing A at the main menu
+Note=The level and battle select screen can be accessed by pressing A at the main menu.
 801D74A4 0005
 
 $Play As
@@ -76,6 +76,6 @@ $Play As
 02 President Weller
 03 Alien
 
-$Press L To Levitate
+$Press L to Levitate
 D00CCE25 0020
 812558F0 3FCB

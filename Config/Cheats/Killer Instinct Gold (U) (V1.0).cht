@@ -15,14 +15,14 @@ $Player 1\Fight Gargos Immediately
 8012834B 000A
 
 $Player 1\Fulgore\Always Invisible
-Note=Do not use this with Fulgore Always Visible
+Note=Do not use this with 'Fulgore Always Visible'.
 801D3478 0020
 801D3479 0090
 801D34C5 0092
 801D3527 005E
 
 $Player 1\Fulgore\Always Visible
-Note=Do not use this with Fulgore Always Invisible
+Note=Do not use this with 'Fulgore Always Invisible'.
 801D3478 0023
 801D3479 00F0
 801D34C5 0080
@@ -51,7 +51,7 @@ $Player 1\Slow Jump Walk
 $Player 1\Spinal Always Has All Skulls
 801D3523 0006
 
-$Player 1\Undefeated Players Scroll By Quickly
+$Player 1\Undefeated Players Scroll by Quickly
 802C8CE8 0007
 
 $Player 1\Untouchable
@@ -67,14 +67,14 @@ $Player 2\Fast\Punch Kick
 801D357E 0010
 
 $Player 2\Fulgore Always Invisible
-Note=Do not use this with Fulgore Always Visible
+Note=Do not use this with 'Fulgore Always Visible'.
 801D3578 0020
 801D3579 0090
 801D35C5 0092
 801D3527 005E
 
 $Player 2\Fulgore Always Visible
-Note=Do not use this with Fulgore Always Invisible
+Note=Do not use this with 'Fulgore Always Invisible'.
 801D3578 0023
 801D3579 00F0
 801D35C5 0080

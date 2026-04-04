@@ -7,7 +7,7 @@ $All Equipment Upgrades
 801E6B9C 004F
 
 $Beta World 1
-Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice.you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
+Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice. you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
 D03DDFDB 0000
 801E6B52 00??
 00 Mama's House
@@ -336,8 +336,8 @@ $Play As
 03 Deku Link
 04 Normal Link
 
-$Press L To Levitate
-Note=Press L To Levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D03DDFDB 0020
 813F72B8 40CB
 
@@ -352,7 +352,7 @@ Note=Only put the Deity Link's Sword on, if using The Play As Fierce Deity Link 
 4F Guilded Sword
 50 Deity Link's Sword
 
-$Use all C Buttons
+$Use All C Buttons
 811EAA68 0000
 811EAA6A 0000
 

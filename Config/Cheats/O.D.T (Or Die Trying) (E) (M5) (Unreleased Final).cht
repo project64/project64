@@ -38,7 +38,7 @@ $Have\All Magic
 800CEBD9 000C
 800CEBE3 000D
 
-$Have\Magic On Level 4
+$Have\Magic on Level 4
 810C8CDD FFFF
 810C8CDE FFFF
 810C8CDF FFFF
@@ -58,7 +58,7 @@ $Have\Max Spirit Level
 $Have\Max Weapon Level
 800C8D02 0064
 
-$Have\Weapons On Max Upgrade
+$Have\Weapons on Max Upgrade
 800C8CAC 0009
 800C8CB4 0009
 800C8CBC 0009
@@ -91,7 +91,7 @@ $Infinite Max\Mana
 $Infinite Throwing Weapon Ammo
 800CF57D 0063
 
-$Play As Select
+$Play as Select
 800FCEC5 00??
 00 Ike Hawkings (Corporal)
 01 Sophia Hawkings (Stowaway)
@@ -101,7 +101,7 @@ $Play As Select
 05 Solaar (Archbishop)
 06 Mr Bodybolt (7th Passenger)
 
-$Press A For Bionic Jump
+$Press A for Bionic Jump
 Note=This will make you jump to a great height
 D00C8BCA 0080
 810C8AE8 ????

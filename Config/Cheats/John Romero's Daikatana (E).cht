@@ -9,7 +9,7 @@ $Access\All Guns & Infinite Ammo
 81207B70 03E7
 
 $Access\All Items
-Note=Press L Button Where Items Are available
+Note=Press L button where items are available.
 D0209D85 0020
 81207B8C 007F
 
@@ -23,9 +23,9 @@ $Infinite\Health
 $Level Select
 811C6B4E 0001
 
-$Max\Attributes
+$Maximum\Attributes
 50000502 0000
 81207B28 0007
 
-$Max\Experience
+$Maximum\Experience
 81207B26 03E7

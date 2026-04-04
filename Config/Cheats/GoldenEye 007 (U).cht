@@ -6,27 +6,27 @@ Note=Press A or Start to enable the currently selected option. Pressing Start wh
 80036FCB 0001
 
 $Everything Unlocked\Save File 1
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 810699EE FFFF
 
 $Everything Unlocked\Save File 2
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 8106992E FFFF
 
 $Everything Unlocked\Save File 3
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 81069A4E FFFF
 
 $Everything Unlocked\Save File 4
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 8106998E FFFF
 
-$Have All\64 Characters In Multi Player
-Note=Enables all Characters selectable to play as in Multi-Player
+$Have All\64 Characters in Multiplayer
+Note=Enables all Characters selectable to play as in Multiplayer
 8002B197 0040
 
 $Have All\Objectives Complete
@@ -60,8 +60,8 @@ $Infinite\Health (All levels)
 81060254 0800
 81060256 303F
 
-$Mod Section\Custom Weapon Grouping
-Note=golden gun fun should replace slappers only! appears in the multi weapons. No weapons or ammunition crates appear inside the level. All players must rely on is their unarmed "slapping" skills.
+$Mods\Custom Weapon Grouping
+Note=Golden Gun fun replaces Slappers Only. Appears in the multi weapons. No weapons or ammunition crates appear inside the level. All players must rely on is their unarmed "slapping" skills.
 80048673 0013
 81048678 3FC0
 80048677 00D0
@@ -111,8 +111,8 @@ Note=golden gun fun should replace slappers only! appears in the multi weapons. 
 812AEA5C 756E
 802AEA5E 0000
 
-$Mod Section\Facility Back Zone In Multiplayer\Part 1\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
+$Mods\Facility Back Area in Multiplayer\2 Players
+Note=All parts must be on for this code to work. this cheat allows you to play the Facility Back Area in Multiplayer
 811E6554 45E4
 811E6558 43D5
 811E655C C5A7
@@ -193,9 +193,6 @@ Note=All parts must be on for this code to work.this cheat allows you to play th
 811EB7C2 0190
 801EB7C5 0000
 811EB7C6 0258
-
-$Mod Section\Facility Back Zone In Multiplayer\Part 2\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
 811EB7C8 0000
 811EB7CC FFFF
 811EB7CE FFFF
@@ -276,9 +273,6 @@ D11EBFC6 0000
 811EBFC6 F333
 D11EBFC8 03E8
 811EBFC8 0000
-
-$Mod Section\Facility Back Zone In Multiplayer\Part 3\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
 D11EBFCA 0000
 811EBFCA F0C4
 D11EBFCE 4CCC
@@ -331,14 +325,14 @@ D11EBFD6 0000
 D0024337 0007
 80024337 001F
 
-$Mod Section\Gain Access To\Aztec Level Without Beating Secret Agent Or 00 Agent
+$Mods\Gain Access To\Aztec Level Without Beating Secret Agent or 00 Agent
 8002A8FB 001A
 
-$Mod Section\Gain Access To\Egyptian Level Without Beating Secret Agent Or 00 Agent
+$Mods\Gain Access To\Egyptian Level Without Beating Secret Agent or 00 Agent
 8002A8FB 001C
 
-$Mod Section\Have Cradle in multiplayer
-Note=Puts the cradle graphic in the levels screen where the facility normally is in the multiplayer levels screen.Warning it doesn't allow you to enter the multiplayer levels screen,it should automatically Have\selected cradle, which cannot be changed from the multiplayer menus
+$Mods\Cradle in Multiplayer
+Note=Puts the cradle graphic in the levels screen where the facility normally is in the multiplayer levels screen. Warning it doesn't allow you to enter the multiplayer levels screen,it should automatically Have\selected cradle, which cannot be changed from the multiplayer menus
 8002B11D 0092
 8002B11F 0093
 8002B127 0029
@@ -349,7 +343,7 @@ Note=Puts the cradle graphic in the levels screen where the facility normally is
 802ADC90 004C
 802ADC91 0045
 
-$Mod Section\Replace Cradle with Citadell hidden level
+$Mods\Replace Cradle with Citadel Hidden Level
 8002A8F7 0029
 8104468A 8970
 81044690 3F44
@@ -360,16 +354,16 @@ $Mod Section\Replace Cradle with Citadell hidden level
 8104469A D89D
 80069F80 00C4
 
-$Mod Section\Secret Island on Dam Level
-Note=For the above code to work,Get to the 2nd guard tower & go down the ladder on the left hand side & to the end of the Dock, Press L & GS and you will be transfered in the water. Just keep walking straight & you will get to it. Obviously you can't actually climb ladders or anything, you will simply walkthrough anything on that Part, if you want to walk back to the Dock, when you come near it click the cheat back on & keep pressing  L & GS untill you are back on it.
+$Mods\Secret Island on Dam Level
+Note=For this cheat to work, get to the 2nd guard tower, go down the left ladder and to the end of the dock and press L & GameShark button. You will be transfered into the water. Keep walking and you will arrive at the island. The island has no clipping information, so you won't be able to climb or interact with anything. if you want to walk back to the dock, when you come near it click the cheat back on & keep pressing L & GameShark button until you are back on it.
 D0064F31 0020
 800D33ED 0050
 880D33ED 0000
 
-$Mod Section\Walk through doors, objects
+$Mods\Walk Through Doors & Objects
 800364CB 00??
 00 On
 01 Off
 
-$Mod Section\Weak Enemies
+$Mods\Weak Enemies
 8002CE48 0048

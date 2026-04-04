@@ -1,7 +1,7 @@
 [82DC04FD-CF2D82F4-C:45]
 Name=A Bug's Life (U)
 
-$Always Have\50 pieces of corn
+$Always Have\50 Pieces of Corn
 801E1A39 0032
 
 $Always Have\Super Jump
@@ -19,8 +19,8 @@ $Infinite\Health
 $Infinite\Lives
 801E1A38 0009
 
-$Levitate
-Note="Press R To Levitate & Let go to land (:"
+$Press R to Levitate
+Note=Press R to levitate and let go to land.
 D008F2C1 0010
 801E199E 0001
 D008F2C1 0010

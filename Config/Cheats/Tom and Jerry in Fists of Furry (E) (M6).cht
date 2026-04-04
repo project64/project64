@@ -1,7 +1,7 @@
 [2B4F4EFB-43C511FE-C:50]
 Name=Tom and Jerry in Fists of Furry (E) (M6)
 
-$[Unlock All Characters]
+$Unlock All Characters
 Note=This Gives you all Characters to choose from plus fixes A freeze on the Charecter Select Menu by having it on
 800E4933 00FF
 
@@ -86,11 +86,11 @@ $Infinite time
 $No music
 800B7718 0000
 
-$One Hit To Kill\Player 1
+$One Hit to Kill\Player 1
 Note=This Will Give Player 1 A One Hit Kill Over Player 2
 800E2EB4 0080
 
-$One Hit To Kill\Player 2
+$One Hit to Kill\Player 2
 Note=This Will Give Player 2 A One Hit Kill Over Player 1
 800E2BDC 0080
 

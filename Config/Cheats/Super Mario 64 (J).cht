@@ -28,7 +28,7 @@ Note=I have managed to put a have 175 Stars Option in for you,once the Code is a
 50000D02 0000
 81207B0C FFFF
 
-$Have All\Maxed Out Coin Records For All Levels
+$Have All\Maxed Out Coin Records for All Levels
 80207B25 00FF
 81207B26 FFFF
 81207B28 FFFF
@@ -38,12 +38,12 @@ $Have All\Maxed Out Coin Records For All Levels
 81207B30 FFFF
 81207B32 FFFF
 
-$Have\Debug Mode
+$Debug Mode
 8032C658 00??
 01 On
 00 Off
 
-$Have\Level Select
+$Level Select
 8032C64C 0001
 
 $Infinite\Energy & Breath
@@ -71,11 +71,11 @@ Note=Here you can Choose Options with Mario with His Cap on,Do not use with any 
 16 Invisible Metal Mario
 19 Flying Mario
 
-$Press GS for 255 Coins
+$GameShark Button\255 Coins
 89339EA8 00FF
 
-$Press L To Levitate
-Note=Press L to levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D0339C31 0020
 81339E4C 4220
 D0339E4D 0020

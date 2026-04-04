@@ -24,19 +24,19 @@ Note=Have All levels Complete on Solo Missions, & Acces all Challenges & CO-OP L
 80088A10 0001
 
 $Have All\Weapons\Player 1
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 802037F0 0007
 801EA7F0 0007
 801D17F0 0007
 
 $Have All\Weapons\Player 2
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 80205460 0007
 801EC460 0007
 801D3460 0007
 
 $Infinite\Ammo\Player 1
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 80202F7F 00FF
 801E9F7F 00FF
 801D0F7F 00FF
@@ -45,7 +45,7 @@ Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
 801D07DB 00FF
 
 $Infinite\Ammo\Player 2
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 80204BEF 00FF
 801EBBEF 00FF
 801D2BEF 00FF
@@ -54,30 +54,30 @@ Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
 801D244B 00FF
 
 $Infinite\Health\Player 1
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 8120205C 3F80
 811E905C 3F80
 811D005C 3F80
 
 $Infinite\Health\Player 2
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 81203CCC 3F80
 811EACCC 3F80
 811D1CCC 3F80
 
 $Infinite\Shield\Player 1
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 81202070 3F80
 811E9070 3F80
 811D0070 3F80
 
 $Infinite\Shield\Player 2
-Note=This code is for all Low/High Res Solo & Multi-Player Level ;) Enjoy
+Note=This code is for all Low/High Res Solo & Multiplayer Level.
 81203CE0 3F80
 811EACE0 3F80
 811D1CE0 3F80
 
-$Press B To Levitate\Single & Co-Op\Player 1
+$Press B to Levitate\Single & Co-Op\Player 1
 Note=To activate the moon jump you must Hold B while in the air. You can get in the air by going down steps, or hills or by going off the edge of something
 D00980C4 0040
 81202000 40F2
@@ -92,7 +92,7 @@ D00980C4 0040
 D00980C4 0040
 801CFFB3 0000
 
-$Single & Co-Op\Press B To Levitate\Player 2
+$Single & Co-Op\Press B to Levitate\Player 2
 Note=To activate the moon jump you must Hold B while in the air. You can get in the air by going down steps, or hills or by going off the edge of something
 D1099FB6 4000
 81203C70 40F2

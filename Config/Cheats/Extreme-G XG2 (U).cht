@@ -1,12 +1,12 @@
 [5CD4150B-470CC2F1-C:45]
 Name=Extreme-G XG2 (U)
 
-$[Screen Hud Clear]
+$Screen HUD Clear
 Note=If you are using a Plugin other then Jabos and can not see through the Thick Hud then Let the game load 1st before Putting this code on,Or it will give an error and Freeze
 80092B8B 0004
 
 $Access\All Secret Characters
-Note=This code is Fantastic, You have 12 characters to choose from to you race without any bike, just on foot
+Note=This code is Fantastic. You have 12 characters to choose from to you race without any bike, just on foot
 50000C04 0000
 801839CF 0001
 

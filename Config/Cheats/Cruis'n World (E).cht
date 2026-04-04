@@ -9,16 +9,16 @@ $Access\Florida & Moon Tracks
 Note=This is for Championship Mode Only
 813BF2A4 0101
 
-$Always 1st\Player 1
+$Always Place 1st\Player 1
 803CDF03 0001
 
-$Always 1st\Player 2
+$Always Place 1st\Player 2
 803CE3DB 0001
 
-$Always 1st\Player 3
+$Always Place 1st\Player 3
 803CDA2B 0001
 
-$Always 1st\Player 4
+$Always Place 1st\Player 4
 803CD553 0001
 
 $Cannot Spin Out
@@ -42,10 +42,10 @@ $Infinite Time
 $Max Power Level,& Paint Job / Two Tone
 813BEDA2 0512
 
-$Max\Championship Points
+$Maximum\Championship Points
 813BFB4E 270F
 
-$Max\Trick points
+$Maximum\Trick points
 803BF21F 0063
 
 $Stop Elapsed Time\Player 1
@@ -55,19 +55,19 @@ $Stop Elapsed Time\Player 2
 813C7794 3C80
 
 $Unlimited Nitro Player 4
-Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+Note=Press C button Down For Boost, This Code is for Championship Mode Only
 803C728B 0003
 
 $Unlimited Nitro\Player 1
-Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+Note=Press C button Down For Boost, This Code is for Championship Mode Only
 803C74C7 0003
 
 $Unlimited Nitro\Player 2
-Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+Note=Press C button Down For Boost, This Code is for Championship Mode Only
 803C7703 0003
 
 $Unlimited Nitro\Player 3
-Note=Press C-Button Down For Boost, This Code is for Championship Mode Only
+Note=Press C button Down For Boost, This Code is for Championship Mode Only
 803C704F 0064
 
 $Unlocked Pro & Master difficulty level

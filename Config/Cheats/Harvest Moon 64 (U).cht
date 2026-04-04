@@ -1,7 +1,7 @@
 [98DF9DFC-6606C189-C:45]
 Name=Harvest Moon 64 (U)
 
-$Belongings\Slot 01
+$Belongings\Slot 1
 80189084 00??
 00 Nothing
 01 Weeds
@@ -68,7 +68,7 @@ $Belongings\Slot 01
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 02
+$Belongings\Slot 2
 80189085 00??
 00 Nothing
 01 Weeds
@@ -135,7 +135,7 @@ $Belongings\Slot 02
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 03
+$Belongings\Slot 3
 80189086 00??
 00 Nothing
 01 Weeds
@@ -202,7 +202,7 @@ $Belongings\Slot 03
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 04
+$Belongings\Slot 4
 80189087 00??
 00 Nothing
 01 Weeds
@@ -269,7 +269,7 @@ $Belongings\Slot 04
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 05
+$Belongings\Slot 5
 80189088 00??
 00 Nothing
 01 Weeds
@@ -336,7 +336,7 @@ $Belongings\Slot 05
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 06
+$Belongings\Slot 6
 80189089 00??
 00 Nothing
 01 Weeds
@@ -403,7 +403,7 @@ $Belongings\Slot 06
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 07
+$Belongings\Slot 7
 8018908A 00??
 00 Nothing
 01 Weeds
@@ -470,7 +470,7 @@ $Belongings\Slot 07
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 08
+$Belongings\Slot 8
 8018908B 00??
 00 Nothing
 01 Weeds
@@ -540,7 +540,7 @@ $Belongings\Slot 08
 $Have\All Pics
 8118905A FFFF
 
-$Have\Max Shipped In Bin!
+$Have\Max Shipped in Bin!
 8023738A FFFF
 
 $Have\Win Dog Races
@@ -564,7 +564,7 @@ $Infinite\Horse Stamina
 $Infinite\Lumber
 81189E50 03E7
 
-$Infinite\Medals For Horse & Dog Races
+$Infinite\Medals for Horse & Dog Races
 81189B06 270F
 81205206 270F
 
@@ -577,7 +577,7 @@ $Infinite\Stamina
 $Infinite\Watering Can Uses
 8016FBCD 0004
 
-$Item\Slot 01
+$Item\Slot 1
 8018908E 00??
 00 Nothing
 01 Ocarina
@@ -602,7 +602,7 @@ $Item\Slot 01
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 02
+$Item\Slot 2
 8018908F 00??
 00 Nothing
 01 Ocarina
@@ -627,7 +627,7 @@ $Item\Slot 02
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 03
+$Item\Slot 3
 80189090 00??
 00 Nothing
 01 Ocarina
@@ -652,7 +652,7 @@ $Item\Slot 03
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 04
+$Item\Slot 4
 80189091 00??
 00 Nothing
 01 Ocarina
@@ -677,7 +677,7 @@ $Item\Slot 04
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 05
+$Item\Slot 5
 80189092 00??
 00 Nothing
 01 Ocarina
@@ -702,7 +702,7 @@ $Item\Slot 05
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 06
+$Item\Slot 6
 80189093 00??
 00 Nothing
 01 Ocarina
@@ -727,7 +727,7 @@ $Item\Slot 06
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 07
+$Item\Slot 7
 80189094 00??
 00 Nothing
 01 Ocarina
@@ -752,7 +752,7 @@ $Item\Slot 07
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 08
+$Item\Slot 8
 80189095 00??
 00 Nothing
 01 Ocarina
@@ -777,7 +777,7 @@ $Item\Slot 08
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 09
+$Item\Slot 9
 80189096 00??
 00 Nothing
 01 Ocarina
@@ -1192,7 +1192,7 @@ $Make\Maria Love You
 $Make\Popuri Love You
 801C3F91 00FF
 
-$Tool\Slot 01
+$Tool\Slot 1
 80189075 00??
 00 Nothing
 01 Sickle
@@ -1228,7 +1228,7 @@ $Tool\Slot 01
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 02
+$Tool\Slot 2
 80189076 00??
 00 Nothing
 01 Sickle
@@ -1264,7 +1264,7 @@ $Tool\Slot 02
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 03
+$Tool\Slot 3
 80189077 00??
 00 Nothing
 01 Sickle
@@ -1300,7 +1300,7 @@ $Tool\Slot 03
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 04
+$Tool\Slot 4
 80189078 00??
 00 Nothing
 01 Sickle
@@ -1336,7 +1336,7 @@ $Tool\Slot 04
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 05
+$Tool\Slot 5
 80189079 00??
 00 Nothing
 01 Sickle
@@ -1372,7 +1372,7 @@ $Tool\Slot 05
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 06
+$Tool\Slot 6
 8018907A 00??
 00 Nothing
 01 Sickle
@@ -1408,7 +1408,7 @@ $Tool\Slot 06
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 07
+$Tool\Slot 7
 8018907B 00??
 00 Nothing
 01 Sickle
@@ -1444,7 +1444,7 @@ $Tool\Slot 07
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 08
+$Tool\Slot 8
 8018907C 00??
 00 Nothing
 01 Sickle
