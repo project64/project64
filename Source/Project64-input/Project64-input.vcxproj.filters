@@ -27,7 +27,10 @@
     <ClCompile Include="CProject64Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DirectInput.cpp">
+    <ClCompile Include="SdlInputBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32KeyboardScan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wtl-ScanButton.cpp">
@@ -62,7 +65,10 @@
     <ClInclude Include="CProject64Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DirectInput.h">
+    <ClInclude Include="SdlInputBackend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32KeyboardScan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wtl-ScanButton.h">

@@ -1,6 +1,6 @@
 #pragma once
 #include <Project64-plugin-spec/Input.h>
-#include "DirectInput.h"
+#include "SdlInputBackend.h"
 #include "N64Controller.h"
 #include "Shortcuts.h"
 #include <Common/CriticalSection.h>
@@ -24,7 +24,7 @@ public:
     void GetKeys(int32_t Control, BUTTONS * Keys);
     void StartScanDevices(int32_t DisplayCtrlId);
     void EndScanDevices(void);
-    CDirectInput::ScanResult ScanDevices(BUTTON & Button);
+    CSdlInput::ScanResult ScanDevices(BUTTON & Button);
     std::wstring ButtonAssignment(BUTTON & Button);
     std::wstring ControllerDevices(const N64CONTROLLER & Controller);
     bool SaveController(uint32_t ControlIndex);
@@ -37,6 +37,9 @@ public:
     void LockMouseSwitch();
     bool IsMouseUsed();
     void LockCursor();
+
+    void NotifyConfigDialogOpen(bool open);
+    void NotifyRomOpen(bool open);
 
     inline HINSTANCE hInst(void) const { return m_hinst; }
     inline bool IsScanning(void) const { return m_Scanning; }
@@ -55,7 +58,7 @@ private:
     N64CONTROLLER m_Controllers[4];
     N64CONTROLLER m_N64Mouse;
     SHORTCUTS m_Shortcuts;
-    std::unique_ptr<CDirectInput> m_DirectInput;
+    std::unique_ptr<CSdlInput> m_Input;
     HINSTANCE m_hinst;
     bool m_Scanning;
     int32_t m_DisplayCtrlId;

@@ -31,29 +31,31 @@
     <Import Project="$(SolutionDir)PropertySheets\Platform.$(Configuration).props" />
   </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <PropertyGroup>
     <TargetName>Project64-Input</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">Project64-Input_d</TargetName>
     <OutDir>$(SolutionDir)Plugin\$(Platform)\Input\</OutDir>
   </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>SDL_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\sdl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreBuildEvent>
       <Command>"$(SolutionDir)Source\Script\UpdateVersion.cmd" "$(Configuration)" "$(Platform)" "$(SolutionDir)Source\Project64-input\Version.h.in" "$(SolutionDir)Source\Project64-input\Version.h"</Command>
     </PreBuildEvent>
     <Link>
-      <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(Root)Source\3rdParty\directx\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(Root)Source\3rdParty\directx\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>setupapi.lib;winmm.lib;imm32.lib;version.lib;ole32.lib;oleaut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DeviceNotification.cpp" />
-    <ClCompile Include="DirectInput.cpp" />
+    <ClCompile Include="SdlInputBackend.cpp" />
+    <ClCompile Include="Win32KeyboardScan.cpp" />
     <ClCompile Include="InputConfigUI.cpp" />
     <ClCompile Include="InputMain.cpp" />
     <ClCompile Include="CProject64Input.cpp" />
@@ -69,7 +71,8 @@
     <ClInclude Include="InputSettings.h" />
     <ClInclude Include="InputSettingsID.h" />
     <ClInclude Include="N64Controller.h" />
-    <ClInclude Include="DirectInput.h" />
+    <ClInclude Include="SdlInputBackend.h" />
+    <ClInclude Include="Win32KeyboardScan.h" />
     <ClInclude Include="InputConfigUI.h" />
     <ClInclude Include="CProject64Input.h" />
     <ClInclude Include="OptionsUI.h" />
@@ -88,6 +91,9 @@
     <Image Include="Mouse.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\external\sdl.vcxproj">
+      <Project>{c44840a5-59bc-4ca0-85c2-b51f0ba6e3bd}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{b4a4b994-9111-42b1-93c2-6f1ca8bc4421}</Project>
     </ProjectReference>

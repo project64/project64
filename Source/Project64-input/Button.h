@@ -22,7 +22,7 @@ enum BtnType
 
 typedef struct _BUTTON
 {
-    uint8_t Offset;
+    uint16_t Offset;
     uint8_t AxisID;
     BtnType BtnType;
     GUID DeviceGuid;

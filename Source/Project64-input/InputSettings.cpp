@@ -6,25 +6,25 @@
 
 CInputSettings * g_Settings = nullptr;
 
-/* Default First N64 Controller Setup */
-static char * Control0_U_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 17 0 5";
-static char * Control0_D_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 25 0 5";
-static char * Control0_L_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 24 0 5";
-static char * Control0_R_DPAD_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 26 0 5";
-static char * Control0_A_BUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 2D 0 5";
-static char * Control0_B_BUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 2E 0 5";
-static char * Control0_U_CBUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} C7 0 5";
-static char * Control0_D_CBUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} CF 0 5";
-static char * Control0_L_CBUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} D1 0 5";
-static char * Control0_R_CBUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} D3 0 5";
-static char * Control0_START_BUTTON_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 1C 0 5";
-static char * Control0_Z_TRIG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 2C 0 5";
-static char * Control0_R_TRIG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 1F 0 5";
-static char * Control0_L_TRIG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 1E 0 5";
-static char * Control0_U_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} C8 0 5";
-static char * Control0_D_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} D0 0 5";
-static char * Control0_L_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} CB 0 5";
-static char * Control0_R_ANALOG_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} CD 0 5";
+/* Default First N64 Controller Setup (SDL scancode offsets, virtual keyboard GUID) */
+static char * Control0_U_DPAD_Default = "{A15C6E10-0000-4000-8000-000000000001} 52 0 5";
+static char * Control0_D_DPAD_Default = "{A15C6E10-0000-4000-8000-000000000001} 51 0 5";
+static char * Control0_L_DPAD_Default = "{A15C6E10-0000-4000-8000-000000000001} 50 0 5";
+static char * Control0_R_DPAD_Default = "{A15C6E10-0000-4000-8000-000000000001} 4F 0 5";
+static char * Control0_A_BUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 1B 0 5";
+static char * Control0_B_BUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 06 0 5";
+static char * Control0_U_CBUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 0C 0 5";
+static char * Control0_D_CBUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 0E 0 5";
+static char * Control0_L_CBUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 0D 0 5";
+static char * Control0_R_CBUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 0F 0 5";
+static char * Control0_START_BUTTON_Default = "{A15C6E10-0000-4000-8000-000000000001} 28 0 5";
+static char * Control0_Z_TRIG_Default = "{A15C6E10-0000-4000-8000-000000000001} 1D 0 5";
+static char * Control0_R_TRIG_Default = "{A15C6E10-0000-4000-8000-000000000001} 08 0 5";
+static char * Control0_L_TRIG_Default = "{A15C6E10-0000-4000-8000-000000000001} 14 0 5";
+static char * Control0_U_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000001} 60 0 5";
+static char * Control0_D_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000001} 5A 0 5";
+static char * Control0_L_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000001} 5C 0 5";
+static char * Control0_R_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000001} 5E 0 5";
 static const uint32_t Default_DeadZone = 25;
 static const uint32_t Default_Range = 100;
 static const uint32_t Default_Sensitivity = 100;
@@ -32,13 +32,13 @@ static const uint32_t Default_Plugin = PLUGIN_MEMPAK;
 static const bool Default_RealN64Range = true;
 static const bool Default_RemoveDuplicate = true;
 
-/* Default Mouse Setup (Forced) */
-static char* Mouse_A_BUTTON_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 0 6";
-static char* Mouse_B_BUTTON_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 0 6";
-static char* Mouse_U_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 0 7";
-static char* Mouse_D_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 01 1 7";
-static char* Mouse_L_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 0 7";
-static char* Mouse_R_ANALOG_Default = "{6F1D2B60-D5A0-11CF-BFC7-444553540000} 00 1 7";
+/* Default Mouse Setup (Forced) — virtual mouse GUID */
+static char* Mouse_A_BUTTON_Default = "{A15C6E10-0000-4000-8000-000000000002} 00 0 6";
+static char* Mouse_B_BUTTON_Default = "{A15C6E10-0000-4000-8000-000000000002} 01 0 6";
+static char* Mouse_U_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000002} 01 0 7";
+static char* Mouse_D_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000002} 01 1 7";
+static char* Mouse_L_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000002} 00 0 7";
+static char* Mouse_R_ANALOG_Default = "{A15C6E10-0000-4000-8000-000000000002} 00 1 7";
 static const uint32_t DefaultMouse_DeadZone = 1;
 static const uint32_t DefaultMouse_Range = 100;
 static const uint32_t DefaultMouse_Plugin = PLUGIN_NONE;
@@ -47,7 +47,7 @@ static const bool DefaultMouse_RealN64Range = false;
 static const bool DefaultMouse_RemoveDuplicate = true;
 
 /* Default Shortcuts Setup */
-static char* Shortcuts_LOCKMOUSE_Default = "{6F1D2B61-D5A0-11CF-BFC7-444553540000} 0F 0 5";
+static char* Shortcuts_LOCKMOUSE_Default = "{A15C6E10-0000-4000-8000-000000000001} 2B 0 5";
 
 CInputSettings::CInputSettings() :
     Set_CpuPaused(0)
@@ -529,7 +529,7 @@ BUTTON CInputSettings::StrToButton(const char * Buffer)
         &guid.Data4[0], &guid.Data4[1], &guid.Data4[2], &guid.Data4[3],
         &guid.Data4[4], &guid.Data4[5], &guid.Data4[6], &guid.Data4[7],
         &ButtonOffset, &ButtonAxisID, &ButtonType);
-    Button.Offset = (uint8_t)(ButtonOffset & 0xFF);
+    Button.Offset = (uint16_t)(ButtonOffset & 0xFFFF);
     Button.AxisID = (uint8_t)(ButtonAxisID & 0xFF);
     Button.BtnType = (BtnType)ButtonType;
     return Button;
@@ -537,7 +537,7 @@ BUTTON CInputSettings::StrToButton(const char * Buffer)
 
 std::string CInputSettings::ButtonToStr(const BUTTON & Button)
 {
-    return stdstr_f("%s %02X %u %u", GUIDtoString(Button.DeviceGuid).c_str(), Button.Offset, Button.AxisID, Button.BtnType);
+    return stdstr_f("%s %X %u %u", GUIDtoString(Button.DeviceGuid).c_str(), (unsigned int)Button.Offset, Button.AxisID, Button.BtnType);
 }
 
 std::string CInputSettings::GUIDtoString(const GUID & guid)

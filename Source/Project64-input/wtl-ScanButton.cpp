@@ -58,8 +58,8 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
         if (g_InputPlugin)
         {
             BUTTON Button = m_Button;
-            CDirectInput::ScanResult Result = g_InputPlugin->ScanDevices(Button);
-            if (Result == CDirectInput::SCAN_SUCCEED && (Button.Offset != m_Button.Offset || Button.AxisID != m_Button.AxisID || Button.BtnType != m_Button.BtnType))
+            CSdlInput::ScanResult Result = g_InputPlugin->ScanDevices(Button);
+            if (Result == CSdlInput::SCAN_SUCCEED && (Button.Offset != m_Button.Offset || Button.AxisID != m_Button.AxisID || Button.BtnType != m_Button.BtnType))
             {
                 m_ScanBtn.KillTimer(DETECT_KEY_TIMER);
                 if (m_ChangeCallback != nullptr)
@@ -68,7 +68,7 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
                 }
                 m_Button = Button;
             }
-            if (Result == CDirectInput::SCAN_ESCAPE && (EmptyButton.Offset != m_Button.Offset || EmptyButton.AxisID != m_Button.AxisID || EmptyButton.BtnType != m_Button.BtnType))
+            if (Result == CSdlInput::SCAN_ESCAPE && (EmptyButton.Offset != m_Button.Offset || EmptyButton.AxisID != m_Button.AxisID || EmptyButton.BtnType != m_Button.BtnType))
             {
                 m_ScanBtn.KillTimer(DETECT_KEY_TIMER);
                 if (m_ChangeCallback != nullptr)
@@ -77,9 +77,9 @@ void CScanButton::OnTimer(UINT_PTR nIDEvent)
                 }
                 m_Button = EmptyButton;
             }
-            if (Result == CDirectInput::SCAN_SUCCEED || Result == CDirectInput::SCAN_ESCAPE)
+            if (Result == CSdlInput::SCAN_SUCCEED || Result == CSdlInput::SCAN_ESCAPE)
             {
-                ScanSuccess = Result == CDirectInput::SCAN_SUCCEED;
+                ScanSuccess = Result == CSdlInput::SCAN_SUCCEED;
                 Stop = true;
                 DisplayButton();
             }

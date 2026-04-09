@@ -161,6 +161,7 @@ EXPORT void CALL RomClosed(void)
     if (g_InputPlugin != nullptr)
     {
         g_InputPlugin->UnlockMouse();
+        g_InputPlugin->NotifyRomOpen(false);
     }
 }
 
@@ -176,6 +177,7 @@ EXPORT void CALL RomOpen(void)
 {
     if (g_InputPlugin != nullptr)
     {
+        g_InputPlugin->NotifyRomOpen(true);
         g_InputPlugin->LockMouse();
     }
 }

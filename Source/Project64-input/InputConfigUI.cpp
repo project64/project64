@@ -162,7 +162,7 @@ BOOL CControllerSettings::OnInitDialog(CWindow /*wndFocus*/, LPARAM /*lInitParam
     m_DeviceType.SetItemData(Index, PRESENT_MOUSE);
 
     DisplayController();
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
+    EnablePage(static_cast<int32_t>(m_DeviceType.GetItemData(m_DeviceType.GetCurSel())));
     return TRUE;
 }
 
@@ -186,7 +186,7 @@ LRESULT CControllerSettings::OnApply()
     Controller.Range = (uint8_t)m_Range.GetPos();
     Controller.DeadZone = (uint8_t)m_DeadZone.GetPos();
     CONTROL & ControlInfo = g_InputPlugin->ControlInfo(m_ControllerNumber);
-    ControlInfo.Present = m_DeviceType.GetItemData(m_DeviceType.GetCurSel());
+    ControlInfo.Present = static_cast<int32_t>(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
     ControlInfo.Plugin = m_ControlInfo.Plugin;
     return g_InputPlugin->SaveController(m_ControllerNumber) ? PSNRET_NOERROR : PSNRET_INVALID_NOCHANGEPAGE;
 }
@@ -262,7 +262,7 @@ void CControllerSettings::ShortcutsBtnClicked(UINT /*Code*/, int /*id*/, HWND /*
 void CControllerSettings::PluggedInChanged(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
-    EnablePage(m_DeviceType.GetItemData(m_DeviceType.GetCurSel()));
+    EnablePage(static_cast<int32_t>(m_DeviceType.GetItemData(m_DeviceType.GetCurSel())));
     DisplayControllerImage();
 }
 
@@ -274,7 +274,7 @@ LRESULT	CControllerSettings::ItemChangedNotify(NMHDR* /*pNMHDR*/)
 
 void CControllerSettings::DisplayControllerImage(void)
 {
-    if (m_DeviceType.GetItemData(m_DeviceType.GetCurSel()) != PRESENT_MOUSE)
+    if (static_cast<int32_t>(m_DeviceType.GetItemData(m_DeviceType.GetCurSel())) != PRESENT_MOUSE)
     {
         m_ControllerImg.SetBitmap(MAKEINTRESOURCE(IDB_CONTROLLER));
     }
@@ -291,7 +291,7 @@ void CControllerSettings::DisplayController(void)
     m_DeviceType.SetCurSel(0);
     for (index = 0; index < m_DeviceType.GetCount(); index++)
     {
-        if (m_DeviceType.GetItemData(index) == m_ControlInfo.Present)
+        if (static_cast<int32_t>(m_DeviceType.GetItemData(index)) == m_ControlInfo.Present)
         {
             m_DeviceType.SetCurSel(index);
             break;
@@ -423,10 +423,18 @@ void CControllerSettings::RemoveMapping(const BUTTON & Button)
 
 void ConfigInput(void * hParent)
 {
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->NotifyConfigDialogOpen(true);
+    }
     CInputConfigUI ConfigUI;
     g_ConfigUI = &ConfigUI;
     ConfigUI.DoModal((HWND)hParent);
     g_ConfigUI = nullptr;
+    if (g_InputPlugin != nullptr)
+    {
+        g_InputPlugin->NotifyConfigDialogOpen(false);
+    }
 }
 
 CInputConfigUI::CInputConfigUI() :

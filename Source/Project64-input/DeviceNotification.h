@@ -19,5 +19,5 @@ public:
 
 private:
     int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    BOOL OnDeviceChange(UINT nEventType, DWORD dwData);
+    BOOL OnDeviceChange(UINT nEventType, DWORD_PTR dwData);
 };
