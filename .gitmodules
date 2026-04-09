@@ -1,3 +1,6 @@
 [submodule "Source/GLideN64/Source"]
 	path = Source/GLideN64/Source
 	url = https://github.com/gonetz/GLideN64.git
+[submodule "external/sdl"]
+	path = external/sdl
+	url = https://github.com/libsdl-org/SDL.git
