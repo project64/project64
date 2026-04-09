@@ -147,7 +147,7 @@ void CHleTask::ExecuteTask_1a13a51a(const TASK_INFO & TaskInfo)
     {
         RSPSystem.BasicSyncCheck();
     }
-    typedef void(*FuncPtr)();
+    typedef void (*FuncPtr)();
     ((FuncPtr)m_TaskEnter)();
 
     *((uint32_t *)(m_DMEM + 0x320)) = 0;

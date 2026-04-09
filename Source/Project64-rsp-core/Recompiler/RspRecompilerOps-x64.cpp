@@ -2941,6 +2941,8 @@ void CRSPRecompilerOps::UnknownOpcode(void)
 
 void CRSPRecompilerOps::EnterCodeBlock(void)
 {
+    m_Assembler->push(asmjit::x86::r14);
+    m_Assembler->push(asmjit::x86::r15);
     m_Assembler->sub(asmjit::x86::rsp, FunctionStackSize);
     if (Profiling && m_CurrentBlock->CodeType() == RspCodeType_TASK)
     {
@@ -2955,6 +2957,8 @@ void CRSPRecompilerOps::EnterCodeBlock(void)
         m_Assembler->CallThis(RSPSystem.SyncSystem(), AddressOf(&CRSPSystem::ExecuteOps), "CRSPSystem::ExecuteOps");
         m_Assembler->CallThis(&RSPSystem, AddressOf(&CRSPSystem::BasicSyncCheck), "CRSPSystem::BasicSyncCheck");
     }
+    m_Assembler->mov(asmjit::x86::r14, (uint64_t)&m_System.m_Reg);
+    m_Assembler->mov(asmjit::x86::r15, (uint64_t)m_System.m_DMEM);
 }
 
 void CRSPRecompilerOps::ExitCodeBlock(void)
@@ -2964,6 +2968,8 @@ void CRSPRecompilerOps::ExitCodeBlock(void)
         m_Assembler->CallFunc(AddressOf(&StopTimer), "StopTimer");
     }
     m_Assembler->add(asmjit::x86::rsp, FunctionStackSize);
+    m_Assembler->pop(asmjit::x86::r15);
+    m_Assembler->pop(asmjit::x86::r14);
     m_Assembler->ret();
 }
 

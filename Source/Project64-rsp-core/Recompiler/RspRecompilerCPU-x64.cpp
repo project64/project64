@@ -627,15 +627,10 @@ void * CRSPRecompiler::CompileTaskEnter()
 
     SetupRspAssembler();
     m_Assembler->mov(asmjit::x86::rcx, (uint64_t)&m_SaveBuffer);
-    m_Assembler->mov(asmjit::x86::qword_ptr(asmjit::x86::rcx, 160), asmjit::x86::r14);
-    m_Assembler->mov(asmjit::x86::qword_ptr(asmjit::x86::rcx, 168), asmjit::x86::r15);
-
     for (int i = 0; i < 10; i++)
     {
         m_Assembler->movdqa(asmjit::x86::xmmword_ptr(asmjit::x86::rcx, i * 16), asmjit::x86::xmm(6 + i));
     }
-    m_Assembler->mov(asmjit::x86::r14, (uint64_t)&m_System.m_Reg);
-    m_Assembler->mov(asmjit::x86::r15, (uint64_t)m_System.m_DMEM);
     m_Assembler->ret();
     FinalizeAssembler(funcPtr);
     return funcPtr;
@@ -655,8 +650,6 @@ void * CRSPRecompiler::CompileTaskLeave()
     {
         m_Assembler->movdqa(asmjit::x86::xmm(6 + i), asmjit::x86::xmmword_ptr(asmjit::x86::rcx, i * 16));
     }
-    m_Assembler->mov(asmjit::x86::r14, asmjit::x86::qword_ptr(asmjit::x86::rcx, 160));
-    m_Assembler->mov(asmjit::x86::r15, asmjit::x86::qword_ptr(asmjit::x86::rcx, 168));
     m_Assembler->ret();
     FinalizeAssembler(funcPtr);
     return funcPtr;

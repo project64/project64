@@ -64,7 +64,7 @@ private:
     RspAssembler * m_Assembler;
     BranchTargets m_BranchTargets;
     CRspRegState m_RegState;
-    alignas(16) uint8_t m_SaveBuffer[176];
+    alignas(16) uint8_t m_SaveBuffer[160];
 };
 
 #pragma warning(pop)
