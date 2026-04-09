@@ -2362,25 +2362,25 @@ void CRSPRecompilerOps::Opcode_LDV(void)
     m_Assembler->SetSecondarySection();
     m_Assembler->bind(unaligned);
     m_Assembler->xor_(asmjit::x86::rcx, asmjit::x86::rcx);
-    m_Assembler->xor_(asmjit::x86::edi, asmjit::x86::edi);
+    m_Assembler->xor_(asmjit::x86::r10d, asmjit::x86::r10d);
 
     asmjit::Label loopStart = m_Assembler->newLabel();
     asmjit::Label skipShift = m_Assembler->newLabel();
     m_Assembler->bind(loopStart);
-    m_Assembler->test(asmjit::x86::edi, asmjit::x86::edi);
+    m_Assembler->test(asmjit::x86::r10d, asmjit::x86::r10d);
     m_Assembler->jz(skipShift);
     m_Assembler->shl(asmjit::x86::rcx, 8);
     m_Assembler->bind(skipShift);
 
-    m_Assembler->mov(asmjit::x86::esi, asmjit::x86::eax);
-    m_Assembler->add(asmjit::x86::esi, asmjit::x86::edi);
-    m_Assembler->and_(asmjit::x86::esi, 0xFFF);
-    m_Assembler->xor_(asmjit::x86::esi, 3);
-    m_Assembler->movzx(asmjit::x86::esi, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::rsi));
-    m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::rsi);
+    m_Assembler->mov(asmjit::x86::r11d, asmjit::x86::eax);
+    m_Assembler->add(asmjit::x86::r11d, asmjit::x86::r10d);
+    m_Assembler->and_(asmjit::x86::r11d, 0xFFF);
+    m_Assembler->xor_(asmjit::x86::r11d, 3);
+    m_Assembler->movzx(asmjit::x86::r11d, asmjit::x86::byte_ptr(asmjit::x86::r15, asmjit::x86::r11));
+    m_Assembler->or_(asmjit::x86::rcx, asmjit::x86::r11);
 
-    m_Assembler->inc(asmjit::x86::edi);
-    m_Assembler->cmp(asmjit::x86::edi, Length);
+    m_Assembler->inc(asmjit::x86::r10d);
+    m_Assembler->cmp(asmjit::x86::r10d, Length);
     m_Assembler->jl(loopStart);
 
     m_Assembler->mov(asmjit::x86::rdx, asmjit::x86::rcx);
