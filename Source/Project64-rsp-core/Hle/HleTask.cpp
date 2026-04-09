@@ -143,6 +143,13 @@ void CHleTask::SetupCommandList(const TASK_INFO & TaskInfo, HLETaskBooter bootTy
 
 void CHleTask::ExecuteTask_1a13a51a(const TASK_INFO & TaskInfo)
 {
+    if (SyncCPU)
+    {
+        RSPSystem.BasicSyncCheck();
+    }
+    typedef void(*FuncPtr)();
+    ((FuncPtr)m_TaskEnter)();
+
     *((uint32_t *)(m_DMEM + 0x320)) = 0;
     GPR_T8 = 0x360;
     GPR_S7 = 0xF90;
@@ -187,10 +194,6 @@ void CHleTask::ExecuteTask_1a13a51a(const TASK_INFO & TaskInfo)
         }
         TaskFunctionAddress FunctionAddress = (*m_TaskFunctions)[Index];
         *m_SP_PC_REG = FunctionAddress.first;
-        if (SyncCPU)
-        {
-            RSPSystem.SyncSystem()->ExecuteOps(0x10000, 0x118);
-        }
         typedef void (*FuncPtr)();
         FuncPtr func = (FuncPtr)FunctionAddress.second;
         if (func == nullptr)
@@ -200,6 +203,7 @@ void CHleTask::ExecuteTask_1a13a51a(const TASK_INFO & TaskInfo)
         func();
         if (SyncCPU)
         {
+            RSPSystem.SyncSystem()->ExecuteOps(0x10000, 0x118);
             RSPSystem.BasicSyncCheck();
             RSPSystem.SyncSystem()->ExecuteOps(2, (uint32_t)-1);
         }
@@ -240,6 +244,7 @@ void CHleTask::ExecuteTask_1a13a51a(const TASK_INFO & TaskInfo)
             }
         }
     }
+    ((FuncPtr)m_TaskLeave)();
 }
 
 void CHleTask::ExecuteTask_c2193700(const TASK_INFO & TaskInfo)
