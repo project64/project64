@@ -2009,7 +2009,7 @@ void CRSPRecompilerOps::Vector_VSUB(void)
         m_Assembler->psubw(accLo, vte);
         if (!m_RegState.IsFlagZero(RspFlags::VCOL))
         {
-            m_Assembler->paddw(accLo, vcol); // flags are 0/0xFFFF (-1), add(-1) = sub 1
+            m_Assembler->paddw(accLo, vcol);
         }
     }
     if (writeToDest)
@@ -2053,7 +2053,50 @@ void CRSPRecompilerOps::Vector_VADDC(void)
 
 void CRSPRecompilerOps::Vector_VSUBC(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VSUBC, "RSPOp::Vector_VSUBC");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    bool writeToDest = WriteToVectorDest(m_OpCode.vd, m_CompilePC);
+    bool writeToAccum = WriteToAccum(AccumLocation::Low, m_CompilePC);
+
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm zero = m_RegState.MapXmmZero();
+    asmjit::x86::Xmm sub = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(sub, vs);
+    m_Assembler->psubw(sub, vte);
+    asmjit::x86::Xmm le = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(le, vs);
+    m_Assembler->pminuw(le, vte);
+    m_Assembler->pcmpeqw(le, vs);
+    asmjit::x86::Xmm vcoh = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(vcoh, sub);
+    m_Assembler->pcmpeqw(vcoh, zero);
+    asmjit::x86::Xmm ones = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->pcmpeqw(ones, ones);
+    m_Assembler->pxor(vcoh, ones);
+    m_RegState.UnprotectXmm(ones);
+
+    asmjit::x86::Xmm vcol = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(vcol, le);
+    m_Assembler->pand(vcol, vcoh);
+    m_RegState.UnprotectXmm(le);
+
+    m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)), vcol);
+    m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOH)), vcoh);
+    m_RegState.UnprotectXmm(vcol);
+    m_RegState.UnprotectXmm(vcoh);
+
+    if (writeToAccum)
+    {
+        asmjit::x86::Xmm accLo = m_RegState.MapXmmAccum(AccumLocation::Low, false);
+        m_Assembler->movdqa(accLo, sub);
+    }
+
+    if (writeToDest)
+    {
+        asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+        m_Assembler->movdqa(vd, sub);
+    }
 }
 
 void CRSPRecompilerOps::Vector_VSAW(void)
