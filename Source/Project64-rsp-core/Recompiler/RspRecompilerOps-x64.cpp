@@ -2144,7 +2144,84 @@ void CRSPRecompilerOps::Vector_VNE(void)
 
 void CRSPRecompilerOps::Vector_VGE(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::Vector_VGE, "RSPOp::Vector_VGE");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+
+    bool writeToDest = WriteToVectorDest(m_OpCode.vd, m_CompilePC);
+    bool writeToAccum = WriteToAccum(AccumLocation::Low, m_CompilePC);
+
+    if (!writeToAccum && !writeToDest)
+    {
+        asmjit::x86::Xmm zero = m_RegState.MapXmmZero();
+        if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+        {
+            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)), zero);
+            m_RegState.SetFlagZero(RspFlags::VCOL);
+        }
+        if (!m_RegState.IsFlagZero(RspFlags::VCOH))
+        {
+            m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOH)), zero);
+            m_RegState.SetFlagZero(RspFlags::VCOH);
+        }
+        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCCH)), zero);
+        return;
+    }
+
+    asmjit::x86::Xmm vs = m_RegState.MapXmmTemp(true, m_OpCode.vs, 0);
+    asmjit::x86::Xmm vte = m_RegState.MapXmmTemp(true, m_OpCode.vt, m_OpCode.e);
+    asmjit::x86::Xmm zero = m_RegState.MapXmmZero();
+    asmjit::x86::Xmm gt = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(gt, vs);
+    m_Assembler->pcmpgtw(gt, vte);
+    asmjit::x86::Xmm eq = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(eq, vs);
+    m_Assembler->pcmpeqw(eq, vte);
+    asmjit::x86::Xmm both = m_RegState.MapXmmTemp(false, 0, 0);
+    if (!m_RegState.IsFlagZero(RspFlags::VCOL) && !m_RegState.IsFlagZero(RspFlags::VCOH))
+    {
+        m_Assembler->movdqa(both, asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)));
+        m_Assembler->pand(both, asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOH)));
+    }
+    else
+    {
+        m_Assembler->movdqa(both, zero);
+    }
+    m_Assembler->pandn(both, eq);
+    m_RegState.UnprotectXmm(eq);
+    m_Assembler->por(gt, both);
+    m_RegState.UnprotectXmm(both);
+    m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCCL)), gt);
+    asmjit::x86::Xmm result = m_RegState.MapXmmTemp(false, 0, 0);
+    asmjit::x86::Xmm scratch = m_RegState.MapXmmTemp(false, 0, 0);
+    m_Assembler->movdqa(result, gt);
+    m_Assembler->movdqa(scratch, gt);
+    m_Assembler->pand(result, vs);
+    m_Assembler->pandn(scratch, vte);
+    m_Assembler->por(result, scratch);
+    m_RegState.UnprotectXmm(scratch);
+    m_RegState.UnprotectXmm(gt);
+    if (!m_RegState.IsFlagZero(RspFlags::VCOL))
+    {
+        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOL)), zero);
+        m_RegState.SetFlagZero(RspFlags::VCOL);
+    }
+    if (!m_RegState.IsFlagZero(RspFlags::VCOH))
+    {
+        m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCOH)), zero);
+        m_RegState.SetFlagZero(RspFlags::VCOH);
+    }
+    m_Assembler->movdqa(asmjit::x86::ptr(asmjit::x86::r14, FlagOffset(RspFlags::VCCH)), zero);
+    if (writeToAccum)
+    {
+        asmjit::x86::Xmm accLo = m_RegState.MapXmmAccum(AccumLocation::Low, false);
+        m_Assembler->movdqa(accLo, result);
+    }
+    m_RegState.UnprotectXmm(vs);
+    m_RegState.UnprotectXmm(vte);
+    if (writeToDest)
+    {
+        asmjit::x86::Xmm vd = m_RegState.MapXmmReg(m_OpCode.vd, m_OpCode.vd, false);
+        m_Assembler->movdqa(vd, result);
+    }
 }
 
 void CRSPRecompilerOps::Vector_VCL(void)
