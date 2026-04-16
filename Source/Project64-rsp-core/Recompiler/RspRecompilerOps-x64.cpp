@@ -682,7 +682,14 @@ void CRSPRecompilerOps::XORI(void)
 
 void CRSPRecompilerOps::LUI(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::LUI, "RSPOp::LUI");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    if (m_OpCode.rt == 0)
+    {
+        return;
+    }
+    uint32_t result = (uint32_t)m_OpCode.immediate << 16;
+    m_Assembler->mov(asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)), result);
+    m_RegState.SetGprConst(m_OpCode.rt, result);
 }
 
 void CRSPRecompilerOps::COP0(void)
