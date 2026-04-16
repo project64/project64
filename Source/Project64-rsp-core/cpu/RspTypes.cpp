@@ -217,7 +217,7 @@ bool RSPFlag::Set(uint8_t Index, bool Value)
     }
 #endif
 #if defined(__amd64__) || defined(_M_X64)
-    m_Flags[Index] = Value ? 1 : 0;
+    m_Flags[Index] = Value ? 0xFFFF : 0;
 #endif
     return Value;
 }
@@ -258,7 +258,7 @@ void RSPFlag::SetPacked(uint8_t value)
 #if defined(__amd64__) || defined(_M_X64)
     for (int i = 0; i < 8; i++)
     {
-        m_Flags[i] = (value & (1 << (7 - i))) ? 1 : 0;
+        m_Flags[i] = (value & (1 << (7 - i))) ? 0xFFFF : 0;
     }
 #endif
 }

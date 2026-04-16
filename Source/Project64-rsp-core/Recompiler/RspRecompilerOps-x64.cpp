@@ -1880,7 +1880,7 @@ void CRSPRecompilerOps::Vector_VADD(void)
         m_Assembler->paddw(accLo, vte);
         if (!m_RegState.IsFlagZero(RspFlags::VCOL))
         {
-            m_Assembler->paddw(accLo, vcol);
+            m_Assembler->psubw(accLo, vcol);
         }
     }
     if (writeToDest)
@@ -1888,7 +1888,7 @@ void CRSPRecompilerOps::Vector_VADD(void)
         m_Assembler->paddsw(vs, vte);
         if (!m_RegState.IsFlagZero(RspFlags::VCOL))
         {
-            m_Assembler->paddsw(vs, vcol);
+            m_Assembler->psubsw(vs, vcol);
         }
     }
     if (vcol.isValid())
@@ -1936,7 +1936,7 @@ void CRSPRecompilerOps::Vector_VSUB(void)
         m_Assembler->psubw(accLo, vte);
         if (!m_RegState.IsFlagZero(RspFlags::VCOL))
         {
-            m_Assembler->psubw(accLo, vcol);
+            m_Assembler->paddw(accLo, vcol); // flags are 0/0xFFFF (-1), add(-1) = sub 1
         }
     }
     if (writeToDest)
@@ -1944,7 +1944,7 @@ void CRSPRecompilerOps::Vector_VSUB(void)
         m_Assembler->psubsw(vs, vte);
         if (!m_RegState.IsFlagZero(RspFlags::VCOL))
         {
-            m_Assembler->psubsw(vs, vcol);
+            m_Assembler->paddsw(vs, vcol);
         }
     }
     if (vcol.isValid())
