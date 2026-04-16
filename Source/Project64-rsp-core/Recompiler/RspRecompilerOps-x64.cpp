@@ -652,7 +652,27 @@ void CRSPRecompilerOps::ANDI(void)
 
 void CRSPRecompilerOps::ORI(void)
 {
-    Cheat_r4300iOpcode(&RSPOp::ORI, "RSPOp::ORI");
+    m_Assembler->comment(stdstr_f("%X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str()).c_str());
+    if (m_OpCode.rt == 0)
+    {
+        return;
+    }
+    if (m_RegState.IsGprConst(m_OpCode.rs))
+    {
+        uint32_t result = m_RegState.GetGprConstValue(m_OpCode.rs) | (uint16_t)m_OpCode.immediate;
+        m_Assembler->mov(asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)), result);
+        m_RegState.SetGprConst(m_OpCode.rt, result);
+    }
+    else
+    {
+        m_Assembler->mov(asmjit::x86::eax, asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rs)));
+        if (m_OpCode.immediate != 0)
+        {
+            m_Assembler->or_(asmjit::x86::eax, (uint16_t)m_OpCode.immediate);
+        }
+        m_Assembler->mov(asmjit::x86::dword_ptr(asmjit::x86::r14, GprOffset(m_OpCode.rt)), asmjit::x86::eax);
+        m_RegState.SetGprUnknown(m_OpCode.rt);
+    }
 }
 
 void CRSPRecompilerOps::XORI(void)
