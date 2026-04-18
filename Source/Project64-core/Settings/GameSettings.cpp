@@ -147,3 +147,101 @@ void CGameSettings::EnableDiskChanged(void *)
 {
     m_EnableDisk = g_Settings->LoadBool(Setting_EnableDisk);
 }
+
+void CGameSettings::SetCountPerOp(bool enhancementActive, uint32_t value)
+{
+    static bool s_EnhancementActive = false;
+    static uint32_t s_EnhancementValue = 2;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_CountPerOp = s_EnhancementValue;
+    }
+    else
+    {
+        m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
+        if (m_CountPerOp == 0) m_CountPerOp = 2;
+    }
+}
+
+void CGameSettings::SetViRefreshRate(bool enhancementActive, uint32_t value)
+{
+    static bool s_EnhancementActive = false;
+    static uint32_t s_EnhancementValue = 1500;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_ViRefreshRate = s_EnhancementValue;
+    }
+    else
+    {
+        m_ViRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
+        if (m_ViRefreshRate == 0) m_ViRefreshRate = 1500;
+    }
+}
+
+void CGameSettings::SetRdramSize(bool enhancementActive, uint32_t value)
+{
+    static bool s_EnhancementActive = false;
+    static uint32_t s_EnhancementValue = 0;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_RdramSize = s_EnhancementValue;
+    }
+    else
+    {
+        m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
+    }
+}
+
+void CGameSettings::SetFixedAudio(bool enhancementActive, bool value)
+{
+    static bool s_EnhancementActive = false;
+    static bool s_EnhancementValue = true;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_bFixedAudio = s_EnhancementValue;
+    }
+    else
+    {
+        m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
+    }
+}
+
+void CGameSettings::SetSyncAudio(bool enhancementActive, bool value)
+{
+    static bool s_EnhancementActive = false;
+    static bool s_EnhancementValue = true;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_bSyncToAudio = s_EnhancementValue;
+    }
+    else
+    {
+        m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
+    }
+}
+
+void CGameSettings::SetSmmProtect(bool enhancementActive, bool value)
+{
+    static bool s_EnhancementActive = false;
+    static bool s_EnhancementValue = false;
+    s_EnhancementActive = enhancementActive;
+    s_EnhancementValue = value;
+    if (s_EnhancementActive)
+    {
+        m_bSMM_StoreInstruc = s_EnhancementValue;
+    }
+    else
+    {
+        m_bSMM_StoreInstruc = g_Settings->LoadBool(Game_SMM_StoreInstruc);
+    }
+}
