@@ -223,6 +223,7 @@
 #define IDC_START_ON_ROM_OPEN           1084
 #define IDC_BMP_LOGO                    1084
 #define IDC_BLOCK_LINKING               1085
+#define IDC_BLOCK_LINKING_TEXT          1086
 #define IDC_RDRAM_SIZE                  1087
 #define IDC_VERSION                     1087
 #define IDC_CPU_TYPE                    1088

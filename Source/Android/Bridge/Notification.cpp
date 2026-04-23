@@ -123,7 +123,7 @@ bool CNotificationImp::AskYesNoQuestion(const char * /*Question*/) const
 void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
     TraceFlushLog();
-    if (g_Settings->LoadBool(Debugger_Enabled))
+    if (g_DebugSettings.haveDebugger)
     {
         FatalError(stdstr_f("Break point found at\n%s\nLine: %d", FileName, LineNumber).c_str());
     }

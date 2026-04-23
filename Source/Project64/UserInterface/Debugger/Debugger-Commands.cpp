@@ -164,7 +164,7 @@ void CDebugCommandsView::RecompilerCheck(void)
         return;
     }
 
-    if (g_Settings->LoadBool(Debugger_Enabled) && !g_Settings->LoadBool(Setting_ForceInterpreterCPU) && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
+    if (g_DebugSettings.haveDebugger && !g_Settings->LoadBool(Setting_ForceInterpreterCPU) && (CPU_TYPE)g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter)
     {
         // TODO: Remove this or fix?
         MessageBox(L"Debugger support for the recompiler core is experimental.\n\n"

@@ -278,6 +278,9 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(ROM_MEM_SIZE_KNOWN, "Memory size (Known):");
     DEF_STR(ROM_MEM_SIZE_UNKNOWN, "Memory size (Unknown):");
     DEF_STR(ROM_FPU_REG_CACHE, "FPU register caching");
+    DEF_STR(ROM_BLOCK_LINK_NONE, "None");
+    DEF_STR(ROM_BLOCK_LINK_EAGER, "Eager");
+    DEF_STR(ROM_BLOCK_LINK_ADAPTIVE, "Adaptive");
 
     // Core styles
     DEF_STR(CORE_INTERPTER, "Interpreter");

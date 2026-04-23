@@ -93,6 +93,7 @@ add_library(Project64-core STATIC
     Settings/SettingType/SettingsType-RDB.cpp
     Settings/SettingType/SettingsType-RDBCpuType.cpp
     Settings/SettingType/SettingsType-RDBOnOff.cpp
+    Settings/SettingType/SettingsType-RDBLinking.cpp
     Settings/SettingType/SettingsType-RDBRamSize.cpp
     Settings/SettingType/SettingsType-RDBSaveChip.cpp
     Settings/SettingType/SettingsType-RDBUser.cpp

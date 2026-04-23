@@ -8,6 +8,7 @@
 #include "Settings/SettingType/SettingsType-RDB.h"
 #include "Settings/SettingType/SettingsType-RDBCpuType.h"
 #include "Settings/SettingType/SettingsType-RDBOnOff.h"
+#include "Settings/SettingType/SettingsType-RDBLinking.h"
 #include "Settings/SettingType/SettingsType-RDBRamSize.h"
 #include "Settings/SettingType/SettingsType-RDBSaveChip.h"
 #include "Settings/SettingType/SettingsType-RelativePath.h"
@@ -167,9 +168,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_RegCache, new CSettingTypeRDB("Reg Cache", true));
     AddHandler(Rdb_FpuRegCache, new CSettingTypeRDB("FPU Reg Cache", false));
 #ifdef ANDROID
-    AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", false));
+    AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_None));
 #else
-    AddHandler(Rdb_BlockLinking, new CSettingTypeRDBOnOff("Linking", true));
+    AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_Eager));
 #endif
     AddHandler(Rdb_SMM_Cache, new CSettingTypeRomDatabase("SMM-Cache", true));
     AddHandler(Rdb_SMM_StoreInstruc, new CSettingTypeRomDatabase("SMM-StoreInst", false));
@@ -227,7 +228,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Game_FuncLookupMode, new CSettingTypeGame("FuncFind", Rdb_FuncLookupMode));
     AddHandler(Game_RegCache, new CSettingTypeGame("Reg Cache", Rdb_RegCache));
     AddHandler(Game_FPURegCache, new CSettingTypeGame("FPU Reg Cache", Rdb_FpuRegCache));
-    AddHandler(Game_BlockLinking, new CSettingTypeGame("Linking", Rdb_BlockLinking));
+    AddHandler(Game_BlockLinkingMode, new CSettingTypeGame("Linking", Rdb_BlockLinkingMode));
     AddHandler(Game_SMM_StoreInstruc, new CSettingTypeGame("SMM-StoreInst", Rdb_SMM_StoreInstruc));
     AddHandler(Game_SMM_Cache, new CSettingTypeGame("SMM-Cache", Rdb_SMM_Cache));
     AddHandler(Game_SMM_PIDMA, new CSettingTypeGame("SMM-PI DMA", Rdb_SMM_PIDMA));

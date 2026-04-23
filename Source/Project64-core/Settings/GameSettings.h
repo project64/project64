@@ -27,7 +27,7 @@ struct GameSettings
     bool rspAudioSignal;
     bool regCaching;
     bool fpuRegCaching;
-    bool blockLinking;
+    BLOCK_LINKING_MODE blockLinkingMode;
     FUNC_LOOKUP_METHOD lookUpMode;
     SYSTEM_TYPE systemType;
     CPU_TYPE cpuType;
@@ -43,7 +43,7 @@ extern GameSettings g_GameSettings;
 
 inline bool GameLinkBlocks(void)
 {
-    return g_GameSettings.blockLinking && !g_DebugSettings.haveWriteBP && !g_DebugSettings.haveReadBP;
+    return g_GameSettings.blockLinkingMode == BlockLinking_Eager && !g_DebugSettings.haveWriteBP && !g_DebugSettings.haveReadBP;
 }
 
 void SetupGameSettings(void);

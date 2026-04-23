@@ -284,7 +284,7 @@ bool CNotificationImp::ProcessGuiMessages(void) const
 
 void CNotificationImp::BreakPoint(const char * FileName, int LineNumber)
 {
-    if (g_Settings->LoadBool(Debugger_Enabled))
+    if (g_DebugSettings.haveDebugger)
     {
         DisplayError(stdstr_f("Break point found at\n%s\n%d", FileName, LineNumber).c_str());
         if (IsDebuggerPresent() != 0)

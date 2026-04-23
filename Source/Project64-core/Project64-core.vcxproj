@@ -135,6 +135,7 @@
     <ClCompile Include="Settings\SettingType\SettingsType-RDB.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBCpuType.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBOnOff.cpp" />
+    <ClCompile Include="Settings\SettingType\SettingsType-RDBLinking.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBRamSize.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBSaveChip.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-RDBUser.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="Settings\SettingType\SettingsType-RDB.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBCpuType.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBOnOff.h" />
+    <ClInclude Include="Settings\SettingType\SettingsType-RDBLinking.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBRamSize.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RDBSaveChip.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-RelativePath.h" />

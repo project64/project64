@@ -94,6 +94,7 @@ $CC -o $obj/Settings/type/GSetting.asm  $src/Settings/SettingType/SettingsType-G
 $CC -o $obj/Settings/type/GSettingX.asm $src/Settings/SettingType/SettingsType-GameSettingIndex.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBCpu.asm    $src/Settings/SettingType/SettingsType-RDBCpuType.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBOnOff.asm  $src/Settings/SettingType/SettingsType-RDBOnOff.cpp $C_FLAGS
+$CC -o $obj/Settings/type/RDBLink.asm   $src/Settings/SettingType/SettingsType-RDBLinking.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBRamSz.asm  $src/Settings/SettingType/SettingsType-RDBRamSize.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBSaves.asm  $src/Settings/SettingType/SettingsType-RDBSaveChip.cpp $C_FLAGS
 $CC -o $obj/Settings/type/RDBYesNo.asm  $src/Settings/SettingType/SettingsType-RDBYesNo.cpp $C_FLAGS
@@ -177,6 +178,7 @@ $AS -o $obj/Settings/type/GSetting.o    $obj/Settings/type/GSetting.asm
 $AS -o $obj/Settings/type/GSettingX.o   $obj/Settings/type/GSettingX.asm
 $AS -o $obj/Settings/type/RDBCpu.o      $obj/Settings/type/RDBCpu.asm
 $AS -o $obj/Settings/type/RDBOnOff.o    $obj/Settings/type/RDBOnOff.asm
+$AS -o $obj/Settings/type/RDBLink.o     $obj/Settings/type/RDBLink.asm
 $AS -o $obj/Settings/type/RDBRamSz.o    $obj/Settings/type/RDBRamSz.asm
 $AS -o $obj/Settings/type/RDBSaves.o    $obj/Settings/type/RDBSaves.asm
 $AS -o $obj/Settings/type/RDBYesNo.o    $obj/Settings/type/RDBYesNo.asm
@@ -259,6 +261,7 @@ $obj/Settings/type/GSetting.o \
 $obj/Settings/type/GSettingX.o \
 $obj/Settings/type/RDBCpu.o \
 $obj/Settings/type/RDBOnOff.o \
+$obj/Settings/type/RDBLink.o \
 $obj/Settings/type/RDBRamSz.o \
 $obj/Settings/type/RDBSaves.o \
 $obj/Settings/type/RDBYesNo.o \

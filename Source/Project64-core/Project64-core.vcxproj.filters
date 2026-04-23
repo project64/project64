@@ -150,6 +150,9 @@
     <ClCompile Include="Settings\SettingType\SettingsType-RDBOnOff.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\SettingType\SettingsType-RDBLinking.cpp">
+      <Filter>Source Files\Settings\SettingType</Filter>
+    </ClCompile>
     <ClCompile Include="Settings\SettingType\SettingsType-RDBRamSize.cpp">
       <Filter>Source Files\Settings\SettingType</Filter>
     </ClCompile>
@@ -462,6 +465,9 @@
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-RDBOnOff.h">
+      <Filter>Header Files\Settings\SettingType</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingType\SettingsType-RDBLinking.h">
       <Filter>Header Files\Settings\SettingType</Filter>
     </ClInclude>
     <ClInclude Include="Settings\SettingType\SettingsType-RDBRamSize.h">

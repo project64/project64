@@ -16,7 +16,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
 
     SetDlgItemText(IDC_ROM_REGCACHE, wGS(ROM_REG_CACHE).c_str());
     SetDlgItemText(IDC_ROM_FPUREGCACHE, wGS(ROM_FPU_REG_CACHE).c_str());
-    SetDlgItemText(IDC_BLOCK_LINKING, wGS(ADVANCE_ABL).c_str());
+    SetDlgItemText(IDC_BLOCK_LINKING_TEXT, wGS(ADVANCE_ABL).c_str());
     SetDlgItemText(IDC_ROM_FASTSP, wGS(ROM_FAST_SP).c_str());
     SetDlgItemText(IDC_ROM_32BIT, wGS(ROM_32BIT).c_str());
 
@@ -30,7 +30,6 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
 
     AddModCheckBox(GetDlgItem(IDC_ROM_REGCACHE), Game_RegCache);
     AddModCheckBox(GetDlgItem(IDC_ROM_FPUREGCACHE), Game_FPURegCache);
-    AddModCheckBox(GetDlgItem(IDC_BLOCK_LINKING), Game_BlockLinking);
     AddModCheckBox(GetDlgItem(IDC_SMM_CACHE), Game_SMM_Cache);
     AddModCheckBox(GetDlgItem(IDC_SMM_DMA), Game_SMM_PIDMA);
     AddModCheckBox(GetDlgItem(IDC_SMM_VALIDATE), Game_SMM_ValidFunc);
@@ -39,13 +38,20 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     AddModCheckBox(GetDlgItem(IDC_ROM_FASTSP), Game_FastSP);
     AddModCheckBox(GetDlgItem(IDC_ROM_32BIT), Game_32Bit);
 
-    CModifiedComboBox * ComboBox;
+    CModifiedComboBox * ComboBox = AddModComboBox(GetDlgItem(IDC_BLOCK_LINKING), Game_BlockLinkingMode);
+    if (ComboBox != nullptr)
+    {
+        ComboBox->AddItem(wGS(ROM_BLOCK_LINK_NONE).c_str(), BlockLinking_None);
+        ComboBox->AddItem(wGS(ROM_BLOCK_LINK_EAGER).c_str(), BlockLinking_Eager);
+        ComboBox->AddItem(wGS(ROM_BLOCK_LINK_ADAPTIVE).c_str(), BlockLinking_Adaptive);
+    }
+
     ComboBox = AddModComboBox(GetDlgItem(IDC_CPU_TYPE), Game_CpuType);
     if (ComboBox)
     {
         ComboBox->AddItem(wGS(CORE_RECOMPILER).c_str(), CPU_Recompiler);
         ComboBox->AddItem(wGS(CORE_INTERPTER).c_str(), CPU_Interpreter);
-        if (g_Settings->LoadBool(Debugger_Enabled))
+        if (g_DebugSettings.haveDebugger)
         {
             ComboBox->AddItem(wGS(CORE_SYNC).c_str(), CPU_SyncCores);
         }

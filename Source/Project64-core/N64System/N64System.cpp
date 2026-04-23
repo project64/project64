@@ -83,7 +83,7 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     {
         uint32_t CpuType = g_Settings->LoadDword(Game_CpuType);
         WriteTrace(TraceN64System, TraceDebug, "CpuType = %d", CpuType);
-        if (CpuType == CPU_SyncCores && !g_Settings->LoadBool(Debugger_Enabled))
+        if (CpuType == CPU_SyncCores && !g_DebugSettings.haveDebugger)
         {
             g_Settings->SaveDword(Game_CpuType, CPU_Recompiler);
             CpuType = CPU_Recompiler;

@@ -108,7 +108,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Rdb_ScreenHertz);
     ADD_SETTING(Rdb_FuncLookupMode);
     ADD_SETTING(Rdb_RegCache);
-    ADD_SETTING(Rdb_BlockLinking);
+    ADD_SETTING(Rdb_BlockLinkingMode);
     ADD_SETTING(Rdb_SMM_StoreInstruc);
     ADD_SETTING(Rdb_SMM_Cache);
     ADD_SETTING(Rdb_SMM_PIDMA);
@@ -160,7 +160,7 @@ CJniBridegSettings::CJniBridegSettings()
     ADD_SETTING(Game_FuncLookupMode);
     ADD_SETTING(Game_RegCache);
     ADD_SETTING(Game_FPURegCache);
-    ADD_SETTING(Game_BlockLinking);
+    ADD_SETTING(Game_BlockLinkingMode);
     ADD_SETTING(Game_ScreenHertz);
     ADD_SETTING(Game_RspAudioSignal);
     ADD_SETTING(Game_RspMultiThreaded);

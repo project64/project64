@@ -985,7 +985,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
-        if (g_Settings->LoadBool(Debugger_Enabled))
+        if (g_DebugSettings.haveDebugger)
         {
             SetCapture(hWnd);
             CDebuggerUI * debugger = (CDebuggerUI *)g_Debugger;
@@ -996,7 +996,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
-        if (g_Settings->LoadBool(Debugger_Enabled))
+        if (g_DebugSettings.haveDebugger)
         {
             ReleaseCapture();
             CDebuggerUI * debugger = (CDebuggerUI *)g_Debugger;
@@ -1005,7 +1005,7 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
         }
         break;
     case WM_MOUSEMOVE:
-        if (g_Settings->LoadBool(Debugger_Enabled))
+        if (g_DebugSettings.haveDebugger)
         {
             static int lastX = 0;
             static int lastY = 0;

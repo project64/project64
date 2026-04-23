@@ -12,7 +12,7 @@ class CGameRecompilePage :
         COMMAND_ID_HANDLER_EX(IDC_ROM_REGCACHE, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_ROM_FPUREGCACHE, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_ROM_FASTSP, CheckBoxChanged);
-        COMMAND_ID_HANDLER_EX(IDC_BLOCK_LINKING, CheckBoxChanged);
+        COMMAND_HANDLER_EX(IDC_BLOCK_LINKING, LBN_SELCHANGE, ComboBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_ROM_32BIT, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SMM_CACHE, CheckBoxChanged);
         COMMAND_ID_HANDLER_EX(IDC_SMM_DMA, CheckBoxChanged);

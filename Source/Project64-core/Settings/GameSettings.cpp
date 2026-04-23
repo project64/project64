@@ -47,7 +47,7 @@ void RefreshGameSettings(void)
     g_GameSettings.rspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
     g_GameSettings.regCaching = g_Settings->LoadBool(Game_RegCache);
     g_GameSettings.fpuRegCaching = g_Settings->LoadBool(Game_FPURegCache);
-    g_GameSettings.blockLinking = g_Settings->LoadBool(Game_BlockLinking);
+    g_GameSettings.blockLinkingMode = (BLOCK_LINKING_MODE)g_Settings->LoadDword(Game_BlockLinkingMode);
     g_GameSettings.lookUpMode = (FUNC_LOOKUP_METHOD)g_Settings->LoadDword(Game_FuncLookupMode);
     g_GameSettings.systemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
     g_GameSettings.cpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
@@ -144,7 +144,7 @@ void SetupGameSettings(void)
         Game_RspAudioSignal,
         Game_RegCache,
         Game_FPURegCache,
-        Game_BlockLinking,
+        Game_BlockLinkingMode,
         Game_FuncLookupMode,
         Game_SystemType,
         Game_CpuType,
@@ -196,7 +196,7 @@ void ShutdownGameSettings(void)
         Game_RspAudioSignal,
         Game_RegCache,
         Game_FPURegCache,
-        Game_BlockLinking,
+        Game_BlockLinkingMode,
         Game_FuncLookupMode,
         Game_SystemType,
         Game_CpuType,

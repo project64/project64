@@ -861,9 +861,9 @@ uint32_t CX64RecompilerOps::GetCurrentPC(void)
     return 0;
 }
 
-void CX64RecompilerOps::SetCurrentSection(CCodeSection * /*section*/)
+void CX64RecompilerOps::SetCurrentSection(CCodeSection * section)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_Section = section;
 }
 
 void CX64RecompilerOps::SetNextStepType(PIPELINE_STAGE /*StepType*/)

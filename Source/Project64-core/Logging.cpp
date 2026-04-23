@@ -15,7 +15,7 @@ void CLogging::LogMessage(const char * Message, ...)
     char Msg[400];
     va_list ap;
 
-    if (!g_Settings->LoadBool(Debugger_Enabled))
+    if (!g_DebugSettings.haveDebugger)
     {
         return;
     }

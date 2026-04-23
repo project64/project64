@@ -10,8 +10,10 @@
         android:title="@string/CpuType"
         />
     
-    <CheckBoxPreference
-        android:key="Game_BlockLinking"
+    <emu.project64.settings.ListPreference
+        app:entries="@array/block_linking_list"
+        app:entryValues="@array/block_linking_values"
+        android:key="Game_BlockLinkingMode"
         android:summary="@string/BlockLinking_summary"
         android:title="@string/BlockLinking_title" />
 </PreferenceScreen>

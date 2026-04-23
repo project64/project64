@@ -74,6 +74,13 @@ enum FUNC_LOOKUP_METHOD
     FuncFind_ChangeMemory = 3,
 };
 
+enum BLOCK_LINKING_MODE
+{
+    BlockLinking_None = 0,
+    BlockLinking_Eager = 1,
+    BlockLinking_Adaptive = 2,
+};
+
 enum SYSTEM_TYPE
 {
     SYSTEM_NTSC = 0,

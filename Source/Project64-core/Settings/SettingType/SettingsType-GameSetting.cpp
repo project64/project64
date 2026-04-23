@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "SettingsType-GameSetting.h"
+#include "SettingsType-RDBLinking.h"
 #include "SettingsType-RDBUser.h"
 
 bool CSettingTypeGame::m_RdbEditor = false;
