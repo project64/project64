@@ -712,7 +712,7 @@ void CRegisters::Cop2_MT(uint32_t /*Reg*/, uint64_t Value)
 void CRegisters::CheckInterrupts()
 {
     uint32_t MI_INTR_REG_Value = MI_INTR_REG;
-    if (!m_System.bFixedAudio() && CpuType() != CPU_SyncCores)
+    if (!g_GameSettings.fixedAudio && g_GameSettings.cpuType != CPU_SyncCores)
     {
         MI_INTR_REG_Value &= ~MI_INTR_AI;
         MI_INTR_REG_Value |= (m_AudioIntrReg & MI_INTR_AI);

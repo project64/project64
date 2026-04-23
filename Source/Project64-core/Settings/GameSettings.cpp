@@ -1,149 +1,219 @@
 #include "stdafx.h"
 
-#include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Settings/GameSettings.h>
 
-bool CGameSettings::m_RspMultiThreaded = false;
-bool CGameSettings::m_UseHleGfx = true;
-bool CGameSettings::m_UseHleAudio = false;
-bool CGameSettings::m_bSMM_StoreInstruc;
-bool CGameSettings::m_bSMM_ValidFunc;
-bool CGameSettings::m_bSMM_PIDMA;
-bool CGameSettings::m_bSMM_TLB;
-uint32_t CGameSettings::m_CountPerOp = 2;
-uint32_t CGameSettings::m_ViRefreshRate = 1500;
-uint32_t CGameSettings::m_AiCountPerBytes = 500;
-bool CGameSettings::m_DelayDP = false;
-uint32_t CGameSettings::m_DelaySI = 0;
-bool CGameSettings::m_bRandomizeSIPIInterrupts = true;
-uint32_t CGameSettings::m_RdramSize = 0;
-bool CGameSettings::m_bFixedAudio = true;
-bool CGameSettings::m_bSyncToAudio = true;
-bool CGameSettings::m_FullSpeed = true;
-bool CGameSettings::m_bFastSP = true;
-bool CGameSettings::m_b32Bit = true;
-bool CGameSettings::m_RspAudioSignal;
-bool CGameSettings::m_RegCaching;
-bool CGameSettings::m_FPURegCaching;
-bool CGameSettings::m_bLinkBlocks;
-uint32_t CGameSettings::m_LookUpMode; //FUNC_LOOKUP_METHOD
-SYSTEM_TYPE CGameSettings::m_SystemType = SYSTEM_NTSC;
-CPU_TYPE CGameSettings::m_CpuType = CPU_Recompiler;
-uint32_t CGameSettings::m_OverClockModifier = 1;
-DISK_SEEK_TYPE CGameSettings::m_DiskSeekTimingType = DiskSeek_Turbo;
-bool CGameSettings::m_EnhancmentOverClock = false;
-uint32_t CGameSettings::m_EnhancmentOverClockModifier = 1;
-bool CGameSettings::m_EnableDisk = false;
-bool CGameSettings::m_UnalignedDMA = false;
+GameSettings g_GameSettings = {};
 
-int32_t CGameSettings::m_RefCount = 0;
-
-CGameSettings::CGameSettings()
+void RefreshSyncToAudio(void)
 {
-    m_RefCount += 1;
-    if (m_RefCount == 1)
+    if (g_Settings == nullptr)
     {
-        g_Settings->RegisterChangeCB(Setting_EnableDisk, nullptr, EnableDiskChanged);
-        EnableDiskChanged(nullptr);
+        return;
     }
+    g_GameSettings.syncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) &&
+                                 g_Settings->LoadBool(Plugin_EnableAudio);
 }
 
-CGameSettings::~CGameSettings()
+void RefreshGameSettings(void)
 {
-    m_RefCount -= 1;
-    if (m_RefCount == 0)
+    if (g_Settings == nullptr)
     {
-        g_Settings->RegisterChangeCB(Setting_EnableDisk, nullptr, EnableDiskChanged);
+        return;
     }
-}
-
-void CGameSettings::RefreshGameSettings()
-{
     WriteTrace(TraceN64System, TraceDebug, "start");
-    m_RspMultiThreaded = g_Settings->LoadBool(Game_RspMultiThreaded);
-    m_UseHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
-    m_UseHleAudio = g_Settings->LoadBool(Game_UseHleAudio);
-    m_bSMM_StoreInstruc = g_Settings->LoadBool(Game_SMM_StoreInstruc);
-    m_bSMM_ValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
-    m_bSMM_PIDMA = g_Settings->LoadBool(Game_SMM_PIDMA);
-    m_bSMM_TLB = g_Settings->LoadBool(Game_SMM_TLB);
-    m_ViRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
-    m_AiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
-    m_CountPerOp = g_Settings->LoadDword(Game_CounterFactor);
-    m_RdramSize = g_Settings->LoadDword(Game_RDRamSize);
-    m_DelaySI = g_Settings->LoadDword(Game_DelaySI);
-    m_bRandomizeSIPIInterrupts = g_Settings->LoadBool(Game_RandomizeSIPIInterrupts);
-    m_DelayDP = g_Settings->LoadBool(Game_DelayDP);
-    m_bFixedAudio = g_Settings->LoadBool(Game_FixedAudio);
-    m_FullSpeed = g_Settings->LoadBool(Game_FullSpeed);
-    m_b32Bit = g_Settings->LoadBool(Game_32Bit);
+    g_GameSettings.rspMultiThreaded = g_Settings->LoadBool(Game_RspMultiThreaded);
+    g_GameSettings.useHleGfx = g_Settings->LoadBool(Game_UseHleGfx);
+    g_GameSettings.useHleAudio = g_Settings->LoadBool(Game_UseHleAudio);
+    g_GameSettings.smmStoreInstruc = g_Settings->LoadBool(Game_SMM_StoreInstruc);
+    g_GameSettings.smmValidFunc = g_Settings->LoadBool(Game_SMM_ValidFunc);
+    g_GameSettings.smmPidma = g_Settings->LoadBool(Game_SMM_PIDMA);
+    g_GameSettings.smmTlb = g_Settings->LoadBool(Game_SMM_TLB);
+    g_GameSettings.viRefreshRate = g_Settings->LoadDword(Game_ViRefreshRate);
+    g_GameSettings.aiCountPerBytes = g_Settings->LoadDword(Game_AiCountPerBytes);
+    g_GameSettings.countPerOp = g_Settings->LoadDword(Game_CounterFactor);
+    g_GameSettings.rdramSize = g_Settings->LoadDword(Game_RDRamSize);
+    g_GameSettings.delaySI = g_Settings->LoadDword(Game_DelaySI);
+    g_GameSettings.randomizeSipiInterrupts = g_Settings->LoadBool(Game_RandomizeSIPIInterrupts);
+    g_GameSettings.delayDP = g_Settings->LoadBool(Game_DelayDP);
+    g_GameSettings.fixedAudio = g_Settings->LoadBool(Game_FixedAudio);
+    g_GameSettings.fullSpeed = g_Settings->LoadBool(Game_FullSpeed);
+    g_GameSettings.core32Bit = g_Settings->LoadBool(Game_32Bit);
 #ifdef ANDROID
-    m_bFastSP = false;
+    g_GameSettings.fastSP = false;
 #else
-    m_bFastSP = g_Settings->LoadBool(Game_FastSP);
+    g_GameSettings.fastSP = g_Settings->LoadBool(Game_FastSP);
 #endif
-    m_RspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
-    m_RegCaching = g_Settings->LoadBool(Game_RegCache);
-    m_FPURegCaching = g_Settings->LoadBool(Game_FPURegCache);
-    m_bLinkBlocks = g_Settings->LoadBool(Game_BlockLinking);
-    m_LookUpMode = g_Settings->LoadDword(Game_FuncLookupMode);
-    m_SystemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
-    m_CpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
-    m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
-    if (m_CountPerOp == 0)
+    g_GameSettings.rspAudioSignal = g_Settings->LoadBool(Game_RspAudioSignal);
+    g_GameSettings.regCaching = g_Settings->LoadBool(Game_RegCache);
+    g_GameSettings.fpuRegCaching = g_Settings->LoadBool(Game_FPURegCache);
+    g_GameSettings.blockLinking = g_Settings->LoadBool(Game_BlockLinking);
+    g_GameSettings.lookUpMode = (FUNC_LOOKUP_METHOD)g_Settings->LoadDword(Game_FuncLookupMode);
+    g_GameSettings.systemType = (SYSTEM_TYPE)g_Settings->LoadDword(Game_SystemType);
+    g_GameSettings.cpuType = (CPU_TYPE)g_Settings->LoadDword(Game_CpuType);
+    g_GameSettings.overClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
+    if (g_GameSettings.countPerOp == 0)
     {
-        m_CountPerOp = 2;
+        g_GameSettings.countPerOp = 2;
     }
-    if (m_OverClockModifier < 1)
+    if (g_GameSettings.overClockModifier < 1)
     {
-        m_OverClockModifier = 1;
+        g_GameSettings.overClockModifier = 1;
     }
-    if (m_OverClockModifier > 100)
+    if (g_GameSettings.overClockModifier > 100)
     {
-        m_OverClockModifier = 100;
+        g_GameSettings.overClockModifier = 100;
     }
-    m_DiskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
-    m_UnalignedDMA = g_Settings->LoadBool(Game_UnalignedDMA);
+    g_GameSettings.diskSeekTimingType = (DISK_SEEK_TYPE)g_Settings->LoadDword(Game_DiskSeekTiming);
+    g_GameSettings.unalignedDMA = g_Settings->LoadBool(Game_UnalignedDMA);
+    g_GameSettings.enableDisk = g_Settings->LoadBool(Setting_EnableDisk);
     RefreshSyncToAudio();
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
 
-void CGameSettings::SpeedChanged(int SpeedLimit)
+void NotifyGameSpeedChanged(int32_t speedLimit)
 {
-    m_FullSpeed = (g_System->m_SystemType == SYSTEM_PAL ? 50 : 60) == SpeedLimit;
-    g_Settings->SaveBool(Game_FullSpeed, m_FullSpeed);
-}
-
-void CGameSettings::RefreshSyncToAudio(void)
-{
-    m_bSyncToAudio = g_Settings->LoadBool(Game_SyncViaAudio) && g_Settings->LoadBool(Setting_SyncViaAudioEnabled) && g_Settings->LoadBool(Plugin_EnableAudio);
-}
-
-void CGameSettings::SetOverClockModifier(bool EnhancmentOverClock, uint32_t EnhancmentOverClockModifier)
-{
-    m_EnhancmentOverClock = EnhancmentOverClock;
-    m_EnhancmentOverClockModifier = EnhancmentOverClockModifier;
-
-    if (m_EnhancmentOverClock)
+    if (g_Settings == nullptr)
     {
-        m_OverClockModifier = m_EnhancmentOverClockModifier;
+        return;
+    }
+    g_GameSettings.fullSpeed = (g_GameSettings.systemType == SYSTEM_PAL ? 50 : 60) == speedLimit;
+    g_Settings->SaveBool(Game_FullSpeed, g_GameSettings.fullSpeed);
+}
+
+void SetGameOverClockModifier(bool enhancementOverClock, uint32_t enhancementOverClockModifier)
+{
+    if (g_Settings == nullptr)
+    {
+        return;
+    }
+    g_GameSettings.enhancementOverClock = enhancementOverClock;
+    g_GameSettings.enhancementOverClockModifier = enhancementOverClockModifier;
+
+    if (g_GameSettings.enhancementOverClock)
+    {
+        g_GameSettings.overClockModifier = g_GameSettings.enhancementOverClockModifier;
     }
     else
     {
-        m_OverClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
+        g_GameSettings.overClockModifier = g_Settings->LoadDword(Game_OverClockModifier);
     }
-    if (m_OverClockModifier < 1)
+    if (g_GameSettings.overClockModifier < 1)
     {
-        m_OverClockModifier = 1;
+        g_GameSettings.overClockModifier = 1;
     }
-    if (m_OverClockModifier > 100)
+    if (g_GameSettings.overClockModifier > 100)
     {
-        m_OverClockModifier = 100;
+        g_GameSettings.overClockModifier = 100;
     }
 }
 
-void CGameSettings::EnableDiskChanged(void *)
+static bool s_GameSettingsRegistered = false;
+
+static void GameSettingsChanged(void * /*Data*/)
 {
-    m_EnableDisk = g_Settings->LoadBool(Setting_EnableDisk);
+    RefreshGameSettings();
+}
+
+void SetupGameSettings(void)
+{
+    if (g_Settings == nullptr || s_GameSettingsRegistered)
+    {
+        return;
+    }
+
+    static const SettingID kWatch[] = {
+        Game_RspMultiThreaded,
+        Game_UseHleGfx,
+        Game_UseHleAudio,
+        Game_SMM_StoreInstruc,
+        Game_SMM_ValidFunc,
+        Game_SMM_PIDMA,
+        Game_SMM_TLB,
+        Game_ViRefreshRate,
+        Game_AiCountPerBytes,
+        Game_CounterFactor,
+        Game_RDRamSize,
+        Game_DelaySI,
+        Game_RandomizeSIPIInterrupts,
+        Game_DelayDP,
+        Game_FixedAudio,
+        Game_FullSpeed,
+        Game_32Bit,
+        Game_FastSP,
+        Game_RspAudioSignal,
+        Game_RegCache,
+        Game_FPURegCache,
+        Game_BlockLinking,
+        Game_FuncLookupMode,
+        Game_SystemType,
+        Game_CpuType,
+        Game_OverClockModifier,
+        Game_DiskSeekTiming,
+        Game_UnalignedDMA,
+        Setting_EnableDisk,
+        Game_SyncViaAudio,
+        Setting_SyncViaAudioEnabled,
+        Plugin_EnableAudio,
+        Game_IniKey,
+    };
+
+    for (SettingID id : kWatch)
+    {
+        g_Settings->RegisterChangeCB(id, nullptr, GameSettingsChanged);
+    }
+
+    RefreshGameSettings();
+    s_GameSettingsRegistered = true;
+}
+
+void ShutdownGameSettings(void)
+{
+    if (g_Settings == nullptr || !s_GameSettingsRegistered)
+    {
+        return;
+    }
+
+    static const SettingID kWatch[] = {
+        Game_RspMultiThreaded,
+        Game_UseHleGfx,
+        Game_UseHleAudio,
+        Game_SMM_StoreInstruc,
+        Game_SMM_ValidFunc,
+        Game_SMM_PIDMA,
+        Game_SMM_TLB,
+        Game_ViRefreshRate,
+        Game_AiCountPerBytes,
+        Game_CounterFactor,
+        Game_RDRamSize,
+        Game_DelaySI,
+        Game_RandomizeSIPIInterrupts,
+        Game_DelayDP,
+        Game_FixedAudio,
+        Game_FullSpeed,
+        Game_32Bit,
+        Game_FastSP,
+        Game_RspAudioSignal,
+        Game_RegCache,
+        Game_FPURegCache,
+        Game_BlockLinking,
+        Game_FuncLookupMode,
+        Game_SystemType,
+        Game_CpuType,
+        Game_OverClockModifier,
+        Game_DiskSeekTiming,
+        Game_UnalignedDMA,
+        Setting_EnableDisk,
+        Game_SyncViaAudio,
+        Setting_SyncViaAudioEnabled,
+        Plugin_EnableAudio,
+        Game_IniKey,
+    };
+
+    for (SettingID id : kWatch)
+    {
+        g_Settings->UnregisterChangeCB(id, nullptr, GameSettingsChanged);
+    }
+
+    s_GameSettingsRegistered = false;
 }

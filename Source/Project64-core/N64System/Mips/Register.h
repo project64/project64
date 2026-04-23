@@ -13,7 +13,6 @@
 #include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\N64System\N64Types.h>
-#include <Project64-core\Settings\GameSettings.h>
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // Non-standard extension used: nameless struct/union
@@ -430,7 +429,6 @@ class CTLB;
 
 class CRegisters :
     public CLogging,
-    private CGameSettings,
     public CP0registers,
     public RDRAMRegistersReg,
     public MIPSInterfaceReg,

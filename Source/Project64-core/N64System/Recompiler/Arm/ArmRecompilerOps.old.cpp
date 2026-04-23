@@ -97,13 +97,13 @@ void CArmRecompilerOps::PreCompileOpcode(void)
     m_Assembler.CallFunction(AddressOf(&CN64System::SyncSystem), "CN64System::SyncSystem");
     }
     }*/
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
     m_RegWorkingSet.ResetRegProtection();
 }
 
 void CArmRecompilerOps::PostCompileOpcode(void)
 {
-    if (!g_System->bRegCaching())
+    if (!g_GameSettings.regCaching)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -269,7 +269,7 @@ void CArmRecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         if (Link)
         {
             UnMap_GPR(31, false);
-            if (!g_System->b32BitCore())
+            if (!g_GameSettings.core32Bit)
             {
                 m_Assembler.MoveConstToVariable((m_CompilePC & 0x80000000) != 0 ? 0xFFFFFFFF : 0, &_GPR[31].UW[1], CRegName::GPR_Hi[31]);
             }
@@ -376,7 +376,7 @@ void CArmRecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
         {
             m_PipelineStage = PIPELINE_STAGE_NORMAL;
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             SetCurrentPC(GetCurrentPC() + 4);
             return;
         }
@@ -488,7 +488,7 @@ void CArmRecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         {
             CompileCop1Test();
         }
-        if (!g_System->bLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
+        if (!GameLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
         {
             m_Section->m_Jump.JumpPC = m_CompilePC;
             m_Section->m_Jump.TargetPC = m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4;
@@ -549,7 +549,7 @@ void CArmRecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         ResetRegProtection();
 
         m_Section->m_Cont.RegSet = m_RegWorkingSet;
-        m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
             if (m_Section->m_Cont.FallThrough)
@@ -586,10 +586,10 @@ void CArmRecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
             m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
         }
 
-        if (g_System->bLinkBlocks())
+        if (GameLinkBlocks())
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
-            m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Section->GenerateSectionLinkage();
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
@@ -628,7 +628,7 @@ void CArmRecompilerOps::BNE_Compare()
     {
         if (IsConst(m_Opcode.rs) && IsConst(m_Opcode.rt))
         {
-            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
+            if (!g_GameSettings.core32Bit && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
                 CArmRecompilerOps::UnknownOpcode();
@@ -648,7 +648,7 @@ void CArmRecompilerOps::BNE_Compare()
         {
             ProtectGPR(m_Opcode.rs);
             ProtectGPR(m_Opcode.rt);
-            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
+            if (!g_GameSettings.core32Bit && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 m_Assembler.CompareArmRegToArmReg(
                     Is32Bit(m_Opcode.rs) ? Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, true) : GetMipsRegMapHi(m_Opcode.rs),
@@ -713,7 +713,7 @@ void CArmRecompilerOps::BNE_Compare()
             uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
-            if (!g_System->b32BitCore() && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
+            if (!g_GameSettings.core32Bit && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
             {
                 if (Is32Bit(ConstReg) || Is32Bit(MappedReg))
                 {
@@ -798,7 +798,7 @@ void CArmRecompilerOps::BNE_Compare()
         }
 
         CArmOps::ArmReg TempRegUnknown = CArmOps::Arm_Any;
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             TempRegUnknown = Map_TempReg(CArmOps::Arm_Any, UnknownReg, true);
             if (IsConst(KnownReg))
@@ -847,7 +847,7 @@ void CArmRecompilerOps::BNE_Compare()
         if (m_Section->m_Cont.FallThrough)
         {
             m_Assembler.BranchLabel20(CArmOps::ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -876,7 +876,7 @@ void CArmRecompilerOps::BNE_Compare()
             /*JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             m_Assembler.BranchLabel20(CArmOps::CArmOps::ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
             m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -888,7 +888,7 @@ void CArmRecompilerOps::BNE_Compare()
     }
     else
     {
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             CArmOps::ArmReg TempRegRs = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, true);
             CArmOps::ArmReg TempRegRt = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rt, true);
@@ -917,7 +917,7 @@ void CArmRecompilerOps::BNE_Compare()
         if (m_Section->m_Cont.FallThrough)
         {
             m_Assembler.BranchLabel20(CArmOps::ArmBranch_Notequal, m_Section->m_Jump.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -944,7 +944,7 @@ void CArmRecompilerOps::BNE_Compare()
             JeLabel32(m_Section->m_Cont.BranchLabel.c_str(), 0);
             m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             m_Assembler.BranchLabel20(CArmOps::CArmOps::ArmBranch_Always, m_Section->m_Jump.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Jump.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -965,7 +965,7 @@ void CArmRecompilerOps::BEQ_Compare()
     {
         if (IsConst(m_Opcode.rs) && IsConst(m_Opcode.rt))
         {
-            if (!g_System->b32BitCore() && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
+            if (!g_GameSettings.core32Bit && (Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)))
             {
                 CArmRecompilerOps::UnknownOpcode();
             }
@@ -982,7 +982,7 @@ void CArmRecompilerOps::BEQ_Compare()
         }
         else if (IsMapped(m_Opcode.rs) && IsMapped(m_Opcode.rt))
         {
-            if ((Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) && !g_System->b32BitCore())
+            if ((Is64Bit(m_Opcode.rs) || Is64Bit(m_Opcode.rt)) && !g_GameSettings.core32Bit)
             {
                 ProtectGPR(m_Opcode.rs);
                 ProtectGPR(m_Opcode.rt);
@@ -1049,7 +1049,7 @@ void CArmRecompilerOps::BEQ_Compare()
             uint32_t ConstReg = IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
-            if (!g_System->b32BitCore() && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
+            if (!g_GameSettings.core32Bit && (Is64Bit(ConstReg) || Is64Bit(MappedReg)))
             {
                 if (Is32Bit(ConstReg) || Is32Bit(MappedReg))
                 {
@@ -1128,7 +1128,7 @@ void CArmRecompilerOps::BEQ_Compare()
         uint32_t UnknownReg = IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
         CArmOps::ArmReg TempReg = CArmOps::Arm_Any;
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             TempReg = Map_TempReg(CArmOps::Arm_Any, UnknownReg, true);
             if (IsConst(KnownReg))
@@ -1187,7 +1187,7 @@ void CArmRecompilerOps::BEQ_Compare()
         else if (m_Section->m_Jump.FallThrough)
         {
             m_Assembler.BranchLabel20(CArmOps::ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -1206,7 +1206,7 @@ void CArmRecompilerOps::BEQ_Compare()
     }
     else
     {
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             CArmOps::ArmReg TempRegRs = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, true);
             CArmOps::ArmReg TempRegRt = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rt, true);
@@ -1244,7 +1244,7 @@ void CArmRecompilerOps::BEQ_Compare()
         else if (m_Section->m_Jump.FallThrough)
         {
             m_Assembler.BranchLabel20(CArmOps::ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -1256,7 +1256,7 @@ void CArmRecompilerOps::BEQ_Compare()
         else
         {
             m_Assembler.BranchLabel20(CArmOps::ArmBranch_Notequal, m_Section->m_Cont.BranchLabel.c_str());
-            if (g_System->b32BitCore())
+            if (g_GameSettings.core32Bit)
             {
                 m_Section->m_Cont.LinkLocation = (uint32_t *)(*g_RecompPos - 4);
             }
@@ -1293,7 +1293,7 @@ void CArmRecompilerOps::BGTZ_Compare()
             }
         }
     }
-    else if ((IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) || (IsUnknown(m_Opcode.rs) && g_System->b32BitCore()))
+    else if ((IsMapped(m_Opcode.rs) && Is32Bit(m_Opcode.rs)) || (IsUnknown(m_Opcode.rs) && g_GameSettings.core32Bit))
     {
         if (IsMapped(m_Opcode.rs))
         {
@@ -1531,7 +1531,7 @@ void CArmRecompilerOps::BLEZ_Compare()
     {
         uint8_t * Jump = nullptr;
 
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, true);
             m_Assembler.CompareArmRegToConst(TempReg, 0);
@@ -1672,7 +1672,7 @@ void CArmRecompilerOps::BLTZ_Compare()
     }
     else
     {
-        CArmOps::ArmReg TempReg1 = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, !g_System->b32BitCore());
+        CArmOps::ArmReg TempReg1 = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, !g_GameSettings.core32Bit);
         CArmOps::ArmReg TempReg2 = m_RegWorkingSet.Map_TempReg(CArmOps::Arm_Any, -1, false);
         m_Assembler.MoveConstToArmReg(TempReg2, (uint32_t)0);
         m_Assembler.CompareArmRegToArmReg(TempReg1, TempReg2);
@@ -1776,7 +1776,7 @@ void CArmRecompilerOps::BGEZ_Compare()
     }
     else
     {
-        CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, !g_System->b32BitCore());
+        CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, m_Opcode.rs, !g_GameSettings.core32Bit);
         m_Assembler.CompareArmRegToConst(TempReg, 0);
         if (m_Section->m_Cont.FallThrough)
         {
@@ -1956,7 +1956,7 @@ void CArmRecompilerOps::ADDI()
         return;
     }
 
-    if (g_System->bFastSP())
+    if (g_GameSettings.fastSP)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -1983,7 +1983,7 @@ void CArmRecompilerOps::ADDI()
         m_Assembler.AddConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), (int16_t)m_Opcode.immediate);
     }
 
-    if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -2052,7 +2052,7 @@ void CArmRecompilerOps::ORI()
         return;
     }
 
-    if (g_System->bFastSP() && m_Opcode.rs == 29 && m_Opcode.rt == 29)
+    if (g_GameSettings.fastSP && m_Opcode.rs == 29 && m_Opcode.rt == 29)
     {
         //OrConstToX86Reg(m_Opcode.immediate, Map_MemoryStack(x86_Unknown, true, false));
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -2072,7 +2072,7 @@ void CArmRecompilerOps::ORI()
     else if (IsMapped(m_Opcode.rs))
     {
         ProtectGPR(m_Opcode.rs);
-        if (g_System->b32BitCore())
+        if (g_GameSettings.core32Bit)
         {
             Map_GPR_32bit(m_Opcode.rt, true, -1);
         }
@@ -2091,7 +2091,7 @@ void CArmRecompilerOps::ORI()
     }
     else
     {
-        if (g_System->b32BitCore())
+        if (g_GameSettings.core32Bit)
         {
             Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
         }
@@ -2102,7 +2102,7 @@ void CArmRecompilerOps::ORI()
         m_Assembler.OrConstToArmReg(GetMipsRegMapLo(m_Opcode.rt), GetMipsRegMapLo(m_Opcode.rt), m_Opcode.immediate);
     }
 
-    if (g_System->bFastSP() && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         //ResetX86Protection();
@@ -2134,7 +2134,7 @@ void CArmRecompilerOps::LUI()
         return;
     }
 
-    if (g_System->bFastSP() && m_Opcode.rt == 29)
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -2303,7 +2303,7 @@ void CArmRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 {
     if (m_Opcode.rt == 0) return;
 
-    if (m_Opcode.base == 29 && g_System->bFastSP())
+    if (m_Opcode.base == 29 && g_GameSettings.fastSP)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         /*Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
@@ -2344,9 +2344,9 @@ void CArmRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             m_Assembler.AddConstToArmReg(TempRegAddress, (int16_t)m_Opcode.immediate);
         }
 
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
 
         CArmOps::ArmReg TempRegValue = CArmOps::Arm_Unknown;
         CArmOps::ArmReg TempReg = Map_TempReg(CArmOps::Arm_Any, -1, false);
@@ -2361,7 +2361,7 @@ void CArmRecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
             m_Assembler.MoveConstToVariable(1, _LLBit, "LLBit");
         }
     }
-    if (g_System->bFastSP() && m_Opcode.rt == 29)
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         //ResetX86Protection();
@@ -2504,7 +2504,7 @@ void CArmRecompilerOps::SW()
 
 void CArmRecompilerOps::SW(bool bCheckLLbit)
 {
-    if (m_Opcode.base == 29 && g_System->bFastSP())
+    if (m_Opcode.base == 29 && g_GameSettings.fastSP)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
@@ -2537,11 +2537,11 @@ void CArmRecompilerOps::SW(bool bCheckLLbit)
         ProtectGPR(m_Opcode.rt);
     }
 
-    if (g_System->bDelaySI() || g_System->bDelayDP())
+    if (g_GameSettings.delaySI || g_GameSettings.delayDP)
     {
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
     }
 
     if (IsMapped(m_Opcode.base))
@@ -3546,7 +3546,7 @@ void CArmRecompilerOps::SPECIAL_SUBU()
         }
     }
 
-    if (g_System->bFastSP() && m_Opcode.rd == 29)
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #ifdef tofix
@@ -3867,7 +3867,7 @@ void CArmRecompilerOps::SPECIAL_SLT()
             ProtectGPR(KnownReg);
         }
 
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             if (useRdReg)
             {
@@ -3947,7 +3947,7 @@ void CArmRecompilerOps::SPECIAL_SLT()
             }
         }
     }
-    else if (g_System->b32BitCore())
+    else if (g_GameSettings.core32Bit)
     {
         if (useRdReg)
         {
@@ -4222,9 +4222,9 @@ void CArmRecompilerOps::COP0_MF()
     switch (m_Opcode.rd)
     {
     case 9: // Count
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
     }
     UnMap_GPR(m_Opcode.rt, true);
     if (g_Settings->LoadBool(Game_32Bit))
@@ -4278,9 +4278,9 @@ void CArmRecompilerOps::COP0_MT()
     case 6:  // Wired
     case 9:  // Count
     case 11: // Compare
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
         if (g_Settings->LoadBool(Game_32Bit))
         {
             CompileInterpterCall((void *)R4300iOp32::COP0_MT, "R4300iOp32::COP0_MT");
@@ -4326,9 +4326,9 @@ void CArmRecompilerOps::COP0_CO_TLBWI()
 
 void CArmRecompilerOps::COP0_CO_TLBWR()
 {
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
     UpdateCounters(m_RegWorkingSet, false, true);
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
     m_RegWorkingSet.BeforeCallDirect();
     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_SystemTimer, "g_SystemTimer");
     m_Assembler.CallFunction((void *)AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
@@ -5066,7 +5066,7 @@ void CArmRecompilerOps::COP1_L_CVT_D()
 void CArmRecompilerOps::UnknownOpcode()
 {
     m_RegWorkingSet.WriteBackRegisters();
-    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
     UpdateCounters(m_RegWorkingSet, false, true);
     m_Assembler.MoveConstToVariable(m_CompilePC, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
     if (g_SyncSystem)
@@ -5395,8 +5395,8 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
         }
 
         if (GetMipsRegState(i) == SyncTo.GetMipsRegState(i) ||
-            (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
-            (g_System->b32BitCore() && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
+            (g_GameSettings.core32Bit && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN) ||
+            (g_GameSettings.core32Bit && GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_SIGN && SyncTo.GetMipsRegState(i) == CRegInfo::STATE_MAPPED_32_ZERO))
         {
             switch (GetMipsRegState(i))
             {
@@ -5565,7 +5565,7 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
                 break;
             case CRegInfo::STATE_MAPPED_32_SIGN:
-                if (g_System->b32BitCore())
+                if (g_GameSettings.core32Bit)
                 {
                     m_Assembler.AddConstToArmReg(Reg, GetMipsRegMapLo(i), 0);
                     m_RegWorkingSet.SetArmRegMapped(GetMipsRegMapLo(i), CRegInfo::NotMapped);
@@ -5577,7 +5577,7 @@ void CArmRecompilerOps::SyncRegState(const CRegInfo & SyncTo)
                 }
                 break;
             case CRegInfo::STATE_CONST_32_SIGN:
-                if (!g_System->b32BitCore() && GetMipsRegLo_S(i) < 0)
+                if (!g_GameSettings.core32Bit && GetMipsRegLo_S(i) < 0)
                 {
                     m_CodeBlock.Log("Sign problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
                     m_CodeBlock.Log("%s: %X", CRegName::GPR[i], GetMipsRegLo_S(i));
@@ -6010,7 +6010,7 @@ bool CArmRecompilerOps::InheritParentInfo()
                     }
                     break;
                 case CRegInfo::STATE_UNKNOWN:
-                    if (g_System->b32BitCore())
+                    if (g_GameSettings.core32Bit)
                     {
                         Map_GPR_32bit(i2, true, i2);
                     }
@@ -6056,7 +6056,7 @@ bool CArmRecompilerOps::InheritParentInfo()
                         }
                         break;
                     case CRegInfo::STATE_UNKNOWN:
-                        if (g_System->b32BitCore())
+                        if (g_GameSettings.core32Bit)
                         {
                             Map_GPR_32bit(i2, true, i2);
                         }
@@ -6401,17 +6401,17 @@ void CArmRecompilerOps::OverflowDelaySlot(bool TestTimer)
         m_Assembler.MoveConstToVariable(TestTimer, &R4300iOp::m_TestTimer, "R4300iOp::m_TestTimer");
     }
 
-    m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, g_System->CountPerOp());
+    m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, g_GameSettings.countPerOp);
     m_Assembler.CallFunction((void *)CInterpreterCPU::ExecuteOps, "CInterpreterCPU::ExecuteOps");
 
-    if (g_System->bFastSP() && g_Recompiler)
+    if (g_GameSettings.fastSP && g_Recompiler)
     {
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Recompiler);
         m_Assembler.CallFunction(AddressOf(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
     }
     if (g_SyncSystem)
     {
-        UpdateSyncCPU(m_RegWorkingSet, g_System->CountPerOp());
+        UpdateSyncCPU(m_RegWorkingSet, g_GameSettings.countPerOp);
     }
 
     ExitCodeBlock();
@@ -6506,9 +6506,9 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04040010:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
 
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
@@ -6757,7 +6757,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04500004:
             m_Assembler.MoveConstToVariable(Value, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            if (g_System->bFixedAudio())
+            if (g_GameSettings.fixedAudio)
             {
                 ArmBreakPoint(__FILE__, __LINE__);
                 //m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
@@ -6815,9 +6815,9 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         case 0x0460000C:
             ArmBreakPoint(__FILE__, __LINE__);
-            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveConstToVariable(Value, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
@@ -6878,9 +6878,9 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         {
         case 0x04800000: m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_DRAM_ADDR_REG, "SI_DRAM_ADDR_REG"); break;
         case 0x04800004:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_RD64B_REG, "SI_PIF_ADDR_RD64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
@@ -6888,9 +6888,9 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         case 0x04800010:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveConstToVariable(Value, &g_Reg->SI_PIF_ADDR_WR64B_REG, "SI_PIF_ADDR_WR64B_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CPifRam *)g_MMU), "CPifRam *)g_MMU");
@@ -6915,7 +6915,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         break;
     case 0x05000000:
         // 64DD registers
-        if (EnableDisk())
+        if (g_GameSettings.enableDisk)
         {
             switch (PAddr)
             {
@@ -6934,9 +6934,9 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         }
     case 0x1fc00000:
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
         UpdateCounters(m_RegWorkingSet, false, true);
-        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+        m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
 
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.MoveConstToArmReg(CArmOps::Arm_R2, Value);
@@ -7037,9 +7037,9 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04040010:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveArmRegToVariable(Reg, &CMipsMemoryVM::RegModValue, "CMipsMemoryVM::RegModValue");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::ChangeSpStatus), "CMipsMemoryVM::ChangeSpStatus");
@@ -7068,9 +7068,9 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
     case 0x04100000:
         if (PAddr == 0x0410000C)
         {
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
         }
         m_RegWorkingSet.BeforeCallDirect();
         if (Reg != CArmOps::Arm_R2)
@@ -7184,12 +7184,12 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         {
         case 0x04500000: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->AI_DRAM_ADDR_REG, "AI_DRAM_ADDR_REG"); break;
         case 0x04500004:
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->AI_LEN_REG, "AI_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
-            if (g_System->bFixedAudio())
+            if (g_GameSettings.fixedAudio)
             {
                 ArmBreakPoint(__FILE__, __LINE__);
                 //m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
@@ -7239,7 +7239,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         case 0x04600000: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG"); break;
         case 0x04600004:
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->PI_CART_ADDR_REG, "PI_CART_ADDR_REG");
-            if (EnableDisk())
+            if (g_GameSettings.enableDisk)
             {
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.CallFunction(AddressOf(&DiskDMACheck), "DiskDMACheck");
@@ -7256,9 +7256,9 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             break;
         case 0x0460000C:
             ArmBreakPoint(__FILE__, __LINE__);
-            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+            /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
             UpdateCounters(m_RegWorkingSet, false, true);
-            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+            m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
             m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->PI_WR_LEN_REG, "PI_WR_LEN_REG");
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)((CDMA *)g_MMU), "(CDMA *)g_MMU");
@@ -7367,7 +7367,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         break;
     case 0x05000000:
         //  64DD registers
-        if (EnableDisk())
+        if (g_GameSettings.enableDisk)
         {
             switch (PAddr)
             {
@@ -7559,9 +7559,9 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             {
             case 0x04400010:
                 ArmBreakPoint(__FILE__, __LINE__);
-                /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
                 UpdateCounters(m_RegWorkingSet, false, true);
-                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+                m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
                 m_RegWorkingSet.BeforeCallDirect();
                 m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_MMU);
                 m_Assembler.CallFunction(AddressOf(&CMipsMemoryVM::UpdateHalfLine), "CMipsMemoryVM::UpdateHalfLine");
@@ -7581,12 +7581,12 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             switch (PAddr)
             {
             case 0x04500004:
-                if (g_System->bFixedAudio())
+                if (g_GameSettings.fixedAudio)
                 {
                     ArmBreakPoint(__FILE__, __LINE__);
-                    /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_System->CountPerOp());
+                    /*m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() - g_GameSettings.countPerOp);
                     UpdateCounters(m_RegWorkingSet, false, true);
-                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_System->CountPerOp());
+                    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
                     m_RegWorkingSet.BeforeCallDirect();
                     m_Assembler.MoveConstToArmReg(CArmOps::Arm_R0, (uint32_t)g_Audio, "g_Audio");
                     m_Assembler.CallFunction(AddressOf(&CAudio::GetLength), "CAudio::GetLength");
@@ -7613,7 +7613,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                 }
                 break;
             case 0x0450000C:
-                if (g_System->bFixedAudio())
+                if (g_GameSettings.fixedAudio)
                 {
                     ArmBreakPoint(__FILE__, __LINE__);
                     /*m_RegWorkingSet.BeforeCallDirect();
@@ -7693,7 +7693,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             break;
         case 0x05000000:
             // 64DD registers
-            if (EnableDisk())
+            if (g_GameSettings.enableDisk)
             {
                 switch (PAddr)
                 {

@@ -136,7 +136,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
     case 0x0404000C: WriteReg(RSPRegister_WR_LEN, MaskedValue); break;
     case 0x04040010:
         WriteReg(RSPRegister_STATUS, MaskedValue);
-        if ((MaskedValue & SP_SET_SIG0) != 0 && RspAudioSignal())
+        if ((MaskedValue & SP_SET_SIG0) != 0 && g_GameSettings.rspAudioSignal)
         {
             MI_INTR_REG |= MI_INTR_SP;
             m_Reg.CheckInterrupts();

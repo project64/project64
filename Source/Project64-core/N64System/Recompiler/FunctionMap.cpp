@@ -18,7 +18,7 @@ CFunctionMap::~CFunctionMap()
 bool CFunctionMap::AllocateMemory()
 {
     WriteTrace(TraceRecompiler, TraceDebug, "Start");
-    if (LookUpMode() == FuncFind_VirtualLookup && m_FunctionTable == nullptr)
+    if (g_GameSettings.lookUpMode == FuncFind_VirtualLookup && m_FunctionTable == nullptr)
     {
         m_FunctionTable = new PCCompiledFunc_TABLE[0x100000];
         if (m_FunctionTable == nullptr)
@@ -29,16 +29,16 @@ bool CFunctionMap::AllocateMemory()
         }
         memset(m_FunctionTable, 0, 0x100000 * sizeof(PCCompiledFunc_TABLE));
     }
-    if (LookUpMode() == FuncFind_PhysicalLookup && m_JumpTable == nullptr)
+    if (g_GameSettings.lookUpMode == FuncFind_PhysicalLookup && m_JumpTable == nullptr)
     {
-        m_JumpTable = new PCCompiledFunc[RdramSize() >> 2];
+        m_JumpTable = new PCCompiledFunc[g_GameSettings.rdramSize >> 2];
         if (m_JumpTable == nullptr)
         {
             WriteTrace(TraceRecompiler, TraceError, "Failed to allocate jump table");
             g_Notify->FatalError(MSG_MEM_ALLOC_ERROR);
             return false;
         }
-        memset(m_JumpTable, 0, (RdramSize() >> 2) * sizeof(PCCompiledFunc));
+        memset(m_JumpTable, 0, (g_GameSettings.rdramSize >> 2) * sizeof(PCCompiledFunc));
     }
     WriteTrace(TraceRecompiler, TraceDebug, "Done");
     return true;
@@ -69,7 +69,7 @@ void CFunctionMap::Reset(bool bAllocate)
 {
     WriteTrace(TraceRecompiler, TraceDebug, "Start (bAllocate: %s)", bAllocate ? "true" : "false");
     CleanBuffers();
-    if (bAllocate && (g_System->LookUpMode() == FuncFind_VirtualLookup || g_System->LookUpMode() == FuncFind_PhysicalLookup))
+    if (bAllocate && (g_GameSettings.lookUpMode == FuncFind_VirtualLookup || g_GameSettings.lookUpMode == FuncFind_PhysicalLookup))
     {
         AllocateMemory();
     }

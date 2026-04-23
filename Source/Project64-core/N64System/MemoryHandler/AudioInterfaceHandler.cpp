@@ -24,7 +24,7 @@ AudioInterfaceHandler::AudioInterfaceHandler(CN64System & System, CRegisters & R
     m_Status(0),
     m_SecondBuff(0),
     m_BytesPerSecond(0),
-    m_CountsPerByte(System.AiCountPerBytes()),
+    m_CountsPerByte(g_GameSettings.aiCountPerBytes),
     m_FramesPerSecond(60)
 {
     SystemReset();
@@ -43,7 +43,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04500004:
-        if (bFixedAudio())
+        if (g_GameSettings.fixedAudio)
         {
             Value = GetLength();
         }
@@ -60,7 +60,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
         break;
     case 0x0450000C:
-        if (bFixedAudio())
+        if (g_GameSettings.fixedAudio)
         {
             Value = GetStatus();
         }
@@ -123,7 +123,7 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     case 0x04500000: AI_DRAM_ADDR_REG = (AI_DRAM_ADDR_REG & ~Mask) | (MaskedValue); break;
     case 0x04500004:
         AI_LEN_REG = (AI_LEN_REG & ~Mask) | (MaskedValue);
-        if (bFixedAudio())
+        if (g_GameSettings.fixedAudio)
         {
             LenChanged();
         }
@@ -143,10 +143,10 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         break;
     case 0x04500010:
         AI_DACRATE_REG = (AI_DACRATE_REG & ~Mask) | (MaskedValue);
-        m_Plugins->Audio()->DacrateChanged(m_System.SystemType());
-        if (bFixedAudio())
+        m_Plugins->Audio()->DacrateChanged(g_GameSettings.systemType);
+        if (g_GameSettings.fixedAudio)
         {
-            SetFrequency(AI_DACRATE_REG, m_System.SystemType());
+            SetFrequency(AI_DACRATE_REG, g_GameSettings.systemType);
         }
         break;
     case 0x04500014: AI_BITRATE_REG = (AI_BITRATE_REG & ~Mask) | (MaskedValue); break;
@@ -187,7 +187,7 @@ void AudioInterfaceHandler::TimerBusy(void)
 void AudioInterfaceHandler::SetViIntr(uint32_t VI_INTR_TIME)
 {
     double CountsPerSecond = (uint32_t)((double)VI_INTR_TIME * m_FramesPerSecond);
-    if (m_BytesPerSecond != 0 && (g_System->AiCountPerBytes() == 0))
+    if (m_BytesPerSecond != 0 && (g_GameSettings.aiCountPerBytes == 0))
     {
         m_CountsPerByte = (int32_t)((double)CountsPerSecond / (double)m_BytesPerSecond);
     }
@@ -215,9 +215,9 @@ void AudioInterfaceHandler::SetFrequency(uint32_t Dacrate, uint32_t System)
 
 void AudioInterfaceHandler::LoadedGameState(void)
 {
-    if (bFixedAudio())
+    if (g_GameSettings.fixedAudio)
     {
-        SetFrequency(m_Reg.AI_DACRATE_REG, SystemType());
+        SetFrequency(m_Reg.AI_DACRATE_REG, g_GameSettings.systemType);
     }
 }
 
@@ -226,7 +226,7 @@ void AudioInterfaceHandler::SystemReset(void)
     m_Status = 0;
     m_SecondBuff = 0;
     m_BytesPerSecond = 0;
-    m_CountsPerByte = g_System->AiCountPerBytes();
+    m_CountsPerByte = g_GameSettings.aiCountPerBytes;
     if (m_CountsPerByte == 0)
     {
         m_CountsPerByte = 500;
@@ -297,7 +297,7 @@ void AudioInterfaceHandler::LenChanged()
     if (g_Plugins->Audio()->AiLenChanged != nullptr)
     {
         WriteTrace(TraceAudio, TraceDebug, "Calling plugin AiLenChanged");
-        if (bShowCPUPer() && (bBasicMode() || bLimitFPS()) && bSyncToAudio())
+        if (bShowCPUPer() && (bBasicMode() || bLimitFPS()) && g_GameSettings.syncToAudio)
         {
             CProfiling & CPU_Usage = m_System.CPUProfiler();
             PROFILE_TIMERS PreviousType = CPU_Usage.StartTimer(Timer_Idel);

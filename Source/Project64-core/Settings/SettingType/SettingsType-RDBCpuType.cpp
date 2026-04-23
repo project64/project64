@@ -14,7 +14,7 @@ CSettingTypeRDBCpuType::CSettingTypeRDBCpuType(const char * Name, uint32_t Defau
 {
 }
 
-CSettingTypeRDBCpuType::~CSettingTypeRDBCpuType()
+CSettingTypeRDBCpuType::~CSettingTypeRDBCpuType(void)
 {
 }
 

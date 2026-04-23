@@ -297,7 +297,7 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
 void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 {
     m_MMU.TLB_Unmaped(VAddr, Len);
-    if (m_Recomp && bSMM_TLB())
+    if (m_Recomp && g_GameSettings.smmTlb)
     {
         m_Recomp->ClearRecompCode_Virt((uint32_t)VAddr, Len, CRecompiler::Remove_TLB);
     }
@@ -306,7 +306,7 @@ void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
 {
     MemoryUnused = false;
-    if (b32BitCore() && (uint64_t)((int32_t)VAddr) != VAddr)
+    if (g_GameSettings.core32Bit && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         MemoryUnused = true;
         return false;

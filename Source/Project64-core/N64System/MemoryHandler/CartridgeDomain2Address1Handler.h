@@ -1,7 +1,6 @@
 #pragma once
 #include "MemoryHandler.h"
 #include <Project64-core\Settings\DebugSettings.h>
-#include <Project64-core\Settings\GameSettings.h>
 
 enum
 {
@@ -71,8 +70,7 @@ class CRegisters;
 
 class CartridgeDomain2Address1Handler :
     public MemoryHandler,
-    private DiskInterfaceReg,
-    private CGameSettings
+    private DiskInterfaceReg
 {
 public:
     CartridgeDomain2Address1Handler(CRegisters & Reg);

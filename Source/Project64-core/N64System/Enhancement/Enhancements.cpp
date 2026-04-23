@@ -284,7 +284,7 @@ void CEnhancements::LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins)
     LoadActive(m_Cheats, nullptr);
     LoadActive(m_Enhancements, Plugins);
 
-    CGameSettings::SetOverClockModifier(m_OverClock, m_OverClockModifier);
+    SetGameOverClockModifier(m_OverClock, m_OverClockModifier);
 }
 
 CEnhancementList CEnhancements::Cheats(void)

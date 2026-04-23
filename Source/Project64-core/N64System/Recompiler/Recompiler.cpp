@@ -41,9 +41,9 @@ void CRecompiler::Run()
     }
     m_EndEmulation = false;
 
-    if (m_System.LookUpMode() == FuncFind_VirtualLookup)
+    if (g_GameSettings.lookUpMode == FuncFind_VirtualLookup)
     {
-        if (m_System.bSMM_ValidFunc())
+        if (g_GameSettings.smmValidFunc)
         {
             RecompilerMain_VirtualTable_validate();
         }
@@ -52,13 +52,13 @@ void CRecompiler::Run()
             RecompilerMain_VirtualTable();
         }
     }
-    else if (m_System.LookUpMode() == FuncFind_ChangeMemory)
+    else if (g_GameSettings.lookUpMode == FuncFind_ChangeMemory)
     {
         RecompilerMain_ChangeMemory();
     }
     else
     {
-        if (m_System.bSMM_ValidFunc())
+        if (g_GameSettings.smmValidFunc)
         {
             RecompilerMain_Lookup_validate();
         }
@@ -147,7 +147,7 @@ void CRecompiler::RecompilerMain_Lookup()
             }
             continue;
         }
-        if (PhysicalAddr < m_System.RdramSize())
+        if (PhysicalAddr < g_GameSettings.rdramSize)
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -166,10 +166,10 @@ void CRecompiler::RecompilerMain_Lookup()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.VAddrToPAddr((uint32_t)PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= m_System.RdramSize())
+            while (m_MMU.VAddrToPAddr((uint32_t)PROGRAM_COUNTER, PhysicalAddr) && PhysicalAddr >= g_GameSettings.rdramSize)
             {
-                m_System.m_OpCodes.ExecuteOps(m_System.CountPerOp());
-                opsExecuted += m_System.CountPerOp();
+                m_System.m_OpCodes.ExecuteOps(g_GameSettings.countPerOp);
+                opsExecuted += g_GameSettings.countPerOp;
             }
 
             if (g_SyncSystem)
@@ -202,7 +202,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
             m_System.m_PipelineStage = PIPELINE_STAGE_NORMAL;
             continue;
         }
-        if (PhysicalAddr < m_System.RdramSize())
+        if (PhysicalAddr < g_GameSettings.rdramSize)
         {
             CCompiledFunc * info = JumpTable()[PhysicalAddr >> 2];
 
@@ -275,10 +275,10 @@ void CRecompiler::RecompilerMain_Lookup_validate()
         {
             uint32_t opsExecuted = 0;
 
-            while (m_MMU.VAddrToPAddr((uint32_t)PC, PhysicalAddr) && PhysicalAddr >= m_System.RdramSize())
+            while (m_MMU.VAddrToPAddr((uint32_t)PC, PhysicalAddr) && PhysicalAddr >= g_GameSettings.rdramSize)
             {
-                m_System.m_OpCodes.ExecuteOps(m_System.CountPerOp());
-                opsExecuted += m_System.CountPerOp();
+                m_System.m_OpCodes.ExecuteOps(g_GameSettings.countPerOp);
+                opsExecuted += g_GameSettings.countPerOp;
             }
             ResetMemoryStackPos();
 
@@ -380,7 +380,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         ShowMemUsed();
     }
 
-    if (bSMM_StoreInstruc())
+    if (g_GameSettings.smmStoreInstruc)
     {
         m_MMU.ClearMemoryWriteMap(CodeBlock.VAddrEnter() & ~0xFFF, 0xFFF);
     }
@@ -409,7 +409,7 @@ CCompiledFunc * CRecompiler::CompileCode()
 
 void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REASON Reason)
 {
-    if (m_System.LookUpMode() == FuncFind_VirtualLookup)
+    if (g_GameSettings.lookUpMode == FuncFind_VirtualLookup)
     {
         ClearRecompCode_Virt(Address + 0x80000000, length, Reason);
         ClearRecompCode_Virt(Address + 0xA0000000, length, Reason);
@@ -421,15 +421,15 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
             ClearRecompCode_Virt(VAddr, length, Reason);
         }
     }
-    else if (m_System.LookUpMode() == FuncFind_PhysicalLookup)
+    else if (g_GameSettings.lookUpMode == FuncFind_PhysicalLookup)
     {
-        if (Address < m_System.RdramSize())
+        if (Address < g_GameSettings.rdramSize)
         {
             int ClearLen = ((length + 3) & ~3);
-            if (Address + ClearLen > m_System.RdramSize())
+            if (Address + ClearLen > g_GameSettings.rdramSize)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
-                ClearLen = m_System.RdramSize() - Address;
+                ClearLen = g_GameSettings.rdramSize - Address;
             }
             WriteTrace(TraceRecompiler, TraceInfo, "Resetting jump table, Addr: %X  len: %d", Address, ClearLen);
             memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
@@ -446,7 +446,7 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
     uint32_t AddressIndex, WriteStart;
     int DataInBlock, DataToWrite, DataLeft;
 
-    switch (m_System.LookUpMode())
+    switch (g_GameSettings.lookUpMode)
     {
     case FuncFind_VirtualLookup:
         AddressIndex = Address >> 0xC;

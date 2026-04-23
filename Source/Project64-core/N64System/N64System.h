@@ -36,8 +36,7 @@ enum CN64SystemCB
 
 class CN64System :
     public CLogging,
-    protected CN64SystemSettings,
-    public CGameSettings
+    protected CN64SystemSettings
 {
 public:
     typedef void (*CallBackFunction)(void *);
@@ -96,6 +95,9 @@ public:
     bool LoadState(const char * FileName);
     bool LoadState();
     uint32_t GetButtons(int32_t Control) const;
+
+    void RefreshGameSettings(void);
+    void RefreshSyncToAudio(void);
 
     // Variable used to track that the SP is being handled and stays the same as the real SP in sync core
 #ifdef TEST_SP_TRACKING

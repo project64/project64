@@ -104,7 +104,7 @@ void DiskCommand()
 
     if (isSeek)
     {
-        if (g_System->DiskSeekTimingType() == DiskSeek_Turbo)
+        if (g_GameSettings.diskSeekTimingType == DiskSeek_Turbo)
         {
             // Instant response for turbo
 
@@ -114,7 +114,7 @@ void DiskCommand()
             // Set timer for motor
             g_SystemTimer->SetTimer(g_SystemTimer->DDMotorTimer, 0, false);
         }
-        else /* if (g_System->DiskSeekTimingType() == DiskSeek_Slow) */
+        else /* if (g_GameSettings.diskSeekTimingType == DiskSeek_Slow) */
         {
             // Emulate seek times, send interrupt later
             uint32_t seektime = 0;

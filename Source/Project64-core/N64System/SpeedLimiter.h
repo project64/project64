@@ -4,8 +4,7 @@
 
 #include <Common/HighResTimeStamp.h>
 
-class CSpeedLimiter :
-    private CGameSettings
+class CSpeedLimiter
 {
 public:
     enum ESpeedChange

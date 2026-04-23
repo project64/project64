@@ -38,7 +38,7 @@ CartridgeDomain2Address1Handler::CartridgeDomain2Address1Handler(CRegisters & Re
 bool CartridgeDomain2Address1Handler::Read32(uint32_t Address, uint32_t & Value)
 {
     // 64DD registers
-    if (EnableDisk())
+    if (g_GameSettings.enableDisk)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -81,7 +81,7 @@ bool CartridgeDomain2Address1Handler::Read32(uint32_t Address, uint32_t & Value)
 
 bool CartridgeDomain2Address1Handler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (EnableDisk())
+    if (g_GameSettings.enableDisk)
     {
         switch (Address & 0xFFFFFFF)
         {

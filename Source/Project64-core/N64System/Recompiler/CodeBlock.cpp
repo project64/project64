@@ -422,7 +422,7 @@ void CCodeBlock::LogSectionInfo()
 
 bool CCodeBlock::AnalyseBlock()
 {
-    if (!g_System->bLinkBlocks())
+    if (!GameLinkBlocks())
     {
         return true;
     }
@@ -867,7 +867,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
 bool CCodeBlock::Compile()
 {
     m_RecompilerOps->EnterCodeBlock();
-    if (g_System->bLinkBlocks())
+    if (GameLinkBlocks())
     {
         while (m_EnterSection != nullptr && m_EnterSection->GenerateNativeCode(NextTest()))
             ;

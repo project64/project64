@@ -7,7 +7,7 @@ class CSettingTypeRDBCpuType :
 public:
     CSettingTypeRDBCpuType(const char * Name, SettingID DefaultSetting);
     CSettingTypeRDBCpuType(const char * Name, uint32_t DefaultValue);
-    ~CSettingTypeRDBCpuType();
+    ~CSettingTypeRDBCpuType(void);
 
     // Return the values
     virtual bool Load(uint32_t Index, bool & Value) const;

@@ -38,7 +38,7 @@ void CSystemTimer::Reset()
 
 void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
 {
-    Cycles *= CGameSettings::OverClockModifier();
+    Cycles *= g_GameSettings.overClockModifier;
     if (Type >= MaxTimer || Type == UnknownTimer)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -85,7 +85,7 @@ uint32_t CSystemTimer::GetTimer(TimerType Type)
     {
         return 0x7FFFFFFF;
     }
-    return (uint32_t)(CyclesToTimer / CGameSettings::OverClockModifier());
+    return (uint32_t)(CyclesToTimer / g_GameSettings.overClockModifier);
 }
 
 void CSystemTimer::StopTimer(TimerType Type)
@@ -157,13 +157,13 @@ void CSystemTimer::FixTimers()
 
 void CSystemTimer::UpdateTimers()
 {
-    int TimeTaken = (m_LastUpdate - m_NextTimer) / CGameSettings::OverClockModifier();
+    int TimeTaken = (m_LastUpdate - m_NextTimer) / g_GameSettings.overClockModifier;
     if (TimeTaken != 0)
     {
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         m_Reg.COUNT_REGISTER += TimeTaken;
-        random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * CGameSettings::OverClockModifier()) / m_System.CountPerOp());
+        random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * g_GameSettings.overClockModifier) / g_GameSettings.countPerOp);
         wired = (uint32_t)m_Reg.WIRED_REGISTER;
         if (wired > 31)
         {

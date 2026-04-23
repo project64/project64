@@ -20,8 +20,7 @@ class CX86RecompilerOps :
     public CRecompilerOpsBase,
     protected CN64SystemSettings,
     protected CRecompilerSettings,
-    protected CLogSettings,
-    private CGameSettings
+    protected CLogSettings
 {
     friend CX86RegInfo;
 

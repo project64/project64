@@ -211,15 +211,15 @@ void VideoInterfaceHandler::UpdateHalfLine()
     int32_t check_value = (int32_t)(m_HalfLineCheck - NextViTimer);
     if (check_value > 0 && check_value < 40)
     {
-        m_NextTimer -= ViRefreshRate();
+        m_NextTimer -= g_GameSettings.viRefreshRate;
         if (m_NextTimer < 0)
         {
-            m_NextTimer = 0 - CountPerOp();
+            m_NextTimer = 0 - g_GameSettings.countPerOp;
         }
         m_SystemTimer.UpdateTimers();
         NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);
     }
-    m_HalfLine = (uint32_t)(m_NextTimer / ViRefreshRate());
+    m_HalfLine = (uint32_t)(m_NextTimer / g_GameSettings.viRefreshRate);
     m_HalfLine &= ~1;
     m_HalfLine |= m_FieldSerration;
     VI_V_CURRENT_LINE_REG = m_HalfLine;

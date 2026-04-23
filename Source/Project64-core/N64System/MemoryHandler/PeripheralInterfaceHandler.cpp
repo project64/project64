@@ -126,8 +126,8 @@ bool PeripheralInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint3
     {
     case 0x04600000: PI_DRAM_ADDR_REG = ((PI_DRAM_ADDR_REG & ~Mask) | (Value & Mask)) & 0x00FFFFFE; break;
     case 0x04600004:
-        PI_CART_ADDR_REG = ((PI_CART_ADDR_REG & ~Mask) | (Value & Mask)) & (UnalignedDMA() ? 0xFFFFFFFF : 0xFFFFFFFE);
-        if (EnableDisk())
+        PI_CART_ADDR_REG = ((PI_CART_ADDR_REG & ~Mask) | (Value & Mask)) & (g_GameSettings.unalignedDMA ? 0xFFFFFFFF : 0xFFFFFFFE);
+        if (g_GameSettings.enableDisk)
         {
             DiskDMACheck();
         }
@@ -307,7 +307,7 @@ void PeripheralInterfaceHandler::PI_DMA_READ()
             m_DMAUsed = true;
             OnFirstDMA();
         }
-        if (g_Recompiler && g_System->bSMM_PIDMA())
+        if (g_Recompiler && g_GameSettings.smmPidma)
         {
             g_Recompiler->ClearRecompCode_Phys(PI_DRAM_ADDR_REG, PI_WR_LEN_REG, CRecompiler::Remove_DMA);
         }
@@ -378,7 +378,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
     else
     {
         int32_t Length = PI_WR_LEN_REG + 1;
-        if (g_Recompiler && bSMM_PIDMA())
+        if (g_Recompiler && g_GameSettings.smmPidma)
         {
             g_Recompiler->ClearRecompCode_Phys(WritePos & ~0xFFF, Length, CRecompiler::Remove_DMA);
         }
@@ -469,7 +469,7 @@ void PeripheralInterfaceHandler::PI_DMA_WRITE()
         }
         else if (ReadPos >= 0x10000000 && ReadPos <= 0x1FFFFFFF)
         {
-            if (g_System->bRandomizeSIPIInterrupts())
+            if (g_GameSettings.randomizeSipiInterrupts)
             {
                 //ChangeTimer(PiTimer,(int32_t)(Length * 8.9) + 50);
                 //ChangeTimer(PiTimer,(int32_t)(Length * 8.9));

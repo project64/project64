@@ -637,7 +637,7 @@ bool CMipsMemoryVM::LB_PhysicalAddress(uint32_t PAddr, uint8_t & Value)
     {
     case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
     default:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
             Value = *(uint8_t *)(m_RDRAM + (PAddr ^ 3));
             return true;
@@ -672,7 +672,7 @@ bool CMipsMemoryVM::LH_PhysicalAddress(uint32_t PAddr, uint16_t & Value)
     {
     case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
     default:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
             Value = *(uint16_t *)(m_RDRAM + (PAddr ^ 2));
             return true;
@@ -719,7 +719,7 @@ bool CMipsMemoryVM::LW_PhysicalAddress(uint32_t PAddr, uint32_t & Value)
     case 0x1FC00000: m_PifRamHandler.Read32(PAddr, Value); break;
     case 0x1FF00000: m_CartridgeDomain1Address3Handler.Read32(PAddr, Value); break;
     default:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
             Value = *(uint32_t *)(m_RDRAM + PAddr);
         }
@@ -742,7 +742,7 @@ bool CMipsMemoryVM::LW_PhysicalAddress(uint32_t PAddr, uint32_t & Value)
 
 bool CMipsMemoryVM::LD_PhysicalAddress(uint32_t PAddr, uint64_t & Value)
 {
-    if (PAddr < RdramSize())
+    if (PAddr < g_GameSettings.rdramSize)
     {
         *((uint32_t *)(&Value) + 1) = *(uint32_t *)(m_RDRAM + PAddr);
         *((uint32_t *)(&Value) + 0) = *(uint32_t *)(m_RDRAM + PAddr + 4);
@@ -815,7 +815,7 @@ bool CMipsMemoryVM::SB_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
@@ -848,9 +848,9 @@ bool CMipsMemoryVM::SH_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
-            if (CGameSettings::bSMM_StoreInstruc())
+            if (g_GameSettings.smmStoreInstruc)
             {
                 g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
                 m_TLB_WriteMap[(0x80000000 + PAddr) >> 12] = PAddr - (0x80000000 + PAddr);
@@ -887,9 +887,9 @@ bool CMipsMemoryVM::SW_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00600000:
     case 0x00700000:
     case 0x00800000:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
-            if (CGameSettings::bSMM_StoreInstruc())
+            if (g_GameSettings.smmStoreInstruc)
             {
                 g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
                 m_TLB_WriteMap[(0x80000000 + PAddr) >> 12] = PAddr - (0x80000000 + PAddr);
@@ -942,7 +942,7 @@ bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < RdramSize())
+        if (PAddr < g_GameSettings.rdramSize)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             *(uint32_t *)(m_RDRAM + PAddr) = *((uint32_t *)(&Value) + 1);

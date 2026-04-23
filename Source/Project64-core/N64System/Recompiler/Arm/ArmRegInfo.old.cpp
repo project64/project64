@@ -611,7 +611,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
             m_Assembler.MoveConstToArmReg(TempReg, GetMipsRegHi(MipsReg));
             m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
         }
-        else if (!g_System->b32BitCore())
+        else if (!g_GameSettings.core32Bit)
         {
             m_Assembler.MoveConstToArmReg(TempReg, (GetMipsRegLo(MipsReg) & 0x80000000) != 0 ? 0xFFFFFFFF : 0);
             m_Assembler.StoreArmRegToArmRegPointer(TempReg, GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
@@ -627,7 +627,7 @@ void CArmRegInfo::WriteBack_GPR(uint32_t MipsReg, bool Unmapping)
         {
             m_Assembler.StoreArmRegToArmRegPointer(GetMipsRegMapHi(MipsReg), GprReg, (uint8_t)(MipsReg << 3) + 4, CRegName::GPR_Hi[MipsReg]);
         }
-        else if (!g_System->b32BitCore())
+        else if (!g_GameSettings.core32Bit)
         {
             bool loProtected = GetArmRegProtected(GetMipsRegMapLo(MipsReg));
             if (!Unmapping)

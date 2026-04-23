@@ -76,7 +76,7 @@ void R4300iOp::InPermLoop()
     else if (*g_NextTimer > 0)
     {
         g_SystemTimer->UpdateTimers();
-        *g_NextTimer = 0 - m_System.CountPerOp();
+        *g_NextTimer = 0 - g_GameSettings.countPerOp;
         g_SystemTimer->UpdateTimers();
     }
 }
@@ -90,7 +90,7 @@ void R4300iOp::ExecuteOps(uint32_t Cycles)
     bool & TestTimer = m_System.m_TestTimer;
     CSystemEvents & SystemEvents = m_System.m_SystemEvents;
     const bool & DoSomething = SystemEvents.DoSomething();
-    uint32_t CountPerOp = m_System.CountPerOp();
+    uint32_t CountPerOp = g_GameSettings.countPerOp;
     int32_t & NextTimer = *g_NextTimer;
     bool CheckTimer = false;
     bool updateInstructionMemory = true;

@@ -91,7 +91,7 @@ void CSpeedLimiter::AlterSpeed(const ESpeedChange SpeedChange)
         m_Speed += 1 * SpeedFactor;
     }
 
-    SpeedChanged(m_Speed);
+    NotifyGameSpeedChanged(m_Speed);
     FixSpeedRatio();
 }
 
@@ -102,7 +102,7 @@ void CSpeedLimiter::SetSpeed(int Speed)
         Speed = 1;
     }
     m_Speed = Speed;
-    SpeedChanged(m_Speed);
+    NotifyGameSpeedChanged(m_Speed);
     FixSpeedRatio();
 }
 

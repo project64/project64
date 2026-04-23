@@ -206,7 +206,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t * value)
     {
         uint32_t audioLength;
 
-        if (g_System->bFixedAudio())
+        if (g_GameSettings.fixedAudio)
         {
             audioLength = g_MMU->AudioInterface().GetLength();
         }
@@ -222,7 +222,7 @@ bool CDebugMMU::GetPhysicalByte(uint32_t paddr, uint8_t * value)
 
     if (paddr >= 0x0450000C && paddr <= 0x0450000F)
     {
-        uint32_t audioStatus = g_System->bFixedAudio() ? g_MMU->AudioInterface().GetStatus() : g_Reg->AI_STATUS_REG;
+        uint32_t audioStatus = g_GameSettings.fixedAudio ? g_MMU->AudioInterface().GetStatus() : g_Reg->AI_STATUS_REG;
         *value = (audioStatus >> (24 - nByte * 8)) & 0xFF;
         return true;
     }

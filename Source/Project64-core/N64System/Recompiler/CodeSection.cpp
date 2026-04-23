@@ -1124,11 +1124,11 @@ void CCodeSection::DisplaySectionInformation()
 
     m_CodeBlock.Log("====== Section %d ======", m_SectionID);
     m_CodeBlock.Log("Start PC: 0x%X", m_EnterPC);
-    if (g_System->bLinkBlocks())
+    if (GameLinkBlocks())
     {
         m_CodeBlock.Log("End PC: 0x%X", m_EndPC);
     }
-    if (g_System->bLinkBlocks() && !m_ParentSection.empty())
+    if (GameLinkBlocks() && !m_ParentSection.empty())
     {
         stdstr ParentList;
         for (SECTION_LIST::iterator iter = m_ParentSection.begin(); iter != m_ParentSection.end(); iter++)
@@ -1143,7 +1143,7 @@ void CCodeSection::DisplaySectionInformation()
         m_CodeBlock.Log("Number of parents: %d (%s)", m_ParentSection.size(), ParentList.c_str());
     }
 
-    if (g_System->bLinkBlocks())
+    if (GameLinkBlocks())
     {
         m_CodeBlock.Log("Jump address: 0x%08X", m_Jump.JumpPC);
         m_CodeBlock.Log("Jump target address: 0x%08X", m_Jump.TargetPC);

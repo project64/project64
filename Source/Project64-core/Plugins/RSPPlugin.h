@@ -8,8 +8,7 @@
 
 class CRSP_Plugin :
     public CPlugin,
-    protected CN64SystemSettings,
-    protected CGameSettings
+    protected CN64SystemSettings
 {
     typedef struct
     {

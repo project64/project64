@@ -1519,7 +1519,7 @@ void CX86RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
     }
     else
     {
-        if (!g_System->b32BitCore())
+        if (!g_GameSettings.core32Bit)
         {
             if (IsSigned(Reg))
             {
@@ -1680,7 +1680,7 @@ void CX86RegInfo::WriteBackRegisters()
         {
         case CX86RegInfo::STATE_UNKNOWN: break;
         case CX86RegInfo::STATE_CONST_32_SIGN:
-            if (!g_System->b32BitCore())
+            if (!g_GameSettings.core32Bit)
             {
                 if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000)))
                 {
@@ -1704,7 +1704,7 @@ void CX86RegInfo::WriteBackRegisters()
 
             if (GetMipsRegLo(count) == 0)
             {
-                if (g_System->b32BitCore())
+                if (g_GameSettings.core32Bit)
                 {
                     if (!bEdiZero)
                     {
@@ -1716,7 +1716,7 @@ void CX86RegInfo::WriteBackRegisters()
             }
             else if (GetMipsRegLo(count) == 0xFFFFFFFF)
             {
-                if (g_System->b32BitCore())
+                if (g_GameSettings.core32Bit)
                 {
                     if (!bEsiSign)
                     {
@@ -1734,7 +1734,7 @@ void CX86RegInfo::WriteBackRegisters()
             SetMipsRegState(count, CX86RegInfo::STATE_UNKNOWN);
             break;
         case CX86RegInfo::STATE_CONST_32_ZERO:
-            if (!g_System->b32BitCore())
+            if (!g_GameSettings.core32Bit)
             {
                 if (!bEdiZero)
                 {
@@ -1746,7 +1746,7 @@ void CX86RegInfo::WriteBackRegisters()
 
             if (GetMipsRegLo(count) == 0)
             {
-                if (g_System->b32BitCore())
+                if (g_GameSettings.core32Bit)
                 {
                     if (!bEdiZero)
                     {

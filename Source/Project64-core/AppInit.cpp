@@ -12,6 +12,7 @@
 #include <Project64-core/N64System/SystemGlobals.h>
 #include <Project64-core/Plugins/Plugin.h>
 #include <Project64-core/Settings/DebugSettings.h>
+#include <Project64-core/Settings/GameSettings.h>
 
 static void FixDirectories(void);
 void SetTraceModuleNames(void);
@@ -237,6 +238,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         if (g_Settings->LoadBool(Setting_CheckEmuRunning) &&
             pjutil::TerminatedExistingExe())
         {
+            ShutdownGameSettings();
             ShutdownDebugSettings();
             delete g_Settings;
             g_Settings = new CSettings;
@@ -245,6 +247,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 #endif
 
         SetupDebugSettings();
+        SetupGameSettings();
 
         SetupTrace();
         FixDirectories();
@@ -303,6 +306,7 @@ void AppCleanup(void)
     }
     if (g_Settings)
     {
+        ShutdownGameSettings();
         ShutdownDebugSettings();
         delete g_Settings;
         g_Settings = nullptr;

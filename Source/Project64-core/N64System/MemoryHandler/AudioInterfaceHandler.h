@@ -39,7 +39,6 @@ class AudioInterfaceHandler :
     public MemoryHandler,
     public AudioInterfaceReg,
     private CN64SystemSettings,
-    private CGameSettings,
     private CLogging
 {
 public:

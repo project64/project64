@@ -159,7 +159,7 @@ bool CAudioPlugin::Initiate(CN64System * System, RenderWindow * Window)
 
         if (System->m_Reg.AI_DACRATE_REG != 0)
         {
-            DacrateChanged(System->SystemType());
+            DacrateChanged(g_GameSettings.systemType);
         }
     }
 #endif

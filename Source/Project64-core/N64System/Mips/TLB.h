@@ -28,8 +28,7 @@ struct TLB_ENTRY
     COP0EntryLo EntryLo1;
 };
 
-class CTLB :
-    private CGameSettings
+class CTLB
 {
     friend class CDebugTlb;
 

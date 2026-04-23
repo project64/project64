@@ -82,7 +82,7 @@ void PifRamHandler::DMA_READ()
     uint8_t * RDRAM = g_MMU->Rdram();
 
     uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
-    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
+    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_GameSettings.rdramSize)
     {
         if (g_DebugSettings.showPifRamErrors)
         {
@@ -153,11 +153,11 @@ void PifRamHandler::DMA_READ()
         LogMessage("");
     }
 
-    if (g_System->bRandomizeSIPIInterrupts())
+    if (g_GameSettings.randomizeSipiInterrupts)
     {
-        if (g_System->DelaySI() != 0)
+        if (g_GameSettings.delaySI != 0)
         {
-            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI() + (g_Random->next() % 0x40), false);
+            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_GameSettings.delaySI + (g_Random->next() % 0x40), false);
         }
         else
         {
@@ -166,9 +166,9 @@ void PifRamHandler::DMA_READ()
     }
     else
     {
-        if (g_System->DelaySI() != 0)
+        if (g_GameSettings.delaySI != 0)
         {
-            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI(), false);
+            g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_GameSettings.delaySI, false);
         }
         else
         {
@@ -184,7 +184,7 @@ void PifRamHandler::DMA_WRITE()
     uint8_t * PifRamPos = m_PifRam;
 
     uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
-    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
+    if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_GameSettings.rdramSize)
     {
         if (g_DebugSettings.showPifRamErrors)
         {
@@ -253,9 +253,9 @@ void PifRamHandler::DMA_WRITE()
 
     ControlWrite();
 
-    if (g_System->DelaySI() != 0)
+    if (g_GameSettings.delaySI != 0)
     {
-        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_System->DelaySI(), false);
+        g_SystemTimer->SetTimer(CSystemTimer::SiTimer, g_GameSettings.delaySI, false);
     }
     else
     {
