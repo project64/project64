@@ -139,6 +139,7 @@ private:
     friend class CRecompiler;
     friend class CRecompilerOpsBase;
     friend class CX86RecompilerOps;
+    friend class CX64RecompilerOps;
     friend class CArmRecompilerOps;
     friend class CCodeBlock;
     friend class CMipsMemoryVM;

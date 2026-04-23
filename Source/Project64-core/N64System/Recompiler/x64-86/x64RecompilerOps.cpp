@@ -1,14 +1,17 @@
 #include "stdafx.h"
 #if defined(__amd64__) || defined(_M_X64)
 
-#include <Project64-core\N64System\Recompiler\CodeBlock.h>
-#include <Project64-core\N64System\Recompiler\CodeSection.h>
-#include <Project64-core\N64System\Recompiler\x64-86\x64RecompilerOps.h>
+#include <Project64-core/N64System/N64System.h>
+#include <Project64-core/N64System/Recompiler/CodeBlock.h>
+#include <Project64-core/N64System/Recompiler/CodeSection.h>
+#include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
 
 CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     CRecompilerOpsBase(System, CodeBlock),
     m_Assembler(CodeBlock),
-    m_RegWorkingSet(CodeBlock, m_Assembler)
+    m_RegWorkingSet(CodeBlock, m_Assembler),
+    m_MMU(System.m_MMU_VM),
+    m_PipelineStage(PIPELINE_STAGE_NORMAL)
 {
 }
 
@@ -831,13 +834,46 @@ void CX64RecompilerOps::SetRegWorkingSet(const CX64RegInfo & RegInfo)
 
 bool CX64RecompilerOps::InheritParentInfo()
 {
+    m_Section->DisplaySectionInformation();
+
+    if (m_Section->m_ParentSection.empty())
+    {
+        SetRegWorkingSet(m_Section->m_RegEnter);
+        return true;
+    }
+
+    if (m_Section->m_ParentSection.size() == 1)
+    {
+        CCodeSection * Parent = *(m_Section->m_ParentSection.begin());
+        if (!Parent->m_EnterLabel.isValid())
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        CJumpInfo * JumpInfo = m_Section == Parent->m_ContinueSection ? &Parent->m_Cont : &Parent->m_Jump;
+
+        m_Section->m_RegEnter = JumpInfo->RegSet;
+        LinkJump(*JumpInfo);
+        SetRegWorkingSet(m_Section->m_RegEnter);
+        return true;
+    }
+
     g_Notify->BreakPoint(__FILE__, __LINE__);
     return false;
 }
 
-void CX64RecompilerOps::LinkJump(CJumpInfo & /*JumpInfo*/, uint32_t /*SectionID*/, uint32_t /*FromSectionID*/)
+void CX64RecompilerOps::LinkJump(CJumpInfo & JumpInfo, uint32_t /*SectionID*/, uint32_t /*FromSectionID*/)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (JumpInfo.LinkLocation.isValid())
+    {
+        m_CodeBlock.Log("");
+        m_Assembler.bind(JumpInfo.LinkLocation);
+        JumpInfo.LinkLocation = asmjit::Label();
+        if (JumpInfo.LinkLocation2.isValid())
+        {
+            m_Assembler.bind(JumpInfo.LinkLocation2);
+            JumpInfo.LinkLocation2 = asmjit::Label();
+        }
+    }
 }
 
 void CX64RecompilerOps::JumpToSection(CCodeSection * /*Section*/)
@@ -850,9 +886,14 @@ void CX64RecompilerOps::JumpToUnknown(CJumpInfo * /*JumpInfo*/)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CX64RecompilerOps::SetCurrentPC(uint32_t /*ProgramCounter*/)
+void CX64RecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    uint32_t Value;
+    if (!m_MMU.MemoryValue32(ProgramCounter, Value))
+    {
+        g_Notify->FatalError(GS(MSG_FAIL_LOAD_WORD));
+    }
+    m_Instruction = R4300iInstruction((int32_t)ProgramCounter, Value);
 }
 
 uint32_t CX64RecompilerOps::GetCurrentPC(void)
@@ -866,9 +907,9 @@ void CX64RecompilerOps::SetCurrentSection(CCodeSection * section)
     m_Section = section;
 }
 
-void CX64RecompilerOps::SetNextStepType(PIPELINE_STAGE /*StepType*/)
+void CX64RecompilerOps::SetNextStepType(PIPELINE_STAGE StepType)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_PipelineStage = StepType;
 }
 
 PIPELINE_STAGE CX64RecompilerOps::GetNextStepType(void)

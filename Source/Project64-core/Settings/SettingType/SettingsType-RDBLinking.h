@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Project64-core/Settings/SettingType/SettingsType-RomDatabase.h>
 #include <cstdint>
 #include <string>
-#include <Project64-core/Settings/SettingType/SettingsType-RomDatabase.h>
 
 class CSettingTypeRDBLinking :
     public CSettingTypeRomDatabase

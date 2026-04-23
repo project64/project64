@@ -233,6 +233,8 @@ private:
 
     CX64RegInfo m_RegWorkingSet;
     CX64Ops m_Assembler;
+    CMipsMemoryVM & m_MMU;
+    PIPELINE_STAGE m_PipelineStage;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;
