@@ -38,7 +38,7 @@ bool CartridgeDomain2Address2Handler::Read32(uint32_t Address, uint32_t & Value)
     }
     else
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

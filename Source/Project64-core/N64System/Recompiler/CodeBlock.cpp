@@ -901,7 +901,7 @@ uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
     }
     m_CompiledLocation = RecompMem.RecompPos();
     m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocation);
-    if (CDebugSettings::bRecordRecompilerAsm())
+    if (g_DebugSettings.recordRecompilerAsm)
     {
         std::string CodeLog = m_CodeLog;
         m_CodeLog.clear();
@@ -937,7 +937,7 @@ uint32_t CCodeBlock::NextTest()
 
 void CCodeBlock::Log(_Printf_format_string_ const char * Text, ...)
 {
-    if (!CDebugSettings::bRecordRecompilerAsm())
+    if (!g_DebugSettings.recordRecompilerAsm)
     {
         return;
     }

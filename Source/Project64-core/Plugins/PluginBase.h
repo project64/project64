@@ -6,8 +6,7 @@
 #include <Project64-core/TraceModulesProject64.h>
 #include <Project64-plugin-spec/Base.h>
 
-class CPlugin :
-    protected CDebugSettings
+class CPlugin
 {
 public:
     CPlugin();

@@ -45,7 +45,7 @@ bool RDRAMRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x24: Value = Device.DeviceManufacturer; break;
     case 0x28: Value = Device.CurrentControl; break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -67,7 +67,7 @@ bool RDRAMRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x24: LogMessage("%016llX: read from Device[%d].DeviceManufacturer (%08X)", m_PC, DeviceID, Value); break;
         case 0x28: LogMessage("%016llX: read from Device[%d].CurrentControl (%08X)", m_PC, DeviceID, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -97,7 +97,7 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         case 0x24: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].DeviceManufacturer", m_PC, Value, Mask, DeviceID); break;
         case 0x28: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to Device[%d].CurrentControl", m_PC, Value, Mask, DeviceID); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -118,7 +118,7 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     case 0x24: Device.DeviceManufacturer = (Device.DeviceManufacturer & ~Mask) | (Value & Mask); break;
     case 0x28: Device.CurrentControl = (Device.CurrentControl & ~Mask) | (Value & Mask); break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

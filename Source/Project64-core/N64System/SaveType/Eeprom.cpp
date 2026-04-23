@@ -63,22 +63,22 @@ void CEeprom::EepromCommand(uint8_t * Command)
         }
         break;
     case 4: // Read from EEPROM
-        if (Command[0] != 2 && HaveDebugger())
+        if (Command[0] != 2 && g_DebugSettings.haveDebugger)
         {
             ProcessingError(Command);
         }
-        if (Command[1] != 8 && HaveDebugger())
+        if (Command[1] != 8 && g_DebugSettings.haveDebugger)
         {
             ProcessingError(Command);
         }
         ReadFrom(&Command[4], Command[3]);
         break;
     case 5: // Write to EEPROM
-        if (Command[0] != 10 && HaveDebugger())
+        if (Command[0] != 10 && g_DebugSettings.haveDebugger)
         {
             ProcessingError(Command);
         }
-        if (Command[1] != 1 && HaveDebugger())
+        if (Command[1] != 1 && g_DebugSettings.haveDebugger)
         {
             ProcessingError(Command);
         }
@@ -117,13 +117,13 @@ void CEeprom::EepromCommand(uint8_t * Command)
         break;
     case 8:
         // Write RTC, unimplemented
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             g_Notify->DisplayError("Write RTC, unimplemented");
         }
         break;
     default:
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             g_Notify->DisplayError(stdstr_f("Unknown EepromCommand %d", Command[2]).c_str());
         }
@@ -198,7 +198,7 @@ void CEeprom::WriteTo(uint8_t * Buffer, int32_t line)
 
 void CEeprom::ProcessingError(uint8_t * /*Command*/)
 {
-    if (bShowPifRamErrors())
+    if (g_DebugSettings.showPifRamErrors)
     {
         g_Notify->DisplayError("What am I meant to do with this EEPROM command?");
     }

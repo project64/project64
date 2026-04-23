@@ -1,8 +1,7 @@
 #pragma once
 #include <Project64-core/Settings/DebugSettings.h>
 
-class CFlashRam :
-    private CDebugSettings
+class CFlashRam
 {
     enum Modes
     {

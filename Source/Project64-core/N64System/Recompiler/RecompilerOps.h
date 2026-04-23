@@ -45,8 +45,7 @@ class CMipsMemoryVM;
 class CRegisters;
 class CTLB;
 
-class CRecompilerOpsBase :
-    protected CDebugSettings
+class CRecompilerOpsBase
 {
 protected:
     enum FpuOpSize

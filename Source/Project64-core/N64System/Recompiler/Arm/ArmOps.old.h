@@ -10,8 +10,7 @@
 class CCodeBlock;
 class CArmRegInfo;
 
-class CArmOps :
-    protected CDebugSettings
+class CArmOps
 {
 public:
     enum ArmReg

@@ -11,7 +11,6 @@ class CRegisters;
 
 class PifRamHandler :
     public MemoryHandler,
-    private CDebugSettings,
     private CLogging
 {
 public:

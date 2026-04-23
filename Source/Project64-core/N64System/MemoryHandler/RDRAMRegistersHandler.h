@@ -33,7 +33,6 @@ class CRegisters;
 class RDRAMRegistersHandler :
     public MemoryHandler,
     public RDRAMRegistersReg,
-    private CDebugSettings,
     private CLogging
 {
     struct RDRAM_DEVICE

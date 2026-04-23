@@ -40,8 +40,7 @@ x86RegFpuIndex GetIndexFromX86FpuReg(const asmjit::x86::St & Reg);
 asmjit::x86::St GetX86FpuRegFromIndex(x86RegFpuIndex Index);
 
 class CX86RegInfo :
-    public CRegBase,
-    private CDebugSettings
+    public CRegBase
 {
 public:
     // Enums

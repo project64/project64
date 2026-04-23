@@ -398,13 +398,13 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
             m_CodeBlock.SetVAddrLast(m_RecompilerOps->GetCurrentPC());
         }
 
-        if (isDebugging() && HaveExecutionBP() && Instruction.HasDelaySlot() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC() + 4))
+        if (g_DebugSettings.debugging && g_DebugSettings.haveExecutionBP && Instruction.HasDelaySlot() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC() + 4))
         {
             m_RecompilerOps->CompileExecuteDelaySlotBP();
             break;
         }
 
-        if (isDebugging() && HaveExecutionBP() && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC()))
+        if (g_DebugSettings.debugging && g_DebugSettings.haveExecutionBP && g_Debugger->ExecutionBP(m_RecompilerOps->GetCurrentPC()))
         {
             m_RecompilerOps->CompileExecuteBP();
             break;
@@ -1090,7 +1090,7 @@ bool CCodeSection::IsAllParentLoops(CCodeSection * Parent, bool IgnoreIfCompiled
 
 bool CCodeSection::DisplaySectionInformation(uint32_t ID, uint32_t Test)
 {
-    if (!CDebugSettings::bRecordRecompilerAsm())
+    if (!g_DebugSettings.recordRecompilerAsm)
     {
         return false;
     }

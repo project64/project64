@@ -24,7 +24,7 @@ bool CBreakpoints::RBPAdd(uint32_t address)
         PreUpdateBP();
         m_ReadMem.insert(breakpoints_t::value_type(address, false));
         UpdateAlignedReadBP();
-        if (!HaveReadBP())
+        if (!g_DebugSettings.haveReadBP)
         {
             g_Settings->SaveBool(Debugger_ReadBPExists, true);
         }
@@ -41,7 +41,7 @@ bool CBreakpoints::WBPAdd(uint32_t address)
         PreUpdateBP();
         m_WriteMem.insert(breakpoints_t::value_type(address, false));
         UpdateAlignedWriteBP();
-        if (!HaveWriteBP())
+        if (!g_DebugSettings.haveWriteBP)
         {
             g_Settings->SaveBool(Debugger_WriteBPExists, true);
         }
@@ -60,7 +60,7 @@ bool CBreakpoints::AddExecution(uint32_t address, bool bTemporary)
     {
         res.first->second = true;
     }
-    if (!HaveExecutionBP())
+    if (!g_DebugSettings.haveExecutionBP)
     {
         g_Settings->SaveBool(Debugger_HaveExecutionBP, true);
     }

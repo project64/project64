@@ -10,7 +10,6 @@ class CN64System;
 
 class RomMemoryHandler :
     public MemoryHandler,
-    private CDebugSettings,
     private CLogging
 {
 public:

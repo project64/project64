@@ -39,7 +39,6 @@ class SerialInterfaceHandler :
     public MemoryHandler,
     public SerialInterfaceReg,
     private MIPSInterfaceReg,
-    private CDebugSettings,
     private CLogging
 {
 public:

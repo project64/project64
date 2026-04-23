@@ -25,7 +25,6 @@ class CScriptSystem;
 
 class CDebuggerUI :
     public CDebugger,
-    public CDebugSettings,
     public CDebugMMU
 {
 public:

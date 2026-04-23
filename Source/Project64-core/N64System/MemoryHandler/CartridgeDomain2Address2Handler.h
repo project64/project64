@@ -9,8 +9,7 @@ class CMipsMemoryVM;
 class CRegisters;
 
 class CartridgeDomain2Address2Handler :
-    public MemoryHandler,
-    private CDebugSettings
+    public MemoryHandler
 {
 public:
     CartridgeDomain2Address2Handler(CN64System & System, CRegisters & Reg, CMipsMemoryVM & MMU, bool SavesReadOnly);

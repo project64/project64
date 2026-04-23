@@ -1,117 +1,113 @@
 #include "stdafx.h"
 
-#include "DebugSettings.h"
+#include <Project64-core/Settings/DebugSettings.h>
 
-int CDebugSettings::m_RefCount = 0;
+DebugSettings g_DebugSettings = {};
 
-bool CDebugSettings::m_Registered = false;
-
-bool CDebugSettings::m_HaveDebugger = false;
-bool CDebugSettings::m_Debugging = false;
-bool CDebugSettings::m_Stepping = false;
-bool CDebugSettings::m_SkipOp = false;
-bool CDebugSettings::m_WaitingForStep = false;
-bool CDebugSettings::m_bRecordRecompilerAsm = false;
-bool CDebugSettings::m_RecordExecutionTimes = false;
-bool CDebugSettings::m_HaveExecutionBP = false;
-bool CDebugSettings::m_HaveWriteBP = false;
-bool CDebugSettings::m_HaveReadBP = false;
-bool CDebugSettings::m_bShowPifRamErrors = false;
-bool CDebugSettings::m_bCPULoggingEnabled = false;
-uint32_t CDebugSettings::m_ExceptionBreakpoints = 0;
-uint32_t CDebugSettings::m_FpExceptionBreakpoints = 0;
-uint32_t CDebugSettings::m_IntrBreakpoints = 0;
-uint32_t CDebugSettings::m_RcpIntrBreakpoints = 0;
-bool CDebugSettings::m_EndOnPermLoop = false;
-bool CDebugSettings::m_BreakOnUnhandledMemory = false;
-bool CDebugSettings::m_BreakOnAddressError = false;
-bool CDebugSettings::m_StepOnBreakOpCode = false;
-bool CDebugSettings::m_TrackCPUStepStarted = false;
-bool CDebugSettings::m_TrackCPUStepEnded = false;
-
-CDebugSettings::CDebugSettings()
+namespace
 {
-    m_RefCount += 1;
-    if (!m_Registered && g_Settings)
-    {
-        m_Registered = true;
-        g_Settings->RegisterChangeCB(Debugger_Enabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_RecordRecompilerAsm, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_ReadBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_ExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_FpExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_IntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_RcpIntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_EndOnPermLoop, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_TrackCPUStepStarted, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->RegisterChangeCB(Debugger_TrackCPUStepEnded, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+    bool s_Registered = false;
 
-        RefreshSettings();
+    static void DebugSettingsChanged(void * /*Data*/)
+    {
+        if (g_Settings == nullptr)
+        {
+            return;
+        }
+
+        g_DebugSettings.haveDebugger = g_Settings->LoadBool(Debugger_Enabled);
+        g_DebugSettings.recordRecompilerAsm = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
+        g_DebugSettings.recordExecutionTimes = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
+        g_DebugSettings.stepping = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
+        g_DebugSettings.skipOp = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SkipOp);
+        g_DebugSettings.waitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
+        g_DebugSettings.haveExecutionBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
+        g_DebugSettings.haveWriteBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
+        g_DebugSettings.haveReadBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
+        g_DebugSettings.showPifRamErrors = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
+        g_DebugSettings.cpuLoggingEnabled = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
+        g_DebugSettings.exceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_ExceptionBreakpoints) : 0;
+        g_DebugSettings.fpExceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_FpExceptionBreakpoints) : 0;
+        g_DebugSettings.intrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_IntrBreakpoints) : 0;
+        g_DebugSettings.rcpIntrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_RcpIntrBreakpoints) : 0;
+        g_DebugSettings.endOnPermLoop = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_EndOnPermLoop);
+        g_DebugSettings.fpuExceptionInRecompiler = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_FpuExceptionInRecompiler);
+        g_DebugSettings.breakOnUnhandledMemory = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
+        g_DebugSettings.breakOnAddressError = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
+        g_DebugSettings.stepOnBreakOpCode = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
+        g_DebugSettings.trackCPUStepStarted = g_DebugSettings.stepping || g_DebugSettings.exceptionBreakpoints != 0 ||
+                                              (g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
+        g_DebugSettings.trackCPUStepEnded = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepEnded);
+
+        g_DebugSettings.debugging = g_DebugSettings.haveDebugger &&
+                                    (g_DebugSettings.haveExecutionBP || g_DebugSettings.waitingForStep ||
+                                     g_DebugSettings.haveWriteBP || g_DebugSettings.haveReadBP);
     }
+} // namespace
+
+void SetupDebugSettings(void)
+{
+    if (g_Settings == nullptr || s_Registered)
+    {
+        return;
+    }
+
+    g_Settings->RegisterChangeCB(Debugger_Enabled, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_RecordRecompilerAsm, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_RecordExecutionTimes, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_SteppingOps, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_SkipOp, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_HaveExecutionBP, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_WriteBPExists, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_ReadBPExists, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_WaitingForStep, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_ShowPifErrors, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_CPULoggingEnabled, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_ExceptionBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_FpExceptionBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_IntrBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_RcpIntrBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_EndOnPermLoop, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_FpuExceptionInRecompiler, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_BreakOnUnhandledMemory, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_BreakOnAddressError, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_StepOnBreakOpCode, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_TrackCPUStepStarted, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_TrackCPUStepEnded, nullptr, DebugSettingsChanged);
+
+    DebugSettingsChanged(nullptr);
+    s_Registered = true;
 }
 
-CDebugSettings::~CDebugSettings()
+void ShutdownDebugSettings(void)
 {
-    m_RefCount -= 1;
-    if (m_RefCount == 0 && g_Settings)
+    if (g_Settings == nullptr || !s_Registered)
     {
-        g_Settings->UnregisterChangeCB(Debugger_Enabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_RecordRecompilerAsm, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_SteppingOps, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_SkipOp, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_HaveExecutionBP, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_WriteBPExists, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_CPULoggingEnabled, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_ExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_FpExceptionBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_IntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_RcpIntrBreakpoints, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_EndOnPermLoop, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_BreakOnUnhandledMemory, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_BreakOnAddressError, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_StepOnBreakOpCode, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepStarted, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
-        g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepEnded, this, (CSettings::SettingChangedFunc)StaticRefreshSettings);
+        return;
     }
-}
 
-void CDebugSettings::RefreshSettings()
-{
-    m_HaveDebugger = g_Settings->LoadBool(Debugger_Enabled);
-    m_bRecordRecompilerAsm = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
-    m_RecordExecutionTimes = m_HaveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
-    m_Stepping = m_HaveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
-    m_SkipOp = m_HaveDebugger && g_Settings->LoadBool(Debugger_SkipOp);
-    m_WaitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
-    m_HaveExecutionBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
-    m_HaveWriteBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
-    m_HaveReadBP = m_HaveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
-    m_bShowPifRamErrors = m_HaveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
-    m_bCPULoggingEnabled = m_HaveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
-    m_ExceptionBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_ExceptionBreakpoints) : 0;
-    m_FpExceptionBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_FpExceptionBreakpoints) : 0;
-    m_IntrBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_IntrBreakpoints) : 0;
-    m_RcpIntrBreakpoints = m_HaveDebugger ? g_Settings->LoadDword(Debugger_RcpIntrBreakpoints) : 0;
-    m_EndOnPermLoop = m_HaveDebugger && g_Settings->LoadBool(Debugger_EndOnPermLoop);
-    m_BreakOnUnhandledMemory = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
-    m_BreakOnAddressError = m_HaveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
-    m_StepOnBreakOpCode = m_HaveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
-    m_TrackCPUStepStarted = m_Stepping || m_ExceptionBreakpoints || (m_HaveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
-    m_TrackCPUStepEnded = m_HaveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepEnded);
+    g_Settings->UnregisterChangeCB(Debugger_Enabled, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_RecordRecompilerAsm, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_RecordExecutionTimes, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_SteppingOps, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_SkipOp, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_HaveExecutionBP, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_WriteBPExists, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_ReadBPExists, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_WaitingForStep, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_ShowPifErrors, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_CPULoggingEnabled, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_ExceptionBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_FpExceptionBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_IntrBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_RcpIntrBreakpoints, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_EndOnPermLoop, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_FpuExceptionInRecompiler, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_BreakOnUnhandledMemory, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_BreakOnAddressError, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_StepOnBreakOpCode, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepStarted, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepEnded, nullptr, DebugSettingsChanged);
 
-    m_Debugging = m_HaveDebugger && (m_HaveExecutionBP || m_WaitingForStep || m_HaveWriteBP || m_HaveReadBP);
+    s_Registered = false;
 }

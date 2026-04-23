@@ -515,11 +515,11 @@ void CDebuggerUI::HandleCPUException(void)
     int fpExc = (g_Reg->m_FPCR[31] >> 12) & 0x3F;
     int rcpIntr = g_Reg->MI_INTR_REG & 0x2F;
 
-    if ((ExceptionBreakpoints() & (1 << exc)))
+    if ((g_DebugSettings.exceptionBreakpoints & (1 << exc)))
     {
         if (exc == 15) // Floating-point exception
         {
-            if (fpExc & FpExceptionBreakpoints())
+            if (fpExc & g_DebugSettings.fpExceptionBreakpoints)
             {
                 goto have_bp;
             }
@@ -527,11 +527,11 @@ void CDebuggerUI::HandleCPUException(void)
         }
         else if (exc == 0) // Interrupt exception
         {
-            if (intr & IntrBreakpoints())
+            if (intr & g_DebugSettings.intrBreakpoints)
             {
                 if (intr & 0x04) // RCP interrupt (IP2)
                 {
-                    if (rcpIntr & RcpIntrBreakpoints())
+                    if (rcpIntr & g_DebugSettings.rcpIntrBreakpoints)
                     {
                         goto have_bp;
                     }
@@ -553,7 +553,7 @@ void CDebuggerUI::HandleCPUException(void)
     return;
 
 have_bp:
-    if (bCPULoggingEnabled())
+    if (g_DebugSettings.cpuLoggingEnabled)
     {
         g_Debugger->OpenCPULogWindow();
     }
@@ -582,7 +582,7 @@ void CDebuggerUI::HandleCartToRamDMA(void)
 // Called from the interpreter core at the beginning of every CPU step
 void CDebuggerUI::CPUStepStarted()
 {
-    if (isStepping() && bCPULoggingEnabled())
+    if (g_DebugSettings.stepping && g_DebugSettings.cpuLoggingEnabled)
     {
         Debug_RefreshCPULogWindow();
     }
@@ -625,7 +625,7 @@ void CDebuggerUI::CPUStepStarted()
         }
     }
 
-    if (CDebugSettings::ExceptionBreakpoints() != 0)
+    if (g_DebugSettings.exceptionBreakpoints != 0)
     {
         uint32_t pc = (uint32_t)g_Reg->m_PROGRAM_COUNTER;
 
@@ -672,7 +672,7 @@ void CDebuggerUI::CPUStepStarted()
 // Called before opcode is executed (not called if SkipOp is set)
 void CDebuggerUI::CPUStep()
 {
-    if (bCPULoggingEnabled())
+    if (g_DebugSettings.cpuLoggingEnabled)
     {
         m_CPULog->PushState();
     }

@@ -37,7 +37,7 @@ bool RDRAMInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x0470001C: Value = RI_WERROR_REG; break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -56,7 +56,7 @@ bool RDRAMInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x04700018: LogMessage("%016llX: read from RI_RERROR_REG (%08X)", m_PC, Value); break;
         case 0x0470001C: LogMessage("%016llX: read from RI_WERROR_REG (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -80,7 +80,7 @@ bool RDRAMInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         case 0x04700018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_RERROR_REG", m_PC, Value, Mask); break;
         case 0x0470001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to RI_WERROR_REG", m_PC, Value, Mask); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -98,7 +98,7 @@ bool RDRAMInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     case 0x04700018: RI_RERROR_REG = (RI_RERROR_REG & ~Mask) | (Value & Mask); break;
     case 0x0470001C: RI_WERROR_REG = (RI_WERROR_REG & ~Mask) | (Value & Mask); break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

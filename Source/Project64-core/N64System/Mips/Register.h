@@ -13,7 +13,6 @@
 #include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
 #include <Project64-core\N64System\N64Types.h>
-#include <Project64-core\Settings\DebugSettings.h>
 #include <Project64-core\Settings\GameSettings.h>
 
 #pragma warning(push)
@@ -431,7 +430,6 @@ class CTLB;
 
 class CRegisters :
     public CLogging,
-    private CDebugSettings,
     private CGameSettings,
     public CP0registers,
     public RDRAMRegistersReg,

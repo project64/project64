@@ -258,7 +258,7 @@ void CN64System::ExternalEvent(SystemEvent action)
         }
         break;
     case SysEvent_PauseCPU_ChangingBPs:
-        if (!WaitingForStep() && !g_Settings->LoadBool(GameRunning_CPU_Paused))
+        if (!g_DebugSettings.waitingForStep && !g_Settings->LoadBool(GameRunning_CPU_Paused))
         {
             m_SystemEvents.QueueEvent(action);
             for (int i = 0; i < 100; i++)
@@ -751,7 +751,7 @@ void CN64System::StartEmulation2(bool NewThread)
     WriteTrace(TraceN64System, TraceDebug, "Start (NewThread: %s)", NewThread ? "true" : "false");
     if (NewThread)
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             StartLog();
         }
@@ -1003,7 +1003,7 @@ void CN64System::ExecuteCPU()
         m_SyncCPU->m_Plugins->RomOpened();
     }
 
-    if (g_Debugger != nullptr && HaveDebugger())
+    if (g_Debugger != nullptr && g_DebugSettings.haveDebugger)
     {
         g_Debugger->EmulationStarted();
     }
@@ -1037,7 +1037,7 @@ void CN64System::ExecuteCPU()
         m_SyncCPU->m_Plugins->RomClosed();
     }
 
-    if (g_Debugger != nullptr && HaveDebugger())
+    if (g_Debugger != nullptr && g_DebugSettings.haveDebugger)
     {
         g_Debugger->EmulationStopped();
     }
@@ -2205,7 +2205,7 @@ bool CN64System::LoadState(const char * FileName)
     }
     m_CPU_Usage.ResetTimers();
     m_FPS.Reset(true);
-    if (bRecordRecompilerAsm() && m_Recomp)
+    if (g_DebugSettings.recordRecompilerAsm && m_Recomp)
     {
         m_Recomp->ResetLog();
     }
@@ -2352,7 +2352,7 @@ void CN64System::RefreshScreen()
 
     WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen starting");
     m_Plugins->Gfx()->UpdateScreen();
-    if (g_Debugger != nullptr && HaveDebugger())
+    if (g_Debugger != nullptr && g_DebugSettings.haveDebugger)
     {
         g_Debugger->FrameDrawn();
     }

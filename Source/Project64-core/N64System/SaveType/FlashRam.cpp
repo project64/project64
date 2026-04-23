@@ -31,7 +31,7 @@ void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         }
         if (len > sizeof(FlipBuffer))
         {
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->DisplayError(stdstr_f("%s: DmaFromFlashram FlipBuffer to small (len: %d)", __FUNCTION__, len).c_str());
             }
@@ -39,7 +39,7 @@ void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         }
         if ((len & 3) != 0)
         {
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->DisplayError(stdstr_f("%s: Unaligned flash RAM read?", __FUNCTION__).c_str());
             }
@@ -63,7 +63,7 @@ void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
     case FLASHRAM_MODE_STATUS:
         if (StartOffset != 0 && len != 8)
         {
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->DisplayError(stdstr_f("%s: Reading m_FlashStatus not being handled correctly\nStart: %X len: %X", __FUNCTION__, StartOffset, len).c_str());
             }
@@ -72,7 +72,7 @@ void CFlashRam::DmaFromFlashram(uint8_t * dest, int32_t StartOffset, int32_t len
         *((uint32_t *)(dest) + 1) = (uint32_t)(m_FlashStatus & 0xFFFFFFFF);
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("%s: Start: %X, Offset: %X len: %X", __FUNCTION__, dest - g_MMU->Rdram(), StartOffset, len).c_str());
         }
@@ -87,7 +87,7 @@ void CFlashRam::DmaToFlashram(uint8_t * Source, int32_t StartOffset, int32_t len
         m_FlashRamPointer = Source;
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("%s: Start: %X, Offset: %X len: %X", __FUNCTION__, Source - g_MMU->Rdram(), StartOffset, len).c_str());
         }
@@ -100,7 +100,7 @@ uint32_t CFlashRam::ReadFromFlashStatus(uint32_t PAddr)
     {
     case 0x08000000: return (uint32_t)(m_FlashStatus >> 32);
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("%s: PAddr (%X)", __FUNCTION__, PAddr).c_str());
         }
@@ -207,7 +207,7 @@ void CFlashRam::WriteToFlashCommand(uint32_t FlashRAM_Command)
         m_FlashStatus = 0x1111800400C2001E;
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("Writing %X to flash RAM command register", FlashRAM_Command).c_str());
         }

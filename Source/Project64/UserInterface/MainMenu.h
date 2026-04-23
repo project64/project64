@@ -140,8 +140,7 @@ enum MainMenuID
 class CMainGui;
 
 class CMainMenu :
-    public CBaseMenu,
-    private CDebugSettings
+    public CBaseMenu
 {
 public:
     CMainMenu(CMainGui * Window);

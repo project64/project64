@@ -31,7 +31,6 @@ class CRegisters;
 class RDRAMInterfaceHandler :
     public MemoryHandler,
     private RDRAMInterfaceReg,
-    private CDebugSettings,
     private CLogging
 {
 public:

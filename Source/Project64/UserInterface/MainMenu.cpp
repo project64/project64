@@ -1072,7 +1072,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
 
     // Profile menu
     MenuItemList DebugProfileMenu;
-    if (HaveDebugger())
+    if (g_DebugSettings.haveDebugger)
     {
         Item.Reset(ID_PROFILE_PROFILE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Record Execution Times");
         if (g_Settings->LoadBool(Debugger_RecordExecutionTimes))
@@ -1102,7 +1102,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MenuItemList DebugMemoryMenu;
     MenuItemList DebugInterrupt;
     MenuItemList DebugNotificationMenu;
-    if (HaveDebugger())
+    if (g_DebugSettings.haveDebugger)
     {
         // Debug - interrupt
         Item.Reset(ID_DEBUGGER_INTERRUPT_SP, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"SP interrupt");
@@ -1378,7 +1378,7 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
     MainTitleMenu.push_back(Item);
     if (!inBasicMode)
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             Item.Reset(SUB_MENU, MENU_DEBUGGER, EMPTY_STDSTR, &DebugMenu);
             if (RomLoading)

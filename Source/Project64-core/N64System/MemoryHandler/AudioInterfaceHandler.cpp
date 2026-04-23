@@ -71,7 +71,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -88,7 +88,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x04500010: LogMessage("%016llX: read from AI_DACRATE_REG (%08X)", m_PC, Value); break;
         case 0x04500014: LogMessage("%016llX: read from AI_BITRATE_REG (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -110,7 +110,7 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         case 0x04500010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_DACRATE_REG", m_PC, Value, Mask); break;
         case 0x04500014: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to AI_BITRATE_REG", m_PC, Value, Mask); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -151,7 +151,7 @@ bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         break;
     case 0x04500014: AI_BITRATE_REG = (AI_BITRATE_REG & ~Mask) | (MaskedValue); break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

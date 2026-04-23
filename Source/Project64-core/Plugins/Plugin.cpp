@@ -163,7 +163,7 @@ void CPlugins::CreatePlugins(void)
 
     if (m_RSP != nullptr)
     {
-        m_RSP->EnableDebugging(HaveDebugger());
+        m_RSP->EnableDebugging(g_DebugSettings.haveDebugger);
     }
     WriteTrace(TracePlugins, TraceInfo, "Done");
 }

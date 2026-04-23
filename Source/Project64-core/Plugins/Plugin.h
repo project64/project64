@@ -91,8 +91,7 @@ __interface RenderWindow
 #endif
 };
 
-class CPlugins :
-    private CDebugSettings
+class CPlugins
 {
 public:
     // Functions

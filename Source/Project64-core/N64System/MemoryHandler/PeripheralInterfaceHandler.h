@@ -54,7 +54,6 @@ enum
 class PeripheralInterfaceHandler :
     public MemoryHandler,
     private CGameSettings,
-    private CDebugSettings,
     private CLogging,
     private PeripheralInterfaceReg,
     private MIPSInterfaceReg

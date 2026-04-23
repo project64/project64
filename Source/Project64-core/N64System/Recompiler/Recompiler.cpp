@@ -238,7 +238,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 }
             }
 
-            if (bRecordExecutionTimes())
+            if (g_DebugSettings.recordExecutionTimes)
             {
                 uint64_t PreNonCPUTime = m_System.m_CPU_Usage.NonCPUTime();
                 HighResTimeStamp StartTime, EndTime;
@@ -551,7 +551,7 @@ void CRecompiler::ResetFunctionTimes()
 
 void CRecompiler::StartLog()
 {
-    if (!bRecordRecompilerAsm())
+    if (!g_DebugSettings.recordRecompilerAsm)
     {
         return;
     }
@@ -585,7 +585,7 @@ void CRecompiler::StopLog(void)
 
 void CRecompiler::LogCodeBlock(const CCodeBlock & CodeBlock)
 {
-    if (!bRecordRecompilerAsm() || m_LogFile == nullptr || CodeBlock.CodeLog().empty())
+    if (!g_DebugSettings.recordRecompilerAsm || m_LogFile == nullptr || CodeBlock.CodeLog().empty())
     {
         return;
     }

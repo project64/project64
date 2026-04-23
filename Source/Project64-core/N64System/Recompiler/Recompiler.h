@@ -11,7 +11,6 @@
 class CLog;
 
 class CRecompiler :
-    protected CDebugSettings,
     public CRecompilerSettings,
     public CFunctionMap,
     public CRecompMemory

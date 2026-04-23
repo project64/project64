@@ -473,7 +473,7 @@ void CArmRecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
     }
     else
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
         }
@@ -614,7 +614,7 @@ void CArmRecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
@@ -1876,7 +1876,7 @@ void CArmRecompilerOps::J()
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
@@ -2671,7 +2671,7 @@ void CArmRecompilerOps::CACHE()
     case 25:
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
         }
@@ -3067,7 +3067,7 @@ void CArmRecompilerOps::SPECIAL_JR()
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
@@ -3158,7 +3158,7 @@ void CArmRecompilerOps::SPECIAL_JALR()
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
@@ -3784,7 +3784,7 @@ void CArmRecompilerOps::SPECIAL_SLT()
         {
             if (Is64Bit(m_Opcode.rt) || Is64Bit(m_Opcode.rs))
             {
-                if (HaveDebugger())
+                if (g_DebugSettings.haveDebugger)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -5164,7 +5164,7 @@ bool CArmRecompilerOps::SetupRegisterForLoop(CCodeBlock * BlockInfo, const CRegI
 
 void CArmRecompilerOps::OutputRegisterState(const CRegInfo & SyncTo, const CRegInfo & CurrentSet) const
 {
-    if (!CDebugSettings::bRecordRecompilerAsm())
+    if (!g_DebugSettings.recordRecompilerAsm)
     {
         return;
     }
@@ -6439,7 +6439,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -6479,7 +6479,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x03F8000C: break;
         case 0x03F80014: break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6521,11 +6521,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04080000: m_Assembler.MoveConstToVariable(Value & 0xFFC, &g_Reg->SP_PC_REG, "SP_PC_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6543,11 +6543,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6661,11 +6661,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6740,11 +6740,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04400034: m_Assembler.MoveConstToVariable(Value, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6790,11 +6790,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04500014: m_Assembler.MoveConstToVariable(Value, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6844,11 +6844,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04600030: m_Assembler.MoveConstToVariable((Value & 0xFF), &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6863,11 +6863,11 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0470000C: m_Assembler.MoveConstToVariable(Value, &g_Reg->RI_SELECT_REG, "RI_SELECT_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6907,7 +6907,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -6926,7 +6926,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 break;
             default:
                 m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -6947,7 +6947,7 @@ void CArmRecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         break;
     default:
         m_CodeBlock.Log("    should be moving %X in to %08X ?", Value, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -6977,7 +6977,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -7007,7 +7007,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         case 0x03F80014: break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7058,7 +7058,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             else
             {
                 m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7101,7 +7101,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7173,7 +7173,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         case 0x04400034: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7227,7 +7227,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         case 0x04500014: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->AI_BITRATE_REG, "AI_BITRATE_REG"); break;
         default:
             m_Assembler.MoveArmRegToVariable(Reg, PAddr + g_MMU->Rdram(), stdstr_f("RDRAM + %X", PAddr).c_str());
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7266,7 +7266,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();*/
             break;
         case 0x04600010:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7310,7 +7310,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7325,7 +7325,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         case 0x04700010: m_Assembler.MoveArmRegToVariable(Reg, &g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG"); break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7359,7 +7359,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -7410,7 +7410,7 @@ void CArmRecompilerOps::SW_Register(CArmOps::ArmReg Reg, uint32_t VAddr)
         break;
     default:
         m_CodeBlock.Log("    should be moving %s in to %08X ?", ArmRegName(Reg), VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -7423,7 +7423,7 @@ void CArmRecompilerOps::LB_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr, boo
 
     if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -7456,7 +7456,7 @@ void CArmRecompilerOps::LB_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr, boo
         break;
     default:
         m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -7522,7 +7522,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7548,7 +7548,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7571,7 +7571,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7632,7 +7632,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7657,7 +7657,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7671,7 +7671,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7685,7 +7685,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             default:
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                 m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -7724,7 +7724,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
                 default:
                     m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
                     m_Assembler.MoveConstToArmReg(Reg, (uint32_t)0);
-                    if (BreakOnUnhandledMemory())
+                    if (g_DebugSettings.breakOnUnhandledMemory)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -7754,7 +7754,7 @@ void CArmRecompilerOps::LW_KnownAddress(CArmOps::ArmReg Reg, uint32_t VAddr)
             else
             {
                 m_CodeBlock.Log("    should be loading from %08X ?", VAddr);
-                if (HaveDebugger())
+                if (g_DebugSettings.haveDebugger)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }

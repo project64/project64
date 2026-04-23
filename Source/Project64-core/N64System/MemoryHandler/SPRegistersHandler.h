@@ -42,7 +42,6 @@ class SPRegistersHandler :
     private RSPRegisterHandler,
     private CGameSettings,
     private MIPSInterfaceReg,
-    private CDebugSettings,
     private CLogging
 {
 public:

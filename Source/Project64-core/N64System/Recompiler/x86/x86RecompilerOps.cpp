@@ -45,7 +45,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
     do
     {
         g_Debugger->WaitForStep();
-        if (CDebugSettings::SkipOp())
+        if (g_DebugSettings.skipOp)
         {
             // Skip command if instructed by the debugger
             g_Settings->SaveBool(Debugger_SkipOp, false);
@@ -68,7 +68,7 @@ void CX86RecompilerOps::x86CompilerBreakPoint()
             g_System->SyncSystem();
         }
 
-    } while (CDebugSettings::isStepping());
+    } while (g_DebugSettings.stepping);
 
     if (g_System->PipelineStage() != PIPELINE_STAGE_NORMAL)
     {
@@ -785,7 +785,7 @@ void CX86RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
     }
     else
     {
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_PipelineStage).c_str());
         }
@@ -955,7 +955,7 @@ void CX86RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
     }
@@ -2272,7 +2272,7 @@ void CX86RecompilerOps::J()
         m_Section->GenerateSectionLinkage();
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nJ\nNextInstruction = %X", m_PipelineStage).c_str());
     }
@@ -2889,7 +2889,7 @@ void CX86RecompilerOps::CACHE()
     case 25:
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
         }
@@ -2947,7 +2947,7 @@ void CX86RecompilerOps::LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
     {
         m_Assembler.MoveConstToX86reg(Reg, 0);
         m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -3006,7 +3006,7 @@ void CX86RecompilerOps::LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         else
         {
             m_Assembler.MoveConstToX86reg(Reg, 0);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -3042,7 +3042,7 @@ void CX86RecompilerOps::LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         break;
     default:
         m_Assembler.MoveConstToX86reg(Reg, 0);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -3064,7 +3064,7 @@ void CX86RecompilerOps::LH_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
     {
         m_Assembler.MoveConstToX86reg(Reg, 0);
         m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -3122,7 +3122,7 @@ void CX86RecompilerOps::LH_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         break;
     default:
         m_Assembler.MoveConstToX86reg(Reg, 0);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -3146,7 +3146,7 @@ void CX86RecompilerOps::LB()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveReadBP() && g_Debugger->ReadBP8(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP8(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3168,7 +3168,7 @@ void CX86RecompilerOps::LH()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveReadBP() && g_Debugger->ReadBP16(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP16(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3193,7 +3193,7 @@ void CX86RecompilerOps::LWL()
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         uint32_t Offset = Address & 3;
-        if (HaveReadBP() && g_Debugger->ReadBP32(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3236,7 +3236,7 @@ void CX86RecompilerOps::LW()
 
 void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
 {
-    if (!HaveReadBP() && m_Opcode.base == 29 && g_System->bFastSP() && m_Opcode.rt != 0)
+    if (!g_DebugSettings.haveReadBP && m_Opcode.base == 29 && g_System->bFastSP() && m_Opcode.rt != 0)
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, ResultSigned, -1);
         asmjit::x86::Gp TempReg1 = m_RegWorkingSet.Map_MemoryStack(x86Reg_Unknown, true);
@@ -3259,7 +3259,7 @@ void CX86RecompilerOps::LW(bool ResultSigned, bool bRecordLLBit)
         {
             return;
         }
-        if (HaveReadBP() && g_Debugger->ReadBP32(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3378,7 +3378,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             case 0x0430000C: m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->MI_INTR_MASK_REG, "MI_INTR_MASK_REG"); break;
             default:
                 m_Assembler.MoveConstToX86reg(Reg, 0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -3420,7 +3420,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             case 0x04600030: m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG"); break;
             default:
                 m_Assembler.MoveConstToX86reg(Reg, 0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -3433,7 +3433,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             case 0x04700010: m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG"); break;
             default:
                 m_Assembler.MoveConstToX86reg(Reg, 0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -3445,7 +3445,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             case 0x04800018: m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->SI_STATUS_REG, "SI_STATUS_REG"); break;
             default:
                 m_Assembler.MoveConstToX86reg(Reg, 0);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -3483,7 +3483,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
                 case 0x05000548: m_Assembler.MoveVariableToX86reg(Reg, &g_Reg->ASIC_TEST_PIN_SEL, "ASIC_TEST_PIN_SEL"); break;
                 default:
                     m_Assembler.MoveConstToX86reg(Reg, 0);
-                    if (BreakOnUnhandledMemory())
+                    if (g_DebugSettings.breakOnUnhandledMemory)
                     {
                         g_Notify->BreakPoint(__FILE__, __LINE__);
                     }
@@ -3520,7 +3520,7 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             else
             {
                 m_Assembler.MoveConstToX86reg(Reg, ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF));
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -3539,7 +3539,7 @@ void CX86RecompilerOps::LBU()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveReadBP() && g_Debugger->ReadBP8(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP8(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3564,7 +3564,7 @@ void CX86RecompilerOps::LHU()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveReadBP() && g_Debugger->ReadBP16(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP16(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3590,7 +3590,7 @@ void CX86RecompilerOps::LWR()
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         uint32_t Offset = Address & 3;
-        if (HaveReadBP() && g_Debugger->ReadBP32(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3635,7 +3635,7 @@ void CX86RecompilerOps::SB()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveWriteBP() && g_Debugger->WriteBP8(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP8(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3679,7 +3679,7 @@ void CX86RecompilerOps::SH()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = (m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset);
-        if (HaveWriteBP() && g_Debugger->WriteBP16(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP16(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3721,7 +3721,7 @@ void CX86RecompilerOps::SWL()
         uint32_t Address;
 
         Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -3792,7 +3792,7 @@ void CX86RecompilerOps::SW()
 
 void CX86RecompilerOps::SW(bool bCheckLLbit)
 {
-    if (!HaveWriteBP() && m_Opcode.base == 29 && g_System->bFastSP())
+    if (!g_DebugSettings.haveWriteBP && m_Opcode.base == 29 && g_System->bFastSP())
     {
         if (bCheckLLbit)
         {
@@ -3860,7 +3860,7 @@ void CX86RecompilerOps::SW(bool bCheckLLbit)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+            if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
             {
                 FoundMemoryBreakpoint();
                 return;
@@ -3928,7 +3928,7 @@ void CX86RecompilerOps::SWR()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4056,7 +4056,7 @@ void CX86RecompilerOps::LWC1()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveReadBP() && g_Debugger->ReadBP32(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4086,7 +4086,7 @@ void CX86RecompilerOps::LDC1()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveReadBP() && g_Debugger->ReadBP64(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP64(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4127,7 +4127,7 @@ void CX86RecompilerOps::LD()
         return;
     }
 
-    if (!HaveReadBP() && m_Opcode.base == 29 && g_System->bFastSP())
+    if (!g_DebugSettings.haveReadBP && m_Opcode.base == 29 && g_System->bFastSP())
     {
         m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, -1);
         asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(x86Reg_Unknown, true);
@@ -4137,7 +4137,7 @@ void CX86RecompilerOps::LD()
     else if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveReadBP() && g_Debugger->ReadBP64(Address))
+        if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP64(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4181,7 +4181,7 @@ void CX86RecompilerOps::SWC1()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4210,7 +4210,7 @@ void CX86RecompilerOps::SDC1()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4244,7 +4244,7 @@ void CX86RecompilerOps::SD()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (HaveWriteBP() && g_Debugger->WriteBP32(Address))
+        if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(Address))
         {
             FoundMemoryBreakpoint();
             return;
@@ -4603,7 +4603,7 @@ void CX86RecompilerOps::SPECIAL_JR()
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_PipelineStage).c_str());
     }
@@ -4700,7 +4700,7 @@ void CX86RecompilerOps::SPECIAL_JALR()
         }
         m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
     }
-    else if (HaveDebugger())
+    else if (g_DebugSettings.haveDebugger)
     {
         g_Notify->DisplayError(stdstr_f("WTF\n\nBranch\nNextInstruction = %X", m_PipelineStage).c_str());
     }
@@ -5968,7 +5968,7 @@ void CX86RecompilerOps::SPECIAL_XOR()
 
             if (m_RegWorkingSet.Is64Bit(m_Opcode.rt) || m_RegWorkingSet.Is64Bit(m_Opcode.rs))
             {
-                if (HaveDebugger())
+                if (g_DebugSettings.haveDebugger)
                 {
                     g_Notify->DisplayError("XOR 1");
                 }
@@ -8276,7 +8276,7 @@ void CX86RecompilerOps::FoundMemoryBreakpoint()
 
 void CX86RecompilerOps::PreReadInstruction()
 {
-    if (!HaveReadBP())
+    if (!g_DebugSettings.haveReadBP)
     {
         return;
     }
@@ -8285,7 +8285,7 @@ void CX86RecompilerOps::PreReadInstruction()
 
 void CX86RecompilerOps::PreWriteInstruction()
 {
-    if (!HaveWriteBP())
+    if (!g_DebugSettings.haveWriteBP)
     {
         return;
     }
@@ -8310,7 +8310,7 @@ void CX86RecompilerOps::TestBreakpoint(const asmjit::x86::Gp & AddressReg, uint3
 
 void CX86RecompilerOps::TestWriteBreakpoint(const asmjit::x86::Gp & AddressReg, uint32_t FunctAddress, const char * FunctName)
 {
-    if (!HaveWriteBP())
+    if (!g_DebugSettings.haveWriteBP)
     {
         return;
     }
@@ -8319,7 +8319,7 @@ void CX86RecompilerOps::TestWriteBreakpoint(const asmjit::x86::Gp & AddressReg, 
 
 void CX86RecompilerOps::TestReadBreakpoint(const asmjit::x86::Gp & AddressReg, uint32_t FunctAddress, const char * FunctName)
 {
-    if (!HaveReadBP())
+    if (!g_DebugSettings.haveReadBP)
     {
         return;
     }
@@ -10546,7 +10546,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10585,7 +10585,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
         }
         else
         {
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -10601,7 +10601,7 @@ void CX86RecompilerOps::SB_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32", 16);
             m_RegWorkingSet.AfterCallDirect();
         }
-        else if (BreakOnUnhandledMemory())
+        else if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10624,7 +10624,7 @@ void CX86RecompilerOps::SB_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10653,7 +10653,7 @@ void CX86RecompilerOps::SB_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         }
         break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10674,7 +10674,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10712,7 +10712,7 @@ void CX86RecompilerOps::SH_Const(uint32_t Value, uint32_t VAddr)
             m_Assembler.CallThis((uint32_t)(MemoryHandler *)&g_MMU->m_RomMemoryHandler, (uint32_t)((long **)(MemoryHandler *)&g_MMU->m_RomMemoryHandler)[0][1], "RomMemoryHandler::Write32", 16);
             m_RegWorkingSet.AfterCallDirect();
         }
-        else if (BreakOnUnhandledMemory())
+        else if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10756,7 +10756,7 @@ void CX86RecompilerOps::SH_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
                 }
                 break;
             default:
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -10765,7 +10765,7 @@ void CX86RecompilerOps::SH_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         else
         {
             m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -10789,7 +10789,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -10837,7 +10837,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x03F8000C: break;
         case 0x03F80014: break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -10879,7 +10879,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             case 0x0404001C: m_Assembler.MoveConstToVariable(&g_Reg->SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", 0); break;
             case 0x04080000: m_Assembler.MoveConstToVariable(&g_Reg->SP_PC_REG, "SP_PC_REG", Value & 0xFFC); break;
             default:
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -10897,7 +10897,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -10981,7 +10981,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             break;
         }
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11049,7 +11049,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             case 0x04400030: m_Assembler.MoveConstToVariable(&g_Reg->VI_X_SCALE_REG, "VI_X_SCALE_REG", Value); break;
             case 0x04400034: m_Assembler.MoveConstToVariable(&g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG", Value); break;
             default:
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -11094,7 +11094,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x0460002C: m_Assembler.MoveConstToVariable(&g_Reg->PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", (Value & 0xFF)); break;
         case 0x04600030: m_Assembler.MoveConstToVariable(&g_Reg->PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", (Value & 0xFF)); break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11108,7 +11108,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         case 0x04700008: m_Assembler.MoveConstToVariable(&g_Reg->RI_CURRENT_LOAD_REG, "RI_CURRENT_LOAD_REG", Value); break;
         case 0x0470000C: m_Assembler.MoveConstToVariable(&g_Reg->RI_SELECT_REG, "RI_SELECT_REG", Value); break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11140,7 +11140,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11158,7 +11158,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
                 m_RegWorkingSet.AfterCallDirect();
                 break;
             default:
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -11186,7 +11186,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         else
         {
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11217,7 +11217,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
     if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
     {
         m_CodeBlock.Log("%s\nFailed to translate address: %08X", __FUNCTION__, VAddr);
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -11287,7 +11287,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
             else
             {
                 m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -11324,7 +11324,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11398,7 +11398,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
             case 0x04400034: m_Assembler.MoveX86regToVariable(&g_Reg->VI_Y_SCALE_REG, "VI_Y_SCALE_REG", Reg); break;
             default:
                 m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-                if (BreakOnUnhandledMemory())
+                if (g_DebugSettings.breakOnUnhandledMemory)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -11468,7 +11468,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
             break;
         default:
             m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11482,7 +11482,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         case 0x0470000C: m_Assembler.MoveX86regToVariable(&g_Reg->RI_SELECT_REG, "RI_SELECT_REG", Reg); break;
         case 0x04700010: m_Assembler.MoveX86regToVariable(&g_Reg->RI_REFRESH_REG, "RI_REFRESH_REG", Reg); break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11512,7 +11512,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
             m_RegWorkingSet.AfterCallDirect();
             break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -11586,7 +11586,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         else
         {
             m_CodeBlock.Log("    should be moving %s in to %08X ?", CX86Ops::x86_Name(Reg), VAddr);
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }

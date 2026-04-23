@@ -37,7 +37,7 @@ bool CPlugin::Load(const char * FileName)
     }
 
     // Try to load the DLL library
-    m_LibHandle = DynamicLibraryOpen(FileName, HaveDebugger());
+    m_LibHandle = DynamicLibraryOpen(FileName, g_DebugSettings.haveDebugger);
     WriteTrace(PluginTraceType(), TraceDebug, "Loaded: %s LibHandle: %X", FileName, m_LibHandle);
 
     if (m_LibHandle == nullptr)

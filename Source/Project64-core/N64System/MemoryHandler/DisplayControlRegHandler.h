@@ -58,7 +58,6 @@ class CRegisters;
 
 class DisplayControlRegHandler :
     public MemoryHandler,
-    private CDebugSettings,
     private CLogging,
     private DisplayControlReg,
     private SPRegistersReg

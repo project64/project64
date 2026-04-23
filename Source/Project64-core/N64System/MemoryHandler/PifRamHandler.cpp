@@ -25,7 +25,7 @@ bool PifRamHandler::Read32(uint32_t Address, uint32_t & Value)
     {
         //Value = swap32by8(*(uint32_t *)(&PifRom[PAddr - 0x1FC00000]));
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -38,7 +38,7 @@ bool PifRamHandler::Read32(uint32_t Address, uint32_t & Value)
     else
     {
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -84,7 +84,7 @@ void PifRamHandler::DMA_READ()
     uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
     if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
     {
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             g_Notify->DisplayError(stdstr_f("%s\nSI_DRAM_ADDR_REG not in RDRAM space", __FUNCTION__).c_str());
         }
@@ -93,7 +93,7 @@ void PifRamHandler::DMA_READ()
 
     ControlRead();
 
-    if (CDebugSettings::HaveDebugger())
+    if (g_DebugSettings.haveDebugger)
     {
         g_Debugger->PIFReadStarted();
     }
@@ -186,7 +186,7 @@ void PifRamHandler::DMA_WRITE()
     uint32_t & SI_DRAM_ADDR_REG = (uint32_t &)g_Reg->SI_DRAM_ADDR_REG;
     if ((int32_t)SI_DRAM_ADDR_REG > (int32_t)g_System->RdramSize())
     {
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             g_Notify->DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRAM space");
         }
@@ -349,7 +349,7 @@ void PifRamHandler::ControlRead()
             }
             else
             {
-                if (CurPos != 0x27 && bShowPifRamErrors())
+                if (CurPos != 0x27 && g_DebugSettings.showPifRamErrors)
                 {
                     g_Notify->DisplayError(stdstr_f("Unknown command in PifRamRead(%X)", m_PifRam[CurPos]).c_str());
                 }
@@ -419,7 +419,7 @@ void PifRamHandler::ControlWrite()
             memset(m_PifRam, 0, 0x40);
             break;
         default:
-            if (bShowPifRamErrors())
+            if (g_DebugSettings.showPifRamErrors)
             {
                 g_Notify->DisplayError(stdstr_f("Unknown PifRam control: %d", m_PifRam[0x3F]).c_str());
             }
@@ -468,7 +468,7 @@ void PifRamHandler::ControlWrite()
                 }
                 else
                 {
-                    if (bShowPifRamErrors())
+                    if (g_DebugSettings.showPifRamErrors)
                     {
                         g_Notify->DisplayError("Command on channel 5?");
                     }
@@ -478,7 +478,7 @@ void PifRamHandler::ControlWrite()
             }
             else
             {
-                if (CurPos != 0x27 && bShowPifRamErrors())
+                if (CurPos != 0x27 && g_DebugSettings.showPifRamErrors)
                 {
                     g_Notify->DisplayError(stdstr_f("Unknown Command in PifRamWrite(%X)", m_PifRam[CurPos]).c_str());
                 }
@@ -548,7 +548,7 @@ void PifRamHandler::ReadControllerCommand(int32_t Control, uint8_t * Command)
     case 0x01: // Read controller
         if (Controllers[Control].Present != PRESENT_NONE)
         {
-            if (bShowPifRamErrors())
+            if (g_DebugSettings.showPifRamErrors)
             {
                 if (Command[0] != 1 || Command[1] != 4)
                 {
@@ -603,7 +603,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             break;
         }
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             if (Command[0] != 1 || Command[1] != 3)
             {
@@ -642,7 +642,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     case 0x01: // Read controller
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             if (Command[0] != 1 || Command[1] != 4)
             {
@@ -659,7 +659,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             LogControllerPakData("Read: before getting results");
         }
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             if (Command[0] != 3 || Command[1] != 33)
             {
@@ -705,7 +705,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             LogControllerPakData("Write: before processing");
         }
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             if (Command[0] != 35 || Command[1] != 1)
             {
@@ -745,7 +745,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     default:
-        if (bShowPifRamErrors())
+        if (g_DebugSettings.showPifRamErrors)
         {
             g_Notify->DisplayError(stdstr_f("Unknown ControllerCommand %d", Command[2]).c_str());
         }

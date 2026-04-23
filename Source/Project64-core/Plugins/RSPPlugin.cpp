@@ -434,7 +434,7 @@ void CRSP_Plugin::RunRSP()
         return;
     }
 
-    if (g_Debugger != NULL && HaveDebugger())
+    if (g_Debugger != NULL && g_DebugSettings.haveDebugger)
     {
         g_Debugger->RSPReceivedTask();
     }
@@ -460,7 +460,7 @@ void CRSP_Plugin::RunRSP()
     {
         g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
     }
-    if (bRecordExecutionTimes() || bShowCPUPer())
+    if (g_DebugSettings.recordExecutionTimes || bShowCPUPer())
     {
         StartTime.SetToNow();
     }
@@ -519,7 +519,7 @@ void CRSP_Plugin::RunRSP()
             WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
         }
     }
-    if (bRecordExecutionTimes() || bShowCPUPer())
+    if (g_DebugSettings.recordExecutionTimes || bShowCPUPer())
     {
         HighResTimeStamp EndTime;
         EndTime.SetToNow();

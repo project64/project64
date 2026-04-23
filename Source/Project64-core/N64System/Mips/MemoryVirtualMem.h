@@ -48,8 +48,7 @@ class CArmRecompilerOps;
 #endif
 
 class CMipsMemoryVM :
-    private CGameSettings,
-    private CDebugSettings
+    private CGameSettings
 {
 public:
     CMipsMemoryVM(CN64System & System, bool SavesReadOnly);

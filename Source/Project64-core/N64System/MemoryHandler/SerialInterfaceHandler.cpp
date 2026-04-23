@@ -30,7 +30,7 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x04800018: Value = SI_STATUS_REG; break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -45,7 +45,7 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0xA4800010: LogMessage("%016llX: read from SI_PIF_ADDR_WR64B_REG (%08X)", m_PC, Value); break;
         case 0x04800018: LogMessage("%016llX: read from SI_STATUS_REG (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -67,7 +67,7 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
             case 0x04800010: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_PIF_ADDR_WR64B_REG", m_PC, Value, Mask); break;
             case 0x04800018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SI_STATUS_REG", m_PC, Value, Mask); break;
             default:
-                if (HaveDebugger())
+                if (g_DebugSettings.haveDebugger)
                 {
                     g_Notify->BreakPoint(__FILE__, __LINE__);
                 }
@@ -101,7 +101,7 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
         m_Reg.CheckInterrupts();
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

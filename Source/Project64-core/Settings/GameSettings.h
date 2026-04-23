@@ -33,7 +33,7 @@ public:
     }
     inline static bool bLinkBlocks(void)
     {
-        return m_bLinkBlocks && !CDebugSettings::HaveWriteBP() && !CDebugSettings::HaveReadBP();
+        return m_bLinkBlocks && !g_DebugSettings.haveWriteBP && !g_DebugSettings.haveReadBP;
     }
     inline static FUNC_LOOKUP_METHOD LookUpMode(void)
     {

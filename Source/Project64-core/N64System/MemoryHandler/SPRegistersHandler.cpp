@@ -63,7 +63,7 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x04080000: Value = SP_PC_REG; break;
     default:
         Value = 0;
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -83,7 +83,7 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x0404001C: LogMessage("%016llX: read from SP_SEMAPHORE_REG (%08X)", m_PC, Value); break;
         case 0x04080000: LogMessage("%016llX: read from SP_PC (%08X)", m_PC, Value); break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -121,7 +121,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         case 0x0404001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_SEMAPHORE_REG", m_PC, Value, Mask); break;
         case 0x04080000: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to SP_PC", m_PC, Value, Mask); break;
         default:
-            if (BreakOnUnhandledMemory())
+            if (g_DebugSettings.breakOnUnhandledMemory)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -146,7 +146,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
     case 0x0404001C: SP_SEMAPHORE_REG = 0; break;
     case 0x04080000: SP_PC_REG = MaskedValue & 0xFFC; break;
     default:
-        if (BreakOnUnhandledMemory())
+        if (g_DebugSettings.breakOnUnhandledMemory)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

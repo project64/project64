@@ -6,7 +6,6 @@
 
 class CArmRegInfo :
     public CRegBase,
-    private CDebugSettings,
     private CSystemRegisters
 {
 public:

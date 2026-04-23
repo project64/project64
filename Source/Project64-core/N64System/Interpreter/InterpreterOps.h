@@ -2,13 +2,11 @@
 
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Mips/Register.h>
-#include <Project64-core/Settings/DebugSettings.h>
 
 class CX86RecompilerOps;
 
 class R4300iOp :
-    public CLogging,
-    private CDebugSettings
+    public CLogging
 {
     friend CX86RecompilerOps;
 

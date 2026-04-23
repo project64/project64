@@ -26,7 +26,7 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPSTR /
         Notify().SetMainWindow(&MainWindow);
         bool isROMLoaded = false;
 
-        if (CDebuggerUI::HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             Debugger.StartAutorunScripts();
         }

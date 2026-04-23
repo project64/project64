@@ -643,7 +643,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     }
     case COP0Reg_Cause:
         m_CP0[Reg] &= 0xFFFFCFF;
-        if ((Value & 0x300) != 0 && HaveDebugger())
+        if ((Value & 0x300) != 0 && g_DebugSettings.haveDebugger)
         {
             g_Notify->DisplayError("Set IP0 or IP1");
         }
@@ -673,7 +673,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     case COP0Reg_CacheErr:
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -751,7 +751,7 @@ void CRegisters::CheckInterrupts()
 
 void CRegisters::DoAddressError(uint64_t BadVaddr, bool FromRead)
 {
-    if (BreakOnAddressError())
+    if (g_DebugSettings.breakOnAddressError)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }

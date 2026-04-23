@@ -72,7 +72,6 @@ class CRegisters;
 class CartridgeDomain2Address1Handler :
     public MemoryHandler,
     private DiskInterfaceReg,
-    private CDebugSettings,
     private CGameSettings
 {
 public:

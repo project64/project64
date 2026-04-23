@@ -30,7 +30,7 @@ bool DisplayControlRegHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x0410001C: Value = DPC_TMEM_REG; break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -49,7 +49,7 @@ bool DisplayControlRegHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x04100018: LogMessage("%016llX: read from DPC_PIPEBUSY_REG (%08X)", m_PC, Value); break;
         case 0x0410001C: LogMessage("%016llX: read from DPC_TMEM_REG (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -73,7 +73,7 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
         case 0x04100018: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_PIPEBUSY_REG", m_PC, Value, Mask); break;
         case 0x0410001C: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to DPC_TMEM_REG", m_PC, Value, Mask); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -150,7 +150,7 @@ bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_
         }
         break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

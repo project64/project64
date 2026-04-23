@@ -3,8 +3,7 @@
 #include "Debugger-RegisterTabData.h"
 
 class CEditReg64 :
-    public CWindowImpl<CEditReg64, CEdit>,
-    private CDebugSettings
+    public CWindowImpl<CEditReg64, CEdit>
 {
 public:
     static uint64_t ParseValue(const char * wordPair);
@@ -24,8 +23,7 @@ public:
 };
 
 class CRegisterTabs :
-    public CTabCtrl,
-    public CDebugSettings
+    public CTabCtrl
 {
     enum TAB_ID
     {

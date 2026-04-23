@@ -28,7 +28,6 @@ class CRegisters;
 class MIPSInterfaceHandler :
     public MemoryHandler,
     private MIPSInterfaceReg,
-    private CDebugSettings,
     private CLogging
 {
 public:

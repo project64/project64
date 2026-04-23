@@ -1,8 +1,7 @@
 #pragma once
 #include <Project64-core/Settings/DebugSettings.h>
 
-class CEeprom :
-    protected CDebugSettings
+class CEeprom
 {
 public:
     CEeprom(bool ReadOnly);

@@ -76,7 +76,7 @@ LRESULT CDebugStackTrace::OnListDblClicked(NMHDR * pNMHDR)
 
 void CDebugStackTrace::Refresh()
 {
-    if (!isStepping())
+    if (!g_DebugSettings.stepping)
     {
         return;
     }

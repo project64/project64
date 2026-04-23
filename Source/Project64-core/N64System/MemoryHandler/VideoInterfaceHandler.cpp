@@ -81,7 +81,7 @@ bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     case 0x04400034: Value = VI_Y_SCALE_REG; break;
     default:
         Value = 0;
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
@@ -106,7 +106,7 @@ bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x04400030: LogMessage("%016llX: read from VI_X_SCALE_REG (%08X)", m_PC, Value); break;
         case 0x04400034: LogMessage("%016llX: read from VI_Y_SCALE_REG (%08X)", m_PC, Value); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -136,7 +136,7 @@ bool VideoInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
         case 0x04400030: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_X_SCALE_REG", m_PC, Value, Mask); break;
         case 0x04400034: LogMessage("%016llX: Writing 0x%08X (Mask: 0x%08X) to VI_Y_SCALE_REG", m_PC, Value, Mask); break;
         default:
-            if (HaveDebugger())
+            if (g_DebugSettings.haveDebugger)
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
@@ -184,7 +184,7 @@ bool VideoInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     case 0x04400030: VI_X_SCALE_REG = (VI_X_SCALE_REG & ~Mask) | (MaskedValue); break;
     case 0x04400034: VI_Y_SCALE_REG = (VI_Y_SCALE_REG & ~Mask) | (MaskedValue); break;
     default:
-        if (HaveDebugger())
+        if (g_DebugSettings.haveDebugger)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }

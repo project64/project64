@@ -123,7 +123,7 @@ LRESULT CDebugCommandsView::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARA
     ShowAddress(m_StartAddress, TRUE);
     m_bIgnoreAddrChange = false;
 
-    if (isStepping())
+    if (g_DebugSettings.stepping)
     {
         m_ViewPCButton.EnableWindow(TRUE);
         m_StepButton.EnableWindow(TRUE);
@@ -209,7 +209,7 @@ void CDebugCommandsView::InterceptKeyDown(WPARAM wParam, LPARAM /*lParam*/)
     {
     case VK_F1: CPUSkip(); break;
     case VK_F2:
-        if (WaitingForStep())
+        if (g_DebugSettings.waitingForStep)
         {
             m_StepEvent.Trigger();
         }
@@ -470,7 +470,7 @@ void CDebugCommandsView::ShowAddress(uint32_t address, bool top, bool bUserInput
             m_AddressEdit.SetValue(address, DisplayMode::ZeroExtend);
         }
 
-        if (!isStepping())
+        if (!g_DebugSettings.stepping)
         {
             // Disable buttons
             m_ViewPCButton.EnableWindow(FALSE);
@@ -829,15 +829,15 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
         {
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x44, 0x00, 0x00);
-            pLVCD->clrText = (address == pc && isDebugging()) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xCC, 0xCC);
+            pLVCD->clrText = (address == pc && g_DebugSettings.debugging) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xCC, 0xCC);
         }
         else if (bpState == CBreakpoints::BP_SET_TEMP)
         {
             // Breakpoint
             pLVCD->clrTextBk = RGB(0x66, 0x44, 0x00);
-            pLVCD->clrText = (address == pc && isDebugging()) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xEE, 0xCC);
+            pLVCD->clrText = (address == pc && g_DebugSettings.debugging) ? RGB(0xFF, 0xFF, 0x00) : RGB(0xFF, 0xEE, 0xCC);
         }
-        else if (address == pc && isStepping())
+        else if (address == pc && g_DebugSettings.stepping)
         {
             // PC
             pLVCD->clrTextBk = RGB(0x88, 0x88, 0x88);
@@ -869,7 +869,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
     {
         colors = {0xFFFFFF, 0xFF0000};
     }
-    else if (address == pc && isStepping())
+    else if (address == pc && g_DebugSettings.stepping)
     {
         colors = {0xFFFFAA, 0x222200};
     }
@@ -914,7 +914,7 @@ LRESULT CDebugCommandsView::OnCustomDrawList(NMHDR * pNMHDR)
     pLVCD->clrTextBk = _byteswap_ulong(colors.bg) >> 8;
     pLVCD->clrText = _byteswap_ulong(colors.fg) >> 8;
 
-    if (!isStepping())
+    if (!g_DebugSettings.stepping)
     {
         return CDRF_DODEFAULT;
     }
@@ -1160,7 +1160,7 @@ void CDebugCommandsView::RemoveSelectedBreakpoints()
 void CDebugCommandsView::CPUSkip()
 {
     g_Settings->SaveBool(Debugger_SkipOp, true);
-    if (WaitingForStep())
+    if (g_DebugSettings.waitingForStep)
     {
         m_StepEvent.Trigger();
     }
@@ -1169,7 +1169,7 @@ void CDebugCommandsView::CPUSkip()
 void CDebugCommandsView::CPUResume()
 {
     g_Settings->SaveBool(Debugger_SteppingOps, false);
-    if (WaitingForStep())
+    if (g_DebugSettings.waitingForStep)
     {
         m_StepEvent.Trigger();
     }
@@ -1192,7 +1192,7 @@ void CDebugCommandsView::CPUStepOver()
     else
     {
         // Normal step
-        if (WaitingForStep())
+        if (g_DebugSettings.waitingForStep)
         {
             m_StepEvent.Trigger();
         }
@@ -1223,7 +1223,7 @@ LRESULT CDebugCommandsView::OnForwardButton(WORD /*wNotifyCode*/, WORD /*wID*/, 
 
 LRESULT CDebugCommandsView::OnViewPCButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
-    if (g_Reg != nullptr && isStepping())
+    if (g_Reg != nullptr && g_DebugSettings.stepping)
     {
         ShowAddress((uint32_t)g_Reg->m_PROGRAM_COUNTER, TRUE);
     }
@@ -1252,7 +1252,7 @@ LRESULT CDebugCommandsView::OnGoButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
 
 LRESULT CDebugCommandsView::OnStepButton(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hwnd*/, BOOL & /*bHandled*/)
 {
-    if (WaitingForStep())
+    if (g_DebugSettings.waitingForStep)
     {
         m_StepEvent.Trigger();
     }
@@ -1456,7 +1456,7 @@ LRESULT CDebugCommandsView::OnPCChanged(WORD /*wNotifyCode*/, WORD /*wID*/, HWND
         m_bIgnorePCChange = false;
         return 0;
     }
-    if (g_Reg != nullptr && isStepping())
+    if (g_Reg != nullptr && g_DebugSettings.stepping)
     {
         g_Reg->m_PROGRAM_COUNTER = m_PCEdit.GetValue();
     }
@@ -1654,7 +1654,7 @@ LRESULT CDebugCommandsView::OnScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 
 void CDebugCommandsView::WaitingForStepChanged(void)
 {
-    if (WaitingForStep())
+    if (g_DebugSettings.waitingForStep)
     {
         ShowAddress((uint32_t)g_Reg->m_PROGRAM_COUNTER, false);
         m_Debugger->Debug_RefreshStackWindow();

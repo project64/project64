@@ -4,8 +4,7 @@
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
-class CN64Rom :
-    protected CDebugSettings
+class CN64Rom
 {
 public:
     CN64Rom();

@@ -35,7 +35,7 @@ duk_ret_t ScriptAPI::js_debug_step(duk_context * ctx)
 {
     CheckArgs(ctx, {});
 
-    if (g_Settings->LoadBool(Debugger_SteppingOps) && CDebugSettings::WaitingForStep())
+    if (g_Settings->LoadBool(Debugger_SteppingOps) && g_DebugSettings.waitingForStep)
     {
         g_Settings->SaveBool(Debugger_SilentBreak, true);
         GetInstance(ctx)->Debugger()->StepEvent().Trigger();
@@ -49,7 +49,7 @@ duk_ret_t ScriptAPI::js_debug_skip(duk_context * ctx)
 
     g_Settings->SaveBool(Debugger_SkipOp, true);
 
-    if (g_Settings->LoadBool(Debugger_SteppingOps) && CDebugSettings::WaitingForStep())
+    if (g_Settings->LoadBool(Debugger_SteppingOps) && g_DebugSettings.waitingForStep)
     {
         GetInstance(ctx)->Debugger()->StepEvent().Trigger();
     }
@@ -81,7 +81,7 @@ duk_ret_t ScriptAPI::js_debug_resume(duk_context * ctx)
 
     g_Settings->SaveBool(Debugger_SteppingOps, false);
 
-    if (CDebugSettings::WaitingForStep())
+    if (g_DebugSettings.waitingForStep)
     {
         GetInstance(ctx)->Debugger()->StepEvent().Trigger();
     }
@@ -90,6 +90,6 @@ duk_ret_t ScriptAPI::js_debug_resume(duk_context * ctx)
 
 duk_ret_t ScriptAPI::js_debug__get_paused(duk_context * ctx)
 {
-    duk_push_boolean(ctx, CDebugSettings::WaitingForStep() && g_Settings->LoadBool(Debugger_SteppingOps));
+    duk_push_boolean(ctx, g_DebugSettings.waitingForStep && g_Settings->LoadBool(Debugger_SteppingOps));
     return 1;
 }

@@ -265,7 +265,7 @@ void CRegisterTabs::RefreshEdits()
 
 void CRegisterTabs::RegisterChanged(HWND hDlg, TAB_ID srcTabId, WPARAM wParam)
 {
-    if (g_Reg == nullptr || !isStepping())
+    if (g_Reg == nullptr || !g_DebugSettings.stepping)
     {
         return;
     }
@@ -966,7 +966,7 @@ BOOL CEditReg64::Attach(HWND hWndNew)
 LRESULT CEditReg64::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
     bHandled = TRUE;
-    if (!isStepping())
+    if (!g_DebugSettings.stepping)
     {
         return 0;
     }
