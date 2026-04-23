@@ -43,7 +43,7 @@ bool RDRAMInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogRDRAMInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logRdramInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -67,7 +67,7 @@ bool RDRAMInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool RDRAMInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog() && LogRDRAMInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logRdramInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {

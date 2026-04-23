@@ -1523,7 +1523,7 @@ void R4300iOp::SWR_32()
 
 void R4300iOp::CACHE()
 {
-    if (!LogCache())
+    if (!g_LogSettings.logCache)
     {
         return;
     }

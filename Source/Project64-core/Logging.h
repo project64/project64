@@ -1,9 +1,7 @@
 #pragma once
 #include <Common/File.h>
-#include <Project64-core/Settings/LoggingSettings.h>
 
-class CLogging :
-    public CLogSettings
+class CLogging
 {
 public:
     static void StartLog(void);

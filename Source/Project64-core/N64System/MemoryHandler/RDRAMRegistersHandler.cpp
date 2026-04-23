@@ -51,7 +51,7 @@ bool RDRAMRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (LogRDRamRegisters())
+    if (g_LogSettings.logRdRamRegisters)
     {
         switch (Address & 0x3fc)
         {
@@ -81,7 +81,7 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
     uint32_t DeviceID = Address >> 13 & 3;
     RDRAM_DEVICE & Device = m_Device[DeviceID];
 
-    if (LogRDRamRegisters())
+    if (g_LogSettings.logRdRamRegisters)
     {
         switch (Address & 0x3fc)
         {

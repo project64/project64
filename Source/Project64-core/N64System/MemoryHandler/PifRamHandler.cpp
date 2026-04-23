@@ -44,7 +44,7 @@ bool PifRamHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogPRDirectMemLoads() && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
+    if (g_LogSettings.generateLog && g_LogSettings.logPrDirectMemLoads && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
     {
         LogMessage("%016llX: read word from PIF RAM at 0x%X (%08X)", m_PC, Address - 0x1FC007C0, Value);
     }
@@ -54,7 +54,7 @@ bool PifRamHandler::Read32(uint32_t Address, uint32_t & Value)
 bool PifRamHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
     Address &= 0x1FFFFFFF;
-    if (GenerateLog() && LogPRDirectMemStores() && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
+    if (g_LogSettings.generateLog && g_LogSettings.logPrDirectMemStores && Address >= 0x1FC007C0 && Address <= 0x1FC007FC)
     {
         LogMessage("%016llX: Writing 0x%08X to PIF RAM at 0x%X", m_PC, Value, Address - 0x1FC007C0);
     }
@@ -121,7 +121,7 @@ void PifRamHandler::DMA_READ()
         }
     }
 
-    if (LogPRDMAMemStores())
+    if (g_LogSettings.logPrDmaMemStores)
     {
         int32_t count;
         char HexData[100], AsciiData[100], Addon[20];
@@ -218,7 +218,7 @@ void PifRamHandler::DMA_WRITE()
         }
     }
 
-    if (LogPRDMAMemLoads())
+    if (g_LogSettings.logPrDmaMemLoads)
     {
         int32_t count;
         char HexData[100], AsciiData[100], Addon[20];
@@ -655,7 +655,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         }
         break;
     case 0x02: // Read from controller pak
-        if (LogControllerPak())
+        if (g_LogSettings.logControllerPak)
         {
             LogControllerPakData("Read: before getting results");
         }
@@ -695,13 +695,13 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             Command[1] |= 0x80;
         }
-        if (LogControllerPak())
+        if (g_LogSettings.logControllerPak)
         {
             LogControllerPakData("Read: after getting results");
         }
         break;
     case 0x03: // Write controller pak
-        if (LogControllerPak())
+        if (g_LogSettings.logControllerPak)
         {
             LogControllerPakData("Write: before processing");
         }
@@ -739,7 +739,7 @@ void PifRamHandler::ProcessControllerCommand(int32_t Control, uint8_t * Command)
         {
             Command[1] |= 0x80;
         }
-        if (LogControllerPak())
+        if (g_LogSettings.logControllerPak)
         {
             LogControllerPakData("Write: after processing");
         }

@@ -12,7 +12,6 @@ void EnterLogOptions(HWND hwndOwner)
 {
     PROPSHEETPAGE psp[3];
     PROPSHEETHEADER psh;
-    CLogSettings logSettings;
 
     psp[0].dwSize = sizeof(PROPSHEETPAGE);
     psp[0].dwFlags = PSP_USETITLE;
@@ -20,7 +19,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[0].pszTemplate = MAKEINTRESOURCE(IDD_Logging_Registers);
     psp[0].pfnDlgProc = (DLGPROC)LogRegProc;
     psp[0].pszTitle = L"Registers";
-    psp[0].lParam = (LPARAM)&logSettings;
+    psp[0].lParam = 0;
     psp[0].pfnCallback = nullptr;
 
     psp[1].dwSize = sizeof(PROPSHEETPAGE);
@@ -29,7 +28,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[1].pszTemplate = MAKEINTRESOURCE(IDD_Logging_PifRam);
     psp[1].pfnDlgProc = (DLGPROC)LogPifProc;
     psp[1].pszTitle = L"Pif Ram";
-    psp[1].lParam = (LPARAM)&logSettings;
+    psp[1].lParam = 0;
     psp[1].pfnCallback = nullptr;
 
     psp[2].dwSize = sizeof(PROPSHEETPAGE);
@@ -38,7 +37,7 @@ void EnterLogOptions(HWND hwndOwner)
     psp[2].pszTemplate = MAKEINTRESOURCE(IDD_Logging_General);
     psp[2].pfnDlgProc = (DLGPROC)LogGeneralProc;
     psp[2].pszTitle = L"General";
-    psp[2].lParam = (LPARAM)&logSettings;
+    psp[2].lParam = 0;
     psp[2].pfnCallback = nullptr;
 
     psh.dwSize = sizeof(PROPSHEETHEADER);
@@ -61,35 +60,35 @@ LRESULT CALLBACK LogGeneralProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM 
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogCP0changes())
+        if (g_LogSettings.logCp0changes)
         {
             CheckDlgButton(hDlg, IDC_CP0_WRITE, BST_CHECKED);
         }
-        if (CLogSettings::LogCP0reads())
+        if (g_LogSettings.logCp0reads)
         {
             CheckDlgButton(hDlg, IDC_CP0_READ, BST_CHECKED);
         }
-        if (CLogSettings::LogCache())
+        if (g_LogSettings.logCache)
         {
             CheckDlgButton(hDlg, IDC_CACHE, BST_CHECKED);
         }
-        if (CLogSettings::LogExceptions())
+        if (g_LogSettings.logExceptions)
         {
             CheckDlgButton(hDlg, IDC_EXCEPTIONS, BST_CHECKED);
         }
-        if (CLogSettings::LogNoInterrupts())
+        if (g_LogSettings.logNoInterrupts)
         {
             CheckDlgButton(hDlg, IDC_INTERRUPTS, BST_CHECKED);
         }
-        if (CLogSettings::LogTLB())
+        if (g_LogSettings.logTlb)
         {
             CheckDlgButton(hDlg, IDC_TLB, BST_CHECKED);
         }
-        if (CLogSettings::LogRomHeader())
+        if (g_LogSettings.logRomHeader)
         {
             CheckDlgButton(hDlg, IDC_ROM_HEADER, BST_CHECKED);
         }
-        if (CLogSettings::LogUnknown())
+        if (g_LogSettings.logUnknown)
         {
             CheckDlgButton(hDlg, IDC_UNKOWN, BST_CHECKED);
         }
@@ -121,27 +120,27 @@ LRESULT CALLBACK LogPifProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogPRDMAOperations())
+        if (g_LogSettings.logPrDmaOperations)
         {
             CheckDlgButton(hDlg, IDC_SI_DMA, BST_CHECKED);
         }
-        if (CLogSettings::LogPRDirectMemLoads())
+        if (g_LogSettings.logPrDirectMemLoads)
         {
             CheckDlgButton(hDlg, IDC_DIRECT_WRITE, BST_CHECKED);
         }
-        if (CLogSettings::LogPRDMAMemLoads())
+        if (g_LogSettings.logPrDmaMemLoads)
         {
             CheckDlgButton(hDlg, IDC_DMA_WRITE, BST_CHECKED);
         }
-        if (CLogSettings::LogPRDirectMemStores())
+        if (g_LogSettings.logPrDirectMemStores)
         {
             CheckDlgButton(hDlg, IDC_DIRECT_READ, BST_CHECKED);
         }
-        if (CLogSettings::LogPRDMAMemStores())
+        if (g_LogSettings.logPrDmaMemStores)
         {
             CheckDlgButton(hDlg, IDC_DMA_READ, BST_CHECKED);
         }
-        if (CLogSettings::LogControllerPak())
+        if (g_LogSettings.logControllerPak)
         {
             CheckDlgButton(hDlg, IDC_CONT_PAK, BST_CHECKED);
         }
@@ -171,43 +170,43 @@ LRESULT CALLBACK LogRegProc(HWND hDlg, UINT uMsg, WPARAM /*wParam*/, LPARAM lPar
     {
     case WM_INITDIALOG:
     {
-        if (CLogSettings::LogRDRamRegisters())
+        if (g_LogSettings.logRdRamRegisters)
         {
             CheckDlgButton(hDlg, IDC_RDRAM, BST_CHECKED);
         }
-        if (CLogSettings::LogSPRegisters())
+        if (g_LogSettings.logSpRegisters)
         {
             CheckDlgButton(hDlg, IDC_SP_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogDPCRegisters())
+        if (g_LogSettings.logDpcRegisters)
         {
             CheckDlgButton(hDlg, IDC_DPC_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogDPSRegisters())
+        if (g_LogSettings.logDpsRegisters)
         {
             CheckDlgButton(hDlg, IDC_DPS_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogMIPSInterface())
+        if (g_LogSettings.logMipsInterface)
         {
             CheckDlgButton(hDlg, IDC_MI_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogVideoInterface())
+        if (g_LogSettings.logVideoInterface)
         {
             CheckDlgButton(hDlg, IDC_VI_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogAudioInterface())
+        if (g_LogSettings.logAudioInterface)
         {
             CheckDlgButton(hDlg, IDC_AI_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogPerInterface())
+        if (g_LogSettings.logPerInterface)
         {
             CheckDlgButton(hDlg, IDC_PI_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogRDRAMInterface())
+        if (g_LogSettings.logRdramInterface)
         {
             CheckDlgButton(hDlg, IDC_RI_REG, BST_CHECKED);
         }
-        if (CLogSettings::LogSerialInterface())
+        if (g_LogSettings.logSerialInterface)
         {
             CheckDlgButton(hDlg, IDC_SI_REG, BST_CHECKED);
         }

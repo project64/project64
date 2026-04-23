@@ -10988,7 +10988,7 @@ void CX86RecompilerOps::SW_Const(uint32_t Value, uint32_t VAddr)
         }
         break;
     case 0x04400000:
-        if (GenerateLog() && LogVideoInterface())
+        if (g_LogSettings.generateLog && g_LogSettings.logVideoInterface)
         {
             UpdateCounters(m_RegWorkingSet, false, true, false);
 
@@ -11331,7 +11331,7 @@ void CX86RecompilerOps::SW_Register(const asmjit::x86::Gp & Reg, uint32_t VAddr)
         }
         break;
     case 0x04400000:
-        if (GenerateLog() && LogVideoInterface())
+        if (g_LogSettings.generateLog && g_LogSettings.logVideoInterface)
         {
             UpdateCounters(m_RegWorkingSet, false, true, false);
 

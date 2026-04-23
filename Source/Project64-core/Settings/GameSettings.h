@@ -3,7 +3,6 @@
 #include <Project64-core/N64System/N64Types.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
-// Cached per-game / core settings (mirrors CSettings; refreshed on change and after load).
 struct GameSettings
 {
     bool rspMultiThreaded;

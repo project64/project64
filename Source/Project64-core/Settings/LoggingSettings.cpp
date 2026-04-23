@@ -1,126 +1,132 @@
 #include "stdafx.h"
 
-#include "LoggingSettings.h"
+#include <Project64-core/Settings/LoggingSettings.h>
 
-int CLogSettings::m_RefCount = 0;
-bool CLogSettings::m_GenerateLog = 0;
-bool CLogSettings::m_LogRDRamRegisters = 0;
-bool CLogSettings::m_LogSPRegisters = 0;
-bool CLogSettings::m_LogDPCRegisters = 0;
-bool CLogSettings::m_LogDPSRegisters = 0;
-bool CLogSettings::m_LogMIPSInterface = 0;
-bool CLogSettings::m_LogVideoInterface = 0;
-bool CLogSettings::m_LogAudioInterface = 0;
-bool CLogSettings::m_LogPerInterface = 0;
-bool CLogSettings::m_LogRDRAMInterface = 0;
-bool CLogSettings::m_LogSerialInterface = 0;
-bool CLogSettings::m_LogPRDMAOperations = 0;
-bool CLogSettings::m_LogPRDirectMemLoads = 0;
-bool CLogSettings::m_LogPRDMAMemLoads = 0;
-bool CLogSettings::m_LogPRDirectMemStores = 0;
-bool CLogSettings::m_LogPRDMAMemStores = 0;
-bool CLogSettings::m_LogControllerPak = 0;
-bool CLogSettings::m_LogCP0changes = 0;
-bool CLogSettings::m_LogCP0reads = 0;
-bool CLogSettings::m_LogTLB = 0;
-bool CLogSettings::m_LogExceptions = 0;
-bool CLogSettings::m_NoInterrupts = 0;
-bool CLogSettings::m_LogCache = 0;
-bool CLogSettings::m_LogRomHeader = 0;
-bool CLogSettings::m_LogUnknown = 0;
+LogSettings g_LogSettings = {};
 
-CLogSettings::CLogSettings()
+void RefreshLogSettings(void)
 {
-    m_RefCount += 1;
-    if (m_RefCount == 1)
+    if (g_Settings == nullptr)
     {
-        g_Settings->RegisterChangeCB(Logging_GenerateLog, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogRDRamRegisters, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogSPRegisters, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogDPCRegisters, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogDPSRegisters, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogMIPSInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogVideoInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogAudioInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPerInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogRDRAMInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogSerialInterface, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPRDMAOperations, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPRDirectMemLoads, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPRDMAMemLoads, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPRDirectMemStores, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogPRDMAMemStores, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogControllerPak, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogCP0changes, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogCP0reads, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogTLB, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogExceptions, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_NoInterrupts, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogCache, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogRomHeader, nullptr, RefreshSettings);
-        g_Settings->RegisterChangeCB(Logging_LogUnknown, nullptr, RefreshSettings);
-        RefreshSettings(nullptr);
+        return;
     }
+    g_LogSettings.generateLog = g_Settings->LoadBool(Logging_GenerateLog);
+    g_LogSettings.logRdRamRegisters = g_Settings->LoadBool(Logging_LogRDRamRegisters);
+    g_LogSettings.logSpRegisters = g_Settings->LoadBool(Logging_LogSPRegisters);
+    g_LogSettings.logDpcRegisters = g_Settings->LoadBool(Logging_LogDPCRegisters);
+    g_LogSettings.logDpsRegisters = g_Settings->LoadBool(Logging_LogDPSRegisters);
+    g_LogSettings.logMipsInterface = g_Settings->LoadBool(Logging_LogMIPSInterface);
+    g_LogSettings.logVideoInterface = g_Settings->LoadBool(Logging_LogVideoInterface);
+    g_LogSettings.logAudioInterface = g_Settings->LoadBool(Logging_LogAudioInterface);
+    g_LogSettings.logPerInterface = g_Settings->LoadBool(Logging_LogPerInterface);
+    g_LogSettings.logRdramInterface = g_Settings->LoadBool(Logging_LogRDRAMInterface);
+    g_LogSettings.logSerialInterface = g_Settings->LoadBool(Logging_LogSerialInterface);
+    g_LogSettings.logPrDmaOperations = g_Settings->LoadBool(Logging_LogPRDMAOperations);
+    g_LogSettings.logPrDirectMemLoads = g_Settings->LoadBool(Logging_LogPRDirectMemLoads);
+    g_LogSettings.logPrDmaMemLoads = g_Settings->LoadBool(Logging_LogPRDMAMemLoads);
+    g_LogSettings.logPrDirectMemStores = g_Settings->LoadBool(Logging_LogPRDirectMemStores);
+    g_LogSettings.logPrDmaMemStores = g_Settings->LoadBool(Logging_LogPRDMAMemStores);
+    g_LogSettings.logControllerPak = g_Settings->LoadBool(Logging_LogControllerPak);
+    g_LogSettings.logCp0changes = g_Settings->LoadBool(Logging_LogCP0changes);
+    g_LogSettings.logCp0reads = g_Settings->LoadBool(Logging_LogCP0reads);
+    g_LogSettings.logTlb = g_Settings->LoadBool(Logging_LogTLB);
+    g_LogSettings.logExceptions = g_Settings->LoadBool(Logging_LogExceptions);
+    g_LogSettings.logNoInterrupts = g_Settings->LoadBool(Logging_NoInterrupts);
+    g_LogSettings.logCache = g_Settings->LoadBool(Logging_LogCache);
+    g_LogSettings.logRomHeader = g_Settings->LoadBool(Logging_LogRomHeader);
+    g_LogSettings.logUnknown = g_Settings->LoadBool(Logging_LogUnknown);
 }
 
-CLogSettings::~CLogSettings()
+static bool s_LogSettingsRegistered = false;
+
+static void LogSettingsChanged(void * /*Data*/)
 {
-    m_RefCount -= 1;
-    if (m_RefCount == 0)
-    {
-        g_Settings->UnregisterChangeCB(Logging_GenerateLog, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogRDRamRegisters, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogSPRegisters, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogDPCRegisters, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogDPSRegisters, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogMIPSInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogVideoInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogAudioInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPerInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogRDRAMInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogSerialInterface, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPRDMAOperations, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemLoads, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemLoads, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPRDirectMemStores, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogPRDMAMemStores, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogControllerPak, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogCP0changes, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogCP0reads, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogTLB, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogExceptions, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_NoInterrupts, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogCache, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogRomHeader, nullptr, RefreshSettings);
-        g_Settings->UnregisterChangeCB(Logging_LogUnknown, nullptr, RefreshSettings);
-    }
+    RefreshLogSettings();
 }
 
-void CLogSettings::RefreshSettings(void *)
+void SetupLogSettings(void)
 {
-    m_GenerateLog = g_Settings->LoadBool(Logging_GenerateLog);
-    m_LogRDRamRegisters = g_Settings->LoadBool(Logging_LogRDRamRegisters);
-    m_LogSPRegisters = g_Settings->LoadBool(Logging_LogSPRegisters);
-    m_LogDPCRegisters = g_Settings->LoadBool(Logging_LogDPCRegisters);
-    m_LogDPSRegisters = g_Settings->LoadBool(Logging_LogDPSRegisters);
-    m_LogMIPSInterface = g_Settings->LoadBool(Logging_LogMIPSInterface);
-    m_LogVideoInterface = g_Settings->LoadBool(Logging_LogVideoInterface);
-    m_LogAudioInterface = g_Settings->LoadBool(Logging_LogAudioInterface);
-    m_LogPerInterface = g_Settings->LoadBool(Logging_LogPerInterface);
-    m_LogRDRAMInterface = g_Settings->LoadBool(Logging_LogRDRAMInterface);
-    m_LogSerialInterface = g_Settings->LoadBool(Logging_LogSerialInterface);
-    m_LogPRDMAOperations = g_Settings->LoadBool(Logging_LogPRDMAOperations);
-    m_LogPRDirectMemLoads = g_Settings->LoadBool(Logging_LogPRDirectMemLoads);
-    m_LogPRDMAMemLoads = g_Settings->LoadBool(Logging_LogPRDMAMemLoads);
-    m_LogPRDirectMemStores = g_Settings->LoadBool(Logging_LogPRDirectMemStores);
-    m_LogPRDMAMemStores = g_Settings->LoadBool(Logging_LogPRDMAMemStores);
-    m_LogControllerPak = g_Settings->LoadBool(Logging_LogControllerPak);
-    m_LogCP0changes = g_Settings->LoadBool(Logging_LogCP0changes);
-    m_LogCP0reads = g_Settings->LoadBool(Logging_LogCP0reads);
-    m_LogTLB = g_Settings->LoadBool(Logging_LogTLB);
-    m_LogExceptions = g_Settings->LoadBool(Logging_LogExceptions);
-    m_NoInterrupts = g_Settings->LoadBool(Logging_NoInterrupts);
-    m_LogCache = g_Settings->LoadBool(Logging_LogCache);
-    m_LogRomHeader = g_Settings->LoadBool(Logging_LogRomHeader);
-    m_LogUnknown = g_Settings->LoadBool(Logging_LogUnknown);
+    if (g_Settings == nullptr || s_LogSettingsRegistered)
+    {
+        return;
+    }
+
+    static const SettingID kWatch[] = {
+        Logging_GenerateLog,
+        Logging_LogRDRamRegisters,
+        Logging_LogSPRegisters,
+        Logging_LogDPCRegisters,
+        Logging_LogDPSRegisters,
+        Logging_LogMIPSInterface,
+        Logging_LogVideoInterface,
+        Logging_LogAudioInterface,
+        Logging_LogPerInterface,
+        Logging_LogRDRAMInterface,
+        Logging_LogSerialInterface,
+        Logging_LogPRDMAOperations,
+        Logging_LogPRDirectMemLoads,
+        Logging_LogPRDMAMemLoads,
+        Logging_LogPRDirectMemStores,
+        Logging_LogPRDMAMemStores,
+        Logging_LogControllerPak,
+        Logging_LogCP0changes,
+        Logging_LogCP0reads,
+        Logging_LogTLB,
+        Logging_LogExceptions,
+        Logging_NoInterrupts,
+        Logging_LogCache,
+        Logging_LogRomHeader,
+        Logging_LogUnknown,
+    };
+
+    for (SettingID id : kWatch)
+    {
+        g_Settings->RegisterChangeCB(id, nullptr, LogSettingsChanged);
+    }
+
+    RefreshLogSettings();
+    s_LogSettingsRegistered = true;
+}
+
+void ShutdownLogSettings(void)
+{
+    if (g_Settings == nullptr || !s_LogSettingsRegistered)
+    {
+        return;
+    }
+
+    static const SettingID kWatch[] = {
+        Logging_GenerateLog,
+        Logging_LogRDRamRegisters,
+        Logging_LogSPRegisters,
+        Logging_LogDPCRegisters,
+        Logging_LogDPSRegisters,
+        Logging_LogMIPSInterface,
+        Logging_LogVideoInterface,
+        Logging_LogAudioInterface,
+        Logging_LogPerInterface,
+        Logging_LogRDRAMInterface,
+        Logging_LogSerialInterface,
+        Logging_LogPRDMAOperations,
+        Logging_LogPRDirectMemLoads,
+        Logging_LogPRDMAMemLoads,
+        Logging_LogPRDirectMemStores,
+        Logging_LogPRDMAMemStores,
+        Logging_LogControllerPak,
+        Logging_LogCP0changes,
+        Logging_LogCP0reads,
+        Logging_LogTLB,
+        Logging_LogExceptions,
+        Logging_NoInterrupts,
+        Logging_LogCache,
+        Logging_LogRomHeader,
+        Logging_LogUnknown,
+    };
+
+    for (SettingID id : kWatch)
+    {
+        g_Settings->UnregisterChangeCB(id, nullptr, LogSettingsChanged);
+    }
+
+    s_LogSettingsRegistered = false;
 }

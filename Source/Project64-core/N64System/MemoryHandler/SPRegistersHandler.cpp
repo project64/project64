@@ -69,7 +69,7 @@ bool SPRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (LogSPRegisters())
+    if (g_LogSettings.logSpRegisters)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -107,7 +107,7 @@ bool SPRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask
         }
         return true;
     }
-    if (GenerateLog() && LogSPRegisters())
+    if (g_LogSettings.generateLog && g_LogSettings.logSpRegisters)
     {
         switch (Address & 0x1FFFFFFF)
         {

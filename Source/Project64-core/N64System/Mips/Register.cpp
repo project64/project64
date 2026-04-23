@@ -551,7 +551,7 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
 
 uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 {
-    if (LogCP0reads() && Reg <= COP0Reg_31)
+    if (g_LogSettings.logCp0reads && Reg <= COP0Reg_31)
     {
         LogMessage("%016llX: R4300i read from %s (0x%08X)", m_PROGRAM_COUNTER, CRegName::Cop0[Reg], m_CP0[Reg]);
     }
@@ -570,7 +570,7 @@ uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 
 void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 {
-    if (LogCP0changes() && Reg <= COP0Reg_31)
+    if (g_LogSettings.logCp0changes && Reg <= COP0Reg_31)
     {
         LogMessage("%016llX: Writing 0x%llX to %s register (originally: 0x%llX)", m_PROGRAM_COUNTER, Value, CRegName::Cop0[Reg], m_CP0[Reg]);
         if (Reg == 11) // Compare
@@ -820,13 +820,13 @@ void CRegisters::TriggerAddressException(uint64_t Address, uint32_t ExceptionCod
 
 void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
 {
-    if (GenerateLog() && LogExceptions())
+    if (g_LogSettings.generateLog && g_LogSettings.logExceptions)
     {
         if (ExceptionCode != EXC_INT)
         {
             LogMessage("%016llX: Exception %d", m_PROGRAM_COUNTER, ExceptionCode);
         }
-        else if (!LogNoInterrupts())
+        else if (!g_LogSettings.logNoInterrupts)
         {
             LogMessage("%016llX: Interrupt generated", m_PROGRAM_COUNTER);
         }

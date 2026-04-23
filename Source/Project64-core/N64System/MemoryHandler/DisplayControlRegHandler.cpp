@@ -36,7 +36,7 @@ bool DisplayControlRegHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogDPCRegisters())
+    if (g_LogSettings.generateLog && g_LogSettings.logDpcRegisters)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -60,7 +60,7 @@ bool DisplayControlRegHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool DisplayControlRegHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog() && LogDPCRegisters())
+    if (g_LogSettings.generateLog && g_LogSettings.logDpcRegisters)
     {
         switch (Address & 0x1FFFFFFF)
         {

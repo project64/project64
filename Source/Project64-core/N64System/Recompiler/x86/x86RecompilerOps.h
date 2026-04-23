@@ -19,8 +19,7 @@ class CCodeSection;
 class CX86RecompilerOps :
     public CRecompilerOpsBase,
     protected CN64SystemSettings,
-    protected CRecompilerSettings,
-    protected CLogSettings
+    protected CRecompilerSettings
 {
     friend CX86RegInfo;
 

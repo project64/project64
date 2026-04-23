@@ -33,7 +33,7 @@ bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
     else if ((Address & 0xFFFFFFF) < m_Rom.GetRomSize())
     {
         Value = *(uint32_t *)&m_Rom.GetRomAddress()[(ReadAddr & 0xFFFFFFF)];
-        if (LogRomHeader() && (ReadAddr & 0x1FFFFFFF) >= 0x10000000 && (ReadAddr & 0x1FFFFFFF) < 0x10000040)
+        if (g_LogSettings.logRomHeader && (ReadAddr & 0x1FFFFFFF) >= 0x10000000 && (ReadAddr & 0x1FFFFFFF) < 0x10000040)
         {
             switch (ReadAddr & 0x1FFFFFFF)
             {

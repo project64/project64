@@ -68,7 +68,7 @@ bool PeripheralInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogPerInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logPerInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -97,7 +97,7 @@ bool PeripheralInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool PeripheralInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog() && LogPerInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logPerInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {

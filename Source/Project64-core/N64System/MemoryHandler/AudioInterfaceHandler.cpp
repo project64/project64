@@ -77,7 +77,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogAudioInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logAudioInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -99,7 +99,7 @@ bool AudioInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool AudioInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog() && LogAudioInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logAudioInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {

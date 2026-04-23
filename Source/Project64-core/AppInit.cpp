@@ -238,6 +238,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
         if (g_Settings->LoadBool(Setting_CheckEmuRunning) &&
             pjutil::TerminatedExistingExe())
         {
+            ShutdownLogSettings();
             ShutdownGameSettings();
             ShutdownDebugSettings();
             delete g_Settings;
@@ -248,6 +249,7 @@ bool AppInit(CNotification * Notify, const char * BaseDirectory, int argc, char 
 
         SetupDebugSettings();
         SetupGameSettings();
+        SetupLogSettings();
 
         SetupTrace();
         FixDirectories();
@@ -306,6 +308,7 @@ void AppCleanup(void)
     }
     if (g_Settings)
     {
+        ShutdownLogSettings();
         ShutdownGameSettings();
         ShutdownDebugSettings();
         delete g_Settings;

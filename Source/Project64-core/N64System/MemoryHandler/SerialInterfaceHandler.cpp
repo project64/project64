@@ -36,7 +36,7 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (LogSerialInterface())
+    if (g_LogSettings.logSerialInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -56,9 +56,9 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog())
+    if (g_LogSettings.generateLog)
     {
-        if (LogSerialInterface())
+        if (g_LogSettings.logSerialInterface)
         {
             switch (Address & 0x1FFFFFFF)
             {
@@ -73,7 +73,7 @@ bool SerialInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t 
                 }
             }
         }
-        if (LogPRDMAOperations())
+        if (g_LogSettings.logPrDmaOperations)
         {
             switch (Address & 0x1FFFFFFF)
             {

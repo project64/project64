@@ -35,7 +35,7 @@ void CLogging::LogMessage(const char * Message, ...)
 
 void CLogging::StartLog(void)
 {
-    if (!GenerateLog())
+    if (!g_LogSettings.generateLog)
     {
         StopLog();
         return;

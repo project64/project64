@@ -87,7 +87,7 @@ bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         }
     }
 
-    if (GenerateLog() && LogVideoInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logVideoInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
@@ -117,7 +117,7 @@ bool VideoInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
 
 bool VideoInterfaceHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
-    if (GenerateLog() && LogVideoInterface())
+    if (g_LogSettings.generateLog && g_LogSettings.logVideoInterface)
     {
         switch (Address & 0x1FFFFFFF)
         {
