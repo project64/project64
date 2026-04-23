@@ -86,7 +86,6 @@ $CC -o $obj/Settings/Debug.asm          $src/Settings/DebugSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/Game.asm           $src/Settings/GameSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/Logging.asm        $src/Settings/LoggingSettings.cpp $C_FLAGS
 $CC -o $obj/Settings/System.asm         $src/Settings/SystemSettings.cpp $C_FLAGS
-$CC -o $obj/Settings/Recompiler.asm     $src/Settings/RecompilerSettings.cpp $C_FLAGS
 $CC -o $obj/Settings.asm                $src/Settings.cpp $C_FLAGS
 $CC -o $obj/Settings/type/App.asm       $src/Settings/SettingType/SettingsType-Application.cpp $C_FLAGS
 $CC -o $obj/Settings/type/AppIndex.asm  $src/Settings/SettingType/SettingsType-ApplicationIndex.cpp $C_FLAGS
@@ -170,7 +169,6 @@ $AS -o $obj/Settings/Debug.o            $obj/Settings/Debug.asm
 $AS -o $obj/Settings/Game.o             $obj/Settings/Game.asm
 $AS -o $obj/Settings/Logging.o          $obj/Settings/Logging.asm
 $AS -o $obj/Settings/System.o          $obj/Settings/System.asm
-$AS -o $obj/Settings/Recompiler.o       $obj/Settings/Recompiler.asm
 $AS -o $obj/Settings.o                  $obj/Settings.asm
 $AS -o $obj/Settings/type/App.o         $obj/Settings/type/App.asm
 $AS -o $obj/Settings/type/AppIndex.o    $obj/Settings/type/AppIndex.asm
@@ -253,7 +251,6 @@ $obj/Settings/Debug.o \
 $obj/Settings/Game.o \
 $obj/Settings/Logging.o \
 $obj/Settings/System.o \
-$obj/Settings/Recompiler.o \
 $obj/Settings.o \
 $obj/Settings/type/App.o \
 $obj/Settings/type/AppIndex.o \

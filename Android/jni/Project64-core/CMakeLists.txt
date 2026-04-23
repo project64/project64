@@ -11,7 +11,6 @@ add_library(Project64-core STATIC
     MemoryExceptionFilter.cpp
     Multilanguage/Language.cpp
     Settings/LoggingSettings.cpp
-    Settings/RecompilerSettings.cpp
     N64System/Enhancement/Enhancement.cpp
     N64System/Enhancement/Enhancements.cpp
     N64System/Enhancement/EnhancementFile.cpp

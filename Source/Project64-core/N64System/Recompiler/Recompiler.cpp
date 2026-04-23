@@ -375,7 +375,7 @@ CCompiledFunc * CRecompiler::CompileCode()
     RecompPos() += CodeLen;
     LogCodeBlock(CodeBlock);
 
-    if (bShowRecompMemSize())
+    if (g_SystemSettings.showRecompMemSize)
     {
         ShowMemUsed();
     }

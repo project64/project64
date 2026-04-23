@@ -21,6 +21,7 @@ void RefreshSystemSettings(void)
     {
         g_SystemSettings.updateControllerOnRefresh = true;
     }
+    g_SystemSettings.showRecompMemSize = g_Settings->LoadBool(Debugger_ShowRecompMemSize);
 }
 
 static bool s_SystemSettingsRegistered = false;
@@ -42,6 +43,7 @@ void SetupSystemSettings(void)
         UserInterface_ShowCPUPer,
         UserInterface_DisplayFrameRate,
         Debugger_ShowDListAListCount,
+        Debugger_ShowRecompMemSize,
         GameRunning_LimitFPS,
         Setting_UpdateControllerOnRefresh,
         Game_CpuType,
@@ -68,6 +70,7 @@ void ShutdownSystemSettings(void)
         UserInterface_ShowCPUPer,
         UserInterface_DisplayFrameRate,
         Debugger_ShowDListAListCount,
+        Debugger_ShowRecompMemSize,
         GameRunning_LimitFPS,
         Setting_UpdateControllerOnRefresh,
         Game_CpuType,

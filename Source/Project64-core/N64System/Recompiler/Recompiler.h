@@ -6,12 +6,10 @@
 #include <Project64-core/N64System/Recompiler/FunctionMap.h>
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/Settings/DebugSettings.h>
-#include <Project64-core/Settings/RecompilerSettings.h>
 
 class CLog;
 
 class CRecompiler :
-    public CRecompilerSettings,
     public CFunctionMap,
     public CRecompMemory
 {

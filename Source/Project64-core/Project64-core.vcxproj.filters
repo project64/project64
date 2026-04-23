@@ -198,9 +198,6 @@
     <ClCompile Include="Settings\SystemSettings.cpp">
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\RecompilerSettings.cpp">
-      <Filter>Source Files\Settings</Filter>
-    </ClCompile>
     <ClCompile Include="Plugins\AudioPlugin.cpp">
       <Filter>Source Files\N64 System\Plugins</Filter>
     </ClCompile>
@@ -535,9 +532,6 @@
     </ClInclude>
     <ClInclude Include="Plugin.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Settings\RecompilerSettings.h">
-      <Filter>Header Files\Settings</Filter>
     </ClInclude>
     <ClInclude Include="3rdParty\7zip.h">
       <Filter>Header Files\3rd Party</Filter>

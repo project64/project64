@@ -127,7 +127,6 @@
     <ClCompile Include="Settings\GameSettings.cpp" />
     <ClCompile Include="Settings\LoggingSettings.cpp" />
     <ClCompile Include="Settings\SystemSettings.cpp" />
-    <ClCompile Include="Settings\RecompilerSettings.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-Application.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationIndex.cpp" />
     <ClCompile Include="Settings\SettingType\SettingsType-ApplicationPath.cpp" />
@@ -254,7 +253,6 @@
     <ClInclude Include="Settings\GameSettings.h" />
     <ClInclude Include="Settings\LoggingSettings.h" />
     <ClInclude Include="Settings\SystemSettings.h" />
-    <ClInclude Include="Settings\RecompilerSettings.h" />
     <ClInclude Include="Settings\SettingsID.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-Application.h" />
     <ClInclude Include="Settings\SettingType\SettingsType-ApplicationIndex.h" />

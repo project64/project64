@@ -1,6 +1,5 @@
 #pragma once
 
-// Cached UI / runtime toggles from CSettings (refreshed on change).
 struct SystemSettings
 {
     bool basicMode;
@@ -9,6 +8,7 @@ struct SystemSettings
     bool showDlistAListCount;
     bool limitFps;
     bool updateControllerOnRefresh;
+    bool showRecompMemSize;
 };
 
 extern SystemSettings g_SystemSettings;

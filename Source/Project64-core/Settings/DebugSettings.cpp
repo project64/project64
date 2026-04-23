@@ -6,43 +6,43 @@ DebugSettings g_DebugSettings = {};
 
 namespace
 {
-    bool s_Registered = false;
+bool s_Registered = false;
 
-    static void DebugSettingsChanged(void * /*Data*/)
+static void DebugSettingsChanged(void * /*Data*/)
+{
+    if (g_Settings == nullptr)
     {
-        if (g_Settings == nullptr)
-        {
-            return;
-        }
-
-        g_DebugSettings.haveDebugger = g_Settings->LoadBool(Debugger_Enabled);
-        g_DebugSettings.recordRecompilerAsm = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
-        g_DebugSettings.recordExecutionTimes = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
-        g_DebugSettings.stepping = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
-        g_DebugSettings.skipOp = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SkipOp);
-        g_DebugSettings.waitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
-        g_DebugSettings.haveExecutionBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
-        g_DebugSettings.haveWriteBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
-        g_DebugSettings.haveReadBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
-        g_DebugSettings.showPifRamErrors = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
-        g_DebugSettings.cpuLoggingEnabled = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
-        g_DebugSettings.exceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_ExceptionBreakpoints) : 0;
-        g_DebugSettings.fpExceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_FpExceptionBreakpoints) : 0;
-        g_DebugSettings.intrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_IntrBreakpoints) : 0;
-        g_DebugSettings.rcpIntrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_RcpIntrBreakpoints) : 0;
-        g_DebugSettings.endOnPermLoop = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_EndOnPermLoop);
-        g_DebugSettings.fpuExceptionInRecompiler = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_FpuExceptionInRecompiler);
-        g_DebugSettings.breakOnUnhandledMemory = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
-        g_DebugSettings.breakOnAddressError = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
-        g_DebugSettings.stepOnBreakOpCode = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
-        g_DebugSettings.trackCPUStepStarted = g_DebugSettings.stepping || g_DebugSettings.exceptionBreakpoints != 0 ||
-                                              (g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
-        g_DebugSettings.trackCPUStepEnded = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepEnded);
-
-        g_DebugSettings.debugging = g_DebugSettings.haveDebugger &&
-                                    (g_DebugSettings.haveExecutionBP || g_DebugSettings.waitingForStep ||
-                                     g_DebugSettings.haveWriteBP || g_DebugSettings.haveReadBP);
+        return;
     }
+
+    g_DebugSettings.haveDebugger = g_Settings->LoadBool(Debugger_Enabled);
+    g_DebugSettings.recordRecompilerAsm = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordRecompilerAsm);
+    g_DebugSettings.recordExecutionTimes = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_RecordExecutionTimes);
+    g_DebugSettings.stepping = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SteppingOps);
+    g_DebugSettings.skipOp = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_SkipOp);
+    g_DebugSettings.waitingForStep = g_Settings->LoadBool(Debugger_WaitingForStep);
+    g_DebugSettings.haveExecutionBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_HaveExecutionBP);
+    g_DebugSettings.haveWriteBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_WriteBPExists);
+    g_DebugSettings.haveReadBP = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ReadBPExists);
+    g_DebugSettings.showPifRamErrors = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_ShowPifErrors);
+    g_DebugSettings.cpuLoggingEnabled = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_CPULoggingEnabled);
+    g_DebugSettings.exceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_ExceptionBreakpoints) : 0;
+    g_DebugSettings.fpExceptionBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_FpExceptionBreakpoints) : 0;
+    g_DebugSettings.intrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_IntrBreakpoints) : 0;
+    g_DebugSettings.rcpIntrBreakpoints = g_DebugSettings.haveDebugger ? g_Settings->LoadDword(Debugger_RcpIntrBreakpoints) : 0;
+    g_DebugSettings.endOnPermLoop = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_EndOnPermLoop);
+    g_DebugSettings.fpuExceptionInRecompiler = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_FpuExceptionInRecompiler);
+    g_DebugSettings.breakOnUnhandledMemory = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
+    g_DebugSettings.breakOnAddressError = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
+    g_DebugSettings.stepOnBreakOpCode = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
+    g_DebugSettings.trackCPUStepStarted = g_DebugSettings.stepping || g_DebugSettings.exceptionBreakpoints != 0 ||
+                                          (g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
+    g_DebugSettings.trackCPUStepEnded = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepEnded);
+
+    g_DebugSettings.debugging = g_DebugSettings.haveDebugger &&
+                                (g_DebugSettings.haveExecutionBP || g_DebugSettings.waitingForStep ||
+                                 g_DebugSettings.haveWriteBP || g_DebugSettings.haveReadBP);
+}
 } // namespace
 
 void SetupDebugSettings(void)
