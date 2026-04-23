@@ -1,8 +1,7 @@
 #pragma once
-#include "../Settings/N64SystemSettings.h"
 #include <Common/HighResTimeStamp.h>
 
-class CFramePerSecond : public CN64SystemSettings
+class CFramePerSecond
 {
 public:
     CFramePerSecond(void);

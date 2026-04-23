@@ -2242,7 +2242,7 @@ bool CN64System::LoadState(const char * FileName)
 uint32_t CN64System::GetButtons(int32_t Control) const
 {
     CControl_Plugin::fnGetKeys GetKeys = m_Plugins->Control()->GetKeys;
-    if (!UpdateControllerOnRefresh() && GetKeys != nullptr)
+    if (!g_SystemSettings.updateControllerOnRefresh && GetKeys != nullptr)
     {
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));
@@ -2310,7 +2310,7 @@ void CN64System::RefreshScreen()
     PROFILE_TIMERS CPU_UsageAddr = Timer_None /*, ProfilingAddr = Timer_None*/;
     uint32_t VI_INTR_TIME = 500000;
 
-    if (bShowCPUPer())
+    if (g_SystemSettings.showCpuPer)
     {
         CPU_UsageAddr = m_CPU_Usage.StartTimer(Timer_RefreshScreen);
     }
@@ -2333,7 +2333,7 @@ void CN64System::RefreshScreen()
     {
         m_MMU_VM.AudioInterface().SetViIntr(VI_INTR_TIME);
     }
-    if (UpdateControllerOnRefresh() && m_Plugins->Control()->GetKeys != nullptr)
+    if (g_SystemSettings.updateControllerOnRefresh && m_Plugins->Control()->GetKeys != nullptr)
     {
         BUTTONS Keys;
         memset(&Keys, 0, sizeof(Keys));
@@ -2345,7 +2345,7 @@ void CN64System::RefreshScreen()
         }
     }
 
-    if (bShowCPUPer())
+    if (g_SystemSettings.showCpuPer)
     {
         m_CPU_Usage.StartTimer(Timer_UpdateScreen);
     }
@@ -2359,26 +2359,26 @@ void CN64System::RefreshScreen()
     WriteTrace(TraceVideoPlugin, TraceDebug, "UpdateScreen done");
     g_MMU->VideoInterface().UpdateFieldSerration((m_Reg.VI_STATUS_REG & 0x40) != 0);
 
-    if ((bBasicMode() || bLimitFPS()) && (!g_GameSettings.syncToAudio || !g_GameSettings.fullSpeed))
+    if ((g_SystemSettings.basicMode || g_SystemSettings.limitFps) && (!g_GameSettings.syncToAudio || !g_GameSettings.fullSpeed))
     {
-        if (bShowCPUPer())
+        if (g_SystemSettings.showCpuPer)
         {
             m_CPU_Usage.StartTimer(Timer_Idel);
         }
         uint32_t FrameRate;
-        if (m_Limiter.Timer_Process(&FrameRate) && bDisplayFrameRate())
+        if (m_Limiter.Timer_Process(&FrameRate) && g_SystemSettings.displayFrameRate)
         {
             m_FPS.DisplayViCounter(FrameRate, 0);
             m_bCleanFrameBox = true;
         }
-        if (bShowCPUPer())
+        if (g_SystemSettings.showCpuPer)
         {
             m_CPU_Usage.StopTimer();
         }
     }
-    else if (bDisplayFrameRate())
+    else if (g_SystemSettings.displayFrameRate)
     {
-        if (bShowCPUPer())
+        if (g_SystemSettings.showCpuPer)
         {
             m_CPU_Usage.StartTimer(Timer_UpdateFPS);
         }
@@ -2386,13 +2386,13 @@ void CN64System::RefreshScreen()
         m_bCleanFrameBox = true;
     }
 
-    if (m_bCleanFrameBox && !bDisplayFrameRate())
+    if (m_bCleanFrameBox && !g_SystemSettings.displayFrameRate)
     {
         m_FPS.Reset(true);
         m_bCleanFrameBox = false;
     }
 
-    if (bShowCPUPer())
+    if (g_SystemSettings.showCpuPer)
     {
         m_CPU_Usage.ShowCPU_Usage();
         m_CPU_Usage.StartTimer(CPU_UsageAddr != Timer_None ? CPU_UsageAddr : Timer_R4300);

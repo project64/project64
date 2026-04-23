@@ -106,7 +106,7 @@ add_library(Project64-core STATIC
     Settings/SettingType/SettingsType-TempString.cpp
     Settings/DebugSettings.cpp
     Settings/GameSettings.cpp
-    Settings/N64SystemSettings.cpp)
+    Settings/SystemSettings.cpp)
 
 add_definitions(-DANDROID)
 

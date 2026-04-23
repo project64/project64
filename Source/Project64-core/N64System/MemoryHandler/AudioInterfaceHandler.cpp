@@ -297,7 +297,7 @@ void AudioInterfaceHandler::LenChanged()
     if (g_Plugins->Audio()->AiLenChanged != nullptr)
     {
         WriteTrace(TraceAudio, TraceDebug, "Calling plugin AiLenChanged");
-        if (bShowCPUPer() && (bBasicMode() || bLimitFPS()) && g_GameSettings.syncToAudio)
+        if (g_SystemSettings.showCpuPer && (g_SystemSettings.basicMode || g_SystemSettings.limitFps) && g_GameSettings.syncToAudio)
         {
             CProfiling & CPU_Usage = m_System.CPUProfiler();
             PROFILE_TIMERS PreviousType = CPU_Usage.StartTimer(Timer_Idel);

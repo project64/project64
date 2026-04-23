@@ -52,7 +52,7 @@ void CFramePerSecond::Reset(bool ClearDisplay)
 
 void CFramePerSecond::UpdateViCounter(void)
 {
-    if (!bDisplayFrameRate())
+    if (!g_SystemSettings.displayFrameRate)
     {
         return;
     }
@@ -145,7 +145,7 @@ void CFramePerSecond::ScreenHertzChanged(CFramePerSecond * _this)
 
 void CFramePerSecond::UpdateDlCounter(void)
 {
-    if (!bDisplayFrameRate())
+    if (!g_SystemSettings.displayFrameRate)
     {
         return;
     }

@@ -2,7 +2,6 @@
 
 #include <Project64-core/N64System/N64Types.h>
 
-// Cached debugger-related settings (mirrors underlying CSettings; refreshed on change).
 struct DebugSettings
 {
     bool haveDebugger;

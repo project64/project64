@@ -11,7 +11,6 @@
 #include <Project64-core/N64System/Profiling.h>
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/Plugin.h>
-#include <Project64-core/Settings/N64SystemSettings.h>
 
 #include "FramePerSecond.h"
 #include "Mips/TLB.h"
@@ -35,8 +34,7 @@ enum CN64SystemCB
 };
 
 class CN64System :
-    public CLogging,
-    protected CN64SystemSettings
+    public CLogging
 {
 public:
     typedef void (*CallBackFunction)(void *);

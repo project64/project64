@@ -10,7 +10,6 @@
 #include <Project64-core/N64System/Recompiler/asmjit.h>
 #include <Project64-core/N64System/Recompiler/x86/x86ops.h>
 #include <Project64-core/Settings/GameSettings.h>
-#include <Project64-core/Settings/N64SystemSettings.h>
 #include <Project64-core/Settings/RecompilerSettings.h>
 
 class CCodeBlock;
@@ -18,7 +17,6 @@ class CCodeSection;
 
 class CX86RecompilerOps :
     public CRecompilerOpsBase,
-    protected CN64SystemSettings,
     protected CRecompilerSettings
 {
     friend CX86RegInfo;

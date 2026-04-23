@@ -195,7 +195,7 @@
     <ClCompile Include="Settings\LoggingSettings.cpp">
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="Settings\N64SystemSettings.cpp">
+    <ClCompile Include="Settings\SystemSettings.cpp">
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
     <ClCompile Include="Settings\RecompilerSettings.cpp">
@@ -527,7 +527,7 @@
     <ClInclude Include="Settings\GameSettings.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Settings\N64SystemSettings.h">
+    <ClInclude Include="Settings\SystemSettings.h">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
     <ClInclude Include="Multilanguage.h">

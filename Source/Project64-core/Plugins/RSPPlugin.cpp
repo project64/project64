@@ -456,11 +456,11 @@ void CRSP_Plugin::RunRSP()
         break;
     }
 
-    if (bShowDListAListCount())
+    if (g_SystemSettings.showDlistAListCount)
     {
         g_Notify->DisplayMessage(0, stdstr_f("Dlist: %d   Alist: %d   Unknown: %d", m_DlistCount, m_AlistCount, m_UnknownCount).c_str());
     }
-    if (g_DebugSettings.recordExecutionTimes || bShowCPUPer())
+    if (g_DebugSettings.recordExecutionTimes || g_SystemSettings.showCpuPer)
     {
         StartTime.SetToNow();
     }
@@ -519,7 +519,7 @@ void CRSP_Plugin::RunRSP()
             WriteTrace(TraceRSP, TraceDebug, "Do cycles - done");
         }
     }
-    if (g_DebugSettings.recordExecutionTimes || bShowCPUPer())
+    if (g_DebugSettings.recordExecutionTimes || g_SystemSettings.showCpuPer)
     {
         HighResTimeStamp EndTime;
         EndTime.SetToNow();
@@ -539,7 +539,7 @@ void CRSP_Plugin::RunRSP()
     }
     WriteTrace(TraceRSP, TraceDebug, "Check interrupts");
     g_Reg->CheckInterrupts();
-    if (bShowCPUPer())
+    if (g_SystemSettings.showCpuPer)
     {
         CPU_Usage.StartTimer(CPU_UsageAddr);
     }
