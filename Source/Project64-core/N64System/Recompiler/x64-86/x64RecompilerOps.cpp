@@ -4,14 +4,17 @@
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
 
 CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     CRecompilerOpsBase(System, CodeBlock),
     m_Assembler(CodeBlock),
+    m_Recompiler(System.m_Recomp),
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_MMU(System.m_MMU_VM),
-    m_PipelineStage(PIPELINE_STAGE_NORMAL)
+    m_PipelineStage(PIPELINE_STAGE_NORMAL),
+    m_CompilePC(m_Instruction.Address32())
 {
 }
 
@@ -126,7 +129,25 @@ void CX64RecompilerOps::XORI()
 
 void CX64RecompilerOps::LUI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
+    {
+        uint32_t Address = 0;
+
+        m_MMU.VAddrToPAddr(((int16_t)m_Opcode.offset << 16), Address);
+        const uint64_t stackPtrVal = (uint64_t)(Address + m_MMU.Rdram());
+        void * const var = &m_Recompiler->MemoryStackPos();
+        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var)), static_cast<uint32_t>(stackPtrVal));
+        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var) + 4u), static_cast<uint32_t>(stackPtrVal >> 32));
+    }
+
+    m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, static_cast<uint32_t>((int16_t)m_Opcode.offset << 16));
+    m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
 }
 
 void CX64RecompilerOps::DADDI()
