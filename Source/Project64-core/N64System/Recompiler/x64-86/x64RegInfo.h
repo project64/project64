@@ -19,7 +19,9 @@ public:
     bool operator==(const CX64RegInfo & right) const;
     bool operator!=(const CX64RegInfo & right) const;
 
+    void ResetRegisterProtection();
     void UnMap_GPR(uint32_t Reg, bool WriteBackValue);
+    void WriteBackRegisters();
 };
 
 #endif

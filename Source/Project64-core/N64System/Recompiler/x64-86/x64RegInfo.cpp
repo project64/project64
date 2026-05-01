@@ -43,8 +43,38 @@ bool CX64RegInfo::operator!=(const CX64RegInfo & Right) const
     return !(Right == *this);
 }
 
-void CX64RegInfo::UnMap_GPR(uint32_t /*Reg*/, bool /*WriteBackValue*/)
+void CX64RegInfo::ResetRegisterProtection()
 {
+}
+
+void CX64RegInfo::WriteBackRegisters()
+{
+}
+
+void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
+{
+    if (Reg == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (IsUnknown(Reg))
+    {
+        return;
+    }
+
+    if (IsConst(Reg))
+    {
+        if (!WriteBackValue)
+        {
+            SetMipsRegState(Reg, STATE_UNKNOWN);
+            return;
+        }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
