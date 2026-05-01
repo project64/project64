@@ -919,8 +919,7 @@ void CX64RecompilerOps::SetCurrentPC(uint32_t ProgramCounter)
 
 uint32_t CX64RecompilerOps::GetCurrentPC(void)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return 0;
+    return m_CompilePC;
 }
 
 void CX64RecompilerOps::SetCurrentSection(CCodeSection * section)
@@ -935,8 +934,7 @@ void CX64RecompilerOps::SetNextStepType(PIPELINE_STAGE StepType)
 
 PIPELINE_STAGE CX64RecompilerOps::GetNextStepType(void)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
-    return PIPELINE_STAGE_NORMAL;
+    return m_PipelineStage;
 }
 
 const R4300iOpcode & CX64RecompilerOps::GetOpcode(void) const
@@ -946,12 +944,20 @@ const R4300iOpcode & CX64RecompilerOps::GetOpcode(void) const
 
 void CX64RecompilerOps::PreCompileOpcode(void)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT_DONE)
+    {
+        m_CodeBlock.Log("  %X %s", (uint32_t)m_CompilePC, m_Instruction.NameAndParam().c_str());
+    }
+    m_RegWorkingSet.ResetRegisterProtection();
 }
 
 void CX64RecompilerOps::PostCompileOpcode(void)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
+    if (!g_GameSettings.regCaching)
+    {
+        m_RegWorkingSet.WriteBackRegisters();
+    }
 }
 
 void CX64RecompilerOps::CompileExit(uint32_t /*JumpPC*/, uint32_t /*TargetPC*/, CRegInfo & /*ExitRegSet*/, ExitReason /*reason*/)
