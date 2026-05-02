@@ -8,6 +8,7 @@
 
 class CX64Ops;
 class CRecompiler;
+class CN64Rom;
 struct CJumpInfo;
 
 class CX64RecompilerOps :
@@ -233,6 +234,7 @@ private:
     CX64RecompilerOps & operator=(const CX64RecompilerOps &);
 
     CRecompiler *& m_Recompiler;
+    CN64Rom & m_Rom;
     CX64RegInfo m_RegWorkingSet;
     CX64Ops m_Assembler;
     CMipsMemoryVM & m_MMU;
