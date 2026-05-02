@@ -393,7 +393,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         ret.first->second->SetNext(Func);
     }
 
-#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
+#if defined(__aarch64__)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)

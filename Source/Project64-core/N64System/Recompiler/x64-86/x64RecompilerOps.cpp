@@ -9,8 +9,9 @@
 
 CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     CRecompilerOpsBase(System, CodeBlock),
-    m_Assembler(CodeBlock),
     m_Recompiler(System.m_Recomp),
+    m_Rom(*g_Rom),
+    m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_MMU(System.m_MMU_VM),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
@@ -119,6 +120,35 @@ void CX64RecompilerOps::ANDI()
 
 void CX64RecompilerOps::ORI()
 {
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rs == 29 && m_Opcode.rt == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, m_RegWorkingSet.GetMipsRegState(m_Opcode.rs));
+        m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt, m_RegWorkingSet.GetMipsRegHi(m_Opcode.rs));
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) | m_Opcode.immediate);
+
+        if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        return;
+    }
+
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 

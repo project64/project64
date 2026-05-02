@@ -99,6 +99,8 @@ CCodeBlock::~CCodeBlock()
     {
 #if defined(__i386__) || defined(_M_IX86)
         delete (CX86RecompilerOps *)m_RecompilerOps;
+#elif defined(__amd64__) || defined(_M_X64)
+        delete (CX64RecompilerOps *)m_RecompilerOps;        
 #else
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
