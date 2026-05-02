@@ -5,8 +5,19 @@
 #include <Project64-core/N64System/Recompiler/x64-86/x64ops.h>
 
 CX64Ops::CX64Ops(CCodeBlock & CodeBlock) :
+    asmjit::x86::Assembler(&CodeBlock.CodeHolder()),
     m_CodeBlock(CodeBlock)
 {
+    setLogger(g_DebugSettings.recordRecompilerAsm ? this : nullptr);
+    setErrorHandler(&CodeBlock);
+    addFlags(asmjit::FormatFlags::kHexOffsets);
+    addFlags(asmjit::FormatFlags::kHexImms);
+    addFlags(asmjit::FormatFlags::kExplainImms);
+    setIndentation(asmjit::FormatIndentationGroup::kCode, 2);
+    setIndentation(asmjit::FormatIndentationGroup::kComment, 2);
+
+    m_PrimarySection = CodeBlock.CodeHolder().textSection();
+    CodeBlock.CodeHolder().newSection(&m_SecondarySection, ".secondary", SIZE_MAX, asmjit::SectionFlags::kNone, 8);
 }
 
 asmjit::Error CX64Ops::_log(const char * data, size_t size) noexcept

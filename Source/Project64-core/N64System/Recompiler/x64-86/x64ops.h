@@ -24,6 +24,8 @@ private:
 
     SymbolMap m_Symbols;
     CCodeBlock & m_CodeBlock;
+    asmjit::Section * m_PrimarySection;
+    asmjit::Section * m_SecondarySection;
 };
 
 #endif
