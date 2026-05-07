@@ -70,6 +70,8 @@ public:
     void JoLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JzLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void EnterPrimarySection();
+    void EnterSecondarySection();
     void MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const);
     void MoveConstHalfToVariable(void * Variable, const char * VariableName, uint16_t Const);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
@@ -161,6 +163,8 @@ private:
     NumberSymbolMap m_LabelSymbols;
     NumberSymbolMap m_NumberSymbols;
     CCodeBlock & m_CodeBlock;
+    asmjit::Section * m_PrimarySection;
+    asmjit::Section * m_SecondarySection;
 };
 
 #define AddressOf(Addr) CX86Ops::GetAddressOf(5, (Addr))

@@ -896,6 +896,8 @@ bool CCodeBlock::Compile()
 
 uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
 {
+    m_CodeHolder.flatten();
+    m_CodeHolder.resolveUnresolvedLinks();
     size_t codeSize = m_CodeHolder.codeSize();
     if (!RecompMem.CheckRecompMem(codeSize))
     {

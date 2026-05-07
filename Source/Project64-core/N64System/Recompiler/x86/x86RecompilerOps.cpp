@@ -9507,14 +9507,19 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 
     if (CheckTimer)
     {
-        asmjit::Label Jump = m_Assembler.newLabel();
-        m_Assembler.JnsLabel("Continue_From_Timer_Test", Jump);
+        asmjit::Label TimerDonePath = m_Assembler.newLabel();
+        m_Assembler.JsLabel("Timer_Done_Path", TimerDonePath);
+        m_Assembler.EnterSecondarySection();
+        m_Assembler.bind(TimerDonePath);
         RegSet.BeforeCallDirect();
         m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone", 4);
         RegSet.AfterCallDirect();
+        asmjit::Label ContinueFromTimerTest = m_Assembler.newLabel();
+        m_Assembler.JmpLabel("Continue_From_Timer_Test", ContinueFromTimerTest);
+        m_Assembler.EnterPrimarySection();
 
         m_CodeBlock.Log("");
-        m_Assembler.bind(Jump);
+        m_Assembler.bind(ContinueFromTimerTest);
     }
 
     if ((UpdateTimer || g_GameSettings.overClockModifier != 1) && g_SyncSystem)

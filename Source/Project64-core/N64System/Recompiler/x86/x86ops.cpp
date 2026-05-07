@@ -15,6 +15,9 @@ CX86Ops::CX86Ops(CCodeBlock & CodeBlock) :
     addFlags(asmjit::FormatFlags::kHexOffsets);
     addFlags(asmjit::FormatFlags::kHexImms);
     addFlags(asmjit::FormatFlags::kExplainImms);
+
+    m_PrimarySection = CodeBlock.CodeHolder().textSection();
+    CodeBlock.CodeHolder().newSection(&m_SecondarySection, ".secondary", SIZE_MAX, asmjit::SectionFlags::kNone, 8);
 }
 
 void CX86Ops::AdcVariableToX86reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
@@ -377,6 +380,16 @@ void CX86Ops::JzLabel(const char * LabelName, asmjit::Label & JumpLabel)
         AddLabelSymbol(JumpLabel, LabelName);
     }
     jz(JumpLabel);
+}
+
+void CX86Ops::EnterPrimarySection()
+{
+    section(m_PrimarySection);
+}
+
+void CX86Ops::EnterSecondarySection()
+{
+    section(m_SecondarySection);
 }
 
 void CX86Ops::MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const)
