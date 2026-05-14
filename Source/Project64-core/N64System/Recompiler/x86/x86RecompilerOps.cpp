@@ -8617,12 +8617,16 @@ void CX86RecompilerOps::CompileCheckFPUResult64(asmjit::x86::Gp RegPointer)
     m_Assembler.mov(TempReg, asmjit::x86::dword_ptr(RegPointer, 4));
     m_Assembler.mov(TempReg2, asmjit::x86::dword_ptr(RegPointer));
     m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.push(RegPointer);
+    m_Assembler.PushImm32("FE_ALL_EXCEPT", FE_ALL_EXCEPT);
+    m_Assembler.CallFunc((uint32_t)fetestexcept, "fetestexcept");
+    m_Assembler.add(asmjit::x86::esp, 4);
+    m_Assembler.MoveX86regToVariable(&softfloat_exceptionFlags, "softfloat_exceptionFlags", asmjit::x86::eax);
     if (m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
     {
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
     }
     m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
-    m_Assembler.push(RegPointer);
     m_Assembler.CallThis((uint32_t)&g_System->m_OpCodes, AddressOf(&R4300iOp::CheckFPUResult64), "R4300iOp::CheckFPUResult64", 8);
     m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
     m_RegWorkingSet.AfterCallDirect();
