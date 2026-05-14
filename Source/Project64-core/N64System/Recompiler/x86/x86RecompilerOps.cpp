@@ -191,7 +191,9 @@ CX86RecompilerOps::CX86RecompilerOps(CN64System & m_System, CCodeBlock & CodeBlo
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_CompilePC(m_Instruction.Address32()),
     m_RegBeforeDelay(CodeBlock, m_Assembler),
-    m_EffectDelaySlot(false)
+    m_EffectDelaySlot(false),
+    m_ColdEntryOffset(0),
+    m_WarmEntryOffset(0)
 {
 }
 
@@ -8328,6 +8330,7 @@ void CX86RecompilerOps::TestReadBreakpoint(const asmjit::x86::Gp & AddressReg, u
 
 void CX86RecompilerOps::EnterCodeBlock()
 {
+    m_ColdEntryOffset = (uint32_t)m_Assembler.offset();
 #ifdef _DEBUG
     m_Assembler.push(asmjit::x86::esi);
 #else
@@ -8335,6 +8338,7 @@ void CX86RecompilerOps::EnterCodeBlock()
     m_Assembler.push(asmjit::x86::esi);
     m_Assembler.push(asmjit::x86::ebx);
 #endif
+    m_WarmEntryOffset = (uint32_t)m_Assembler.offset();
 }
 
 void CX86RecompilerOps::ExitCodeBlock()
@@ -9629,6 +9633,16 @@ void CX86RecompilerOps::OverflowDelaySlot(bool TestTimer)
 
     ExitCodeBlock();
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+}
+
+uint32_t CX86RecompilerOps::ColdEntryOffset(void) const
+{
+    return m_ColdEntryOffset;
+}
+
+uint32_t CX86RecompilerOps::WarmEntryOffset(void) const
+{
+    return m_WarmEntryOffset;
 }
 
 void CX86RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason reason)

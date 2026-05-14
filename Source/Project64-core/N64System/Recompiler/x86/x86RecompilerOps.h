@@ -251,6 +251,8 @@ public:
     void CompileExecuteDelaySlotBP(void);
     static void ChangeDefaultRoundingModel();
     void OverflowDelaySlot(bool TestTimer);
+    uint32_t ColdEntryOffset(void) const;
+    uint32_t WarmEntryOffset(void) const;
 
     CX86Ops & Assembler()
     {
@@ -308,6 +310,8 @@ private:
     static uint32_t m_TempValue32;
     static uint64_t m_TempValue64;
     static uint32_t m_BranchCompare;
+    uint32_t m_ColdEntryOffset;
+    uint32_t m_WarmEntryOffset;
 };
 
 typedef CX86RecompilerOps CRecompilerOps;

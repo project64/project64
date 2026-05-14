@@ -37,9 +37,13 @@ public:
     {
         return m_VAddrLast;
     }
-    uint8_t * CompiledLocation() const
+    uint8_t * CompiledLocationCold() const
     {
-        return m_CompiledLocation;
+        return m_CompiledLocationCold;
+    }
+    uint8_t * CompiledLocationWarm() const
+    {
+        return m_CompiledLocationWarm;
     }
     int32_t NoOfSections() const
     {
@@ -116,7 +120,8 @@ private:
     uint32_t m_VAddrEnter;
     uint32_t m_VAddrFirst;
     uint32_t m_VAddrLast;
-    uint8_t * m_CompiledLocation;
+    uint8_t * m_CompiledLocationCold;
+    uint8_t * m_CompiledLocationWarm;
 
     typedef std::map<uint32_t, CCodeSection *> SectionMap;
     typedef std::list<CCodeSection *> SectionList;

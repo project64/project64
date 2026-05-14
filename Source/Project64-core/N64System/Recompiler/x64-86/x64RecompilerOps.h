@@ -223,6 +223,8 @@ public:
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileExecuteBP(void);
     void CompileExecuteDelaySlotBP(void);
+    uint32_t ColdEntryOffset(void) const;
+    uint32_t WarmEntryOffset(void) const;
 
     CX64Ops & Assembler()
     {
@@ -240,6 +242,8 @@ private:
     CMipsMemoryVM & m_MMU;
     PIPELINE_STAGE m_PipelineStage;
     const uint32_t & m_CompilePC;
+    uint32_t m_ColdEntryOffset;
+    uint32_t m_WarmEntryOffset;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;

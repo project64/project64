@@ -16,7 +16,9 @@ CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_MMU(System.m_MMU_VM),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
-    m_CompilePC(m_Instruction.Address32())
+    m_CompilePC(m_Instruction.Address32()),
+    m_ColdEntryOffset(0),
+    m_WarmEntryOffset(0)
 {
 }
 
@@ -1014,6 +1016,16 @@ void CX64RecompilerOps::CompileExecuteBP(void)
 void CX64RecompilerOps::CompileExecuteDelaySlotBP(void)
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
+uint32_t CX64RecompilerOps::ColdEntryOffset(void) const
+{
+    return m_ColdEntryOffset;
+}
+
+uint32_t CX64RecompilerOps::WarmEntryOffset(void) const
+{
+    return m_WarmEntryOffset;
 }
 
 #endif

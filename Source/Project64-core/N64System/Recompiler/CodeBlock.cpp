@@ -21,7 +21,8 @@ CCodeBlock::CCodeBlock(CN64System & System, uint32_t VAddrEnter) :
     m_VAddrEnter(VAddrEnter),
     m_VAddrFirst(VAddrEnter),
     m_VAddrLast(VAddrEnter),
-    m_CompiledLocation(nullptr),
+    m_CompiledLocationCold(nullptr),
+    m_CompiledLocationWarm(nullptr),
     m_EnterSection(nullptr),
     m_RecompilerOps(nullptr),
     m_Test(1)
@@ -29,13 +30,6 @@ CCodeBlock::CCodeBlock(CN64System & System, uint32_t VAddrEnter) :
     m_Environment = asmjit::Environment::host();
     m_CodeHolder.init(m_Environment);
     m_CodeHolder.setErrorHandler(this);
-#if defined(__arm__) || defined(_M_ARM)
-    // Make sure function starts at an odd address so that the system knows it is in thumb mode
-    if (((uint32_t)m_CompiledLocation % 2) == 0)
-    {
-        m_CompiledLocation += 1;
-    }
-#endif
 #if defined(__i386__) || defined(_M_IX86)
     m_RecompilerOps = new CX86RecompilerOps(System, *this);
 #elif defined(__amd64__) || defined(_M_X64)
@@ -898,19 +892,28 @@ uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
 {
     m_CodeHolder.flatten();
     m_CodeHolder.resolveUnresolvedLinks();
-    size_t codeSize = m_CodeHolder.codeSize();
+    uint32_t codeSize = (uint32_t)m_CodeHolder.codeSize();
     if (!RecompMem.CheckRecompMem(codeSize))
     {
         return 0;
     }
-    m_CompiledLocation = RecompMem.RecompPos();
-    m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocation);
+    m_CompiledLocationCold = RecompMem.RecompPos() + m_RecompilerOps->ColdEntryOffset();
+    m_CompiledLocationWarm = RecompMem.RecompPos() + m_RecompilerOps->WarmEntryOffset();
+    m_CodeHolder.relocateToBase((uint64_t)m_CompiledLocationCold);
+#if defined(__arm__) || defined(_M_ARM)
+    // Make sure function starts at an odd address so that the system knows it is in thumb mode
+    if (((uint32_t)m_CompiledLocationCold % 2) == 0)
+    {
+        m_CompiledLocationCold += 1;
+    }
+#endif
     if (g_DebugSettings.recordRecompilerAsm)
     {
         std::string CodeLog = m_CodeLog;
         m_CodeLog.clear();
         Log("====== Code block ======");
-        Log("Native entry point: %X", m_CompiledLocation);
+        Log("Cold entry point: %X", m_CompiledLocationCold);
+        Log("Warm entry point: %X", m_CompiledLocationWarm);
         Log("Start of block: %X", VAddrEnter());
         Log("Number of sections: %d", NoOfSections());
         Log("====== Asm Code ======");
@@ -923,11 +926,11 @@ uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
         Log("====== Recompiled code ======");
         m_CodeLog += CodeLog;
     }
-    m_CodeHolder.copyFlattenedData(m_CompiledLocation, codeSize, asmjit::CopySectionFlags::kPadSectionBuffer);
+    m_CodeHolder.copyFlattenedData(m_CompiledLocationCold, codeSize, asmjit::CopySectionFlags::kPadSectionBuffer);
     m_Recompiler.RecompPos() += codeSize;
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
-    __clear_cache((uint8_t *)((uint32_t)m_CompiledLocation & ~1), m_CompiledLocation + codeSize);
+    __clear_cache((uint8_t *)((uint32_t)m_CompiledLocationCold & ~1), m_CompiledLocationCold + codeSize);
 #endif
     return (uint32_t)codeSize;
 }
