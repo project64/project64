@@ -1,6 +1,7 @@
 #pragma once
 #if defined(__amd64__) || defined(_M_X64)
 
+#include <Project64-core/N64System/N64Rom.h>
 #include <Project64-core/N64System/Recompiler/ExitInfo.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
 #include <Project64-core/N64System/Recompiler/RegInfo.h>
@@ -232,8 +233,10 @@ public:
     }
 
 private:
-    CX64RecompilerOps(const CX64RecompilerOps &);
-    CX64RecompilerOps & operator=(const CX64RecompilerOps &);
+    CX64RecompilerOps(const CX64RecompilerOps &) = delete;
+    CX64RecompilerOps & operator=(const CX64RecompilerOps &) = delete;
+
+    bool LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned);
 
     CRecompiler *& m_Recompiler;
     CN64Rom & m_Rom;
@@ -244,6 +247,8 @@ private:
     const uint32_t & m_CompilePC;
     uint32_t m_ColdEntryOffset;
     uint32_t m_WarmEntryOffset;
+
+    static uint32_t m_TempValue32;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;

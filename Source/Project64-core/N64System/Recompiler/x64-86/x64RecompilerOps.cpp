@@ -7,6 +7,7 @@
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+uint32_t CX64RecompilerOps::m_TempValue32 = 0;
 
 CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     CRecompilerOpsBase(System, CodeBlock),
@@ -225,7 +226,39 @@ void CX64RecompilerOps::LWL()
 
 void CX64RecompilerOps::LW()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.base == 29 && g_GameSettings.fastSP && m_Opcode.rt != 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    {
+        if (!m_RegWorkingSet.Is32Bit(m_Opcode.base))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if ((Address & 3u) != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        if (m_Opcode.rt == 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LW_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, true);
+        return;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::LBU()
@@ -1026,6 +1059,57 @@ uint32_t CX64RecompilerOps::ColdEntryOffset(void) const
 uint32_t CX64RecompilerOps::WarmEntryOffset(void) const
 {
     return m_WarmEntryOffset;
+}
+
+bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned)
+{
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__); // LW_KnownAddress: TLB / CompileLoadMemoryValue path
+        return false;
+    }
+
+    uint32_t PAddr = 0;
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+
+    switch (PAddr & 0xFFF00000u)
+    {
+    default:
+        if ((PAddr & 0xF0000000u) == 0x10000000u && (PAddr - 0x10000000u) < m_Rom.GetRomSize())
+        {
+            const uintptr_t tempValueAddr = (uintptr_t)&m_TempValue32;
+            const uint32_t RomPAddr = PAddr & 0x1FFFFFFFu;
+            MemoryHandler * const pThis = (MemoryHandler *)&m_MMU.RomMemory();
+            m_RegWorkingSet.BeforeCallDirect();
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(pThis), "&g_MMU->m_RomMemoryHandler");
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, RomPAddr, stdstr_f("PAddr 0x%08X", RomPAddr).c_str());
+            m_Assembler.MoveConstToX64reg(asmjit::x86::r8, tempValueAddr, "m_TempValue32");
+            m_Assembler.sub(asmjit::x86::rsp, 32);
+            m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
+            m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11));
+            m_Assembler.add(asmjit::x86::rsp, 32);
+            m_RegWorkingSet.AfterCallDirect();
+            if (ResultSigned)
+            {
+                m_Assembler.MoveSxVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32");
+            }
+            else
+            {
+                m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32");
+            }
+            return true;
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        break;
+    }
+    return false;
 }
 
 #endif
