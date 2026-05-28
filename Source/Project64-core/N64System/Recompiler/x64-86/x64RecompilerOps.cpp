@@ -513,7 +513,59 @@ void CX64RecompilerOps::SPECIAL_SUBU()
 
 void CX64RecompilerOps::SPECIAL_AND()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            int ConstReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            int MappedReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+            if (m_RegWorkingSet.Is64Bit(ConstReg))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else if (m_RegWorkingSet.Is64Bit(MappedReg))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                uint32_t Value = m_RegWorkingSet.GetMipsRegLo(ConstReg);
+                bool Sign = m_RegWorkingSet.IsSigned(ConstReg) && m_RegWorkingSet.IsSigned(MappedReg);
+
+                if (Value != 0)
+                {
+                    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, Sign, MappedReg);
+                    m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), Value);
+                }
+                else
+                {
+                    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, false, 0);
+                }
+            }
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_OR()
@@ -1081,13 +1133,12 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
     default:
         if ((PAddr & 0xF0000000u) == 0x10000000u && (PAddr - 0x10000000u) < m_Rom.GetRomSize())
         {
-            const uintptr_t tempValueAddr = (uintptr_t)&m_TempValue32;
             const uint32_t RomPAddr = PAddr & 0x1FFFFFFFu;
             MemoryHandler * const pThis = (MemoryHandler *)&m_MMU.RomMemory();
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(pThis), "&g_MMU->m_RomMemoryHandler");
             m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, RomPAddr, stdstr_f("PAddr 0x%08X", RomPAddr).c_str());
-            m_Assembler.MoveConstToX64reg(asmjit::x86::r8, tempValueAddr, "m_TempValue32");
+            m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "m_TempValue32");
             m_Assembler.sub(asmjit::x86::rsp, 32);
             m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
             m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11));
@@ -1095,11 +1146,11 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             m_RegWorkingSet.AfterCallDirect();
             if (ResultSigned)
             {
-                m_Assembler.MoveSxVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32");
+                m_Assembler.MoveVariable32SignExtendToX64reg(Reg,&m_TempValue32, "m_TempValue32");
             }
             else
             {
-                m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32");
+                m_Assembler.MoveVariable32ToX64reg(Reg, &m_TempValue32, "m_TempValue32");
             }
             return true;
         }

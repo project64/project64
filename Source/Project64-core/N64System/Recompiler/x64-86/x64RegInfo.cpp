@@ -303,8 +303,11 @@ void CX64RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-        return;
+        if (Is64Bit(MipsReg))
+        {
+            m_CodeBlock.Log("    regcache: narrow %s to 32-bit %s", X64GpName(GetMipsRegMap(MipsReg)), CRegName::GPR[MipsReg]);
+        }
+        Reg = GetMipsRegMap(MipsReg).r32();
     }
     for (int i = 0; i < x64PhysRegCount; i++)
     {
@@ -320,7 +323,7 @@ void CX64RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsReg
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.m_GPR[MipsRegToLoad].UW[0]));
+            m_Assembler.MoveVariable32ToX64reg(Reg, &m_Reg.m_GPR[MipsRegToLoad].UW[0], CRegName::GPR_Lo[MipsRegToLoad]);
         }
         else if (IsMapped(MipsRegToLoad))
         {
