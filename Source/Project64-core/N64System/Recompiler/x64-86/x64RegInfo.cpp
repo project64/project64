@@ -278,6 +278,15 @@ void CX64RegInfo::AfterCallDirect(void)
     m_InBeforeCallDirect = m_CallDirectPushCount != 0;
 }
 
+void CX64RegInfo::ProtectGPR(uint32_t MipsReg)
+{
+    if (IsUnknown(MipsReg) || IsConst(MipsReg))
+    {
+        return;
+    }
+    SetX64Protected(GetMipsRegMap(MipsReg).id(), true);
+}
+
 void CX64RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
 {
     if (MipsReg == 0)

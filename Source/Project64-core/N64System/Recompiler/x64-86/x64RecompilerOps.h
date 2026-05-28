@@ -237,6 +237,7 @@ private:
     CX64RecompilerOps & operator=(const CX64RecompilerOps &) = delete;
 
     bool LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned);
+    void SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst);
 
     CRecompiler *& m_Recompiler;
     CN64Rom & m_Rom;

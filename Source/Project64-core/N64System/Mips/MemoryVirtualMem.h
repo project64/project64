@@ -142,6 +142,8 @@ private:
     friend class R4300iOp;
 #if defined(__i386__) || defined(_M_IX86)
     friend class CX86RecompilerOps;
+#elif defined(__amd64__) || defined(_M_X64)
+    friend class CX64RecompilerOps;
 #elif defined(__arm__) || defined(_M_ARM)
     friend class CArmRegInfo;
     friend class CArmRecompilerOps;

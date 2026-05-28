@@ -298,6 +298,38 @@ void CX64RecompilerOps::SWL()
 
 void CX64RecompilerOps::SW()
 {
+    if (!g_DebugSettings.haveWriteBP && m_Opcode.base == 29 && g_GameSettings.fastSP)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    {
+        if (!m_RegWorkingSet.Is32Bit(m_Opcode.base))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if (g_DebugSettings.haveWriteBP)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            SW_KnownAddress(Address, nullptr, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            SW_KnownAddress(Address, &m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), 0);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        return;
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
@@ -1137,7 +1169,7 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             MemoryHandler * const pThis = (MemoryHandler *)&m_MMU.RomMemory();
             m_RegWorkingSet.BeforeCallDirect();
             m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(pThis), "&g_MMU->m_RomMemoryHandler");
-            m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, RomPAddr, stdstr_f("PAddr 0x%08X", RomPAddr).c_str());
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, RomPAddr);
             m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "m_TempValue32");
             m_Assembler.sub(asmjit::x86::rsp, 32);
             m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
@@ -1146,7 +1178,7 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             m_RegWorkingSet.AfterCallDirect();
             if (ResultSigned)
             {
-                m_Assembler.MoveVariable32SignExtendToX64reg(Reg,&m_TempValue32, "m_TempValue32");
+                m_Assembler.MoveVariable32SignExtendToX64reg(Reg, &m_TempValue32, "m_TempValue32");
             }
             else
             {
@@ -1161,6 +1193,68 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         break;
     }
     return false;
+}
+
+void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst)
+{
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    uint32_t PAddr = 0;
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    switch (PAddr & 0xFFF00000u)
+    {
+    case 0x04600000u:
+        switch (PAddr)
+        {
+        case 0x04600000u:
+        case 0x04600004u:
+        case 0x04600008u:
+        case 0x0460000Cu:
+        case 0x04600010u:
+        {
+            if (PAddr == 0x04600008u || PAddr == 0x0460000Cu)
+            {
+                UpdateCounters(m_RegWorkingSet, false, true, false);
+            }
+
+            m_RegWorkingSet.BeforeCallDirect();
+            if (ValueReg != nullptr)
+            {
+                if (*ValueReg != asmjit::x86::r8)
+                {
+                    m_Assembler.mov(asmjit::x86::r8d, ValueReg->r32());
+                }
+            }
+            else
+            {
+                m_Assembler.mov(asmjit::x86::r8d, ValueConst);
+            }
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(&m_MMU.m_PeripheralInterfaceHandler), "g_MMU->m_PeripheralInterfaceHandler");
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr & 0x1FFFFFFFu);
+            m_Assembler.mov(asmjit::x86::r9d, 0xFFFFFFFFu);
+            m_Assembler.sub(asmjit::x86::rsp, 32);
+            m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
+            m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11, 8));
+            m_Assembler.add(asmjit::x86::rsp, 32);
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        }
+        default:
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            break;
+        }
+        break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 #endif
