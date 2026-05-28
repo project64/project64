@@ -123,29 +123,27 @@ void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, con
     }
 }
 
-void CX64Ops::MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+void CX64Ops::MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    if (g_DebugSettings.recordRecompilerAsm && VariableName != nullptr)
-    {
-        AddNumberSymbol(reinterpret_cast<uintptr_t>(Variable), VariableName);
-    }
+    AnnotateMemoryOperand(Variable, VariableName);
+    const asmjit::x86::Gpq addrReg(Reg.id());
+    mov(addrReg, reinterpret_cast<uint64_t>(Variable));
     if (Reg.isType(asmjit::RegType::kX86_Gpq))
     {
-        mov(Reg, asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(Variable)));
+        mov(Reg.r32(), asmjit::x86::dword_ptr(addrReg));
     }
     else
     {
-        mov(Reg.r32(), asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(Variable)));
+        mov(Reg.r32(), asmjit::x86::dword_ptr(addrReg));
     }
 }
 
-void CX64Ops::MoveSxVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+void CX64Ops::MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    if (g_DebugSettings.recordRecompilerAsm && VariableName != nullptr)
-    {
-        AddNumberSymbol(reinterpret_cast<uintptr_t>(Variable), VariableName);
-    }
-    movsxd(Reg, asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(Variable)));
+    AnnotateMemoryOperand(Variable, VariableName);
+    const asmjit::x86::Gpq addrReg(Reg.id());
+    mov(addrReg, reinterpret_cast<uint64_t>(Variable));
+    movsxd(Reg.r64(), asmjit::x86::dword_ptr(addrReg));
 }
 
 void CX64Ops::AddNumberSymbol(uintptr_t Value, const char * Symbol)
@@ -167,6 +165,14 @@ void CX64Ops::AddNumberSymbol(uintptr_t Value, const std::string & Symbol)
     else
     {
         m_NumberSymbols.emplace(std::make_pair(Value, NumberSymbol{Symbol, 1}));
+    }
+}
+
+void CX64Ops::AnnotateMemoryOperand(void * Variable, const char * VariableName)
+{
+    if (g_DebugSettings.recordRecompilerAsm && VariableName != nullptr)
+    {
+        AddNumberSymbol(reinterpret_cast<uintptr_t>(Variable), VariableName);
     }
 }
 #endif

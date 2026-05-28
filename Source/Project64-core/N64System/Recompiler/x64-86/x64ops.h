@@ -14,8 +14,8 @@ public:
     CX64Ops(CCodeBlock & CodeBlock);
 
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
-    void MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
-    void MoveSxVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
 
 private:
     CX64Ops(void);
@@ -23,9 +23,9 @@ private:
     CX64Ops & operator=(const CX64Ops &);
 
     asmjit::Error _log(const char * data, size_t size) noexcept;
-    void AddLabelSymbol(const asmjit::Label & Label, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const std::string & Symbol);
+    void AnnotateMemoryOperand(void * Variable, const char * VariableName);
 
     typedef struct
     {
