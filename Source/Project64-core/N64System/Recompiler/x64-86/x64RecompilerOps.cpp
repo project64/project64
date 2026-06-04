@@ -1162,6 +1162,35 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
 
     switch (PAddr & 0xFFF00000u)
     {
+    case 0x04600000u:
+        switch (PAddr)
+        {
+        case 0x04600000u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DRAM_ADDR_REG)); break;
+        case 0x04600004u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_CART_ADDR_REG)); break;
+        case 0x04600008u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_RD_LEN_REG)); break;
+        case 0x0460000Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_WR_LEN_REG)); break;
+        case 0x04600010u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_STATUS_REG)); break;
+        case 0x04600014u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DOMAIN1_REG)); break;
+        case 0x04600018u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_PWD_REG)); break;
+        case 0x0460001Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_PGS_REG)); break;
+        case 0x04600020u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_RLS_REG)); break;
+        case 0x04600024u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DOMAIN2_REG)); break;
+        case 0x04600028u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_PWD_REG)); break;
+        case 0x0460002Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_PGS_REG)); break;
+        case 0x04600030u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_RLS_REG)); break;
+        default:
+            m_Assembler.xor_(Reg, Reg);
+            if (g_DebugSettings.breakOnUnhandledMemory)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            break;
+        }
+        if (ResultSigned)
+        {
+            m_Assembler.movsxd(Reg, Reg.r32());
+        }
+        return false;
     default:
         if ((PAddr & 0xF0000000u) == 0x10000000u && (PAddr - 0x10000000u) < m_Rom.GetRomSize())
         {
