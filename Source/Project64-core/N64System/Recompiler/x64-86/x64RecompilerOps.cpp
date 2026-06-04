@@ -32,9 +32,14 @@ void CX64RecompilerOps::Compile_TrapCompare(RecompilerTrapCompare /*CompareType*
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CX64RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare /*CompareType*/)
+void CX64RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare CompareType)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    switch (CompareType)
+    {
+    case RecompilerBranchCompare_BNE: BNE_Compare(); break;
+    default:
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare /*CompareType*/, bool /*Link*/)
@@ -42,14 +47,162 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare /*CompareType*/, 
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
-void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare /*CompareType*/, bool /*Link*/)
+void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType, bool Link)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (g_GameSettings.blockLinkingMode != BlockLinking_Eager || (m_CompilePC & 0xFFC) == 0xFFC)
+        {
+            m_Section->m_Jump.JumpPC = (uint32_t)m_CompilePC;
+            m_Section->m_Jump.TargetPC = (uint32_t)(m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4);
+            m_Section->m_Cont.JumpPC = (uint32_t)m_CompilePC;
+            m_Section->m_Cont.TargetPC = (uint32_t)(m_CompilePC + 8);
+        }
+        else
+        {
+            if (m_Section->m_Jump.JumpPC != (uint32_t)m_CompilePC)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            if (m_Section->m_Cont.JumpPC != (uint32_t)m_CompilePC)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            if (m_Section->m_Cont.TargetPC != (uint32_t)(m_CompilePC + 8))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+
+        if (m_Section->m_JumpSection != nullptr)
+        {
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", m_Section->m_JumpSection->m_SectionID);
+        }
+        else
+        {
+            m_Section->m_Jump.BranchLabel = "ExitBlock";
+        }
+
+        if (m_Section->m_ContinueSection != nullptr)
+        {
+            m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", m_Section->m_ContinueSection->m_SectionID);
+        }
+        else
+        {
+            m_Section->m_Cont.BranchLabel = "ExitBlock";
+        }
+
+        m_Section->m_Jump.FallThrough = true;
+        m_Section->m_Jump.LinkLocation = asmjit::Label();
+        m_Section->m_Jump.LinkLocation2 = asmjit::Label();
+        m_Section->m_Cont.FallThrough = false;
+        m_Section->m_Cont.LinkLocation = asmjit::Label();
+        m_Section->m_Cont.LinkLocation2 = asmjit::Label();
+        if (Link)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+
+        Compile_BranchCompare(CompareType);
+        m_RegWorkingSet.ResetRegisterProtection();
+
+        m_Section->m_Cont.RegSet = m_RegWorkingSet;
+        m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
+        if (m_Section->m_Cont.LinkAddress != (uint32_t)-1)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if ((m_CompilePC & 0xFFC) == 0xFFC)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+        }
+
+        if (g_GameSettings.blockLinkingMode == BlockLinking_Eager)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_Section->m_Cont.FallThrough)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        m_Section->m_Jump.RegSet = m_RegWorkingSet;
+        m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount());
+        if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+        {
+            m_Section->m_Jump.RegSet.UnMap_GPR(31, false);
+            m_Section->m_Jump.RegSet.SetMipsRegLo(31, m_Section->m_Jump.LinkAddress);
+            m_Section->m_Jump.RegSet.SetMipsRegState(31, CRegBase::STATE_CONST_32_SIGN);
+            m_Section->m_Jump.LinkAddress = (uint32_t)-1;
+        }
+        m_Section->GenerateSectionLinkage();
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
+    else if (g_DebugSettings.haveDebugger)
+    {
+        g_Notify->DisplayError(stdstr_f("WTF\n%s\nNextInstruction = %X", __FUNCTION__, m_PipelineStage).c_str());
+    }
 }
 
 void CX64RecompilerOps::BNE_Compare()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.IsKnown(m_Opcode.rt))
+    {
+        if (m_RegWorkingSet.IsConst(m_Opcode.rs) && m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            uint32_t ConstReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            uint32_t MappedReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+            if (m_RegWorkingSet.Is64Bit(ConstReg) || m_RegWorkingSet.Is64Bit(MappedReg))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(MappedReg).r32(), m_RegWorkingSet.GetMipsRegLo(ConstReg));
+                if (m_Section->m_Cont.FallThrough)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else if (m_Section->m_Jump.FallThrough)
+                {
+                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+                }
+                else
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+            }
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rs) || m_RegWorkingSet.IsKnown(m_Opcode.rt))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::BEQ_Compare()

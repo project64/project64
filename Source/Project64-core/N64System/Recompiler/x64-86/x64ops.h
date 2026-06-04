@@ -13,9 +13,13 @@ class CX64Ops :
 public:
     CX64Ops(CCodeBlock & CodeBlock);
 
+    void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
     void MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
+    void MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
 
 private:
     CX64Ops(void);
@@ -23,9 +27,9 @@ private:
     CX64Ops & operator=(const CX64Ops &);
 
     asmjit::Error _log(const char * data, size_t size) noexcept;
+    void AddLabelSymbol(const asmjit::Label & Label, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const std::string & Symbol);
-    void AnnotateMemoryOperand(void * Variable, const char * VariableName);
 
     typedef struct
     {

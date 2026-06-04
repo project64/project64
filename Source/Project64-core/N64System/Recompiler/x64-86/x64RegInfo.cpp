@@ -364,6 +364,10 @@ void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
 {
     if (Reg == 0)
     {
+        if (g_DebugSettings.haveDebugger)
+        {
+            g_Notify->DisplayError(stdstr_f("%s\n\nWhy are you trying to unmap register 0?", __FUNCTION__).c_str());
+        }
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
@@ -384,7 +388,35 @@ void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
         return;
     }
 
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_CodeBlock.Log("    regcache: unallocate %s from %s", X64GpName(GetMipsRegMap(Reg)), Is64Bit(Reg) ? CRegName::GPR[Reg] : CRegName::GPR_Lo[Reg]);
+    const uint32_t RegIndex = GetMipsRegMap(Reg).id();
+    SetX64Mapped(RegIndex, NotMapped);
+    SetX64Protected(RegIndex, false);
+    if (WriteBackValue)
+    {
+        if (Is64Bit(Reg))
+        {
+            m_Assembler.MovQwordToVariable(&m_Reg.m_GPR[Reg].UDW, CRegName::GPR[Reg], GetMipsRegMap(Reg));
+        }
+        else
+        {
+            m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegMap(Reg));
+            if (!g_GameSettings.core32Bit)
+            {
+                if (IsSigned(Reg))
+                {
+                    m_Assembler.sar(GetMipsRegMap(Reg).r32(), 31);
+                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegMap(Reg));
+                }
+                else
+                {
+                    m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0u);
+                }
+            }
+        }
+    }
+    SetMipsRegState(Reg, STATE_UNKNOWN);
+    SetMipsRegMap(Reg, asmjit::x86::Gp());
 }
 
 asmjit::x86::Gp CX64RegInfo::FreeX64Reg(asmjit::RegType RegType)
