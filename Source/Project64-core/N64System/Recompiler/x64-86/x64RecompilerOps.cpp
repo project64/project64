@@ -119,7 +119,30 @@ void CX64RecompilerOps::SLTIU()
 
 void CX64RecompilerOps::ANDI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) & m_Opcode.immediate);
+    }
+    else if (m_Opcode.immediate != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.rs);
+        m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), m_Opcode.immediate);
+    }
+    else
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, 0);
+    }
 }
 
 void CX64RecompilerOps::ORI()
