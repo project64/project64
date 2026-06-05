@@ -34,7 +34,7 @@ $Auto Win All Queen Lord Levels
 $Buildings Fall Fast
 80091BBC 0001
 
-$Buildings Implode Instead of Explode, And Remain Afire
+$Buildings Implode Instead of Explode, and Remain Afire
 8009298E 0001
 
 $Can't Pick Up Queen Lords
@@ -173,8 +173,8 @@ $Multiplayer\Player 1\Main Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -193,8 +193,8 @@ $Multiplayer\Player 1\Secondary Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -244,8 +244,8 @@ $Multiplayer\Player 2\Main Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -254,7 +254,7 @@ $Multiplayer\Player 2\Main Weapon
 0F Cloaking
 10 Health
 
-$MultiPlayer\Player 2\One Hit And You Bite It
+$MultiPlayer\Player 2\One Hit and You Bite It
 802D9AC7 0001
 
 $Multiplayer\Player 2\Secondary Weapon
@@ -267,8 +267,8 @@ $Multiplayer\Player 2\Secondary Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines

@@ -1,7 +1,7 @@
 [8F12C096-45DC17E1-C:50]
 Name=A Bug's Life (E)
 
-$All enemies killed
+$All Enemies Killed
 801E244E 0000
 801E244F 0000
 
@@ -36,7 +36,7 @@ $Start with Berry Weapon
 01 Blueberry
 02 Homing Berry
 03 Goldberry
-04 Super Berry ?
+04 Super Berry (?)
 
 $Unlock All Levels
 81099B70 000F
@@ -78,7 +78,7 @@ $Start with Berry Weapon
 01 Blueberry
 02 Homing Berry
 03 Goldberry
-04 Super Berry ?
+04 Super Berry (?)
 
 $Subtitles On
 801DDB7B 00??

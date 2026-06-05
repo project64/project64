@@ -7,15 +7,15 @@ $Have All\Characters Available
 $Have All\Courts Available
 810653CC FFFF
 
-$Press C-Down Easy Win Ring Shot - Time,Balls,Points
-Note=Do Not use with Game Option
+$Press C-Down\Easy Win Ring Shot - Time, Balls, Points
+Note=Do not use with 'Game' Option
 D0066985 0004
 80153527 0082
 D0066985 0004
 80153523 0082
 
-$Press C-Down for Easy Win Ring Shot - Game
-Note=Do Not use with Time,Balls,Points Option
+$Press C-Down\Easy Win Ring Shot - Game
+Note=Do Not use with 'Time, Balls, Points' Option
 D0066985 0004
 8015350B 0082
 

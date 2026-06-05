@@ -47,18 +47,18 @@ Note=You must use this code on a saved game, because the intro to the first leve
 0008 Underground Waterway
 0009 Castle Center
 0010 Tower of Execution
-0011 - Tower of Sorcery
-0012 - Tower of Science
-0013 - Duel Tower
-0014 - Fight With Death/Actrise
-0015 - Castle Keep
-0016 - Intro (Glitch)
-0017 - Clock Tower
-0018 - Final Dracula
-001A - Fight With Maze Boss
-001B - Room of Clocks
-001C - ??
-001D - ??
+0011 Tower of Sorcery
+0012 Tower of Science
+0013 Duel Tower
+0014 Fight With Death/Actrise
+0015 Castle Keep
+0016 Intro (Glitch)
+0017 Clock Tower
+0018 Final Dracula
+001A Fight With Maze Boss
+001B Room of Clocks
+001C (?)
+001D (?)
 
 $Max Power Up
 80389CF1 0002

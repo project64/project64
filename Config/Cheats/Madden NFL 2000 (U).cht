@@ -141,13 +141,13 @@ $Level 1\Complete a 20 Yard Run or Longer
 $Level 1\Complete a 30 Yard Pass or Longer
 800707B0 0040
 
-$Level 1\Create a Player And use Him in a Game
+$Level 1\Create a Player and use Him in a Game
 800707BA 0040
 
-$Level 1\Defeat Green Bay in Snow At Lambeau Field
+$Level 1\Defeat Green Bay in Snow at Lambeau Field
 800707B8 0040
 
-$Level 1\Defeat San Francisco in Rain At 3COM Park
+$Level 1\Defeat San Francisco in Rain at 3COM Park
 800707B9 0040
 
 $Level 1\Have a Minimium of Three Players ON Team Catch One Pass
@@ -156,7 +156,7 @@ $Level 1\Have a Minimium of Three Players ON Team Catch One Pass
 $Level 1\Hold Your Oppnent to 7 Points or Less in a Game
 800707B3 0040
 
-$Level 1\Intercept At Least One Pass
+$Level 1\Intercept at Least One Pass
 800707BF 0040
 
 $Level 1\Kick a 40 Yard Field Goal or Longer
@@ -171,19 +171,19 @@ $Level 1\Play an Exhibition Game in a QTR Length Other Than 5 Minutes
 $Level 1\Play an Exhibition Game in a Stadium Other Than the Default One
 800707BE 0040
 
-$Level 1\Play And Win One Game of the Tournment
+$Level 1\Play and Win One Game of the Tournment
 800707C2 0040
 
 $Level 1\QB Passes for Two TDS or More
 800707BC 0040
 
-$Level 1\Recover At Least One Fumble
+$Level 1\Recover at Least One Fumble
 800707C0 0040
 
 $Level 1\Sack the Opposing QB
 800707BD 0040
 
-$Level 1\Score 21 Points Or More With a QTR Length of 6 Minutes or Less
+$Level 1\Score 21 Points or More With a QTR Length of 6 Minutes or Less
 800707B2 0040
 
 $Level 1\Throw 0 Interceptions in a Game
@@ -219,22 +219,22 @@ $Level 2\Have a RB Who Rushes for 3 TDS or More
 $Level 2\Hold Opposing Team to 150 Yards Total Offense or Less
 800707D0 0040
 
-$Level 2\Play And Win a Pro Bowl Game as the AFC Team
+$Level 2\Play and Win a Pro Bowl Game as the AFC Team
 800707D6 0040
 
-$Level 2\Play And Win a Pro Bowl Game as the NFC Team
+$Level 2\Play and Win a Pro Bowl Game as the NFC Team
 800707D5 0040
 
-$Level 2\Play And Win One Franchise Mode Game
+$Level 2\Play and Win One Franchise Mode Game
 800707CA 0040
 
-$Level 2\Play And Win One Season Mode Game With Modified Divisions
+$Level 2\Play and Win One Season Mode Game With Modified Divisions
 800707CC 0040
 
-$Level 2\Play And Win One Season Mode Game Without Modified Divisions
+$Level 2\Play and Win One Season Mode Game without Modified Divisions
 800707CB 0040
 
-$Level 2\Play And Win Two Games in a Tournment With the Same Team
+$Level 2\Play and Win Two Games in a Tournment With the Same Team
 800707CD 0040
 
 $Level 2\QB Passes 300 Yards or More
@@ -246,7 +246,7 @@ $Level 2\QB Passes for 4 TDS or More
 $Level 2\QB Rushes for One Rushing TD or More
 800707D1 0040
 
-$Level 2\Score 40 Points Or More Within a Quarter Length of 6 Minutes or Less
+$Level 2\Score 40 Points or More Within a Quarter Length of 6 Minutes or Less
 800707C4 0040
 
 $Level 3\150 Reception Yards or Greater by One Player
@@ -285,16 +285,16 @@ $Level 3\Commit No Penalties in a Game
 $Level 3\Complete a 50 Yard Run or Longer
 800707E5 0040
 
-$Level 3\Have a RB Rush for Over 100 Yards And 50 Yards Receiving
+$Level 3\Have a RB Rush for over 100 Yards and 50 Yards Receiving
 800707EB 0040
 
-$Level 3\Play And Win a Superbowl in Franchise Mode
+$Level 3\Play and Win a Superbowl in Franchise Mode
 800707E1 0040
 
-$Level 3\Play And Win a Superbowl in Season Mode
+$Level 3\Play and Win a Superbowl in Season Mode
 800707E2 0040
 
-$Level 3\Play And Win An 8 Team Tournament
+$Level 3\Play and Win an 8 Team Tournament
 800707E4 0040
 
 $Level 3\QB Who Passes for 400 Yards or More
@@ -330,13 +330,13 @@ $Level 4\650 Yards of Total Offense or More by One Team
 $Level 4\7 Sacks or More by One Player
 800707F8 0040
 
-$Level 4\Go Undefeated And Win a Superbowl in One Franchise Mode Season by Playing Every Game
+$Level 4\Go Undefeated and Win a Superbowl in One Franchise Mode Season by Playing Every Game
 800707F3 0040
 
-$Level 4\Go Undefeated And Win a Superbowl in One Season Mode Season by Playing Every Game
+$Level 4\Go Undefeated and Win a Superbowl in One Season Mode Season by Playing Every Game
 800707F4 0040
 
-$Level 4\Have a Minimum Of 7 Members of Your Team Catch At Least 1 Pass
+$Level 4\Have a Minimum Of 7 Members of Your Team Catch at Least 1 Pass
 800707F6 0040
 
 $Level 4\Have One Reciever With 150 RAC Yards or Greater
@@ -354,13 +354,13 @@ $Level 4\QB Who Rushes for 75 Yards or More
 $Level 4\Return a Punt for a Touchdown
 800707EF 0040
 
-$Level 4\Return An Interception for a Touchdown
+$Level 4\Return an Interception for a Touchdown
 800707F0 0040
 
 $Level 4\Rush for 100 Yards or More With 2 Different Running Backs
 800707FC 0040
 
-$Level 4\Rush the Ball 40 Time Or More With a QTR Length of 6 Minutes or Less
+$Level 4\Rush the Ball 40 Time or More With a QTR Length of 6 Minutes or Less
 800707FB 0040
 
 $Level 4\Win a 16 Team Tournament
@@ -396,25 +396,25 @@ $Level 5\Convert to 3RD Down Conversions or More
 $Level 5\Have a QB With a 100 Passing PCT While Throwing a Minimum of 5 Passes
 8007080F 0040
 
-$Level 5\Have a QB With a Pass AVG of 30 Yards or Greater While Throwing At Least 5 Passes
+$Level 5\Have a QB With a Pass AVG of 30 Yards or Greater While Throwing at Least 5 Passes
 80070801 0040
 
-$Level 5\Have a RB With a Rushing AVG of 20 Yards or Greater While Rushing At least 3 Times
+$Level 5\Have a RB With a Rushing AVG of 20 Yards or Greater While Rushing at least 3 Times
 80070804 0040
 
 $Level 5\Pass for 200 Yards or More With 2 QBS
 80070803 0040
 
-$Level 5\Play And Win a Minimum of Four Superbowls With the Same Team in Franchise Mode
+$Level 5\Play and Win a Minimum of Four Superbowls With the Same Team in Franchise Mode
 80070810 0040
 
 $Level 5\QB Rushes for 3 Touchdowns or More
 80070807 0040
 
-$Level 5\QB With a Minimum of 150 Yards Passing And 100 Yards Rushing
+$Level 5\QB With a Minimum of 150 Yards Passing and 100 Yards Rushing
 8007080C 0040
 
-$Level 5\RB With a Minimum of 100 Yards Receiving And 100 Yards Rushing
+$Level 5\RB With a Minimum of 100 Yards Receiving and 100 Yards Rushing
 80070811 0040
 
 $Level 5\Return a Kickoff for a Touchdown

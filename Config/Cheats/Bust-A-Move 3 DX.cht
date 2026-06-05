@@ -1,7 +1,7 @@
 [E328B4FA-004A28E1-C:50]
 Name=Bust-A-Move 3 DX
 
-$Always Have\guide line on
+$Always Have\Guide Line On
 80056CCC 0082
 
 $Next Bubble Select\Player 1
@@ -64,7 +64,7 @@ $Play as Select\Player 2
 13 1 of the two Ballons
 14 Water under ballons
 
-$Pointer always active
+$Pointer Always Active
 D0056FA0 0002
 80056FA0 0082
 

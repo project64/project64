@@ -5,7 +5,7 @@ $Ammo Always Displayed on Screen
 50000408 0000
 80075A7D 0007
 
-$Health Meter Displayed On Screen
+$Health Meter Displayed on Screen
 81075B10 0000
 81075B12 00FF
 

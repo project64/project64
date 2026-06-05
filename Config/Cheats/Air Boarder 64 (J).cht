@@ -24,8 +24,8 @@ $Coin Perfect Select
 Note=This is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level.
 801660B3 00??
 14 Green Park Level 1
-1A Green park Level 2
-2B Green park Level 3
+1A Green Park Level 2
+2B Green Park Level 3
 4A Lost Forest Level 1
 59 Lost Forest Level 2
 80 Lost Forest Level 3
@@ -37,7 +37,7 @@ Note=This is for Coin Mode to get Perfect Coin Collection Score straight away wh
 77 Giant House Level 2
 72 Giant House Level 3
 
-$Infinite Time\Attack Time Time 000000
+$Infinite Time\Attack Time 000000
 811137EA 0000
 
 $Infinite Time\Street Work & Coin
@@ -67,18 +67,18 @@ $Options\Camera Type Modifier
 
 $Options\DJ Function Modifier
 810500AC 00??
-01 DJ Function On
-00 DJ Function Off
+01 On
+00 Off
 
-$Options\Music Modifier
+$Options\Background Music Modifier
 800500A9 00??
-FF BGM On
-00 BGM Off
+FF On
+00 Off
 
 $Options\Sound Effects Modifier
 810500AA 00??
-FF SE On
-00 SE Off
+FF On
+00 Off
 
 
 [6C45B60C-DCE50E30-C:4A]
@@ -107,8 +107,8 @@ $Coin Perfect Select
 Note=This is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level.
 801660B3 00??
 14 Green Park Level 1
-1A Green park Level 2
-2B Green park Level 3
+1A Green Park Level 2
+2B Green Park Level 3
 4A Lost Forest Level 1
 59 Lost Forest Level 2
 80 Lost Forest Level 3
@@ -120,7 +120,7 @@ Note=This is for Coin Mode to get Perfect Coin Collection Score straight away wh
 77 Giant House Level 2
 72 Giant House Level 3
 
-$Infinite Time\Attack Time Time 000000
+$Infinite Time\Attack Time 000000
 811137EA 0000
 
 $Infinite Time\Street Work & Coin
@@ -150,18 +150,18 @@ $Options\Camera Type Modifier
 
 $Options\DJ Function Modifier
 810500AC 00??
-01 DJ Function On
-00 DJ Function Off
+01 On
+00 Off
 
-$Options\Music Modifier
+$Options\Background Music Modifier
 800500A9 00??
-FF BGM On
-00 BGM Off
+FF On
+00 Off
 
 $Options\Sound Effects Modifier
 810500AA 00??
-FF SE On
-00 SE Off
+FF On
+00 Off
 
 
 [F255D6F1-B65D6728-C:4A]
@@ -190,8 +190,8 @@ $Coin Perfect Select
 Note=This is for Coin Mode to get Perfect Coin Collection Score straight away when you enter the level.
 801660B3 00??
 14 Green Park Level 1
-1A Green park Level 2
-2B Green park Level 3
+1A Green Park Level 2
+2B Green Park Level 3
 4A Lost Forest Level 1
 59 Lost Forest Level 2
 80 Lost Forest Level 3
@@ -203,7 +203,7 @@ Note=This is for Coin Mode to get Perfect Coin Collection Score straight away wh
 77 Giant House Level 2
 72 Giant House Level 3
 
-$Infinite Time\Attack Time Time 000000
+$Infinite Time\Attack Time 000000
 811137EA 0000
 
 $Infinite Time\Street Work & Coin
@@ -233,15 +233,15 @@ $Options\Camera Type Modifier
 
 $Options\DJ Function Modifier
 810500AC 00??
-01 DJ Function On
-00 DJ Function Off
+01 On
+00 Off
 
-$Options\Music Modifier
+$Options\Background Music Modifier
 800500A9 00??
-FF BGM On
-00 BGM Off
+FF On
+00 Off
 
 $Options\Sound Effects Modifier
 810500AA 00??
-FF SE On
-00 SE Off
+FF On
+00 Off
