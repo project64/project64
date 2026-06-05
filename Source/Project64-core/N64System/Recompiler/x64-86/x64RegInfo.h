@@ -53,6 +53,7 @@ private:
     CX64RegInfo() = delete;
 
     asmjit::x86::Gp FreeX64Reg(asmjit::RegType RegType);
+    bool UnMap_X64reg(const asmjit::x86::Gp & Reg);
 
     CRegisters & m_Reg;
     CCodeBlock & m_CodeBlock;

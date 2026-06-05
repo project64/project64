@@ -142,10 +142,22 @@ void CX64Ops::AddLabelSymbol(const asmjit::Label & Label, const char * Symbol)
     }
 }
 
+void CX64Ops::JsLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddLabelSymbol(JumpLabel, LabelName);
+    js(JumpLabel);
+}
+
 void CX64Ops::JeLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     AddLabelSymbol(JumpLabel, LabelName);
     je(JumpLabel);
+}
+
+void CX64Ops::X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    cmp(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
 }
 
 void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
@@ -191,6 +203,12 @@ void CX64Ops::MovQwordToVariable(void * Variable, const char * VariableName, con
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
     mov(asmjit::x86::qword_ptr((uintptr_t)Variable), Src.r64());
+}
+
+void CX64Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    sub(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
 }
 
 void CX64Ops::MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
@@ -239,6 +257,32 @@ void CX64Ops::AddNumberSymbol(uintptr_t Value, const std::string & Symbol)
     {
         m_NumberSymbols.emplace(std::make_pair(Value, NumberSymbol{Symbol, 1}));
     }
+}
+
+void CX64Ops::EnterPrimarySection()
+{
+    section(m_PrimarySection);
+}
+
+void CX64Ops::EnterSecondarySection()
+{
+    section(m_SecondarySection);
+}
+
+void CX64Ops::CallFunc(uintptr_t FunctPtr, const char * FunctName)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddNumberSymbol(FunctPtr, FunctName);
+    }
+    mov(asmjit::x86::rax, FunctPtr);
+    call(asmjit::x86::rax);
+}
+
+void CX64Ops::CallThis(void * ThisPtr, uintptr_t FunctPtr, const char * FunctName)
+{
+    mov(asmjit::x86::rcx, ThisPtr);
+    CallFunc(FunctPtr, FunctName);
 }
 
 #endif

@@ -1153,6 +1153,7 @@ void CX64RecompilerOps::UnknownOpcode()
 
 void CX64RecompilerOps::EnterCodeBlock()
 {
+    m_Assembler.sub(asmjit::x86::rsp, FunctionStackSize);
 }
 
 void CX64RecompilerOps::CompileExitCode()
@@ -1286,19 +1287,135 @@ void CX64RecompilerOps::PostCompileOpcode(void)
     }
 }
 
-void CX64RecompilerOps::CompileExit(uint32_t /*JumpPC*/, uint32_t /*TargetPC*/, CRegInfo & /*ExitRegSet*/, ExitReason /*reason*/)
+void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason reason)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    ExitRegSet.WriteBackRegisters();
+    if (TargetPC != (uint32_t)-1)
+    {
+        m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", TargetPC);
+        UpdateCounters(ExitRegSet, TargetPC <= JumpPC && JumpPC != (uint32_t)-1, reason == ExitReason_Normal);
+    }
+    else
+    {
+        UpdateCounters(ExitRegSet, false, reason == ExitReason_Normal, reason != ExitReason_Normal);
+    }
+
+    switch (reason)
+    {
+    case ExitReason_Normal:
+        ExitRegSet.SetBlockCycleCount(0);
+        if ((reason == ExitReason_Normal || reason == ExitReason_CheckPCAlignment) && (TargetPC == (uint32_t)-1 || TargetPC <= JumpPC))
+        {
+            CompileSystemCheck((uint32_t)-1, ExitRegSet);
+        }
+        ExitCodeBlock();
+        break;
+    default:
+        WriteTrace(TraceRecompiler, TraceError, "CX64RecompilerOps::CompileExit: unhandled exit reason (%d)", reason);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
-void CX64RecompilerOps::UpdateCounters(CRegInfo & /*RegSet*/, bool /*CheckTimer*/, bool /*ClearValues*/, bool /*UpdateTimer*/)
+void CX64RecompilerOps::ExitCodeBlock(void)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (g_SyncSystem)
+    {
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_BaseSystem, MemberFuncAddress(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+    }
+    m_Assembler.add(asmjit::x86::rsp, FunctionStackSize);
+    m_Assembler.ret();
 }
 
-void CX64RecompilerOps::CompileSystemCheck(uint32_t /*TargetPC*/, const CRegInfo & /*RegSet*/)
+void CX64RecompilerOps::UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (!g_SyncSystem)
+    {
+        return;
+    }
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      // Updating sync CPU");
+    RegSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::rdx, Cycles);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(g_System, MemberFuncAddress(&CN64System::UpdateSyncCPU), "CN64System::UpdateSyncCPU");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    RegSet.AfterCallDirect();
+}
+
+void CX64RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues, bool UpdateTimer)
+{
+    if (RegSet.GetBlockCycleCount() != 0)
+    {
+        UpdateSyncCPU(RegSet, RegSet.GetBlockCycleCount());
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      // Update counter");
+        m_Assembler.SubConstFromVariable(RegSet.GetBlockCycleCount(), g_NextTimer, "g_NextTimer");
+        if (ClearValues)
+        {
+            RegSet.SetBlockCycleCount(0);
+        }
+    }
+    else if (CheckTimer)
+    {
+        m_Assembler.X64CmpConstToVariable(g_NextTimer, "g_NextTimer", 0);
+    }
+
+    if (CheckTimer)
+    {
+        asmjit::Label TimerDonePath = m_Assembler.newLabel();
+        asmjit::Label ContinueFromTimerTest = m_Assembler.newLabel();
+        m_Assembler.JsLabel("Timer_Done_Path", TimerDonePath);
+
+        m_Assembler.EnterSecondarySection();
+        m_CodeBlock.Log("      Timer_Done_Path:");
+        m_Assembler.bind(TimerDonePath);
+
+        RegSet.BeforeCallDirect();
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_SystemTimer, MemberFuncAddress(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        RegSet.AfterCallDirect();
+        m_Assembler.jmp(ContinueFromTimerTest);
+
+        m_Assembler.EnterPrimarySection();
+
+        m_CodeBlock.Log("");
+        m_Assembler.bind(ContinueFromTimerTest);
+    }
+
+    if ((UpdateTimer || g_GameSettings.overClockModifier != 1) && g_SyncSystem)
+    {
+        RegSet.BeforeCallDirect();
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_SystemTimer, MemberFuncAddress(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        RegSet.AfterCallDirect();
+    }
+}
+
+void CX64RecompilerOps::CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet)
+{
+    m_Assembler.cmp(asmjit::x86::byte_ptr((uintptr_t)&m_SystemEvents.DoSomething()), 0);
+    asmjit::Label ContinueFromInterruptTest = m_Assembler.newLabel();
+    m_Assembler.JeLabel("Continue_From_Interrupt_Test", ContinueFromInterruptTest);
+
+    if (TargetPC != (uint32_t)-1)
+    {
+        m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", TargetPC);
+    }
+
+    CRegInfo RegSetCopy(RegSet);
+    RegSetCopy.WriteBackRegisters();
+
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_SystemEvents, MemberFuncAddress(&CSystemEvents::ExecuteEvents), "CSystemEvents::ExecuteEvents");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+
+    ExitCodeBlock();
+    m_CodeBlock.Log("");
+    m_Assembler.bind(ContinueFromInterruptTest);
 }
 
 void CX64RecompilerOps::CompileExecuteBP(void)

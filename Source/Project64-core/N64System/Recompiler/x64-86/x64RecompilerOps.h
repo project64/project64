@@ -15,6 +15,11 @@ struct CJumpInfo;
 class CX64RecompilerOps :
     public CRecompilerOpsBase
 {
+    enum
+    {
+        FunctionStackSize = 40,
+    };
+
 public:
     CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock);
     ~CX64RecompilerOps();
@@ -238,6 +243,8 @@ private:
 
     bool LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned);
     void SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst);
+    void ExitCodeBlock(void);
+    void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
 
     CRecompiler *& m_Recompiler;
     CN64Rom & m_Rom;
