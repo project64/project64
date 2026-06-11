@@ -831,7 +831,33 @@ void CX64RecompilerOps::SPECIAL_AND()
     }
     else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        uint32_t UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (m_RegWorkingSet.IsConst(KnownReg))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            m_RegWorkingSet.ProtectGPR(KnownReg);
+            if (KnownReg == m_Opcode.rd)
+            {
+                if (m_RegWorkingSet.Is64Bit(KnownReg) || !g_GameSettings.core32Bit)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else
+                {
+                    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, m_RegWorkingSet.IsSigned(KnownReg), KnownReg);
+                    m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.m_GPR[UnknownReg].UW[0]));
+                }
+            }
+            else
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
     }
     else
     {
