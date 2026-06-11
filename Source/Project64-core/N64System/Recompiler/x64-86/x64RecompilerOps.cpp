@@ -19,7 +19,8 @@ CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_CompilePC(m_Instruction.Address32()),
     m_ColdEntryOffset(0),
-    m_WarmEntryOffset(0)
+    m_WarmEntryOffset(0),
+    m_ExitLabelCount(0)
 {
 }
 
@@ -729,7 +730,41 @@ void CX64RecompilerOps::SPECIAL_DDIVU()
 
 void CX64RecompilerOps::SPECIAL_ADD()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    const int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
+    const int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
+
+    if (m_RegWorkingSet.IsConst(source1) && m_RegWorkingSet.IsConst(source2))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rd);
+    const asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gp(), source1);
+    if (m_RegWorkingSet.IsConst(source2))
+    {
+        m_Assembler.add(Reg.r32(), m_RegWorkingSet.GetMipsRegLo(source2));
+    }
+    else if (m_RegWorkingSet.IsKnown(source2) && m_RegWorkingSet.IsMapped(source2))
+    {
+        m_Assembler.add(Reg.r32(), m_RegWorkingSet.GetMipsRegMap(source2).r32());
+    }
+    else
+    {
+        m_Assembler.AddDwordFromVariable(Reg, &m_Reg.m_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow, &CX64Ops::JoLabel);
+
+    if (m_Opcode.rd != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), Reg.r32());
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_ADDU()
@@ -1315,8 +1350,22 @@ void CX64RecompilerOps::PostCompileOpcode(void)
     }
 }
 
-void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo & ExitRegSet, ExitReason reason)
+void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo ExitRegSet, ExitReason reason, void (CX64Ops::*x64Jmp)(const char * LabelName, asmjit::Label & JumpLabel))
 {
+    if (x64Jmp != nullptr)
+    {
+        asmjit::Label ExitLabel = m_Assembler.newLabel();
+        const stdstr ExitName = stdstr_f("Exit_%08X_%d", JumpPC, m_ExitLabelCount++);
+        (m_Assembler.*x64Jmp)(ExitName.c_str(), ExitLabel);
+        m_Assembler.EnterSecondarySection();
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      %s:", ExitName.c_str());
+        m_Assembler.bind(ExitLabel);
+        CompileExit((uint32_t)-1, TargetPC, ExitRegSet, reason);
+        m_Assembler.EnterPrimarySection();
+        return;
+    }
+
     ExitRegSet.WriteBackRegisters();
     if (TargetPC != (uint32_t)-1)
     {
@@ -1338,6 +1387,23 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         }
         ExitCodeBlock();
         break;
+    case ExitReason_ExceptionOverflow:
+    {
+        const bool InDelaySlot = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.mov(asmjit::x86::rdx, EXC_OV);
+        m_Assembler.xor_(asmjit::x86::r8d, asmjit::x86::r8d);
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::TriggerException), "CRegisters::TriggerException");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        m_Assembler.MoveVariable32ToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
+        m_Assembler.cdq();
+        m_Assembler.MovDwordToVariable(reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitCodeBlock();
+        break;
+    }
     default:
         WriteTrace(TraceRecompiler, TraceError, "CX64RecompilerOps::CompileExit: unhandled exit reason (%d)", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);

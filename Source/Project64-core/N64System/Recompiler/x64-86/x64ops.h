@@ -13,15 +13,18 @@ class CX64Ops :
 public:
     CX64Ops(CCodeBlock & CodeBlock);
 
+    void JoLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
     void MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
     void MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
+    void AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     void EnterPrimarySection();
     void EnterSecondarySection();

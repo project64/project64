@@ -142,6 +142,12 @@ void CX64Ops::AddLabelSymbol(const asmjit::Label & Label, const char * Symbol)
     }
 }
 
+void CX64Ops::JoLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddLabelSymbol(JumpLabel, LabelName);
+    jo(JumpLabel);
+}
+
 void CX64Ops::JsLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     AddLabelSymbol(JumpLabel, LabelName);
@@ -186,6 +192,12 @@ void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, con
     }
 }
 
+void CX64Ops::MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    mov(Reg.r64(), asmjit::x86::qword_ptr((uintptr_t)Variable));
+}
+
 void CX64Ops::MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
@@ -203,6 +215,12 @@ void CX64Ops::MovQwordToVariable(void * Variable, const char * VariableName, con
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
     mov(asmjit::x86::qword_ptr((uintptr_t)Variable), Src.r64());
+}
+
+void CX64Ops::AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    add(Reg.r32(), asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(Variable)));
 }
 
 void CX64Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
