@@ -600,6 +600,10 @@ void CX64RecompilerOps::SD()
 
 void CX64RecompilerOps::SPECIAL_SLL()
 {
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
