@@ -193,6 +193,18 @@ bool CX64RegInfo::operator!=(const CX64RegInfo & Right) const
     return !(Right == *this);
 }
 
+CX64RegInfo CX64RegInfo::WithAddedCycles(uint32_t Cycles) const
+{
+    CX64RegInfo Result(*this);
+    Result.SetBlockCycleCount(Result.GetBlockCycleCount() + Cycles);
+    return Result;
+}
+
+bool CX64RegInfo::IsTempMapped(REG_MAPPED Mapping)
+{
+    return Mapping == Temp_Mapped32 || Mapping == Temp_Mapped64;
+}
+
 const asmjit::x86::Gp & CX64RegInfo::GetMipsRegMap(int32_t Reg) const
 {
     return m_RegMap[Reg];
@@ -299,6 +311,12 @@ void CX64RegInfo::AfterCallDirect(void)
 bool CX64RegInfo::UnMap_X64reg(const asmjit::x86::Gp & Reg)
 {
     const uint32_t RegIndex = Reg.id();
+    if (GetX64Protected(RegIndex))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return false;
+    }
+
     if (GetX64Mapped(RegIndex) == NotMapped)
     {
         if (!GetX64Protected(RegIndex))
@@ -326,11 +344,154 @@ bool CX64RegInfo::UnMap_X64reg(const asmjit::x86::Gp & Reg)
             }
         }
     }
+    else if (IsTempMapped(GetX64Mapped(RegIndex)))
+    {
+        m_CodeBlock.Log("    regcache: unallocate %s from temp storage", X64GpName(Reg));
+        SetX64Mapped(RegIndex, NotMapped);
+        SetX64Protected(RegIndex, false);
+        return true;
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     return false;
+}
+
+asmjit::x86::Gp CX64RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, asmjit::RegType RegType)
+{
+    if (Reg.isType(asmjit::RegType::kX86_Gpq))
+    {
+        if (RegType != asmjit::RegType::kX86_Gpq)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (Reg.isType(asmjit::RegType::kX86_Gpd))
+    {
+        if (RegType != asmjit::RegType::kX86_Gpd)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+
+    const REG_MAPPED TempMapping = RegType == asmjit::RegType::kX86_Gpq ? Temp_Mapped64 : Temp_Mapped32;
+
+    if (Reg.isValid())
+    {
+        if (RegType == asmjit::RegType::kX86_Gpd)
+        {
+            Reg = Reg.r32();
+        }
+        else if (RegType == asmjit::RegType::kX86_Gpq)
+        {
+            Reg = Reg.r64();
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else
+    {
+        static const uint32_t prefer[] = {
+            asmjit::x86::Gp::kIdAx,
+            asmjit::x86::Gp::kIdCx,
+            asmjit::x86::Gp::kIdDx,
+            asmjit::x86::Gp::kIdR8,
+            asmjit::x86::Gp::kIdR9,
+            asmjit::x86::Gp::kIdR10,
+            asmjit::x86::Gp::kIdR11,
+        };
+        for (size_t k = 0; k < sizeof(prefer) / sizeof(prefer[0]); k++)
+        {
+            if (!GetX64Protected(prefer[k]) && (GetX64Mapped(prefer[k]) == NotMapped || GetX64Mapped(prefer[k]) == TempMapping))
+            {
+                Reg = GetX64RegFromPhysId(prefer[k], RegType);
+                break;
+            }
+        }
+        if (!Reg.isValid())
+        {
+            Reg = FreeX64Reg(RegType);
+            if (!Reg.isValid())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+                return asmjit::x86::Gp();
+            }
+        }
+    }
+
+    m_CodeBlock.Log("    regcache: allocate %s as %s temp storage", X64GpName(Reg), RegType == asmjit::RegType::kX86_Gpq ? "64-bit" : "32-bit");
+
+    if (MipsReg >= 0)
+    {
+        if (RegType == asmjit::RegType::kX86_Gpq)
+        {
+            if (IsUnknown(MipsReg))
+            {
+                m_Assembler.MoveVariable64ToX64reg(Reg, &m_Reg.m_GPR[MipsReg].UDW, CRegName::GPR[MipsReg]);
+            }
+            else if (IsMapped(MipsReg))
+            {
+                if (Is64Bit(MipsReg))
+                {
+                    m_Assembler.mov(Reg.r64(), GetMipsRegMap(MipsReg).r64());
+                }
+                else if (IsSigned(MipsReg))
+                {
+                    m_Assembler.movsxd(Reg, GetMipsRegMap(MipsReg).r32());
+                }
+                else
+                {
+                    m_Assembler.mov(Reg.r32(), GetMipsRegMap(MipsReg).r32());
+                }
+            }
+            else
+            {
+                if (Is64Bit(MipsReg))
+                {
+                    m_Assembler.mov(Reg.r64(), GetMipsReg(MipsReg));
+                }
+                else if (IsSigned(MipsReg))
+                {
+                    m_Assembler.mov(Reg.r32(), GetMipsRegLo(MipsReg));
+                    m_Assembler.movsxd(Reg, Reg.r32());
+                }
+                else
+                {
+                    m_Assembler.mov(Reg.r32(), GetMipsRegLo(MipsReg));
+                }
+            }
+        }
+        else
+        {
+            if (IsUnknown(MipsReg))
+            {
+                m_Assembler.MoveVariable32ToX64reg(Reg, &m_Reg.m_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg]);
+            }
+            else if (IsMapped(MipsReg))
+            {
+                m_Assembler.mov(Reg.r32(), GetMipsRegMap(MipsReg).r32());
+            }
+            else
+            {
+                m_Assembler.mov(Reg.r32(), GetMipsRegLo(MipsReg));
+            }
+        }
+    }
+    const uint32_t RegIndex = Reg.id();
+    SetX64Mapped(RegIndex, TempMapping);
+    SetX64Protected(RegIndex, true);
+    for (int i = 0; i < x64PhysRegCount; i++)
+    {
+        if (m_x64reg_MapOrder[i] > 0)
+        {
+            m_x64reg_MapOrder[i] += 1;
+        }
+    }
+    SetX64MapOrder(RegIndex, 1);
+    return Reg;
 }
 
 void CX64RegInfo::ProtectGPR(uint32_t MipsReg)

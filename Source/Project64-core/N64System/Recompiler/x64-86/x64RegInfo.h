@@ -21,7 +21,11 @@ public:
     {
         NotMapped,
         GPR_Mapped,
+        Temp_Mapped32,
+        Temp_Mapped64,
     };
+
+    static bool IsTempMapped(REG_MAPPED Mapping);
 
     CX64RegInfo(CCodeBlock & CodeBlock, CX64Ops & Assembler);
     CX64RegInfo(const CX64RegInfo &);
@@ -32,10 +36,13 @@ public:
     bool operator==(const CX64RegInfo & right) const;
     bool operator!=(const CX64RegInfo & right) const;
 
+    CX64RegInfo WithAddedCycles(uint32_t Cycles) const;
+
     void ResetRegisterProtection();
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
+    asmjit::x86::Gp Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, asmjit::RegType RegType = asmjit::RegType::kX86_Gpd);
     void ProtectGPR(uint32_t MipsReg);
     const asmjit::x86::Gp & GetMipsRegMap(int32_t Reg) const;
     void SetMipsRegMap(int32_t MipsReg, const asmjit::x86::Gp & Reg);
