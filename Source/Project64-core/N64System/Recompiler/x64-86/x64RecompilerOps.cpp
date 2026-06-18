@@ -17,6 +17,7 @@ CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_MMU(System.m_MMU_VM),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
+    m_EffectDelaySlot(false),
     m_CompilePC(m_Instruction.Address32()),
     m_ColdEntryOffset(0),
     m_WarmEntryOffset(0),
@@ -43,9 +44,134 @@ void CX64RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare CompareTyp
     }
 }
 
-void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare /*CompareType*/, bool /*Link*/)
+void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool Link)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        Compile_BranchCompare(CompareType);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8 && (m_CompilePC & 0xFFC) != 0xFFC)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        if ((m_CompilePC & 0xFFC) != 0xFFC)
+        {
+            R4300iOpcode DelaySlot;
+            m_EffectDelaySlot = g_MMU->MemoryValue32((uint32_t)(m_CompilePC + 4), DelaySlot.Value) && R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value);
+        }
+        else
+        {
+            m_EffectDelaySlot = true;
+        }
+        m_Section->m_Jump.JumpPC = (uint32_t)m_CompilePC;
+        m_Section->m_Jump.TargetPC = (uint32_t)(m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4);
+        if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+        {
+            m_Section->m_Jump.TargetPC += 4;
+            m_EffectDelaySlot = true;
+        }
+        if (m_Section->m_JumpSection != nullptr)
+        {
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+        }
+        else
+        {
+            m_Section->m_Jump.BranchLabel = stdstr_f("Exit_%X_jump_%X", m_Section->m_EnterPC, m_Section->m_Jump.TargetPC);
+        }
+        m_Section->m_Jump.LinkLocation = asmjit::Label();
+        m_Section->m_Jump.LinkLocation2 = asmjit::Label();
+        m_Section->m_Jump.DoneDelaySlot = false;
+        m_Section->m_Cont.JumpPC = (uint32_t)m_CompilePC;
+        m_Section->m_Cont.TargetPC = (uint32_t)(m_CompilePC + 8);
+        if (m_Section->m_ContinueSection != nullptr)
+        {
+            m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
+        }
+        else
+        {
+            m_Section->m_Cont.BranchLabel = stdstr_f("Exit_%X_continue_%X", m_Section->m_EnterPC, m_Section->m_Cont.TargetPC);
+        }
+        m_Section->m_Cont.LinkLocation = asmjit::Label();
+        m_Section->m_Cont.LinkLocation2 = asmjit::Label();
+        m_Section->m_Cont.DoneDelaySlot = false;
+        if (m_Section->m_Jump.TargetPC < m_Section->m_Cont.TargetPC)
+        {
+            m_Section->m_Cont.FallThrough = false;
+            m_Section->m_Jump.FallThrough = true;
+        }
+        else
+        {
+            m_Section->m_Cont.FallThrough = true;
+            m_Section->m_Jump.FallThrough = false;
+        }
+
+        if (Link)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        if (m_EffectDelaySlot)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+        {
+            m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
+    {
+        if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (m_EffectDelaySlot)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            if (m_Section->m_Jump.TargetPC != m_Section->m_Cont.TargetPC)
+            {
+                Compile_BranchCompare(CompareType);
+                m_RegWorkingSet.ResetRegisterProtection();
+                m_Section->m_Cont.RegSet = m_RegWorkingSet;
+                m_Section->m_Jump.RegSet = m_RegWorkingSet;
+                if (m_Section->m_Cont.LinkAddress != (uint32_t)-1)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+            }
+            else
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        m_Section->GenerateSectionLinkage();
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType, bool Link)

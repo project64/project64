@@ -252,6 +252,7 @@ private:
     CX64Ops m_Assembler;
     CMipsMemoryVM & m_MMU;
     PIPELINE_STAGE m_PipelineStage;
+    bool m_EffectDelaySlot;
     const uint32_t & m_CompilePC;
     uint32_t m_ColdEntryOffset;
     uint32_t m_WarmEntryOffset;
