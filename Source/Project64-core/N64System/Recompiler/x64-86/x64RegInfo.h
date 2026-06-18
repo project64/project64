@@ -42,6 +42,7 @@ public:
     void BeforeCallDirect(void);
     void AfterCallDirect(void);
     void Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad);
+    void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
     asmjit::x86::Gp Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, asmjit::RegType RegType = asmjit::RegType::kX86_Gpd);
     void ProtectGPR(uint32_t MipsReg);
     const asmjit::x86::Gp & GetMipsRegMap(int32_t Reg) const;
