@@ -917,7 +917,7 @@ uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
         Log("Start of block: %X", VAddrEnter());
         Log("Number of sections: %d", NoOfSections());
         Log("====== Asm Code ======");
-        for (uint32_t Addr = m_VAddrEnter; Addr < m_VAddrLast; Addr += 4)
+        for (uint32_t Addr = m_VAddrEnter; Addr <= m_VAddrLast; Addr += 4)
         {
             R4300iOpcode Opcode;
             g_MMU->MemoryValue32(Addr, Opcode.Value);

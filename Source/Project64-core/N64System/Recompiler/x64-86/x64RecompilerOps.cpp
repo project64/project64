@@ -997,7 +997,43 @@ void CX64RecompilerOps::SPECIAL_AND()
 
 void CX64RecompilerOps::SPECIAL_OR()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    const bool use32BitPath = m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rs);
+    if (use32BitPath)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), asmjit::x86::qword_ptr(reinterpret_cast<uintptr_t>(&m_Reg.m_GPR[m_Opcode.rs].UDW)));
+        }
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_XOR()
