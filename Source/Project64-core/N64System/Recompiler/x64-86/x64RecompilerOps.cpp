@@ -806,7 +806,13 @@ void CX64RecompilerOps::SPECIAL_SYNC()
 
 void CX64RecompilerOps::SPECIAL_MFLO()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, -1);
+    m_Assembler.MoveVariable64ToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd), &m_Reg.m_LO.UDW, "RegLO.UDW");
 }
 
 void CX64RecompilerOps::SPECIAL_MTLO()
