@@ -632,7 +632,27 @@ void CX64RecompilerOps::SW()
 {
     if (!g_DebugSettings.haveWriteBP && m_Opcode.base == 29 && g_GameSettings.fastSP)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        }
+
+        const asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(asmjit::x86::Gpq(), true, true);
+        const int32_t offset = (int16_t)m_Opcode.offset;
+
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            m_Assembler.mov(asmjit::x86::dword_ptr(StackReg, offset), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_Assembler.mov(asmjit::x86::dword_ptr(StackReg, offset), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+        }
+        else
+        {
+            const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+            m_Assembler.mov(asmjit::x86::dword_ptr(StackReg, offset), ValueReg.r32());
+        }
         return;
     }
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
