@@ -391,7 +391,8 @@ void CX64RecompilerOps::ADDIU()
 
     if (g_GameSettings.fastSP && m_Opcode.rs == 29 && m_Opcode.rt == 29)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(asmjit::x86::Gpq(), true, true);
+        m_Assembler.add(StackReg.r64(), (int32_t)((int16_t)m_Opcode.immediate));
     }
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
@@ -406,7 +407,7 @@ void CX64RecompilerOps::ADDIU()
     else
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
-        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), static_cast<int32_t>((int16_t)m_Opcode.immediate));
+        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), (int32_t)((int16_t)m_Opcode.immediate));
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)

@@ -7,6 +7,7 @@
 class CCodeBlock;
 class CX64Ops;
 class CRegisters;
+class CRecompiler;
 
 class CX64RegInfo :
     public CRegBase
@@ -23,6 +24,7 @@ public:
         GPR_Mapped,
         Temp_Mapped32,
         Temp_Mapped64,
+        Stack_Mapped,
     };
 
     static bool IsTempMapped(REG_MAPPED Mapping);
@@ -45,6 +47,8 @@ public:
     void Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad);
     asmjit::x86::Gp Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, asmjit::RegType RegType = asmjit::RegType::kX86_Gpd);
     void ProtectGPR(uint32_t MipsReg);
+    asmjit::x86::Gp Get_MemoryStack() const;
+    asmjit::x86::Gp Map_MemoryStack(const asmjit::x86::Gp & Reg, bool bMapRegister, bool LoadValue);
     const asmjit::x86::Gp & GetMipsRegMap(int32_t Reg) const;
     void SetMipsRegMap(int32_t MipsReg, const asmjit::x86::Gp & Reg);
 

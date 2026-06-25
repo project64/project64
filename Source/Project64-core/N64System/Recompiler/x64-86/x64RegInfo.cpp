@@ -3,7 +3,9 @@
 
 #include <Project64-core/N64System/Mips/Register.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
+#include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/x64-86/x64RegInfo.h>
+#include <Project64-core/N64System/SystemGlobals.h>
 
 namespace
 {
@@ -551,6 +553,57 @@ void CX64RegInfo::ProtectGPR(uint32_t MipsReg)
         return;
     }
     SetX64Protected(GetMipsRegMap(MipsReg).id(), true);
+}
+
+asmjit::x86::Gp CX64RegInfo::Get_MemoryStack() const
+{
+    for (uint32_t k = 0; k < kX64AllocatableRegCount; k++)
+    {
+        const uint32_t physId = kX64AllocatableRegIds[k];
+        if (GetX64Mapped(physId) == Stack_Mapped)
+        {
+            return GetX64RegFromPhysId(physId, asmjit::RegType::kX86_Gpq);
+        }
+    }
+    return asmjit::x86::Gp();
+}
+
+asmjit::x86::Gp CX64RegInfo::Map_MemoryStack(const asmjit::x86::Gp & Reg, bool bMapRegister, bool LoadValue)
+{
+    asmjit::x86::Gp CurrentMap = Get_MemoryStack();
+    if (!bMapRegister)
+    {
+        return CurrentMap;
+    }
+
+    if (CurrentMap.isValid() && CurrentMap == Reg)
+    {
+        return CurrentMap;
+    }
+
+    if (!Reg.isValid())
+    {
+        if (CurrentMap.isValid())
+        {
+            return CurrentMap;
+        }
+        asmjit::x86::Gp MemoryStackReg = FreeX64Reg(asmjit::RegType::kX86_Gpq);
+        if (!MemoryStackReg.isValid())
+        {
+            g_Notify->DisplayError("Map_MemoryStack\n\nOut of registers");
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return asmjit::x86::Gp();
+        }
+        SetX64Mapped(MemoryStackReg.id(), Stack_Mapped);
+        m_CodeBlock.Log("    regcache: allocate %s as Memory Stack", X64GpName(MemoryStackReg));
+        if (LoadValue)
+        {
+            m_Assembler.MoveVariable64ToX64reg(MemoryStackReg, &g_Recompiler->MemoryStackPos(), "MemoryStack");
+        }
+        return MemoryStackReg;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return Reg;
 }
 
 void CX64RegInfo::Map_GPR_32bit(int32_t MipsReg, bool SignValue, int32_t MipsRegToLoad)
