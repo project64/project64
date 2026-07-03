@@ -1889,19 +1889,19 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
     case 0x04600000u:
         switch (PAddr)
         {
-        case 0x04600000u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DRAM_ADDR_REG)); break;
-        case 0x04600004u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_CART_ADDR_REG)); break;
-        case 0x04600008u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_RD_LEN_REG)); break;
-        case 0x0460000Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_WR_LEN_REG)); break;
-        case 0x04600010u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_STATUS_REG)); break;
-        case 0x04600014u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DOMAIN1_REG)); break;
-        case 0x04600018u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_PWD_REG)); break;
-        case 0x0460001Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_PGS_REG)); break;
-        case 0x04600020u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM1_RLS_REG)); break;
-        case 0x04600024u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_DOMAIN2_REG)); break;
-        case 0x04600028u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_PWD_REG)); break;
-        case 0x0460002Cu: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_PGS_REG)); break;
-        case 0x04600030u: m_Assembler.mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.PI_BSD_DOM2_RLS_REG)); break;
+        case 0x04600000u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_DRAM_ADDR_REG, "PI_DRAM_ADDR_REG", ResultSigned); break;
+        case 0x04600004u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_CART_ADDR_REG, "PI_CART_ADDR_REG", ResultSigned); break;
+        case 0x04600008u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_RD_LEN_REG, "PI_RD_LEN_REG", ResultSigned); break;
+        case 0x0460000Cu: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_WR_LEN_REG, "PI_WR_LEN_REG", ResultSigned); break;
+        case 0x04600010u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_STATUS_REG, "PI_STATUS_REG", ResultSigned); break;
+        case 0x04600014u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_DOMAIN1_REG, "PI_DOMAIN1_REG", ResultSigned); break;
+        case 0x04600018u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM1_PWD_REG, "PI_BSD_DOM1_PWD_REG", ResultSigned); break;
+        case 0x0460001Cu: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM1_PGS_REG, "PI_BSD_DOM1_PGS_REG", ResultSigned); break;
+        case 0x04600020u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM1_RLS_REG, "PI_BSD_DOM1_RLS_REG", ResultSigned); break;
+        case 0x04600024u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_DOMAIN2_REG, "PI_DOMAIN2_REG", ResultSigned); break;
+        case 0x04600028u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM2_PWD_REG, "PI_BSD_DOM2_PWD_REG", ResultSigned); break;
+        case 0x0460002Cu: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM2_PGS_REG, "PI_BSD_DOM2_PGS_REG", ResultSigned); break;
+        case 0x04600030u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.PI_BSD_DOM2_RLS_REG, "PI_BSD_DOM2_RLS_REG", ResultSigned); break;
         default:
             m_Assembler.xor_(Reg, Reg);
             if (g_DebugSettings.breakOnUnhandledMemory)
@@ -1909,10 +1909,6 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             break;
-        }
-        if (ResultSigned)
-        {
-            m_Assembler.movsxd(Reg, Reg.r32());
         }
         return false;
     default:

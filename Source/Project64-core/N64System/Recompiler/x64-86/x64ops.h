@@ -21,6 +21,7 @@ public:
     void X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
+    void MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, bool SignExtend);
     void MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);

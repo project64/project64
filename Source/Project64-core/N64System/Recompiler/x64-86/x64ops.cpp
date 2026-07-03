@@ -241,6 +241,19 @@ void CX64Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char *
     sub(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
 }
 
+void CX64Ops::MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, bool SignExtend)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    if (SignExtend)
+    {
+        movsxd(Reg.r64(), asmjit::x86::dword_ptr((uintptr_t)Variable));
+    }
+    else
+    {
+        mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)Variable));
+    }
+}
+
 void CX64Ops::MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
