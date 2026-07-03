@@ -980,7 +980,38 @@ void CX64RecompilerOps::SPECIAL_ADD()
 
 void CX64RecompilerOps::SPECIAL_ADDU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    const int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
+    const int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
+
+    if (m_RegWorkingSet.IsConst(source1) && m_RegWorkingSet.IsConst(source2))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, source1);
+    if (m_RegWorkingSet.IsConst(source2))
+    {
+        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegLo(source2));
+    }
+    else if (m_RegWorkingSet.IsKnown(source2) && m_RegWorkingSet.IsMapped(source2))
+    {
+        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(source2).r32());
+    }
+    else
+    {
+        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.m_GPR[source2].W[0]));
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SUB()
