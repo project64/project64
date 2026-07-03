@@ -52,6 +52,7 @@ public:
     const asmjit::x86::Gp & GetMipsRegMap(int32_t Reg) const;
     void SetMipsRegMap(int32_t MipsReg, const asmjit::x86::Gp & Reg);
 
+    uint32_t GetX64MapOrder(uint32_t PhysId) const;
     bool GetX64Protected(uint32_t PhysId) const;
     REG_MAPPED GetX64Mapped(uint32_t PhysId) const;
     void SetX64MapOrder(uint32_t PhysId, uint32_t Order);
@@ -65,6 +66,7 @@ private:
     CX64RegInfo() = delete;
 
     asmjit::x86::Gp FreeX64Reg(asmjit::RegType RegType);
+    asmjit::x86::Gp UnMap_TempReg(asmjit::RegType RegType);
     bool UnMap_X64reg(const asmjit::x86::Gp & Reg);
 
     CRegisters & m_Reg;
