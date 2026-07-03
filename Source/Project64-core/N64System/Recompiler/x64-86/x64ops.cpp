@@ -160,6 +160,18 @@ void CX64Ops::JeLabel(const char * LabelName, asmjit::Label & JumpLabel)
     je(JumpLabel);
 }
 
+void CX64Ops::JneLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddLabelSymbol(JumpLabel, LabelName);
+    jne(JumpLabel);
+}
+
+void CX64Ops::JmpLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    AddLabelSymbol(JumpLabel, LabelName);
+    jmp(JumpLabel);
+}
+
 void CX64Ops::X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
@@ -285,6 +297,52 @@ void CX64Ops::EnterPrimarySection()
 void CX64Ops::EnterSecondarySection()
 {
     section(m_SecondarySection);
+}
+
+void CX64Ops::BreakPointNotification(const char * FileName, int32_t LineNumber)
+{
+    g_Notify->BreakPoint(FileName, LineNumber);
+}
+
+void CX64Ops::X64BreakPoint(const char * FileName, int32_t LineNumber)
+{
+    push(asmjit::x86::rax);
+    push(asmjit::x86::rcx);
+    push(asmjit::x86::rdx);
+    push(asmjit::x86::rbx);
+    push(asmjit::x86::rbp);
+    push(asmjit::x86::rsi);
+    push(asmjit::x86::rdi);
+    push(asmjit::x86::r8);
+    push(asmjit::x86::r9);
+    push(asmjit::x86::r10);
+    push(asmjit::x86::r11);
+    push(asmjit::x86::r12);
+    push(asmjit::x86::r13);
+    push(asmjit::x86::r14);
+    push(asmjit::x86::r15);
+
+    MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(FileName), FileName);
+    mov(asmjit::x86::edx, LineNumber);
+    sub(asmjit::x86::rsp, 32);
+    CallFunc(reinterpret_cast<uintptr_t>(&CX64Ops::BreakPointNotification), "BreakPointNotification");
+    add(asmjit::x86::rsp, 32);
+
+    pop(asmjit::x86::r15);
+    pop(asmjit::x86::r14);
+    pop(asmjit::x86::r13);
+    pop(asmjit::x86::r12);
+    pop(asmjit::x86::r11);
+    pop(asmjit::x86::r10);
+    pop(asmjit::x86::r9);
+    pop(asmjit::x86::r8);
+    pop(asmjit::x86::rdi);
+    pop(asmjit::x86::rsi);
+    pop(asmjit::x86::rbp);
+    pop(asmjit::x86::rbx);
+    pop(asmjit::x86::rdx);
+    pop(asmjit::x86::rcx);
+    pop(asmjit::x86::rax);
 }
 
 void CX64Ops::CallFunc(uintptr_t FunctPtr, const char * FunctName)

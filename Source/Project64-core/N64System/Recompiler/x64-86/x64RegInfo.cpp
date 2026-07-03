@@ -353,6 +353,14 @@ bool CX64RegInfo::UnMap_X64reg(const asmjit::x86::Gp & Reg)
         SetX64Protected(RegIndex, false);
         return true;
     }
+    else if (GetX64Mapped(RegIndex) == CX64RegInfo::Stack_Mapped)
+    {
+        m_CodeBlock.Log("    regcache: unallocate %s from memory stack", X64GpName(Reg));
+        m_Assembler.MovQwordToVariable(&g_Recompiler->MemoryStackPos(), "MemoryStack", Reg);
+        SetX64Mapped(RegIndex, NotMapped);
+        SetX64Protected(RegIndex, false);
+        return true;
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);

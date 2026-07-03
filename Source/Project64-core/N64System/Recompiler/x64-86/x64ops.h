@@ -16,6 +16,8 @@ public:
     void JoLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void JneLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void JmpLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
@@ -28,6 +30,7 @@ public:
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     void EnterPrimarySection();
     void EnterSecondarySection();
+    void X64BreakPoint(const char * FileName, int32_t LineNumber);
     void CallFunc(uintptr_t FunctPtr, const char * FunctName);
     void CallThis(void * ThisPtr, uintptr_t FunctPtr, const char * FunctName);
 
@@ -40,6 +43,8 @@ private:
     void AddLabelSymbol(const asmjit::Label & Label, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const std::string & Symbol);
+
+    static void BreakPointNotification(const char * FileName, int32_t LineNumber);
 
     typedef struct
     {
