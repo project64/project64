@@ -1234,10 +1234,10 @@ void CX64RecompilerOps::SPECIAL_SLTU()
             }
             else
             {
-                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, -1);
+                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, false, -1);
                 const asmjit::x86::Gp & Rd = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd);
-                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
                 m_Assembler.xor_(Rd.r32(), Rd.r32());
+                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
                 m_Assembler.setb(Rd.r8Lo());
             }
         }
