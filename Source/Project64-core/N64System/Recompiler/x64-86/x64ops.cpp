@@ -175,13 +175,27 @@ void CX64Ops::JmpLabel(const char * LabelName, asmjit::Label & JumpLabel)
 void CX64Ops::X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    cmp(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        cmp(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    mov(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName)
@@ -207,50 +221,92 @@ void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, con
 void CX64Ops::MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    mov(Reg.r64(), asmjit::x86::qword_ptr((uintptr_t)Variable));
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        mov(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (Src.isType(asmjit::RegType::kX86_Gpq))
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
     {
-        mov(asmjit::x86::dword_ptr((uintptr_t)Variable), Src.r32());
+        if (Src.isType(asmjit::RegType::kX86_Gpq))
+        {
+            mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Src.r32());
+        }
+        else
+        {
+            mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Src);
+        }
     }
     else
     {
-        mov(asmjit::x86::dword_ptr((uintptr_t)Variable), Src);
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
 void CX64Ops::MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    mov(asmjit::x86::qword_ptr((uintptr_t)Variable), Src.r64());
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), Src.r64());
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    add(Reg.r32(), asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(Variable)));
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        add(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    sub(asmjit::x86::dword_ptr((uintptr_t)Variable), Const);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        sub(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64Ops::MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, bool SignExtend)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (SignExtend)
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
     {
-        movsxd(Reg.r64(), asmjit::x86::dword_ptr((uintptr_t)Variable));
+        if (SignExtend)
+        {
+            movsxd(Reg.r64(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
+        }
+        else
+        {
+            mov(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
+        }
     }
     else
     {
-        mov(Reg.r32(), asmjit::x86::dword_ptr((uintptr_t)Variable));
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 }
 
