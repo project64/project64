@@ -28,6 +28,7 @@ public:
     void MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
     void MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
     void AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void SubVariableFromX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     void EnterPrimarySection();
     void EnterSecondarySection();
