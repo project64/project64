@@ -1357,6 +1357,19 @@ void CX64RecompilerOps::SPECIAL_SLTU()
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (g_GameSettings.core32Bit)
+    {
+        const asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rs);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, false, -1);
+        const asmjit::x86::Gp & Rd = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd);
+        m_Assembler.xor_(Rd.r32(), Rd.r32());
+        m_Assembler.CmpRegToVariable(Reg, &m_Reg.m_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+        m_Assembler.setb(Rd.r8Lo());
+    }
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -1969,7 +1982,7 @@ void CX64RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
     }
     else if (CheckTimer)
     {
-        m_Assembler.X64CmpConstToVariable(g_NextTimer, "g_NextTimer", 0);
+        m_Assembler.CmpConstToVariable(g_NextTimer, "g_NextTimer", 0);
     }
 
     if (CheckTimer)

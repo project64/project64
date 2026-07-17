@@ -172,12 +172,25 @@ void CX64Ops::JmpLabel(const char * LabelName, asmjit::Label & JumpLabel)
     jmp(JumpLabel);
 }
 
-void CX64Ops::X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
+void CX64Ops::CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
     if (asmjit::Support::isUInt32((uintptr_t)Variable))
     {
         cmp(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
+void CX64Ops::CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        cmp(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
     }
     else
     {

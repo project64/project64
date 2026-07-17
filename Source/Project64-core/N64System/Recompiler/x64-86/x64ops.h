@@ -18,7 +18,8 @@ public:
     void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JneLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JmpLabel(const char * LabelName, asmjit::Label & JumpLabel);
-    void X64CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
+    void CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
+    void CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName = nullptr);
     void MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, bool SignExtend);
