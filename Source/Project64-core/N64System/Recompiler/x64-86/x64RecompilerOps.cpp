@@ -854,7 +854,22 @@ void CX64RecompilerOps::SPECIAL_SRA()
 
 void CX64RecompilerOps::SPECIAL_SLLV()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::ecx, m_Opcode.rs);
+        m_Assembler.and_(asmjit::x86::ecx, 0x1F);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
+        m_Assembler.shl(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::cl);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SRLV()
