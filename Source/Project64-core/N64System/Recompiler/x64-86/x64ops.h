@@ -31,6 +31,7 @@ public:
     void AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubVariableFromX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
+    void XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void EnterPrimarySection();
     void EnterSecondarySection();
     void X64BreakPoint(const char * FileName, int32_t LineNumber);
