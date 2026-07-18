@@ -22,6 +22,7 @@
 #include <Settings/Settings.h>
 
 #include "Config.h"
+#include "VideoRandom.h"
 #include "Util.h"
 #include "3dmath.h"
 #include "Debugger.h"
@@ -61,6 +62,7 @@ unsigned int BMASK = 0x7FFFFF;
 CRDP rdp;
 
 CSettings * g_settings = nullptr;
+CRandom g_VideoRandom;
 
 VOODOO voodoo = { 0, 0, 0,
 0, 0, 0, 0,
@@ -454,7 +456,7 @@ int InitGfx()
     voodoo.gamma_correction = 0;
     voodoo.gamma_table_size = 256;
 
-    srand(g_settings->stipple_pattern());
+    g_VideoRandom.seed(g_settings->stipple_pattern());
     //setPattern();
 
     InitCombine();

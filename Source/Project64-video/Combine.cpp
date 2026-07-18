@@ -9,6 +9,7 @@
 #include "Gfx_1.3.h"
 #include "Util.h"
 #include "Combine.h"
+#include "VideoRandom.h"
 #include "trace.h"
 #include <Project64-video/trace.h>
 
@@ -8287,7 +8288,7 @@ static void cc_env_inter_one_using__one_sub_t0_mul_primlod()
             GFX_CMBX_LOCAL_TEXTURE_RGB, GFX_FUNC_MODE_NEGATIVE_X,
             GFX_CMBX_DETAIL_FACTOR, 0,
             GFX_CMBX_ZERO, 0);
-        cmb.tex_ccolor = rand() & 0xFFFFFF00;
+        cmb.tex_ccolor = VideoRand() & 0xFFFFFF00;
         cmb.tex |= 1;
         percent = (float)(lod_frac) / 255.0f;
         cmb.dc0_detailmax = cmb.dc1_detailmax = percent;
