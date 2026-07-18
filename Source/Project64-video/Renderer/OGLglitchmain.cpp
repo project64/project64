@@ -33,8 +33,17 @@ used only in g_Notify->DisplayError when OpenGL extension loading fails on WGL
 */
 
 #include <Settings/Settings.h>
+#include <Project64-video/NvApiLowLatency.h>
 
 int screen_width, screen_height;
+
+#ifdef _WIN32
+// WGL_EXT_swap_control. Declared locally because the Win32 <GL/gl.h> used by this
+// plugin is GL 1.1 and ships no wglext.h. Lets the (previously ignored) vsync
+// setting actually control the swap interval.
+typedef BOOL(APIENTRY * PFNWGLSWAPINTERVALEXTPROC_LL)(int interval);
+static PFNWGLSWAPINTERVALEXTPROC_LL wglSwapIntervalEXT_LL = nullptr;
+#endif // _WIN32
 
 static inline void opt_glCopyTexImage2D(GLenum target,
     GLint level,
@@ -518,6 +527,10 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
             return false;
         }
     }
+
+    // Best-effort NVIDIA low-latency hint (caps the driver render-ahead queue for
+    // this app's profile). No-op on non-NVIDIA systems.
+    NvApiApplyLowLatency();
 #endif // _WIN32
     lfb_color_fmt = color_format;
     if (origin_location != GFX_ORIGIN_UPPER_LEFT) WriteTrace(TraceGlitch, TraceWarning, "Origin must be in upper left corner");
@@ -593,6 +606,11 @@ bool gfxSstWinOpen(gfxColorFormat_t color_format, gfxOriginLocation_t origin_loc
     wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
     if (wglGetExtensionsStringARB == nullptr)
         wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)dummy_wglGetExtensionsString;
+#endif // _WIN32
+
+#ifdef _WIN32
+    // For the (now functional) vsync setting; null if the driver lacks the ext.
+    wglSwapIntervalEXT_LL = (PFNWGLSWAPINTERVALEXTPROC_LL)wglGetProcAddress("wglSwapIntervalEXT");
 #endif // _WIN32
 
 #ifdef _WIN32
@@ -1462,7 +1480,23 @@ void gfxBufferSwap(uint32_t swap_interval)
     }
 
 #ifdef _WIN32
+    // Apply the requested vsync swap interval (0 = off/lowest latency, 1 = vsync).
+    // This was previously ignored. Only call on change to avoid per-frame driver
+    // churn.
+    static int last_swap_interval = -1;
+    if (wglSwapIntervalEXT_LL != nullptr && (int)swap_interval != last_swap_interval)
+    {
+        wglSwapIntervalEXT_LL((int)swap_interval);
+        last_swap_interval = (int)swap_interval;
+    }
+
     SwapBuffers(wglGetCurrentDC());
+
+    // Cap the driver's render-ahead queue for lower click-to-photon latency:
+    // block until the GPU has finished the just-presented frame so it can't queue
+    // several frames ahead of the display. glFinish is core GL and always present;
+    // the cost is negligible at N64 rendering scale.
+    glFinish();
 #else // _WIN32
 #endif // _WIN32
     for (i = 0; i < nb_fb; i++)

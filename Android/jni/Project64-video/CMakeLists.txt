@@ -18,6 +18,7 @@ add_library(Project64-video SHARED
     F3DTEXA.cpp
     FBtoScreen.cpp
     Main.cpp
+    NvApiLowLatency.cpp
     rdp.cpp
     ScreenResolution.cpp
     Settings.cpp

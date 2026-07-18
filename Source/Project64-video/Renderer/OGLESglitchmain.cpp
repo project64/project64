@@ -1205,6 +1205,10 @@ void gfxBufferSwap(uint32_t swap_interval)
 #else
     SwapBuffers();
 #endif
+    // Cap the driver's render-ahead queue for lower click-to-photon latency: block
+    // until the GPU has finished the just-presented frame so it can't queue several
+    // frames ahead of the display. glFinish is core GL(ES) and always present.
+    glFinish();
     for (i = 0; i < nb_fb; i++)
         fbs[i].buff_clear = 1;
 }

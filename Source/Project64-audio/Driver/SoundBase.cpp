@@ -32,7 +32,10 @@ bool SoundDriverBase::Initialize()
 void SoundDriverBase::AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
     SetFrequency(Frequency, BufferSize);
-    m_MaxBufferSize = (BufferSize * 8);
+    // Reduced from BufferSize * 8 to cut sync-to-audio input latency: the
+    // emulation thread throttles once this backlog fills (see AI_LenChanged), so
+    // a smaller ceiling means fewer emulated frames queued ahead of the speaker.
+    m_MaxBufferSize = (BufferSize * 2);
     if (m_MaxBufferSize > MAX_SIZE)
     {
         m_MaxBufferSize = MAX_SIZE;

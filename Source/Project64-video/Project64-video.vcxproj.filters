@@ -171,6 +171,8 @@
     </ClCompile>
     <ClCompile Include="3dmath.cpp" />
     <ClCompile Include="Combine.cpp" />
+    <ClCompile Include="NvApiLowLatency.cpp" />
+    <ClInclude Include="NvApiLowLatency.h" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DepthBufferRender.cpp" />
     <ClCompile Include="Ext_TxFilter.cpp" />
