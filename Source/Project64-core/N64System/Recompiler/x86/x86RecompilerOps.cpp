@@ -9530,7 +9530,7 @@ void CX86RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         m_Assembler.bind(ContinueFromTimerTest);
     }
 
-    if ((UpdateTimer || g_GameSettings.overClockModifier != 1) && g_SyncSystem)
+    if ((UpdateTimer || g_GameSettings.overClockModifier != 1 || EMULATED_CPU_IPC_BOOSTED) && g_SyncSystem)
     {
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.CallThis((uint32_t)g_SystemTimer, AddressOf(&CSystemTimer::UpdateTimers), "CSystemTimer::UpdateTimers", 4);

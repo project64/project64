@@ -2033,7 +2033,7 @@ void CX64RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
         m_Assembler.bind(ContinueFromTimerTest);
     }
 
-    if ((UpdateTimer || g_GameSettings.overClockModifier != 1) && g_SyncSystem)
+    if ((UpdateTimer || g_GameSettings.overClockModifier != 1 || EMULATED_CPU_IPC_BOOSTED) && g_SyncSystem)
     {
         RegSet.BeforeCallDirect();
         m_Assembler.sub(asmjit::x86::rsp, 32);
