@@ -38,7 +38,10 @@ void CSystemTimer::Reset()
 
 void CSystemTimer::SetTimer(TimerType Type, uint32_t Cycles, bool bRelative)
 {
-    Cycles *= g_GameSettings.overClockModifier;
+    // Scale the raw cycle budget by the overclock modifier and the emulated CPU
+    // IPC boost. The boost is divided back out of the visible COUNT_REGISTER in
+    // UpdateTimers, so it raises instructions-per-Count-cycle (IPC) only.
+    Cycles = (uint32_t)(((uint64_t)Cycles * g_GameSettings.overClockModifier * EMULATED_CPU_IPC_BOOST_NUM) / EMULATED_CPU_IPC_BOOST_DEN);
     if (Type >= MaxTimer || Type == UnknownTimer)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -85,7 +88,7 @@ uint32_t CSystemTimer::GetTimer(TimerType Type)
     {
         return 0x7FFFFFFF;
     }
-    return (uint32_t)(CyclesToTimer / g_GameSettings.overClockModifier);
+    return (uint32_t)(((uint64_t)CyclesToTimer * EMULATED_CPU_IPC_BOOST_DEN) / ((uint64_t)g_GameSettings.overClockModifier * EMULATED_CPU_IPC_BOOST_NUM));
 }
 
 void CSystemTimer::StopTimer(TimerType Type)
@@ -157,13 +160,15 @@ void CSystemTimer::FixTimers()
 
 void CSystemTimer::UpdateTimers()
 {
-    int TimeTaken = (m_LastUpdate - m_NextTimer) / g_GameSettings.overClockModifier;
+    // Divide the raw elapsed budget back out by the overclock modifier and the
+    // IPC boost so the visible COUNT_REGISTER advances at the unscaled rate.
+    int TimeTaken = (int)(((int64_t)(m_LastUpdate - m_NextTimer) * EMULATED_CPU_IPC_BOOST_DEN) / ((int64_t)g_GameSettings.overClockModifier * EMULATED_CPU_IPC_BOOST_NUM));
     if (TimeTaken != 0)
     {
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
         m_Reg.COUNT_REGISTER += TimeTaken;
-        random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * g_GameSettings.overClockModifier) / g_GameSettings.countPerOp);
+        random = (uint32_t)m_Reg.RANDOM_REGISTER - (uint32_t)((((int64_t)TimeTaken * g_GameSettings.overClockModifier * EMULATED_CPU_IPC_BOOST_NUM) / EMULATED_CPU_IPC_BOOST_DEN) / g_GameSettings.countPerOp);
         wired = (uint32_t)m_Reg.WIRED_REGISTER;
         if (wired > 31)
         {

@@ -5,6 +5,8 @@
 // Copyright(C) 2002 Dave2001
 // GNU/GPLv2 licensed: https://gnu.org/licenses/gpl-2.0.html
 
+#include "VideoRandom.h"
+
 static void mod_tex_inter_color_using_factor(uint16_t *dst, int size, uint32_t color, uint32_t factor)
 {
     float percent = factor / 255.0f;
@@ -468,7 +470,7 @@ static void mod_tex_inter_noise_using_col(uint16_t *dst, int size, uint32_t colo
     {
         col = *dst;
         a = col & 0xF000;
-        noise = rand() % 16;
+        noise = VideoRand() % 16;
         r = (uint8_t)(percent_r_i * ((col >> 8) & 0xF) + percent_r * noise);
         g = (uint8_t)(percent_g_i * ((col >> 4) & 0xF) + percent_g * noise);
         b = (uint8_t)(percent_b_i * (col & 0xF) + percent_b * noise);
