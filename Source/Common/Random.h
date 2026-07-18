@@ -18,11 +18,11 @@ public:
         bool operator!=(const State & other) const;
     };
 
-    CRandom();                       // Seed from time(nullptr)
-    CRandom(uint32_t seed_value);    // Deterministic seed (splitmix64 expansion)
+    CRandom();                    // Seed from time(nullptr)
+    CRandom(uint32_t seed_value); // Deterministic seed (splitmix64 expansion)
 
-    void seed(uint32_t seed_value);  // Reseed deterministically
-    uint64_t next();                 // xoshiro512++ output
+    void seed(uint32_t seed_value); // Reseed deterministically
+    uint64_t next();                // xoshiro512++ output
 
     State get_state() const;
     void set_state(const State & state_value);
