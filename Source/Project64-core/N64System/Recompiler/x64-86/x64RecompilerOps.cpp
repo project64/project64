@@ -285,6 +285,8 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
 
 void CX64RecompilerOps::BNE_Compare()
 {
+    asmjit::Label Jump;
+
     if (m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.IsKnown(m_Opcode.rt))
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rs) && m_RegWorkingSet.IsConst(m_Opcode.rt))
@@ -325,7 +327,43 @@ void CX64RecompilerOps::BNE_Compare()
     }
     else if (m_RegWorkingSet.IsKnown(m_Opcode.rs) || m_RegWorkingSet.IsKnown(m_Opcode.rt))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        uint32_t UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (!g_GameSettings.core32Bit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            if (m_RegWorkingSet.IsConst(KnownReg))
+            {
+                m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], m_RegWorkingSet.GetMipsRegLo(KnownReg));
+            }
+            else
+            {
+                m_Assembler.CmpRegToVariable(m_RegWorkingSet.GetMipsRegMap(KnownReg), &m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
+            }
+        }
+        if (m_Section->m_Cont.FallThrough)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_Section->m_Jump.FallThrough)
+        {
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+
+            if (Jump.isValid())
+            {
+                m_CodeBlock.Log("");
+                m_Assembler.bind(Jump);
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else
     {
