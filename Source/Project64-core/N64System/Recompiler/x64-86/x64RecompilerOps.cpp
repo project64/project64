@@ -1361,7 +1361,26 @@ void CX64RecompilerOps::SPECIAL_XOR()
     }
     else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const int KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        const int UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (m_RegWorkingSet.IsMapped(KnownReg))
+        {
+            m_RegWorkingSet.ProtectGPR(KnownReg);
+        }
+        if (m_RegWorkingSet.IsConst(KnownReg))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (g_GameSettings.core32Bit)
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
+            m_Assembler.XorVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd), &m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else if (g_GameSettings.core32Bit)
     {
