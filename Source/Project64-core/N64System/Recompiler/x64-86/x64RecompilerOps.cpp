@@ -2285,7 +2285,11 @@ asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        AddressReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.base);
+        if (m_Opcode.offset != 0)
+        {
+            m_Assembler.add(AddressReg.r32(), static_cast<int32_t>((int16_t)m_Opcode.offset));
+        }
     }
     return AddressReg;
 }
