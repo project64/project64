@@ -295,7 +295,33 @@ void CX64RecompilerOps::BNE_Compare()
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.IsMapped(m_Opcode.rt))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            if (m_RegWorkingSet.Is64Bit(m_Opcode.rs) || m_RegWorkingSet.Is64Bit(m_Opcode.rt))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt));
+                if (m_Section->m_Cont.FallThrough)
+                {
+                    m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+                }
+                else if (m_Section->m_Jump.FallThrough)
+                {
+                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+                }
+                else
+                {
+                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+                    m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+                }
+            }
         }
         else
         {
@@ -347,7 +373,16 @@ void CX64RecompilerOps::BNE_Compare()
         }
         if (m_Section->m_Cont.FallThrough)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (g_GameSettings.core32Bit)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else
+            {
+                m_Section->m_Jump.LinkLocation2 = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation2);
+            }
         }
         else if (m_Section->m_Jump.FallThrough)
         {
