@@ -744,13 +744,66 @@ void CX64RecompilerOps::LW()
     const stdstr MapMissLabel = stdstr_f("MemoryReadMap_%X_Miss", m_CompilePC);
     asmjit::Label AfterLoad = m_Assembler.newLabel();
     asmjit::Label SlowPath = m_Assembler.newLabel();
+
+    const CX64RegInfo PreMapRegSet(m_RegWorkingSet);
     m_Assembler.JeLabel(MapMissLabel.c_str(), SlowPath);
 
     if (m_Opcode.rt != 0)
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
-        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), asmjit::x86::dword_ptr(AddressReg, HostOffsetReg));
+        const asmjit::x86::Gp & DestReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        if (!g_GameSettings.core32Bit)
+        {
+            m_Assembler.movsxd(DestReg.r64(), asmjit::x86::dword_ptr(AddressReg, HostOffsetReg));
+        }
+        else
+        {
+            m_Assembler.mov(DestReg.r32(), asmjit::x86::dword_ptr(AddressReg, HostOffsetReg));
+        }
     }
+
+    m_Assembler.EnterSecondarySection();
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      %s:", MapMissLabel.c_str());
+    m_Assembler.bind(SlowPath);
+
+    m_RegWorkingSet = PreMapRegSet;
+    m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::edx, AddressReg.r32());
+    m_Assembler.MoveConstToX64reg(asmjit::x86::r8, reinterpret_cast<uintptr_t>(&m_TempValue32), "TempValue32");
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LW_VAddr32), "CMipsMemoryVM::LW_VAddr32");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+
+    asmjit::Label SlowPathException = m_Assembler.newLabel();
+    m_Assembler.JeLabel(stdstr_f("MemoryReadMap_%X_Exception", m_CompilePC).c_str(), SlowPathException);
+
+    if (m_Opcode.rt != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+        m_Assembler.MoveVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), &m_TempValue32, "TempValue32", true);
+    }
+
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+    }
+    m_Assembler.JmpLabel(AfterLoadLabel.c_str(), AfterLoad);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MemoryReadMap_%X_Exception:", m_CompilePC);
+    m_Assembler.bind(SlowPathException);
+    CompileExit(m_CompilePC, (uint32_t)-1, PreMapRegSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_Exception);
+
+    m_Assembler.EnterPrimarySection();
 
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      %s:", AfterLoadLabel.c_str());
@@ -760,11 +813,6 @@ void CX64RecompilerOps::LW()
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    m_Assembler.EnterSecondarySection();
-    m_Assembler.bind(SlowPath);
-    m_Assembler.X64BreakPoint(__FILE__, __LINE__);
-    m_Assembler.JmpLabel(AfterLoadLabel.c_str(), AfterLoad);
-    m_Assembler.EnterPrimarySection();
 }
 
 void CX64RecompilerOps::LBU()
