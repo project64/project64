@@ -2149,6 +2149,19 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         ExitCodeBlock();
         break;
     }
+    case ExitReason_Exception:
+        m_Assembler.MoveVariableToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation", false);
+        m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
+        m_Assembler.cdq();
+        m_Assembler.MovDwordToVariable(reinterpret_cast<void *>(reinterpret_cast<uint8_t *>(&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        if (TargetPC == (uint32_t)-1)
+        {
+            ExitRegSet.SetBlockCycleCount(0);
+            UpdateCounters(ExitRegSet, false, false, false);
+        }
+        ExitCodeBlock();
+        break;
     default:
         WriteTrace(TraceRecompiler, TraceError, "CX64RecompilerOps::CompileExit: unhandled exit reason (%d)", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
