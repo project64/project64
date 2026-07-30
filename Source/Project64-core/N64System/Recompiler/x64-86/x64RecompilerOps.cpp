@@ -2350,6 +2350,40 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
 
     switch (PAddr & 0xFFF00000u)
     {
+    case 0x04000000u:
+        if (PAddr < 0x04001000u)
+        {
+            m_Assembler.MoveVariableToX64reg(Reg, (PAddr - 0x04000000u) + m_MMU.Dmem(), stdstr_f("Dmem + 0x%X", PAddr - 0x04000000u).c_str(), ResultSigned);
+        }
+        else if (PAddr < 0x04002000u)
+        {
+            m_Assembler.MoveVariableToX64reg(Reg, (PAddr - 0x04001000u) + m_MMU.Imem(), stdstr_f("Imem + 0x%X", PAddr - 0x04001000u).c_str(), ResultSigned);
+        }
+        else
+        {
+            switch (PAddr)
+            {
+            case 0x04040010u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_STATUS_REG, "SP_STATUS_REG", ResultSigned); break;
+            case 0x04040014u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_DMA_FULL_REG, "SP_DMA_FULL_REG", ResultSigned); break;
+            case 0x04040018u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_DMA_BUSY_REG, "SP_DMA_BUSY_REG", ResultSigned); break;
+            case 0x0404001Cu:
+                m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", ResultSigned);
+                m_Assembler.MoveConstToVariable(&m_Reg.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", 1);
+                break;
+            case 0x04080000u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_PC_REG, "SP_PC_REG", ResultSigned); break;
+            default:
+                m_RegWorkingSet.BeforeCallDirect();
+                m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr, stdstr_f("PAddr 0x%08X", PAddr).c_str());
+                m_Assembler.MoveConstToX64reg(asmjit::x86::r8, reinterpret_cast<uintptr_t>(&m_TempValue32), "m_TempValue32");
+                m_Assembler.sub(asmjit::x86::rsp, 32);
+                m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LW_PhysicalAddress), "CMipsMemoryVM::LW_PhysicalAddress");
+                m_Assembler.add(asmjit::x86::rsp, 32);
+                m_RegWorkingSet.AfterCallDirect();
+                m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32", ResultSigned);
+                break;
+            }
+        }
+        return false;
     case 0x04600000u:
         switch (PAddr)
         {
