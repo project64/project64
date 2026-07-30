@@ -2558,6 +2558,42 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
             }
         }
         break;
+    case 0x04300000u:
+        switch (PAddr)
+        {
+        case 0x04300000u:
+        case 0x0430000Cu:
+        {
+            m_RegWorkingSet.BeforeCallDirect();
+            if (ValueReg != nullptr)
+            {
+                if (*ValueReg != asmjit::x86::r8)
+                {
+                    m_Assembler.mov(asmjit::x86::r8d, ValueReg->r32());
+                }
+            }
+            else
+            {
+                m_Assembler.mov(asmjit::x86::r8d, ValueConst);
+            }
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, (uintptr_t)(&m_MMU.m_MIPSInterfaceHandler), "g_MMU->m_MIPSInterfaceHandler");
+            m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr & 0x1FFFFFFFu);
+            m_Assembler.mov(asmjit::x86::r9d, 0xFFFFFFFFu);
+            m_Assembler.sub(asmjit::x86::rsp, 32);
+            m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
+            m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11, 8));
+            m_Assembler.add(asmjit::x86::rsp, 32);
+            m_RegWorkingSet.AfterCallDirect();
+            break;
+        }
+        default:
+            if (g_DebugSettings.breakOnUnhandledMemory)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            break;
+        }
+        break;
     case 0x04600000u:
         switch (PAddr)
         {
