@@ -40,6 +40,12 @@ void CX64RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare CompareTyp
     {
     case RecompilerBranchCompare_BEQ: BEQ_Compare(); break;
     case RecompilerBranchCompare_BNE: BNE_Compare(); break;
+    case RecompilerBranchCompare_BLTZ: BLTZ_Compare(); break;
+    case RecompilerBranchCompare_BLEZ: BLEZ_Compare(); break;
+    case RecompilerBranchCompare_BGTZ: BGTZ_Compare(); break;
+    case RecompilerBranchCompare_BGEZ: BGEZ_Compare(); break;
+    case RecompilerBranchCompare_COP1BCF: COP1_BCF_Compare(); break;
+    case RecompilerBranchCompare_COP1BCT: COP1_BCT_Compare(); break;
     default:
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
@@ -499,7 +505,31 @@ void CX64RecompilerOps::BLTZ_Compare()
 
 void CX64RecompilerOps::BGEZ_Compare()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_RegWorkingSet.IsSigned(m_Opcode.rs))
+        {
+            m_Section->m_Jump.FallThrough = m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) >= 0;
+            m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
+        }
+        else
+        {
+            m_Section->m_Jump.FallThrough = true;
+            m_Section->m_Cont.FallThrough = false;
+        }
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::COP1_BCF_Compare()
