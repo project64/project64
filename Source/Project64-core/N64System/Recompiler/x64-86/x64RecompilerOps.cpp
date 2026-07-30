@@ -902,7 +902,6 @@ void CX64RecompilerOps::LW()
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
-
 }
 
 void CX64RecompilerOps::LBU()
