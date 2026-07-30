@@ -345,7 +345,15 @@ void CX64Ops::MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable,
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        mov(Reg.r64(), (uintptr_t)Variable);
+        if (SignExtend)
+        {
+            movsxd(Reg.r64(), asmjit::x86::dword_ptr(Reg.r64()));
+        }
+        else
+        {
+            mov(Reg.r32(), asmjit::x86::dword_ptr(Reg.r64()));
+        }
     }
 }
 
