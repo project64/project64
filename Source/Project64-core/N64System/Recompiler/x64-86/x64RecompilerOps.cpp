@@ -2472,6 +2472,92 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
 
     switch (PAddr & 0xFFF00000u)
     {
+    case 0x04000000u:
+        if (PAddr < 0x04001000u)
+        {
+            const uintptr_t dst = (uintptr_t)(m_MMU.Dmem() + (PAddr - 0x04000000u));
+            if (ValueReg != nullptr)
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+            }
+            else
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+            }
+        }
+        else if (PAddr < 0x04002000u)
+        {
+            const uintptr_t dst = (uintptr_t)(m_MMU.Imem() + (PAddr - 0x04001000u));
+            if (ValueReg != nullptr)
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+            }
+            else
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+            }
+        }
+        else
+        {
+            switch (PAddr)
+            {
+            case 0x04040000u:
+            case 0x04040004u:
+            case 0x04040008u:
+            case 0x0404000Cu:
+            case 0x04040010u:
+            {
+                if (PAddr == 0x04040010u)
+                {
+                    UpdateCounters(m_RegWorkingSet, false, true, false);
+                }
+                m_RegWorkingSet.BeforeCallDirect();
+                if (ValueReg != nullptr)
+                {
+                    if (*ValueReg != asmjit::x86::r8)
+                    {
+                        m_Assembler.mov(asmjit::x86::r8d, ValueReg->r32());
+                    }
+                }
+                else
+                {
+                    m_Assembler.mov(asmjit::x86::r8d, ValueConst);
+                }
+                m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(&m_MMU.m_SPRegistersHandler), "g_MMU->m_SPRegistersHandler");
+                m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr & 0x1FFFFFFFu);
+                m_Assembler.mov(asmjit::x86::r9d, 0xFFFFFFFFu);
+                m_Assembler.sub(asmjit::x86::rsp, 32);
+                m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
+                m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11, 8));
+                m_Assembler.add(asmjit::x86::rsp, 32);
+                m_RegWorkingSet.AfterCallDirect();
+                break;
+            }
+            case 0x0404001Cu:
+                m_Assembler.MoveConstToVariable(&m_Reg.SP_SEMAPHORE_REG, "SP_SEMAPHORE_REG", 0);
+                break;
+            case 0x04080000u:
+                if (ValueReg != nullptr)
+                {
+                    m_Assembler.MovDwordToVariable(&m_Reg.SP_PC_REG, "SP_PC_REG", *ValueReg);
+                    {
+                        m_Assembler.AndConstToVariable(&m_Reg.SP_PC_REG, "SP_PC_REG", 0xFFCu);
+                    }
+                }
+                else
+                {
+                    m_Assembler.MoveConstToVariable(&m_Reg.SP_PC_REG, "SP_PC_REG", ValueConst & 0xFFCu);
+                }
+                break;
+            default:
+                if (g_DebugSettings.breakOnUnhandledMemory)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                break;
+            }
+        }
+        break;
     case 0x04600000u:
         switch (PAddr)
         {
