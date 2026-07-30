@@ -117,8 +117,21 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
 
         if (Link)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
+            R4300iInstruction Instruction(m_CompilePC, m_Opcode.Value);
+            uint32_t ReadReg1, ReadReg2;
+            Instruction.ReadsGPR(ReadReg1, ReadReg2);
+
+            if (ReadReg1 != 31 && ReadReg2 != 31)
+            {
+                m_RegWorkingSet.UnMap_GPR(31, false);
+                m_RegWorkingSet.SetMipsRegLo(31, (uint32_t)m_CompilePC + 8);
+                m_RegWorkingSet.SetMipsRegState(31, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            else
+            {
+                m_Section->m_Cont.LinkAddress = (uint32_t)(m_CompilePC + 8);
+                m_Section->m_Jump.LinkAddress = (uint32_t)(m_CompilePC + 8);
+            }
         }
         if (m_EffectDelaySlot)
         {
