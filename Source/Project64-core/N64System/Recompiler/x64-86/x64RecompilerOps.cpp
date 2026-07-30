@@ -427,6 +427,8 @@ void CX64RecompilerOps::BNE_Compare()
 
 void CX64RecompilerOps::BEQ_Compare()
 {
+    asmjit::Label Jump;
+
     if (m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.IsKnown(m_Opcode.rt))
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rs) && m_RegWorkingSet.IsConst(m_Opcode.rt))
@@ -435,15 +437,10 @@ void CX64RecompilerOps::BEQ_Compare()
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
-            else if (m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) == m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt))
-            {
-                m_Section->m_Jump.FallThrough = true;
-                m_Section->m_Cont.FallThrough = false;
-            }
             else
             {
-                m_Section->m_Jump.FallThrough = false;
-                m_Section->m_Cont.FallThrough = true;
+                m_Section->m_Jump.FallThrough = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) == m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt);
+                m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
             }
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.IsMapped(m_Opcode.rt))
@@ -480,6 +477,42 @@ void CX64RecompilerOps::BEQ_Compare()
                     m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
                 }
             }
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rs) || m_RegWorkingSet.IsKnown(m_Opcode.rt))
+    {
+        uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        uint32_t UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (!g_GameSettings.core32Bit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        if (m_RegWorkingSet.IsConst(KnownReg))
+        {
+            m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg], m_RegWorkingSet.GetMipsRegLo(KnownReg));
+        }
+        else
+        {
+            m_Assembler.CmpRegToVariable(m_RegWorkingSet.GetMipsRegMap(KnownReg), &m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
+        }
+        if (m_Section->m_Cont.FallThrough)
+        {
+            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            if (Jump.isValid())
+            {
+                m_CodeBlock.Log("");
+                m_Assembler.bind(Jump);
+            }
+        }
+        else if (m_Section->m_Jump.FallThrough)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     else
