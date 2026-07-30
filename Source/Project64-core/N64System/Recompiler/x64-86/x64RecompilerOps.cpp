@@ -941,6 +941,11 @@ void CX64RecompilerOps::SW()
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if ((Address & 3u) != 0)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
         if (g_DebugSettings.haveWriteBP)
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
@@ -957,7 +962,8 @@ void CX64RecompilerOps::SW()
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+            SW_KnownAddress(Address, &TempReg, 0);
         }
         return;
     }
@@ -2472,6 +2478,35 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
 
     switch (PAddr & 0xFFF00000u)
     {
+    case 0x00000000u:
+    case 0x00100000u:
+    case 0x00200000u:
+    case 0x00300000u:
+    case 0x00400000u:
+    case 0x00500000u:
+    case 0x00600000u:
+    case 0x00700000u:
+        if (g_GameSettings.smmStoreInstruc)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (PAddr < m_MMU.RdramSize())
+        {
+            const uintptr_t dst = reinterpret_cast<uintptr_t>(m_MMU.Rdram() + PAddr);
+            if (ValueReg != nullptr)
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+            }
+            else
+            {
+                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+            }
+        }
+        else if (g_DebugSettings.breakOnUnhandledMemory)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        break;
     case 0x04000000u:
         if (PAddr < 0x04001000u)
         {
