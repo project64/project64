@@ -682,12 +682,12 @@ void CX64RecompilerOps::LUI()
         m_MMU.VAddrToPAddr(((int16_t)m_Opcode.offset << 16), Address);
         const uint64_t stackPtrVal = (uint64_t)(Address + m_MMU.Rdram());
         void * const var = &m_Recompiler->MemoryStackPos();
-        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var)), static_cast<uint32_t>(stackPtrVal));
-        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var) + 4u), static_cast<uint32_t>(stackPtrVal >> 32));
+        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var)), (uint32_t)stackPtrVal);
+        m_Assembler.mov(asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(var) + 4u), (uint32_t)(stackPtrVal >> 32));
     }
 
     m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
-    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, static_cast<uint32_t>((int16_t)m_Opcode.offset << 16));
+    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, (uint32_t)((int16_t)m_Opcode.offset << 16));
     m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
 }
 
@@ -735,7 +735,21 @@ void CX64RecompilerOps::LW()
 {
     if (m_Opcode.base == 29 && g_GameSettings.fastSP && m_Opcode.rt != 0)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+        const asmjit::x86::Gp & DestReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        const asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(asmjit::x86::Gpq(), true, true);
+        if (!g_GameSettings.core32Bit)
+        {
+            m_Assembler.movsxd(DestReg.r64(), asmjit::x86::dword_ptr(StackReg, (int32_t)((int16_t)m_Opcode.offset)));
+        }
+        else
+        {
+            m_Assembler.mov(DestReg.r32(), asmjit::x86::dword_ptr(StackReg, (int32_t)((int16_t)m_Opcode.offset)));
+        }
+        if (m_Opcode.rt == 29)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
         return;
     }
 
@@ -2531,7 +2545,7 @@ asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
         AddressReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.base);
         if (m_Opcode.offset != 0)
         {
-            m_Assembler.add(AddressReg.r32(), static_cast<int32_t>((int16_t)m_Opcode.offset));
+            m_Assembler.add(AddressReg.r32(), (int32_t)((int16_t)m_Opcode.offset));
         }
     }
     return AddressReg;
