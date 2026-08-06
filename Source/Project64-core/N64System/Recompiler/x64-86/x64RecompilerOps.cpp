@@ -1292,7 +1292,14 @@ void CX64RecompilerOps::SPECIAL_JR()
         {
             if (m_RegWorkingSet.IsConst(m_Opcode.rs))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                if (((int)m_CompilePC >> 31) != (m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? (int)m_RegWorkingSet.GetMipsRegHi(m_Opcode.rs) : (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) >> 31)))
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else
+                {
+                    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+                }
             }
             else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
             {
