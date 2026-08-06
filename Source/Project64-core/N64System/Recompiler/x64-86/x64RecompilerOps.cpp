@@ -1251,7 +1251,72 @@ void CX64RecompilerOps::SPECIAL_SRAV()
 
 void CX64RecompilerOps::SPECIAL_JR()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        if ((m_CompilePC & 0xFFC) == 0xFFC)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+
+        m_Section->m_Jump.FallThrough = false;
+        m_Section->m_Jump.LinkLocation = asmjit::Label();
+        m_Section->m_Jump.LinkLocation2 = asmjit::Label();
+        m_Section->m_Cont.FallThrough = false;
+        m_Section->m_Cont.LinkLocation = asmjit::Label();
+        m_Section->m_Cont.LinkLocation2 = asmjit::Label();
+
+        R4300iOpcode DelaySlot;
+        if (g_MMU->MemoryValue32((uint32_t)(m_CompilePC + 4), DelaySlot.Value) &&
+            R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
+    {
+        R4300iOpcode DelaySlot;
+        if (g_MMU->MemoryValue32((uint32_t)(m_CompilePC + 4), DelaySlot.Value) && R4300iInstruction(m_CompilePC, m_Opcode.Value).DelaySlotEffectsCompare(DelaySlot.Value))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+            {
+                if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else
+                {
+                    const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+                    m_Assembler.movsxd(PcReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32());
+                    m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", PcReg);
+                }
+            }
+            else
+            {
+                const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+                m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", PcReg);
+            }
+            UpdateCounters(m_RegWorkingSet, true, true, false);
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, ExitReason_CheckPCAlignment);
+            if (m_Section->m_JumpSection)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+        }
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_JALR()
@@ -2326,10 +2391,30 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     switch (reason)
     {
     case ExitReason_Normal:
+    case ExitReason_CheckPCAlignment:
         ExitRegSet.SetBlockCycleCount(0);
         if ((reason == ExitReason_Normal || reason == ExitReason_CheckPCAlignment) && (TargetPC == (uint32_t)-1 || TargetPC <= JumpPC))
         {
             CompileSystemCheck((uint32_t)-1, ExitRegSet);
+        }
+        if (reason == ExitReason_CheckPCAlignment)
+        {
+            m_Assembler.MoveVariable64ToX64reg(asmjit::x86::rax, &g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER");
+            m_Assembler.test(asmjit::x86::eax, 3);
+            asmjit::Label ValidPCJump = m_Assembler.newLabel();
+            m_Assembler.JeLabel("ValidPC", ValidPCJump);
+            m_Assembler.mov(asmjit::x86::rdx, asmjit::x86::rax);
+            m_Assembler.mov(asmjit::x86::r8d, 1);
+            m_Assembler.sub(asmjit::x86::rsp, 32);
+            m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::DoAddressError), "CRegisters::DoAddressError");
+            m_Assembler.add(asmjit::x86::rsp, 32);
+            m_Assembler.MoveVariableToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation", false);
+            m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
+            m_Assembler.cdq();
+            m_Assembler.MovDwordToVariable((void *)(((uint8_t *)&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
+            m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+            ExitCodeBlock();
+            m_Assembler.bind(ValidPCJump);
         }
         ExitCodeBlock();
         break;
