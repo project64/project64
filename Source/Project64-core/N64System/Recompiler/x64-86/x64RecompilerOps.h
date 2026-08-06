@@ -223,7 +223,7 @@ public:
     const R4300iOpcode & GetOpcode(void) const;
     void PreCompileOpcode(void);
     void PostCompileOpcode(void);
-    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo ExitRegSet, ExitReason reason, void (CX64Ops::*x64Jmp)(const char * LabelName, asmjit::Label & JumpLabel) = nullptr);
+    void CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo ExitRegSet, ExitReason reason, void (CX64Ops::*x64Jmp)(const char * LabelName, asmjit::Label & JumpLabel) = nullptr, const asmjit::x86::Gp * BadVAddrReg = nullptr);
 
     void UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool ClearValues = false, bool UpdateTimer = true);
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
