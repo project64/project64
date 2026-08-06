@@ -1087,8 +1087,40 @@ void CX64RecompilerOps::SW()
     }
     m_Assembler.EnterSecondarySection();
     m_Assembler.bind(SlowPath);
-    m_Assembler.X64BreakPoint(__FILE__, __LINE__);
+
+    m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::edx, AddressReg.r32());
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        m_Assembler.mov(asmjit::x86::r8d, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+    }
+    else
+    {
+        m_Assembler.mov(asmjit::x86::r8d, ValueReg.r32());
+    }
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::SW_VAddr32), "CMipsMemoryVM::SW_VAddr32");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+
+    asmjit::Label SlowPathException = m_Assembler.newLabel();
+    m_Assembler.JeLabel(stdstr_f("MemoryWriteMap_%X_Exception", m_CompilePC).c_str(), SlowPathException);
+
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+    }
     m_Assembler.JmpLabel(AfterStoreLabel.c_str(), AfterStore);
+    m_Assembler.bind(SlowPathException);
+    CompileExit(m_CompilePC, (uint32_t)-1, ExitRegSet, ExitReason_Exception);
+
     m_Assembler.EnterPrimarySection();
     m_Assembler.bind(AfterStore);
 }
