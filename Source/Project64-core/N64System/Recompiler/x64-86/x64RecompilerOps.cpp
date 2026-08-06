@@ -310,7 +310,15 @@ void CX64RecompilerOps::BNE_Compare()
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rs) && m_RegWorkingSet.IsConst(m_Opcode.rt))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (m_RegWorkingSet.Is64Bit(m_Opcode.rs) || m_RegWorkingSet.Is64Bit(m_Opcode.rt))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                m_Section->m_Jump.FallThrough = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) != m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt);
+                m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
+            }
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.IsMapped(m_Opcode.rt))
         {
