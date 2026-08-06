@@ -622,7 +622,15 @@ void CX64RecompilerOps::ADDI()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        const asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gp(), m_Opcode.rs);
+        m_Assembler.add(Reg.r32(), (int32_t)((int16_t)m_Opcode.immediate));
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow, &CX64Ops::JoLabel);
+        if (m_Opcode.rt != 0)
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+            m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), Reg.r32());
+        }
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
