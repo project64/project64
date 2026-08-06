@@ -587,7 +587,40 @@ void CX64RecompilerOps::JAL()
 
 void CX64RecompilerOps::ADDI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (g_GameSettings.fastSP && m_Opcode.rs == 29 && m_Opcode.rt == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        const int32_t rs = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs);
+        const int32_t imm = (int16_t)m_Opcode.immediate;
+        const int32_t sum = rs + imm;
+        if ((~(rs ^ imm) & (rs ^ sum)) & 0x80000000)
+        {
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+        }
+        else if (m_Opcode.rt != 0)
+        {
+            if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+            {
+                m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+            }
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, sum);
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
+        }
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::ADDIU()
