@@ -590,7 +590,62 @@ void CX64RecompilerOps::J()
 
 void CX64RecompilerOps::JAL()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(31, true, -1);
+        m_Assembler.MoveVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(31), &m_Reg.m_PROGRAM_COUNTER, "_PROGRAM_COUNTER", false);
+        m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(31).r32(), 0xF0000000);
+        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(31).r32(), (m_CompilePC + 8) & ~0xF0000000);
+        if ((m_CompilePC & 0xFFC) == 0xFFC)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        m_Section->m_Jump.TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
+        m_Section->m_Jump.JumpPC = (uint32_t)m_CompilePC;
+        if (m_Section->m_JumpSection != nullptr)
+        {
+            m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+        }
+        else
+        {
+            m_Section->m_Jump.BranchLabel = "ExitBlock";
+        }
+        m_Section->m_Jump.FallThrough = true;
+        m_Section->m_Jump.LinkLocation = asmjit::Label();
+        m_Section->m_Jump.LinkLocation2 = asmjit::Label();
+        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+    }
+    else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
+    {
+        if (m_Section->m_JumpSection)
+        {
+            m_Section->m_Jump.RegSet = m_RegWorkingSet;
+            m_Section->GenerateSectionLinkage();
+        }
+        else
+        {
+            m_RegWorkingSet.WriteBackRegisters();
+
+            const asmjit::x86::Gp PCReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+            m_Assembler.MoveVariableToX64reg(PCReg, &m_Reg.m_PROGRAM_COUNTER, "_PROGRAM_COUNTER", false);
+            m_Assembler.and_(PCReg.r32(), 0xF0000000);
+            m_Assembler.add(PCReg.r32(), m_Opcode.target << 2);
+            m_Assembler.MovDwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", PCReg);
+
+            const uint64_t TargetPC = (m_CompilePC & 0xFFFFFFFFF0000000) + (m_Opcode.target << 2);
+            const bool bCheck = TargetPC <= m_CompilePC;
+            if (bCheck)
+            {
+                UpdateCounters(m_RegWorkingSet, bCheck, true);
+            }
+            CompileExit((uint32_t)-1, (uint32_t)-1, m_RegWorkingSet, bCheck ? ExitReason_Normal : ExitReason_NormalNoSysCheck);
+        }
+        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::ADDI()
@@ -2407,6 +2462,7 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
     {
     case ExitReason_Normal:
     case ExitReason_CheckPCAlignment:
+    case ExitReason_NormalNoSysCheck:
         ExitRegSet.SetBlockCycleCount(0);
         if ((reason == ExitReason_Normal || reason == ExitReason_CheckPCAlignment) && (TargetPC == (uint32_t)-1 || TargetPC <= JumpPC))
         {
