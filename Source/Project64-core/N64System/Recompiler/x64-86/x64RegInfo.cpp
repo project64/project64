@@ -411,7 +411,30 @@ void CX64RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     SetX64MapOrder(Reg.id(), 1);
     if (MipsRegToLoad > 0)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (IsUnknown(MipsRegToLoad))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (IsMapped(MipsRegToLoad))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (Is32Bit(MipsRegToLoad))
+        {
+            if (IsSigned(MipsRegToLoad))
+            {
+                m_Assembler.mov(Reg.r32(), GetMipsRegLo(MipsRegToLoad));
+                m_Assembler.movsxd(Reg, Reg.r32());
+            }
+            else
+            {
+                m_Assembler.mov(Reg.r32(), GetMipsRegLo(MipsRegToLoad));
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else if (MipsRegToLoad == 0)
     {
