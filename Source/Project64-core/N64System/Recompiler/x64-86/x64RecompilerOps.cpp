@@ -1997,7 +1997,30 @@ void CX64RecompilerOps::SPECIAL_DSRA32()
 
 void CX64RecompilerOps::COP0_MF()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == CRegisters::COP0Reg_Count)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
+
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::edx, m_Opcode.rd);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_Reg, MemberFuncAddress(&CRegisters::Cop0_MF), "CRegisters::Cop0_MF");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], asmjit::x86::eax);
+    m_RegWorkingSet.AfterCallDirect();
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+    m_Assembler.MoveVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), &m_Reg.m_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], true);
 }
 
 void CX64RecompilerOps::COP0_DMF()
