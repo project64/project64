@@ -167,7 +167,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDB("Reg Cache", true));
     AddHandler(Rdb_FpuRegCache, new CSettingTypeRDB("FPU Reg Cache", false));
-#ifdef ANDROID
+#if defined(ANDROID) || defined(__amd64__) || defined(_M_X64)
     AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_None));
 #else
     AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_Eager));
