@@ -2082,7 +2082,28 @@ void CX64RecompilerOps::COP0_DMF()
 
 void CX64RecompilerOps::COP0_MT()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == CRegisters::COP0Reg_Wired || m_Opcode.rd == CRegisters::COP0Reg_Compare || m_Opcode.rd == CRegisters::COP0Reg_Count)
+    {
+        UpdateCounters(m_RegWorkingSet, false, true);
+    }
+    m_RegWorkingSet.BeforeCallDirect();
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt));
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        m_Assembler.movsxd(asmjit::x86::r8, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+    }
+    else
+    {
+        m_Assembler.MoveVariableToX64reg(asmjit::x86::r8, &m_Reg.m_GPR[m_Opcode.rt].UW[0], CRegName::GPR_Lo[m_Opcode.rt], true);
+    }
+    m_Assembler.mov(asmjit::x86::edx, m_Opcode.rd);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_Reg, MemberFuncAddress(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX64RecompilerOps::COP0_DMT()
