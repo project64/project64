@@ -34,6 +34,19 @@ void CX64RecompilerOps::Compile_TrapCompare(RecompilerTrapCompare /*CompareType*
     g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
+void CX64RecompilerOps::CompileCop1Test()
+{
+    if (m_RegWorkingSet.GetFpuBeenUsed())
+    {
+        return;
+    }
+
+    m_Assembler.finit();
+    m_Assembler.TestVariable(&g_Reg->STATUS_REGISTER, "STATUS_REGISTER", STATUS_CU1);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_COP1Unuseable, &CX64Ops::JeLabel);
+    m_RegWorkingSet.SetFpuBeenUsed(true);
+}
+
 void CX64RecompilerOps::Compile_BranchCompare(RecompilerBranchCompare CompareType)
 {
     switch (CompareType)
@@ -2148,7 +2161,21 @@ void CX64RecompilerOps::COP1_DMF()
 
 void CX64RecompilerOps::COP1_CF()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    if (m_Opcode.fs != 31 && m_Opcode.fs != 0)
+    {
+        UnknownOpcode();
+        return;
+    }
+
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+    m_Assembler.MoveVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), &m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], true);
 }
 
 void CX64RecompilerOps::COP1_MT()
@@ -2599,6 +2626,25 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.cdq();
         m_Assembler.MovDwordToVariable((void *)(((uint8_t *)&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
         m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitCodeBlock();
+        break;
+    }
+    case ExitReason_COP1Unuseable:
+    {
+        const bool InDelaySlot = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.mov(asmjit::x86::rdx, EXC_CPU);
+        m_Assembler.mov(asmjit::x86::r8d, 1);
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::TriggerException), "CRegisters::TriggerException");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        m_Assembler.MoveVariableToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation", false);
+        m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
+        m_Assembler.cdq();
+        m_Assembler.MovDwordToVariable((void *)(((uint8_t *)&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitRegSet.SetBlockCycleCount(0);
+        UpdateCounters(ExitRegSet, true, false, false);
         ExitCodeBlock();
         break;
     }

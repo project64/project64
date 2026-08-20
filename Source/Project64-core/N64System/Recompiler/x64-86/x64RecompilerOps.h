@@ -246,6 +246,7 @@ private:
     asmjit::x86::Gp BaseOffsetAddress(bool UseBaseRegister);
     void ExitCodeBlock(void);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
+    void CompileCop1Test();
 
     CRecompiler *& m_Recompiler;
     CN64Rom & m_Rom;

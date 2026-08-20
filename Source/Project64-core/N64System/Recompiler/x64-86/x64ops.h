@@ -33,6 +33,7 @@ public:
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);
     void AndConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void TestVariable(void * Variable, const char * VariableName, uint32_t Const);
     void EnterPrimarySection();
     void EnterSecondarySection();
     void X64BreakPoint(const char * FileName, int32_t LineNumber);
