@@ -1743,69 +1743,100 @@ void CX64RecompilerOps::SPECIAL_OR()
         return;
     }
 
-    if (m_Opcode.rs == 0)
+    const bool RsConstZero = m_RegWorkingSet.IsConst(m_Opcode.rs) && (m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) == 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) == 0);
+    const bool RtConstZero = m_RegWorkingSet.IsConst(m_Opcode.rt) && (m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) == 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) == 0);
+    if (RsConstZero || RtConstZero)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    else if (m_Opcode.rt == 0)
-    {
-        if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+        const int Source = RsConstZero ? m_Opcode.rt : m_Opcode.rs;
+
+        if (Source == 0 || m_RegWorkingSet.IsConst(Source))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        else if (m_RegWorkingSet.Is32Bit(m_Opcode.rs))
+        else if (m_RegWorkingSet.Is32Bit(Source))
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, m_RegWorkingSet.IsSigned(Source), Source);
+        }
+        else
+        {
+            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, Source);
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rs))
+    {
+        const int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
+        const int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
+
+        m_RegWorkingSet.ProtectGPR(source1);
+        m_RegWorkingSet.ProtectGPR(source2);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, source1);
+
+        if (m_RegWorkingSet.IsMapped(source2))
+        {
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(source2).r32());
+        }
+        else if (m_RegWorkingSet.IsConst(source2))
+        {
+            const uint32_t value = m_RegWorkingSet.GetMipsRegLo(source2);
+            if (value != 0)
+            {
+                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), value);
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
         else
         {
-            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rs);
+            const uint32_t ConstReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+            const uint32_t MappedReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+            uint64_t ConstValue;
+            if (m_RegWorkingSet.Is64Bit(ConstReg))
+            {
+                ConstValue = m_RegWorkingSet.GetMipsReg(ConstReg);
+            }
+            else if (m_RegWorkingSet.IsSigned(ConstReg))
+            {
+                ConstValue = (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(ConstReg);
+            }
+            else
+            {
+                ConstValue = m_RegWorkingSet.GetMipsRegLo(ConstReg);
+            }
+            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, MappedReg);
+            if (ConstValue != 0)
+            {
+                const asmjit::x86::Gp temp64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+                m_Assembler.mov(temp64.r64(), ConstValue);
+                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), temp64.r64());
+            }
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        const int KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        const int UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+
+        if (m_RegWorkingSet.IsConst(KnownReg))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
     else
     {
-        if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rs))
-        {
-            const int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
-            const int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
-
-            m_RegWorkingSet.ProtectGPR(source1);
-            m_RegWorkingSet.ProtectGPR(source2);
-            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, source1);
-
-            if (m_RegWorkingSet.IsMapped(source2))
-            {
-                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(source2).r32());
-            }
-            else if (m_RegWorkingSet.IsConst(source2))
-            {
-                const uint32_t value = m_RegWorkingSet.GetMipsRegLo(source2);
-                if (value != 0)
-                {
-                    m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), value);
-                }
-            }
-            else
-            {
-                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::dword_ptr(reinterpret_cast<uintptr_t>(&m_Reg.m_GPR[source2].W[0])));
-            }
-        }
-        else
-        {
-            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
-            if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            else if (m_RegWorkingSet.IsConst(m_Opcode.rs))
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            else
-            {
-                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), asmjit::x86::qword_ptr(reinterpret_cast<uintptr_t>(&m_Reg.m_GPR[m_Opcode.rs].UDW)));
-            }
-        }
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rd == 29)

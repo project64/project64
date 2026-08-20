@@ -387,7 +387,7 @@ void CX64RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     if (IsUnknown(MipsReg) || IsConst(MipsReg))
     {
         Reg = FreeX64Reg(asmjit::RegType::kX86_Gpq);
-        if (Reg.isNone())
+        if (!Reg.isValid())
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
@@ -413,11 +413,25 @@ void CX64RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     {
         if (IsUnknown(MipsRegToLoad))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler.MoveVariable64ToX64reg(Reg, &m_Reg.m_GPR[MipsRegToLoad].UDW, CRegName::GPR[MipsRegToLoad]);
         }
         else if (IsMapped(MipsRegToLoad))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (Is32Bit(MipsRegToLoad))
+            {
+                if (IsSigned(MipsRegToLoad))
+                {
+                    m_Assembler.movsxd(Reg, GetMipsRegMap(MipsRegToLoad).r32());
+                }
+                else
+                {
+                    m_Assembler.mov(Reg.r32(), GetMipsRegMap(MipsRegToLoad).r32());
+                }
+            }
+            else if (MipsReg != MipsRegToLoad)
+            {
+                m_Assembler.mov(Reg.r64(), GetMipsRegMap(MipsRegToLoad).r64());
+            }
         }
         else if (Is32Bit(MipsRegToLoad))
         {
