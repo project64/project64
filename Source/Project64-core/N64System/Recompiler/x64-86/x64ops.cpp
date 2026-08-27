@@ -9,7 +9,8 @@
 
 CX64Ops::CX64Ops(CCodeBlock & CodeBlock) :
     asmjit::x86::Assembler(&CodeBlock.CodeHolder()),
-    m_CodeBlock(CodeBlock)
+    m_CodeBlock(CodeBlock),
+    m_CurrentSection(nullptr)
 {
     setLogger(g_DebugSettings.recordRecompilerAsm ? this : nullptr);
     setErrorHandler(&CodeBlock);
@@ -21,6 +22,7 @@ CX64Ops::CX64Ops(CCodeBlock & CodeBlock) :
 
     m_PrimarySection = CodeBlock.CodeHolder().textSection();
     CodeBlock.CodeHolder().newSection(&m_SecondarySection, ".secondary", SIZE_MAX, asmjit::SectionFlags::kNone, 8);
+    m_CurrentSection = m_PrimarySection;
 }
 
 asmjit::Error CX64Ops::_log(const char * data, size_t size) noexcept
@@ -140,6 +142,15 @@ void CX64Ops::AddLabelSymbol(const asmjit::Label & Label, const char * Symbol)
     {
         m_LabelSymbols.emplace(std::make_pair(Label.id(), NumberSymbol{Symbol, 2}));
     }
+}
+
+void CX64Ops::JnsLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddLabelSymbol(JumpLabel, LabelName);
+    }
+    jns(JumpLabel);
 }
 
 void CX64Ops::JoLabel(const char * LabelName, asmjit::Label & JumpLabel)
@@ -433,12 +444,23 @@ void CX64Ops::AddNumberSymbol(uintptr_t Value, const std::string & Symbol)
 
 void CX64Ops::EnterPrimarySection()
 {
-    section(m_PrimarySection);
+    EnterSection(m_PrimarySection);
 }
 
 void CX64Ops::EnterSecondarySection()
 {
-    section(m_SecondarySection);
+    EnterSection(m_SecondarySection);
+}
+
+void CX64Ops::EnterSection(asmjit::Section * Section)
+{
+    m_CurrentSection = Section;
+    section(Section);
+}
+
+bool CX64Ops::InSecondarySection() const
+{
+    return m_CurrentSection == m_SecondarySection;
 }
 
 void CX64Ops::BreakPointNotification(const char * FileName, int32_t LineNumber)

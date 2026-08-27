@@ -13,6 +13,7 @@ class CX64Ops :
 public:
     CX64Ops(CCodeBlock & CodeBlock);
 
+    void JnsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JoLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JeLabel(const char * LabelName, asmjit::Label & JumpLabel);
@@ -36,6 +37,8 @@ public:
     void TestVariable(void * Variable, const char * VariableName, uint32_t Const);
     void EnterPrimarySection();
     void EnterSecondarySection();
+    void EnterSection(asmjit::Section * Section);
+    bool InSecondarySection() const;
     void X64BreakPoint(const char * FileName, int32_t LineNumber);
     void CallFunc(uintptr_t FunctPtr, const char * FunctName);
     void CallThis(void * ThisPtr, uintptr_t FunctPtr, const char * FunctName);
@@ -65,6 +68,7 @@ private:
     CCodeBlock & m_CodeBlock;
     asmjit::Section * m_PrimarySection;
     asmjit::Section * m_SecondarySection;
+    asmjit::Section * m_CurrentSection;
 };
 
 template <typename T>
