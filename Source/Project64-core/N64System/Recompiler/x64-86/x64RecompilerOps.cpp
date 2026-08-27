@@ -1267,7 +1267,54 @@ void CX64RecompilerOps::SDR()
 
 void CX64RecompilerOps::CACHE()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (g_Settings->LoadDword(Game_SMM_Cache) == 0)
+    {
+        return;
+    }
+
+    switch (m_Opcode.rt)
+    {
+    case 0:
+    case 16:
+        m_RegWorkingSet.BeforeCallDirect();
+        if (m_RegWorkingSet.IsConst(m_Opcode.base))
+        {
+            const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+            m_Assembler.mov(asmjit::x86::edx, Address);
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.base))
+        {
+            m_Assembler.lea(asmjit::x86::edx, asmjit::x86::dword_ptr(m_RegWorkingSet.GetMipsRegMap(m_Opcode.base).r32(), (int32_t)(int16_t)m_Opcode.offset));
+        }
+        else
+        {
+            m_Assembler.MoveVariableToX64reg(asmjit::x86::edx, &m_Reg.m_GPR[m_Opcode.base].UW[0], CRegName::GPR_Lo[m_Opcode.base], false);
+            m_Assembler.add(asmjit::x86::edx, (int32_t)(int16_t)m_Opcode.offset);
+        }
+        m_Assembler.mov(asmjit::x86::r8d, 0x20);
+        m_Assembler.mov(asmjit::x86::r9d, (uint32_t)CRecompiler::Remove_Cache);
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(m_Recompiler, MemberFuncAddress(&CRecompiler::ClearRecompCode_Virt), "CRecompiler::ClearRecompCode_Virt");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        m_RegWorkingSet.AfterCallDirect();
+        break;
+    case 1:
+    case 3:
+    case 13:
+    case 5:
+    case 8:
+    case 9:
+    case 17:
+    case 21:
+    case 25:
+        break;
+    default:
+        if (g_DebugSettings.haveDebugger)
+        {
+            g_Notify->DisplayError(stdstr_f("cache: %d", m_Opcode.rt).c_str());
+        }
+        break;
+    }
 }
 
 void CX64RecompilerOps::LL()
