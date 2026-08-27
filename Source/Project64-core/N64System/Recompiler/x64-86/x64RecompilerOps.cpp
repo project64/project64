@@ -2244,7 +2244,14 @@ void CX64RecompilerOps::COP0_CO_TLBR()
 
 void CX64RecompilerOps::COP0_CO_TLBWI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.MoveVariableToX64reg(asmjit::x86::edx, &m_Reg.INDEX_REGISTER, "INDEX_REGISTER", false);
+    m_Assembler.and_(asmjit::x86::edx, 0x1F);
+    m_Assembler.xor_(asmjit::x86::r8d, asmjit::x86::r8d);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_TLB, MemberFuncAddress(&CTLB::WriteEntry), "CTLB::WriteEntry");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX64RecompilerOps::COP0_CO_TLBWR()
