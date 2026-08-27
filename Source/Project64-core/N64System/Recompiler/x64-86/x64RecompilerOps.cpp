@@ -2190,7 +2190,28 @@ void CX64RecompilerOps::COP1_DMT()
 
 void CX64RecompilerOps::COP1_CT()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    if (m_Opcode.fs != 31)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+        m_Assembler.and_(TempReg.r32(), 0x183FFFFu);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], TempReg);
+    }
+    m_RegWorkingSet.SetRoundingModel(CRegBase::RoundUnknown);
 }
 
 void CX64RecompilerOps::COP1_S_ADD()
@@ -2562,8 +2583,6 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         const stdstr ExitName = stdstr_f("Exit_%08X_%d", JumpPC, m_ExitLabelCount++);
         (m_Assembler.*x64Jmp)(ExitName.c_str(), ExitLabel);
         m_Assembler.EnterSecondarySection();
-        m_CodeBlock.Log("");
-        m_CodeBlock.Log("      %s:", ExitName.c_str());
         m_Assembler.bind(ExitLabel);
         CompileExit((uint32_t)-1, TargetPC, ExitRegSet, reason, nullptr, BadVAddrReg);
         m_Assembler.EnterPrimarySection();
@@ -2757,25 +2776,38 @@ void CX64RecompilerOps::UpdateCounters(CRegInfo & RegSet, bool CheckTimer, bool 
 
     if (CheckTimer)
     {
-        asmjit::Label TimerDonePath = m_Assembler.newLabel();
         asmjit::Label ContinueFromTimerTest = m_Assembler.newLabel();
-        m_Assembler.JsLabel("Timer_Done_Path", TimerDonePath);
+        const bool InSecondary = m_Assembler.InSecondarySection();
 
-        m_Assembler.EnterSecondarySection();
-        m_CodeBlock.Log("      Timer_Done_Path:");
-        m_Assembler.bind(TimerDonePath);
+        if (InSecondary)
+        {
+            m_Assembler.JnsLabel("Continue_From_Timer_Test", ContinueFromTimerTest);
+        }
+        else
+        {
+            asmjit::Label TimerDonePath = m_Assembler.newLabel();
+            m_Assembler.JsLabel("Timer_Done_Path", TimerDonePath);
+            m_CodeBlock.Log("");
+            m_Assembler.bind(ContinueFromTimerTest);
+            m_Assembler.EnterSecondarySection();
+            m_Assembler.bind(TimerDonePath);
+        }
 
         RegSet.BeforeCallDirect();
         m_Assembler.sub(asmjit::x86::rsp, 32);
         m_Assembler.CallThis(g_SystemTimer, MemberFuncAddress(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
         m_Assembler.add(asmjit::x86::rsp, 32);
         RegSet.AfterCallDirect();
-        m_Assembler.jmp(ContinueFromTimerTest);
 
-        m_Assembler.EnterPrimarySection();
-
-        m_CodeBlock.Log("");
-        m_Assembler.bind(ContinueFromTimerTest);
+        if (InSecondary)
+        {
+            m_Assembler.bind(ContinueFromTimerTest);
+        }
+        else
+        {
+            m_Assembler.JmpLabel("Continue_From_Timer_Test", ContinueFromTimerTest);
+            m_Assembler.EnterPrimarySection();
+        }
     }
 
     if ((UpdateTimer || g_GameSettings.overClockModifier != 1) && g_SyncSystem)
