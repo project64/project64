@@ -2897,6 +2897,23 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
 
     switch (PAddr & 0xFFF00000u)
     {
+    case 0x00000000u:
+    case 0x00100000u:
+    case 0x00200000u:
+    case 0x00300000u:
+    case 0x00400000u:
+    case 0x00500000u:
+    case 0x00600000u:
+    case 0x00700000u:
+        if (PAddr < m_MMU.RdramSize())
+        {
+            m_Assembler.MoveVariableToX64reg(Reg, m_MMU.Rdram() + PAddr, stdstr_f("RDRAM + 0x%X", PAddr).c_str(), ResultSigned);
+        }
+        else
+        {
+            m_Assembler.xor_(Reg, Reg);
+        }
+        return false;
     case 0x04000000u:
         if (PAddr < 0x04001000u)
         {
