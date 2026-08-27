@@ -1,21 +1,21 @@
 [E616B5BC-C9658B88-C:45]
 Name=Iggy's Reckin' Balls (U)
 
-$[Cheat Menu]
-Note=Press Pause to access cheats.
+$Cheat Menu
+Note=Press Pause button button to access cheats.
 800CCF89 00FF
 800CCF8A 00FF
 800CCF8B 00FF
 
-$[Press F9]\Enable All Courses
+$GameShark Button\Enable All Courses
 890CCDF2 0B00
 890CCDF4 0B00
 890CCDF6 0B00
 
-$[Press F9]\Extra Characters
+$GameShark Button\Extra Characters
 890C632F 01FF
 
-$[Press F9]\Progress 100%
+$GameShark Button\Progress 100%
 50000801 0000
 880CCE00 0003
 50000801 0000
@@ -42,14 +42,14 @@ $Infinite\Timer
 810D8F88 44E9
 
 $Infinite\Turbos
-Note=To enable this just select On or Off and when you press Z you will use your Turbos accordantly. Warning you can only have Infinite if you have some turbo level to begin with
+Note=To enable this just select On or Off and when you press Z you will use your Turbos accordingly. Warning you can only have infinite if you have some turbo level to begin with.
 D00F2C16 0020
 800CCF91 00??
 00 Off
 08 On
 
-$Laps To Race
-Note=Here you can select how many laps you prefer.to race
+$Laps to Race
+Note=Here you can select how many laps you prefer to race.
 800C8809 00??
 01 1 Lap
 02 2 Laps

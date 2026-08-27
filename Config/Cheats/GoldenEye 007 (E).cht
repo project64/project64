@@ -2,26 +2,26 @@
 Name=GoldenEye 007 (E)
 
 $Everything Unlocked\Save File 1
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 8105892E FFFF
 
 $Everything Unlocked\Save File 2
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 8105886E FFFF
 
 $Everything Unlocked\Save File 3
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 8105898E FFFF
 
 $Everything Unlocked\Save File 4
-Note=This Unlocks All Levels, Stages, Characters In Multi-Player and Cheat Menu Items (Enable Invincible on Cheats Menu for Infinite Health)
+Note=Unlocks all levels, stages, characters in multiplayer and cheat menu items.
 50002902 0000
 810588CE FFFF
 
-$In-Built Cheat Menu
+$In-Game Cheat Menu
 Note=This code gives you all Cheats in Menu
 50002001 0000
 800585A0 0001
@@ -29,8 +29,8 @@ Note=This code gives you all Cheats in Menu
 $Infinite\Ammo (All Levels)
 8006894B 0001
 
-$Mod Section\Cradle in multiplayer
-Note=Puts the cradle graphic in the levels screen where the facility normally is in the multiplayer levels screen.Warning it doesn't allow you to enter the multiplayer levels screen,it should automatically Have\selected cradle, which cannot be changed from the multiplayer menus
+$Mods\Cradle in Multiplayer
+Note=Puts the cradle graphic in the levels screen where the facility normally is in the multiplayer levels screen. Warning it doesn't allow you to enter the multiplayer levels screen,it should automatically Have\selected cradle, which cannot be changed from the multiplayer menus
 8002666D 0092
 8002666F 0093
 80026677 0029
@@ -41,18 +41,18 @@ Note=Puts the cradle graphic in the levels screen where the facility normally is
 803230C8 004C
 803230C9 0045
 
-$Mod Section\Enemies Do Nothing
+$Mods\Enemies Do Nothing
 80027E54 00FF
 
-$Mod Section\Enemy Options
+$Mods\Enemy Options
 Note="These Codes Are very very cool but in most places pointless ! But great fun, try then. But remember to deactivate them before coming to the end of the level, otherwise, there will be nothing/no one, to meet or do (:"
 80032142 00??
 01 Enemies Come After You
 97 Enemies Move Around & Check
 FF Enemies Check Around Themselves
 
-$Mod Section\Facility Back Zone In Multiplayer\Part 1\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
+$Mods\Facility Back Area in Multiplayer\2 Players
+Note=This cheat allows you to play the Facility Back Area in Multiplayer
 811E6554 45E4
 811E6558 43D5
 811E655C C5A7
@@ -133,9 +133,6 @@ Note=All parts must be on for this code to work.this cheat allows you to play th
 811EB7C2 0190
 801EB7C5 0000
 811EB7C6 0258
-
-$Mod Section\Facility Back Zone In Multiplayer\Part 2\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
 811EB7C8 0000
 811EB7CC FFFF
 811EB7CE FFFF
@@ -216,9 +213,6 @@ D11EBFC6 0000
 811EBFC6 F333
 D11EBFC8 03E8
 811EBFC8 0000
-
-$Mod Section\Facility Back Zone In Multiplayer\Part 3\2 players
-Note=All parts must be on for this code to work.this cheat allows you to play the Facility Back Zone In Multiplayer
 D11EBFCA 0000
 811EBFCA F0C4
 D11EBFCE 4CCC
@@ -271,14 +265,14 @@ D11EBFD6 0000
 D0024337 0007
 80024337 001F
 
-$Mod Section\Freeze Unfreeze enemies
+$Mods\Freeze/Unfreeze Enemies
 Note=Press C-Up To Freeze & C-Down To Unfreeze.
 D00572D1 0008
 80027E5C 000F
 D00572D1 0004
 80027E5C 0000
 
-$Mod Section\Replace Cradle with Citadell hidden level
+$Mods\Replace Cradle with Citadel Hidden Level
 80025E47 0029
 8103DB6A D9B4
 8103DB70 3F44
@@ -289,8 +283,8 @@ $Mod Section\Replace Cradle with Citadell hidden level
 8103DB7A D89D
 81058EC0 C470
 
-$Mod Section\Secret Island on Dam Level
-Note=For the above code to work,Get to the 2nd guard tower & go down the ladder on the left hand side & to the end of the Dock, Press L & GS and you will be transfered in the water. Just keep walking straight & you will get to it. Obviously you can't actually climb ladders or anything, you will simply walkthrough anything on that Part, if you want to walk back to the Dock, when you come near it click the cheat back on & keep pressing  L & GS untill you are back on it.
+$Mods\Secret Island on Dam Level
+Note=For this cheat to work, get to the 2nd guard tower, go down the left ladder and to the end of the dock and press L & GameShark button. You will be transfered into the water. Keep walking and you will arrive at the island. The island has no clipping information, so you won't be able to climb or interact with anything. if you want to walk back to the dock, when you come near it click the cheat back on & keep pressing L & GameShark button until you are back on it.
 D004C2D1 0020
 800BA78D 0050
 880BA78D 0000

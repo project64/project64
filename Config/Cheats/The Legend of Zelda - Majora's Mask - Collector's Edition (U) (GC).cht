@@ -7,7 +7,7 @@ $All Equipment Upgrades
 801ED87C 004F
 
 $Beta World 1
-Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice.you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
+Note=Put on the code on load up,After the Nintendo logo you will be in that place of Choice. you can also choose another place & then press F1 (reset) to go to that place this is for beta interest only it will not assist you in playing the game.
 D038127B 0000
 801ED832 00??
 00 Mama's House non Beta
@@ -32,7 +32,7 @@ D038127B 0000
 8A Giant Turtle In the Temple non beta
 8B Room of Miau & Tijo Zora Great Hall
 94 Recieving Gorans Mask non Beta
-95 ?
+95 (?)
 96 Hungry Goran in the Snow
 A2 Statue in Stone Tower
 A6 Stone Tower non Beta
@@ -359,8 +359,8 @@ $Play As
 03 Deku Link
 04 Normal Link
 
-$Press L To Levitate
-Note=Press L To Levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D038127B 0020
 8139A558 40CB
 
@@ -376,7 +376,7 @@ Note=Only put the Deity Link's Sword on, if using The Play As Fierce Deity Link 
 50 Deity Link's Sword
 
 $Use C-Buttons Anywhere
-Note=This code allows you to use C-Button Items where you normally can't use them.
+Note=This code allows you to use C button Items where you normally can't use them.
 811F1748 0000
 811F174A 0000
 

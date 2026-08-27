@@ -17,17 +17,17 @@ $Infinite\Health
 $Infinite\Lives
 80165243 0009
 
-$Max\Bombs
+$Maximum\Bombs
 8016523F 0008
 
-$Max\Explosion
+$Maximum\Explosion
 80165240 0008
 
-$Max\Score
+$Maximum\Score
 80177608 FFFF
 
 $Press L to Levitate
-Note=Press L to levitate & let go to come back down
+Note=Press L to levitate and let go to land.
 D005A455 0020
 81154178 41CB
 D005A455 0020

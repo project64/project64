@@ -1,11 +1,11 @@
 [8F12C096-45DC17E1-C:50]
 Name=A Bug's Life (E)
 
-$All enemies killed
+$All Enemies Killed
 801E244E 0000
 801E244F 0000
 
-$Always Have\50 pieces of corn
+$Always Have\50 Pieces of Corn
 801E2461 0032
 
 $Always Have\Super Jump
@@ -24,8 +24,8 @@ $Infinite\Health
 $Infinite\Lives
 801E2460 0009
 
-$Levitate
-Note="Press R To Levitate & Let go to land (:"
+$Press R to Levitate
+Note=Press R to levitate and let go to land.
 D008FCE1 0010
 801E23C6 0001
 D008FCE1 0010
@@ -36,7 +36,7 @@ $Start with Berry Weapon
 01 Blueberry
 02 Homing Berry
 03 Goldberry
-04 Super Berry ?
+04 Super Berry (?)
 
 $Unlock All Levels
 81099B70 000F
@@ -45,7 +45,7 @@ $Unlock All Levels
 [DFF227D9-0D4D8169-C:44]
 Name=A Bug's Life (G)
 
-$Always Have\50 pieces of corn
+$Always Have\50 Pieces of Corn
 801E2761 0032
 
 $Always Have\Super Jump
@@ -63,8 +63,8 @@ $Infinite\Health
 $Infinite\Lives
 801E2760 0009
 
-$Levitate
-Note="Press R To Levitate & Let go to land (:"
+$Press R to Levitate
+Note=Press R to levitate and let go to land.
 D008FFA1 0010
 811E26C6 1000
 D008FFA1 0010
@@ -78,7 +78,7 @@ $Start with Berry Weapon
 01 Blueberry
 02 Homing Berry
 03 Goldberry
-04 Super Berry ?
+04 Super Berry (?)
 
 $Subtitles On
 801DDB7B 00??

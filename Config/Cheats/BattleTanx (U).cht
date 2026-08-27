@@ -19,10 +19,10 @@ $Area 51\Mines Are Toxic Waste
 $Area 51\Shock Wave Weapons
 802D5A7D 00AF
 
-$Area 51\Turn Ammo Pickup Picture To Flamer Picture
+$Area 51\Turn Ammo Pickup Picture to Flamer Picture
 802D5AAF 00AC
 
-$Area 51\Turn Nuke Into Toxic Waste Nuke
+$Area 51\Turn Nuke into Toxic Waste Nuke
 802D5A7B 007C
 
 $Auto Lose All Queen Lord Levels
@@ -34,7 +34,7 @@ $Auto Win All Queen Lord Levels
 $Buildings Fall Fast
 80091BBC 0001
 
-$Buildings Implode Instead Of Explode, And Remain Afire
+$Buildings Implode Instead of Explode, and Remain Afire
 8009298E 0001
 
 $Can't Pick Up Queen Lords
@@ -43,7 +43,7 @@ $Can't Pick Up Queen Lords
 $Frogs
 80135775 0001
 
-$Full Control Of Tank In Bonus,Extra Side Player In Battlelord Multi!
+$Full Control of Tank In Bonus,Extra Side Player in Battlelord Multi!
 800971EE 0001
 
 $Have All Levels
@@ -73,7 +73,7 @@ $Multiplayer\Balltlelord Mode\Player 1\All Special Weapons & Infinite Ammo
 50000E02 0000
 811AD7EE FFFF
 
-$Multiplayer\Balltlelord Mode\Player 1\Infinite Secondary Weapons In Battlelord
+$Multiplayer\Balltlelord Mode\Player 1\Infinite Secondary Weapons in Battlelord
 802D8609 00FF
 802D860B 00FF
 802D860D 00FF
@@ -91,7 +91,7 @@ $Multiplayer\Balltlelord Mode\Player 2\All Special Weapons & Infinite Ammo
 50000E02 0000
 811AE186 FFFF
 
-$Multiplayer\Balltlelord Mode\Player 2\Infinite Secondary Weapons In Battlelord
+$Multiplayer\Balltlelord Mode\Player 2\Infinite Secondary Weapons in Battlelord
 802D9F31 00FF
 802D9F33 00FF
 802D9F35 00FF
@@ -145,7 +145,7 @@ $Multiplayer\Hold 'Em Mode\Player 4\All Special Weapons & Infinite Ammo
 50000E02 0000
 811AF4B6 FFFF
 
-$Multiplayer\Plater 1\One Hit And You Bite It
+$Multiplayer\Plater 1\One Hit and You Bite It
 802D819F 0001
 
 $Multiplayer\Player 1\Always Has Cloaked On
@@ -154,7 +154,7 @@ $Multiplayer\Player 1\Always Has Cloaked On
 $Multiplayer\Player 1\Always Have Radar
 802D8195 0080
 
-$Multiplayer\Player 1\Goalith Tank On Tracks Body Modifier
+$Multiplayer\Player 1\Goalith Tank on Tracks Body Modifier
 802D86A3 00??
 00 Normal Tank
 01 Motor Tank
@@ -173,8 +173,8 @@ $Multiplayer\Player 1\Main Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -193,8 +193,8 @@ $Multiplayer\Player 1\Secondary Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -209,14 +209,14 @@ $Multiplayer\Player 1\Tank Body Modifier
 01 Motor Tank
 02 Big Tank
 
-$Multiplayer\Player 1\Tank Turret Always On (Use Right/Left C Button)
+$Multiplayer\Player 1\Tank Turret Always on (Use Right/Left C Button)
 802DE7FB 0011
 802DE7FF 0002
 
-$Multiplayer\Player 1\Your Goalith Tank On Tracks Always Has Cloaked On
+$Multiplayer\Player 1\Your Goalith Tank on Tracks Always Has Cloaked On
 802D8695 0001
 
-$Multiplayer\Player 1\Your Goalith Tank On Tracks Always Has Radar
+$Multiplayer\Player 1\Your Goalith Tank on Tracks Always Has Radar
 802D869D 0080
 
 $Multiplayer\Player 2\Always Has Cloaked On
@@ -225,7 +225,7 @@ $Multiplayer\Player 2\Always Has Cloaked On
 $Multiplayer\Player 2\Always Have Radar
 802D9ABD 0080
 
-$Multiplayer\Player 2\Goalith Tank On Tracks Body Modifier
+$Multiplayer\Player 2\Goalith Tank on Tracks Body Modifier
 802D9FCB 00??
 00 Normal Tank
 01 Motor Tank
@@ -244,8 +244,8 @@ $Multiplayer\Player 2\Main Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -254,7 +254,7 @@ $Multiplayer\Player 2\Main Weapon
 0F Cloaking
 10 Health
 
-$MultiPlayer\Player 2\One Hit And You Bite It
+$MultiPlayer\Player 2\One Hit and You Bite It
 802D9AC7 0001
 
 $Multiplayer\Player 2\Secondary Weapon
@@ -267,8 +267,8 @@ $Multiplayer\Player 2\Secondary Weapon
 05 Laser
 06 Nuke
 07 Gernades
-08 ?
-09 ?
+08 (?)
+09 (?)
 0A Nuclear Lasers
 0B Remote Rockets
 0C Mines
@@ -287,10 +287,10 @@ $Multiplayer\Player 2\Tank Turret Always On
 802DEB43 0011
 802DEB47 0002
 
-$Multiplayer\Player 2\Your Goalith Tank On Tracks Always Has Cloaked On
+$Multiplayer\Player 2\Your Goalith Tank on Tracks Always Has Cloaked On
 802D9FBD 0001
 
-$Multiplayer\Player 2\Your Goalith Tank On Tracks Always Has Radar
+$Multiplayer\Player 2\Your Goalith Tank on Tracks Always Has Radar
 802D9FC5 0080
 
 $Multiplayer\Player 3\Tank Turret Always On
@@ -307,7 +307,7 @@ $Nuke Blast Leaves Air Yellow
 $Nuke Blast Pink
 8008055F 0001
 
-$Regenerated Allied Tanks Are Indestrucible In Campaign
+$Regenerated Allied Tanks Are Indestrucible in Campaign
 8009FB2A 0001
 
 $Run Story

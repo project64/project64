@@ -69,26 +69,26 @@ D115AEC6 002D
 D115AEC6 0035
 8115AEC6 00C1
 
-$Clock At 00:00
+$Clock at 00:00
 8115AB1E 0000
 810A99F2 0000
 
-$CPU To Human Control\Player 1
+$CPU to Human Control\Player 1
 8015AF99 00??
 17 Human
 18 CPU
 
-$CPU To Human Control\Player 2
+$CPU to Human Control\Player 2
 8015B2F1 00??
 17 Human
 18 CPU
 
-$CPU To Human Control\Player 3
+$CPU to Human Control\Player 3
 8015B649 00??
 17 Human
 18 CPU
 
-$CPU To Human Control\Player 4
+$CPU to Human Control\Player 4
 8015B9A1 00??
 17 Human
 18 CPU
@@ -228,7 +228,7 @@ $Max Spirit\Player 4
 D015A5D1 0015
 8015B967 00FF
 
-$Novalty\Truck In The Crowd
+$Novalty\Truck in the Crowd
 81050110 0747
 81050112 0748
 81050114 0749
@@ -827,7 +827,7 @@ D115B95E 2EB2
 81052926 FFFF
 
 $Replace Raw War with\BARBEDWIRE SQUARE\Part 1
-Note=Both Parts must be on for this Press the C Left Button to make your opponent bleed,These Replace Raw War Arena With what ever coice you make. Only use 1 option at a time.
+Note=Both Parts must be on for this Press the C-Left button to make your opponent bleed,These Replace Raw War Arena With what ever coice you make. Only use 1 option at a time.
 81050110 04F3
 81050112 04F4
 81050114 04F5
@@ -920,7 +920,7 @@ D115B95E 2EB2
 8116C378 42B4
 
 $Replace Raw War with\BARBEDWIRE SQUARE\Part 2
-Note=Both Parts must be on for this Press the C Left Button to make your opponent bleed,These Replace Raw War Arena With what ever coice you make. Only use 1 option at a time.
+Note=Both Parts must be on for this Press the C-Left button to make your opponent bleed,These Replace Raw War Arena With what ever coice you make. Only use 1 option at a time.
 8116C382 0000
 8116C38C FFFF
 81052C9C 0672
@@ -1388,7 +1388,7 @@ Note=These Replace Raw War Arena With what ever coice you make. Only use 1 optio
 81050196 2CFD
 
 $Tables\IN RING TABLE\Part 1
-Note=To Make the Table look broken Keep the Z Button press down, To make player stand on the Table, Stand next to it & Keep C-Right Pressed Down.Put all Parts on Together for this Cheat to work
+Note=To Make the Table look broken Keep the Z button press down, To make player stand on the Table, Stand next to it & Keep C-Right Pressed Down. Put all Parts on Together for this Cheat to work
 81052CF0 06E1
 81052CF4 09F1
 81052CF8 06E2
@@ -1443,7 +1443,7 @@ D1064880 2000
 8116C378 42E0
 
 $Tables\IN RING TABLE\Part 2
-Note=To Make the Table look broken Keep the Z Button press down, To make player stand on the Table, Stand next to it & Keep C-Right Pressed Down.Put all Parts on Together for this Cheat to work
+Note=To Make the Table look broken Keep the Z button press down, To make player stand on the Table, Stand next to it & Keep C-Right Pressed Down. Put all Parts on Together for this Cheat to work
 D1064880 2000
 8116C382 07E0
 D1064880 2000

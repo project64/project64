@@ -4,14 +4,14 @@ Name=Mario Golf (E)
 $All Golf Courses Unlocked
 80130FED 0001
 
-$Always On 1st Stroke
+$Always on 1st Stroke
 801B74F3 0000
 
 $Infinite Power Shots
 801B74F8 0042
 
-$Unlock all Characters and Birdy Badges
-Note=Unlocks Metal Mario, Maple, Luigi, Sonny, Wario, Harry, Bowser, Yoshi, Mario and DK
+$Unlock All Characters and Birdy Badges
+Note=Unlocks Metal Mario, Maple, Luigi, Sonny, Wario, Harry, Bowser, Yoshi, Mario and DK.
 50006C01 0000
 801304A4 0001
 50000901 0000

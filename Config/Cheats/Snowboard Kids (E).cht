@@ -1,12 +1,12 @@
 [5FD7CDA0-D9BB51AD-C:50]
 Name=Snowboard Kids (E)
 
-$1 Lap To Race
+$1 Lap to Race
 D01226C8 0000
 801226C8 0009
 
 $Access Everything
-Note="Have All Characters,Cups,Courses,&Boards"
+Note=Have all characters, cups, courses and boards.
 810B3160 0100
 810B3164 0F00
 
@@ -23,5 +23,5 @@ $Infinite Tools Options
 06 Board
 
 $Infinite Weapons\Lucky Dip
-Note="Lucky Dip is Infinite Usage Of What Ever You Get From Each Red Box"
+Note=Infinite usage of whatever you get from each red box.
 801226D4 0003

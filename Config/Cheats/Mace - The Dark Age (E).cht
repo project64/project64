@@ -19,11 +19,11 @@ $Infinite\Continues
 $Infinite\Time
 8113C5BA 0B9E
 
-$Infinite\Time To Choose Character
+$Infinite\Time to Choose Character
 D0137ABE 0001
 81137ABE 02A2
 
-$Ned The Janitor
+$Ned the Janitor
 8013C281 0001
 
 $One Hit Death\Player 1
@@ -34,7 +34,7 @@ $One Hit Death\Player 2
 D008AEFF 0064
 8008AEFF 0001
 
-$Play As Options\Player 1
+$Play as Options\Player 1
 8113C6E2 ????
 3334 Executioner
 335C Lord Deimos
@@ -53,7 +53,7 @@ $Play As Options\Player 1
 3564 Pojo The Chicken
 35B4 War Mech
 
-$Play As Options\Player 2
+$Play as Options\Player 2
 8113C6DE ????
 3334 Executioner
 335C Lord Deimos

@@ -13,7 +13,7 @@ $Battle Mode\Infinite Balloons\Player 3
 $Battle Mode\Infinite Balloons\Player 4
 8118A086 0003
 
-$Have\Bonus Mode and All Gold Cups
+$Have\Bonus Mode & All Gold Cups
 8018B4D8 00??
 8018B4D9 00??
 8018B4DA 00??
@@ -21,7 +21,7 @@ $Have\Bonus Mode and All Gold Cups
 00 Off
 FF On
 
-$Infinite Items\2 player Mode\Player 1
+$Infinite Items\2 Player Mode\Player 1
 8016271D 00??
 8016274A 00??
 0D Double Mushroom
@@ -40,7 +40,7 @@ $Infinite Items\2 player Mode\Player 1
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Infinite Items\2 player Mode\Player 2
+$Infinite Items\2 Player Mode\Player 2
 801627FD 00??
 8016282A 00??
 0D Double Mushroom
@@ -59,7 +59,7 @@ $Infinite Items\2 player Mode\Player 2
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Infinite Items\3-4 player Mode\Player 1
+$Infinite Items\3-4 Player Mode\Player 1
 801628DD 00??
 8016290A 00??
 0D Double Mushroom
@@ -78,7 +78,7 @@ $Infinite Items\3-4 player Mode\Player 1
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Infinite Items\3-4 player Mode\Player 2
+$Infinite Items\3-4 Player Mode\Player 2
 801629BD 00??
 801629EA 00??
 0D Double Mushroom
@@ -97,7 +97,7 @@ $Infinite Items\3-4 player Mode\Player 2
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Infinite Items\3-4 player Mode\Player 3
+$Infinite Items\3-4 Player Mode\Player 3
 80162A9D 00??
 80162ACA 00??
 0D Double Mushroom
@@ -116,7 +116,7 @@ $Infinite Items\3-4 player Mode\Player 3
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Infinite Items\3-4 player Mode\Player 4
+$Infinite Items\3-4 Player Mode\Player 4
 80162B7D 00??
 80162BAA 00??
 0D Double Mushroom
@@ -135,22 +135,22 @@ $Infinite Items\3-4 player Mode\Player 4
 02 Banana Bunch
 07 Blue Spiny Shell
 
-$Press GS\For Full Debug Menu
-Note=Press GS at the Press Start Menu to access the Debug Menu
+$GameShark Button\Full Debug Menu
+Note=Press GameShark button at the Press Start Menu to access the Debug Menu
 8818B5BF 0002
 
-$Press L To Levitate\Player 1
+$Press L to Levitate\Player 1
 D00F61B5 0020
 810F6268 4000
 
-$Press L To Levitate\Player 2
+$Press L to Levitate\Player 2
 D00F61C5 0020
 810F7040 4000
 
-$Press L To Levitate\Player 3
+$Press L to Levitate\Player 3
 D00F61D5 0020
 810F7E18 4000
 
-$Press L To Levitate\Player 4
+$Press L to Levitate\Player 4
 D00F61E5 0020
 810F8BF0 4000

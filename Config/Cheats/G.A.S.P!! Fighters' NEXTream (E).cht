@@ -12,7 +12,7 @@ $Music Modifier
 02 Music Off
 
 $Player 1\Character Modifier
-Note=This Allows you to play as any Character you choose in any Mode
+Note=Play as the chosen character in any mode.
 80105001 00??
 00 Azami
 01 Serina
@@ -36,7 +36,7 @@ D009E334 0000
 8009E334 0001
 
 $Player 1\Player 2 Has No Energy
-Note=Press C-Button Up and Player 2 will lose All Health resulting in a Instant K.O.
+Note=Press C button Up and Player 2 will lose all health resulting in an instant KO.
 D0044461 0008
 8111B3BE 0000
 
@@ -44,7 +44,7 @@ $Player 1\Player 2 Never Wins
 8009E3F5 0000
 
 $Player 2\Character Modifier
-Note=This Allows you to play as any Character you choose in any Mode
+Note=Play as the chosen character in any mode.
 8011B399 00??
 00 Azami
 01 Serina
@@ -68,7 +68,7 @@ D009E335 0000
 8009E335 0001
 
 $Player 2\Player 1 Has No Energy
-Note=Press C-Button Up and Player 1 will lose All Health resulting in a Instant K.O.
+Note=Press C button Up and Player 1 will lose all health resulting in an instant KO.
 D0044467 0008
 81105026 0000
 

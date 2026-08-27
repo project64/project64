@@ -43,11 +43,11 @@ $Max Power Mode
 $Sudden death & trial modes unlocked
 8015C8E0 00A0
 
-$Time is always  00:20:38
+$Time is always 00:20:38
 8010D342 0078
 
 $Walk Through Walls/Objects
-Note=Press Z Button And Joystick Forward Dont Stand Too Close To Wall/Object
+Note=Press Z button and Joystick forward. Don't stand too close to wall/object.
 D0139BC4 0020
 8117964C 43C7
 

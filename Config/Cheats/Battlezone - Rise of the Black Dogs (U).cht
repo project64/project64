@@ -7,22 +7,22 @@ $Add\Building
 $Add\Satellite
 8006A1C3 0001
 
-$Have\All\Levels Unlocked & Completed For Americans
+$Have\All\Levels Unlocked & Completed for Americans
 8006A1F0 0011
 
-$Have\All\Levels Unlocked & Completed For Black Dogs
+$Have\All\Levels Unlocked & Completed for Black Dogs
 8006A1F3 000A
 
-$Have\All\Levels Unlocked & Completed For Soviets
+$Have\All\Levels Unlocked & Completed for Soviets
 8006A1F1 0008
 
-$Have\All\Missions Open And Complete For Americans
+$Have\All\Missions Open & Complete for Americans
 8006A1EC 0011
 
-$Have\All\Missions Open And Complete For Black Dogs
+$Have\All\Missions Open & Complete for Black Dogs
 8006A1EF 000A
 
-$Have\All\Missions Open And Complete For Soviets
+$Have\All\Missions Open & Complete for Soviets
 8006A1ED 0008
 
 $Infinite\Ammo
@@ -40,7 +40,7 @@ $Infinite\Scrap Collected
 $Infinite\Ship Health
 811DF6DE 0BA9
 
-$Infinite\Shots For Sniper Rifle
+$Infinite\Shots for Sniper Rifle
 811DA682 0003
 
 $Infinite\Weapons
@@ -49,8 +49,8 @@ $Infinite\Weapons
 $Level Select
 8006A1F5 0001
 
-$Max\Pilot Limits
+$Maximum\Pilot Limits
 811FBCD2 FFFF
 
-$Max\Scrap Limit
+$Maximum\Scrap Limit
 811FBCCA FFFF

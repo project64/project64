@@ -6,7 +6,7 @@ $In-Game Cheats\Access Cheat menu
 80100778 0001
 
 $In-Game Cheats\Enable\All Items
-Note=To access simply pause in game play & then unpause.
+Note=To access simply pause during gameplay then unpause.
 8010075C 00??
 00 Off
 01 On
@@ -21,8 +21,8 @@ $In-Game Cheats\Enable\Monsters
 01 Are Gone
 00 Are Active
 
-$Multi-Player (All Levels)\Player 2 (Multi-Player & Co-Operative)\Have All\Items & Infinite Use
-Note=This is for Multi-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother and gives you Boots,Vitamin X, Night Vision Googles, Holoduke, Portable Medikit, Protective Boots, Armor, Jet Pack & Scuba Gear and infinite use of on all levls. Just press D-Pad Up or D-Pad Down to enable.
+$Multiplayer (All Levels)\Player 2 (Multiplayer & Co-Operative)\Have All\Items & Infinite Use
+Note=This is for Multiplayer & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother and gives you Boots,Vitamin X, Night Vision Googles, Holoduke, Portable Medikit, Protective Boots, Armor, Jet Pack & Scuba Gear and infinite use of on all levls. Just press D-Pad Up or D-Pad Down to enable.
 812A4FF6 0064
 812A503E 0064
 812A504E 00C8
@@ -32,23 +32,23 @@ Note=This is for Multi-Player & Co-Operative and works on All Levels. This also 
 812A4FD8 0960
 812A503C 0190
 
-$Multi-Player (All Levels)\Player 2 (Multi-Player & Co-Operative)\Have All\Keys
-Note=This is for Multi-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother.
+$Multiplayer (All Levels)\Player 2 (Multiplayer & Co-Operative)\Have All\Keys
+Note=This is for Multiplayer & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother.
 802A4FF3 000F
 
-$Multi-Player (All Levels)\Player 2 (Multi-Player & Co-Operative)\Have All\Weapons & Infinite Ammo
-Note=This is for Multi-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels.  Just press D-Pad Left or D-Pad Right to enable.
+$Multiplayer (All Levels)\Player 2 (Multiplayer & Co-Operative)\Have All\Weapons & Infinite Ammo
+Note=This is for Multiplayer & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels. Just press D-Pad Left or D-Pad Right to enable.
 50000D01 0000
 802A5067 0001
 50000E02 0000
 812A4FAC 03E7
 
-$Multi-Player (All Levels)\Player 2 (Multi-Player & Co-Operative)\Infinite Health (All Levels)
-Note=This is for Multi-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother, and does what it says on the tin. Infinite health for player 2 on Single-Player, Co-Operative and DUKEMATCH, All Levels.
+$Multiplayer (All Levels)\Player 2 (Multiplayer & Co-Operative)\Infinite Health (All Levels)
+Note=This is for Multiplayer & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother, and does what it says on the tin. Infinite health for player 2 on Single-Player, Co-Operative and DUKEMATCH, All Levels.
 8024C747 0064
 802A4FA9 0064
 
-$Multi-Player (All Levels)\Player 3 (DUKEMATCH)\Have All\Items & Infinite Use
+$Multiplayer (All Levels)\Player 3 (DUKEMATCH)\Have All\Items & Infinite Use
 Note=This is for DUKEMATCH that allows up to 4 players to VS eachother and gives you Boots,Vitamin X, Night Vision Googles, Holoduke, Portable Medikit, Protective Boots, Armor, Jet Pack & Scuba Gear and infinite use of on all levls. Just press D-Pad Up or D-Pad Down to enable.
 812A5382 0064
 812A53CA 0064
@@ -59,19 +59,19 @@ Note=This is for DUKEMATCH that allows up to 4 players to VS eachother and gives
 812A5364 0960
 812A53C8 0190
 
-$Multi-Player (All Levels)\Player 3 (DUKEMATCH)\Have All\Weapons & Infinite Ammo
-Note=This is for DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels.  Just press D-Pad Left or D-Pad Right to enable.
+$Multiplayer (All Levels)\Player 3 (DUKEMATCH)\Have All\Weapons & Infinite Ammo
+Note=This is for DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels. Just press D-Pad Left or D-Pad Right to enable.
 50000D01 0000
 802A53F3 0001
 50000E02 0000
 812A5338 03E7
 
-$Multi-Player (All Levels)\Player 3 (DUKEMATCH)\Infinite Health (All Levels)
+$Multiplayer (All Levels)\Player 3 (DUKEMATCH)\Infinite Health (All Levels)
 Note=This is for DUKEMATCH that allows up to 4 players to VS eachother, and does what it says on the tin. Infinite health for player 2 on DUKEMATCH, All Levels.
 8024AE2F 0064
 802A5335 0064
 
-$Multi-Player (All Levels)\Player 4 (DUKEMATCH)\Have All\Items & Infinite Use
+$Multiplayer (All Levels)\Player 4 (DUKEMATCH)\Have All\Items & Infinite Use
 Note=This is for DUKEMATCH that allows up to 4 players to VS eachother and gives you Boots,Vitamin X, Night Vision Googles, Holoduke, Portable Medikit, Protective Boots, Armor, Jet Pack & Scuba Gear and infinite use of on all levls. Just press D-Pad Up or D-Pad Down to enable.
 812A570E 0064
 812A5756 0064
@@ -82,14 +82,14 @@ Note=This is for DUKEMATCH that allows up to 4 players to VS eachother and gives
 812A56F0 0960
 812A5754 0190
 
-$Multi-Player (All Levels)\Player 4 (DUKEMATCH)\Have All\Weapons & Infinite Ammo
-Note=This is for DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels.  Just press D-Pad Left or D-Pad Right to enable.
+$Multiplayer (All Levels)\Player 4 (DUKEMATCH)\Have All\Weapons & Infinite Ammo
+Note=This is for DUKEMATCH that allows up to 4 players to VS eachother. It gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels. Just press D-Pad Left or D-Pad Right to enable.
 50000D01 0000
 802A577F 0001
 50000E02 0000
 812A56C4 03E7
 
-$Multi-Player (All Levels)\Player 4 (DUKEMATCH)\Infinite Health (All Levels)
+$Multiplayer (All Levels)\Player 4 (DUKEMATCH)\Infinite Health (All Levels)
 Note=This is for DUKEMATCH that allows up to 4 players to VS eachother, and does what it says on the tin. Infinite health for player 4 on DUKEMATCH, All Levels.
 8024A98B 0064
 802A56C1 0064
@@ -110,7 +110,7 @@ Note=This is for Single-Player & Co-Operative and works on All Levels. This also
 802A4C67 000F
 
 $Single-Player (All Levels)\Have All\Weapons & Infinite Ammo
-Note=This is for Single-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother, and gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels.  Just press D-Pad Left or D-Pad Right to enable.
+Note=This is for Single-Player & Co-Operative and works on All Levels. This also includes DUKEMATCH that allows up to 4 players to VS eachother, and gives you Boots, Pistol, Shotgun, SMG, Grenade Launcher, Pipe Bombs, Shrinker, Expander, Missile Launcher, Plasma Cannon & Laser Trip Bomb and infinite use of on all levels. Just press D-Pad Left or D-Pad Right to enable.
 50000B01 0000
 802A4CD9 0001
 50000C02 0000

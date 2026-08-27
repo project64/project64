@@ -13,14 +13,14 @@ $Max Health Power-Fighters Arena
 $Max Recovery-Fighters Arena
 801FBF70 00C7
 
-$P1 Always Lose Judging
+$Player 1\Always Lose Judging
 801F727A 0000
 
-$P1 Always Win Judging
+$Player 1\Always Win Judging
 801F727A 00FF
 
-$P2 Always Lose Judging
+$Player 2\Always Lose Judging
 801F53AE 0000
 
-$P2 Always Win Judging
+$Player 2\Always Win Judging
 801F53AE 00FF

@@ -1,8 +1,8 @@
 [399B9B81-D533AD11-C:4A]
 Name=Extreme-G XG2 (J)
 
-$[Screen Hud Clear]
-Note=This Fixes the Problem on all Plugins that have Hud covering the Screen.Let the game load 1st before Putting this code on,Or it will give an error and Freeze
+$Screen HUD Clear
+Note=This Fixes the Problem on all Plugins that have Hud covering the Screen. Let the game load 1st before Putting this code on,Or it will give an error and Freeze
 80092D1B 0004
 
 $Access\All Secret Characters
@@ -17,7 +17,7 @@ $Access\All Tracks
 50000BD8 0000
 80183327 0001
 
-$Always 1st
+$Always Place 1st
 80171063 0001
 
 $Infinite\Nitros
