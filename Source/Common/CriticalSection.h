@@ -34,3 +34,42 @@ private:
     CGuard(const CGuard & copy);
     CGuard & operator=(const CGuard & rhs);
 };
+
+class CUniqueLock
+{
+public:
+    CUniqueLock(CriticalSection & sectionName) :
+        m_cs(sectionName), m_locked(true)
+    {
+        m_cs.enter();
+    }
+    ~CUniqueLock()
+    {
+        if (m_locked)
+            m_cs.leave();
+    }
+
+    inline void lock()
+    {
+        if (!m_locked)
+        {
+            m_cs.enter();
+            m_locked = true;
+        }
+    }
+
+    inline void unlock()
+    {
+        if (m_locked)
+        {
+            m_cs.leave();
+            m_locked = false;
+        }
+    }
+
+private:
+    CriticalSection & m_cs;
+    bool m_locked;
+    CUniqueLock(const CUniqueLock & copy);
+    CUniqueLock & operator=(const CUniqueLock & rhs);
+};

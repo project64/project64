@@ -32,7 +32,7 @@ CEnhancements::GAMESHARK_CODE::GAMESHARK_CODE(uint32_t Command, uint16_t Value, 
 CEnhancements::CEnhancements() :
     m_ScanFileThread((CThread::CTHREAD_START_ROUTINE)stScanFileThread),
     m_Scan(true),
-    m_Scanned(false),
+    m_Scanned(true /*manual reset*/),
     m_UpdateCheats(false),
     m_OverClock(false),
     m_OverClockModifier(1)
@@ -48,11 +48,11 @@ CEnhancements::~CEnhancements()
 
 void CEnhancements::ApplyActive(CMipsMemoryVM & MMU, CPlugins * Plugins, bool UpdateChanges)
 {
-    CGuard Guard(m_CS);
+    CUniqueLock Guard(m_CS);
     if (m_UpdateCheats && UpdateChanges)
     {
         m_UpdateCheats = false;
-        LoadActive(&MMU, Plugins);
+        LoadActiveImpl(Guard, &MMU, Plugins);
     }
     for (size_t i = 0, n = m_ActiveCodes.size(); i < n; i++)
     {
@@ -263,20 +263,20 @@ void CEnhancements::LoadEnhancements(const char * Ident, SectionFiles & Files, s
     }
 }
 
-void CEnhancements::Load(void)
+void CEnhancements::LoadImpl(CUniqueLock & guard)
 {
+    guard.unlock();
     WaitScanDone();
-    CGuard Guard(m_CS);
+    guard.lock();
 
     LoadEnhancements(CEnhancement::CheatIdent, m_CheatFiles, m_CheatFile, m_Cheats);
     LoadEnhancements(CEnhancement::EnhancementIdent, m_EnhancementFiles, m_EnhancementFile, m_Enhancements);
 }
 
-void CEnhancements::LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins)
+void CEnhancements::LoadActiveImpl(CUniqueLock & guard, CMipsMemoryVM * MMU, CPlugins * Plugins)
 {
-    Load();
+    LoadImpl(guard);
 
-    CGuard Guard(m_CS);
     m_OverClock = false;
     m_OverClockModifier = 1;
 
@@ -703,25 +703,14 @@ void CEnhancements::ScanFileThread(void)
         CGuard Guard(m_CS);
         m_CheatFiles = CheatFiles;
         m_EnhancementFiles = EnhancementFiles;
-        m_Scanned = true;
     }
+
+    m_Scanned.Trigger();
 }
 
 void CEnhancements::WaitScanDone()
 {
-    for (uint32_t i = 0; i < 500; i++)
-    {
-        bool Scanned = false;
-        {
-            CGuard Guard(m_CS);
-            Scanned = m_Scanned;
-        }
-        if (Scanned)
-        {
-            break;
-        }
-        pjutil::Sleep(100);
-    }
+    m_Scanned.IsTriggered(50 * 1000 /*ms*/);
 }
 
 uint32_t CEnhancements::ConvertXP64Address(uint32_t Address)
@@ -738,4 +727,16 @@ uint16_t CEnhancements::ConvertXP64Value(uint16_t Value)
     uint16_t tmpValue = ((Value + 0x2B00) ^ 0x8400) & 0xFF00;
     tmpValue += ((Value + 0x002B) ^ 0x0085) & 0x00FF;
     return tmpValue;
+}
+
+void CEnhancements::Load(void)
+{
+    CUniqueLock Guard(m_CS);
+    return LoadImpl(Guard);
+}
+
+void CEnhancements::LoadActive(CMipsMemoryVM * MMU, CPlugins * Plugins)
+{
+    CUniqueLock Guard(m_CS);
+    return LoadActiveImpl(Guard, MMU, Plugins);
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <Common/CriticalSection.h>
+#include <Common/SyncEvent.h>
 #include <Common/Thread.h>
 #include <Project64-core/N64System/Enhancement/EnhancementFile.h>
 #include <Project64-core/N64System/Enhancement/EnhancementList.h>
@@ -33,6 +34,9 @@ public:
     CEnhancementList Enhancements(void);
 
 private:
+    void LoadImpl(CUniqueLock &);
+    void LoadActiveImpl(CUniqueLock &, CMipsMemoryVM * MMU, CPlugins * Plugins);
+
     class GAMESHARK_CODE
     {
     public:
@@ -115,7 +119,7 @@ private:
     ORIGINAL_VALUES8 m_OriginalValues8;
     CThread m_ScanFileThread;
     bool m_Scan;
-    bool m_Scanned;
+    SyncEvent m_Scanned;
     bool m_UpdateCheats;
     bool m_OverClock;
     uint32_t m_OverClockModifier;
