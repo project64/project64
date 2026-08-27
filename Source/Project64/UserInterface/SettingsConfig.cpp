@@ -7,8 +7,6 @@
 CSettingConfig::CSettingConfig(bool bJustGameSetting /* = false */) :
     m_CurrentPage(nullptr),
     m_GeneralOptionsPage(nullptr),
-    m_AdvancedPage(nullptr),
-    m_DefaultsPage(nullptr),
     m_GameConfig(bJustGameSetting),
     m_bTVNSelChangedSupported(false)
 {
@@ -49,6 +47,7 @@ void CSettingConfig::Display(void * ParentWindow)
 void CSettingConfig::UpdateAdvanced(bool AdvancedMode)
 {
     UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetRootItem());
+    DisplayAccessibleSections(AdvancedMode, true);
     BoldChangedPages(m_PagesTreeList.GetRootItem());
 }
 
@@ -57,22 +56,58 @@ void CSettingConfig::UpdateAdvanced(bool AdvancedMode, HTREEITEM hItem)
     while (hItem)
     {
         CSettingsPage * Page = (CSettingsPage *)m_PagesTreeList.GetItemData(hItem);
-        if (!AdvancedMode && (Page == m_AdvancedPage || Page == m_DefaultsPage))
+        if (Page == m_GeneralOptionsPage)
+        {
+            UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem));
+            hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+        }
+        else
         {
             HTREEITEM hPage = hItem;
             hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
             m_PagesTreeList.DeleteItem(hPage);
         }
-        else if (AdvancedMode && Page == m_GeneralOptionsPage)
+    }
+}
+
+void CSettingConfig::DisplayAccessibleSections(bool AdvancedMode, bool UpdateSections)
+{
+    bool bFirstItem = true;
+
+    for (SETTING_SECTIONS::const_iterator iter = m_Sections.begin(); iter != m_Sections.end(); iter++)
+    {
+        CConfigSettingSection * Section = *iter;
+
+        HTREEITEM hSectionItem = nullptr;
+
+        for (size_t i = 0; i < Section->GetPageCount(); i++)
         {
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_AdvancedPage->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)m_AdvancedPage, hItem, TVI_FIRST);
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(m_DefaultsPage->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)m_DefaultsPage, hItem, TVI_FIRST);
-            break;
+            CSettingsPage * Page = Section->GetPage((int32_t)((UINT_PTR)i));
+            if (UpdateSections && Page == m_GeneralOptionsPage)
+            {
+                hSectionItem = m_PagesTreeList.GetRootItem();
+                continue;
+            }
+            if (!Page->PageAccessible(AdvancedMode))
+            {
+                continue;
+            }
+            if (i == 0)
+            {
+                hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (LPARAM)Page, TVI_ROOT, TVI_LAST);
+                continue;
+            }
+            if (hSectionItem == nullptr)
+            {
+                continue;
+            }
+            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)Page, hSectionItem, TVI_LAST);
         }
-        else
+        if (bFirstItem && hSectionItem != nullptr)
         {
-            UpdateAdvanced(AdvancedMode, m_PagesTreeList.GetChildItem(hItem));
-            hItem = m_PagesTreeList.GetNextSiblingItem(hItem);
+            bFirstItem = false;
+            m_PagesTreeList.Expand(hSectionItem);
+            m_PagesTreeList.SelectItem(hSectionItem);
         }
     }
 }
@@ -129,16 +164,13 @@ LRESULT CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
         }
 
         m_GeneralOptionsPage = new CGeneralOptionsPage(this, this->m_hWnd, rcSettingInfo);
-        m_AdvancedPage = new CAdvancedOptionsPage(this->m_hWnd, rcSettingInfo);
-        m_DefaultsPage = new CDefaultsOptionsPage(this->m_hWnd, rcSettingInfo);
-        m_DiskDrivePage = new CDiskDrivePage(this->m_hWnd, rcSettingInfo);
 
         SettingsSection = new CConfigSettingSection(wGS(TAB_OPTIONS).c_str());
         SettingsSection->AddPage(m_GeneralOptionsPage);
-        SettingsSection->AddPage(m_AdvancedPage);
-        SettingsSection->AddPage(m_DefaultsPage);
+        SettingsSection->AddPage(new CAdvancedOptionsPage(this->m_hWnd, rcSettingInfo));
+        SettingsSection->AddPage(new CDefaultsOptionsPage(this->m_hWnd, rcSettingInfo));
         SettingsSection->AddPage(new COptionsDirectoriesPage(this->m_hWnd, rcSettingInfo));
-        SettingsSection->AddPage(m_DiskDrivePage);
+        SettingsSection->AddPage(new CDiskDrivePage(this->m_hWnd, rcSettingInfo));
         m_Sections.push_back(SettingsSection);
 
         SettingsSection = new CConfigSettingSection(wGS(TAB_ROMSELECTION).c_str());
@@ -174,40 +206,8 @@ LRESULT CSettingConfig::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*
 
     m_PagesTreeList.Attach(GetDlgItem(IDC_PAGELIST));
 
-    bool bFirstItem = true;
     bool HideAdvanced = g_Settings->LoadBool(UserInterface_BasicMode);
-    for (SETTING_SECTIONS::const_iterator iter = m_Sections.begin(); iter != m_Sections.end(); iter++)
-    {
-        CConfigSettingSection * Section = *iter;
-
-        HTREEITEM hSectionItem = nullptr;
-
-        for (size_t i = 0; i < Section->GetPageCount(); i++)
-        {
-            CSettingsPage * Page = Section->GetPage((int32_t)((UINT_PTR)i));
-            if (HideAdvanced && (Page == m_AdvancedPage || Page == m_DefaultsPage))
-            {
-                continue;
-            }
-            if (i == 0)
-            {
-                hSectionItem = m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, Section->GetPageTitle(), 0, 0, 0, 0, (LPARAM)Page, TVI_ROOT, TVI_LAST);
-                continue;
-            }
-            if (hSectionItem == nullptr)
-            {
-                continue;
-            }
-            m_PagesTreeList.InsertItem(TVIF_TEXT | TVIF_PARAM, wGS(Page->PageTitle()).c_str(), 0, 0, 0, 0, (LPARAM)Page, hSectionItem, TVI_LAST);
-        }
-        if (bFirstItem && hSectionItem != nullptr)
-        {
-            bFirstItem = false;
-            m_PagesTreeList.Expand(hSectionItem);
-            m_PagesTreeList.SelectItem(hSectionItem);
-        }
-    }
-
+    DisplayAccessibleSections(!HideAdvanced, false);
     BoldChangedPages(m_PagesTreeList.GetRootItem());
     return TRUE;
 }
