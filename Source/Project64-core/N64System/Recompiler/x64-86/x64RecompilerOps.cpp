@@ -2939,6 +2939,19 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             break;
         }
         return false;
+    case 0x04800000u:
+        switch (PAddr)
+        {
+        case 0x04800018u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SI_STATUS_REG, "SI_STATUS_REG", ResultSigned); break;
+        default:
+            m_Assembler.xor_(Reg, Reg);
+            if (g_DebugSettings.breakOnUnhandledMemory)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            break;
+        }
+        return false;
     default:
         if ((PAddr & 0xF0000000u) == 0x10000000u && (PAddr - 0x10000000u) < m_Rom.GetRomSize())
         {
