@@ -1948,8 +1948,8 @@ void CX64RecompilerOps::SPECIAL_OR()
     }
     else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
     {
-        const int KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
-        const int UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
+        const uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
+        const uint32_t UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
         if (m_RegWorkingSet.IsConst(KnownReg))
         {
@@ -1957,7 +1957,27 @@ void CX64RecompilerOps::SPECIAL_OR()
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_RegWorkingSet.ProtectGPR(KnownReg);
+            if (KnownReg == m_Opcode.rd)
+            {
+                if (g_GameSettings.core32Bit)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+            }
+            else if (g_GameSettings.core32Bit)
+            {
+                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, UnknownReg);
+                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(KnownReg).r32());
+            }
+            else
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
         }
     }
     else
