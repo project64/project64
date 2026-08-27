@@ -1,8 +1,8 @@
 ﻿// Meta Information
 #1  #  "Norsk"			// Language ID
-#2  #  "Jaxon"			// Author
+#2  #  "Imre Eilertsen"			// Author
 #3  #  "3.0"			// Version
-#4  #  "August, 2021"		// Date
+#4  #  "August, 2026"		// Date
 
 /*** Menu ***/
 
@@ -33,8 +33,8 @@
 #130#  "Jukse&koder..."
 #131#  "GS-knapp"
 #132#  "Forts&ett"
-#133#  "Myk re&set"
-#134#  "&Hard reset"
+#133#  "Myk om&start"
+#134#  "&Hard omstart"
 #135#  "Bytt &disk"
 #136#  "Forb&edringer..."
 
@@ -43,9 +43,9 @@
 #141#  "&Fullskjerm"
 #142#  "All&tid øverst"
 #143#  "&Grafikkinnstillinger"
-#144#  "&Lydinstillinger"
-#145#  "&Inputinnstillinger"
-#146#  "&RSP-instillinger"
+#144#  "&Lydinnstillinger"
+#145#  "&Inndatainnstillinger"
+#146#  "&RSP-innstillinger"
 #147#  "&Vis CPU-bruk %"
 #148#  "Inns&tillinger..."
 
@@ -99,16 +99,16 @@
 #230#  "Lagringsplass - 10"
 
 // Menu descriptions
-#250#  "Åpne et N64 ROM-bilde"
-#251#  "Vis informasjon om det innlastede ROM-bildet"
-#252#  "Start emulering av det innlastede ROM-bildet"
-#253#  "Stopp emulering av det innlastede ROM-bildet"
+#250#  "Åpne en N64-ROM-avbildning"
+#251#  "Vis informasjon om den innlastede ROM-avbildningen"
+#252#  "Start emulering av den innlastede ROM-avbildningen"
+#253#  "Stopp emulering av den innlastede ROM-avbildningen"
 #254#  "Velg ROM-mappe"
 #255#  "Oppdater ROM-listen i ROM-katalogen"
 #256#  "Avslutt dette programmet"
-#257#  "Start nåværende ROM-bilde på nytt (la eventuelle innstillingsendringer tre i kraft)"
+#257#  "Start nåværende ROM-avbildningen på nytt (La eventuelle innstillingsendringer tre i kraft)"
 #258#  "Sett emulering på pause/fortsett emulering av nåværende ROM"
-#259#  "Generer ett bitmap-bilde av nåværende skjerm"
+#259#  "Generer et bitmap-bilde av nåværende skjerm"
 #260#  "Begrens FPS til korrekt hastighet for N64"
 #261#  "Lagre emulert systemtilstand"
 #262#  "Lagre emulert systemtilstand på en bestemt filplassering"
@@ -123,7 +123,7 @@
 #271#  "Endre innstillinger for kontrollertillegg"
 #272#  "Endre innstillinger for RSP-tillegg"
 #273#  "Vis emulatorens CPU-bruk fordelt på forskjellige ressurser"
-#274#  "Se/endre instillinger for programmet"
+#274#  "Se/endre innstillinger for programmet"
 #275#  "Åpne brukermanual"
 #276#  "Vis ofte stile spørsmål"
 #278#  "Om programmet og forfatterne"
@@ -134,7 +134,7 @@
 #282#  "Velg denne lagringsplassen for systemtilstanden"
 #283#  "Start det valgte spillet"
 #284#  "Se informasjon om det valgte spillet"
-#285#  "Endre instillinger for det valgte spillet"
+#285#  "Endre innstillinger for det valgte spillet"
 #286#  "Endre juksekoder for det valgte spillet"
 
 /*** ROM browser ***/
@@ -158,7 +158,7 @@
 #315#  "Utgivelsesdato"
 #316#  "Sjanger"
 #317#  "Antall spillere"
-#318#  "Haptisk tilbakemelding"
+#318#  "Kontrollerristing"
 #319#  "Filformat"
 #321#  "Navn"
 
@@ -192,7 +192,7 @@
 #421#  " RSP (Reality Signal Processor)-tillegg: "
 #422#  " Video (grafikk)-tillegg: "
 #423#  " Lydtillegg: "
-#424#  " Input (kontroller)-tillegg: "
+#424#  " Inndata (kontroller)-tillegg: "
 #425#  "HLE-grafikk"
 #426#  "HLE-lyd"
 #427#  "** Bruk systemtillegg **"
@@ -229,19 +229,19 @@
 #473#  "Slå på forbedringer"
 #474#  "Vis statuslinje"
 #475#  "Gå ut av fullskjerm når fokus mistes"
-#476#  "Slå på Discord rich presence"
+#476#  "Slå på Discord Rich Presence"
 
 // ROM browser tab
-#480#  "Maks antall ROMs å huske (0-10):"
-#481#  "ROMs"
+#480#  "Maks antall ROM-er å huske (0-10):"
+#481#  "ROM-er"
 #482#  "Maks antall ROM-mapper å huske (0-10):"
 #483#  "mapper"
-#484#  "Bruk ROM-katalogen"
+#484#  "Bruk ROM-mappen"
 #485#  "Bruk mapperekursjon"
 #486#  "Ledige felter:"
 #487#  "Feltrekkefølge:"
-#488#  "Legg til ->"
-#489#  "<- Fjern"
+#488#  "Legg til →"
+#489#  "← Fjern"
 #490#  "Opp"
 #491#  "Ned"
 #492#  "Oppfrisk katalogen automatisk"
@@ -303,7 +303,7 @@
 // Function lookup method
 #570#  "Fysisk oppslagstabell"
 #571#  "Virtuell oppslagstabell"
-#572#  "Endre memory"
+#572#  "Endre minne"
 
 // RDRAM size
 #580#  "4 MB"
@@ -314,7 +314,7 @@
 #601#  "Av"
 
 // Save type
-#620#  "Bruk den første brukte lagringstypen"
+#620#  "Bruk den først brukte lagringstypen"
 #621#  "4-kbits EEPROM"
 #622#  "16-kbits EEPROM"
 #623#  "SRAM"
@@ -458,20 +458,20 @@
 /*** Messages ***/
 
 #2000#  "*** CPU PAUSET ***"
-#2001#  "CPU Gjenoppstartet"
-#2002#  "I en permanent loop som ikke kan bli avsluttet.\nEmulering vil nå stoppes.\n\nSjekk at ROM og dens innstillinger er korrekte."
-#2003#  "Klarte ikke allokere minne"
+#2001#  "CPU gjenoppstartet"
+#2002#  "I en permanent loop som ikke kan bli avsluttet.\nEmulering vil nå stoppes.\n\nSjekk at ROM-en og dens innstillinger er korrekte."
+#2003#  "Klarte ikke å tildele minne"
 #2004#  "Standard eller valgt grafikktillegg ble ikke funnet eller er ugyldig.\n\nDu må gå inn i Innstillinger og velge et video (grafikk)-tillegg.\nSjekk at du har minst én kompatibel tilleggsfil i tilleggsmappen din."
 #2005#  "Standard eller valgt grafikktillegg ble ikke funnet eller er ugyldig.\n\nDu må gå inn i Innstillinger og velge et lydtillegg.\nSjekk at du har minst én kompatibel tilleggsfil i tilleggsmappen din."
 #2006#  "Standard eller valgt grafikktillegg ble ikke funnet eller er ugyldig.\n\nDu må gå inn i Innstillinger og velge et RSP (Reality Signal Processor)-tillegg.\nSjekk at du har minst én kompatibel tilleggsfil i tilleggsmappen din."
-#2007#  "Standard eller valgt grafikktillegg ble ikke funnet eller er ugyldig.\n\nDu må gå inn i Innstillinger og velge et input (kontroller)-tillegg.\nSjekk at du har minst én kompatibel tilleggsfil i tilleggsmappen din."
+#2007#  "Standard eller valgt grafikktillegg ble ikke funnet eller er ugyldig.\n\nDu må gå inn i Innstillinger og velge et inndata (kontroller)-tillegg.\nSjekk at du har minst én kompatibel tilleggsfil i tilleggsmappen din."
 #2008#  "Klarte ikke laste inn tillegg:"
-#2009#  "Klarte ikke laste inn ord (word).\n\nSjekk at ROM og dens innstillinger er korrekte."
+#2009#  "Klarte ikke laste inn ord (word).\n\nSjekk at ROM-en og dens innstillinger er korrekte."
 #2010#  "Klarte ikke åpne lagringsfil"
 #2011#  "Klarte ikke åpne EEPROM"
 #2012#  "Klarte ikke åpne flash-RAM"
 #2013#  "Klarte ikke åpne mempak"
-#2014#  "Klarte ikke åpne zip-fil.\n\nZip-filen er sannsynligvis korrupt – prøv å pakke up ROM-en manuelt."
+#2014#  "Klarte ikke åpne zip-fil.\n\nZip-filen er sannsynligvis korrupt – prøv å pakke ut ROM-en manuelt."
 #2015#  "Klarte ikke åpne fil."
 #2016#  "Feil ved åpning av zip-fil."
 #2017#  "Innlastet fil ser ikke ut til å være en gyldig N64-ROM.\n\nSjekk ROM-en din med GoodN64."
@@ -480,12 +480,12 @@
 #2020#  "Ukjent filformat"
 #2021#  "Ukjent minnehandling\n\nEmulering stoppet"
 #2022#  "Uhåndtert R4300i opkode på"
-#2023#  "Eksekverer fra umappet lagring.\n\nSjekk at ROM og dens innstillinger er korrekte.."
-#2024#  "Denne lagrede tilstanden ser ikke ut til å passe med den kjørende ROM-en.\n\nSystemtilstander må lagres og lastes inn mellom 100% identiske ROM.\nSpesifikt må REGIONEN og VERSJONEN være de samme.\nÅ laste inn denne tilstanden vil mest sannsynlig forårsake at spillet og/eller emulatoren krasjer.\n\nEr du sikker på at du fortsatt vil laste inn den inn?"
+#2023#  "Eksekverer fra umappet lagring.\n\nSjekk at ROM-en og dens innstillinger er korrekte."
+#2024#  "Denne lagrede tilstanden ser ikke ut til å passe med den kjørende ROM-en.\n\nSystemtilstander må lagres og lastes inn mellom 100% identiske ROM-er.\nSpesifikt må REGIONEN og VERSJONEN være de samme.\nÅ laste inn denne tilstanden vil mest sannsynlig forårsake at spillet og/eller emulatoren krasjer.\n\nEr du sikker på at du fortsatt vil laste inn den inn?"
 #2025#  "Feil"
 #2026#  "Opphavsrettssekvens ikke funnet i LUT. Spillet vil ikke lenger fungere."
 #2027#  "Kopibeskyttelsesfeil"
-#2028#  "Å endre et tillegg krever at Project64 tilbakestiller en kjørende ROM.\nSvar "Nei" og lagre den nåværende systemtilstanden først dersom du ikke ønsker å miste fremgangen din.\n\nEndre tillegg og tilbakestill ROM nå?"
+#2028#  "Å endre et tillegg krever at Project64 omstarter en kjørende ROM.\nSvar "Nei" og lagre den nåværende systemtilstanden først dersom du ikke ønsker å miste fremgangen din.\n\nVil du endre tillegg og omstarte ROM-en nå?"
 #2029#  "Endre tillegg"
 #2030#  "Emulering stoppet"
 #2031#  "Emulering startet"
@@ -512,7 +512,7 @@
 #2052#  "Programfeil"
 #2053#  "Klarte ikke finne filnavn i 7z-fil"
 #2054#  "Lavnivåemulering av grafikk"
-#2055#  "LLE-grafikk er ikke for generell bruk!!!\nDu rådes til å kun bruke dette for testing og ikke for å spille spill.\n\nBytt til LLE-grafikk?"
+#2055#  "LLE-grafikk er ikke for generell bruk!!!\nDu rådes til å kun bruke dette for testing og ikke for å spille spill.\n\nVil du Bytte til LLE-grafikk?"
 #2056#  "Høynivåemulering av lyd"
 #2057#  "Høynivåemulering av lyd krever et tredjepartstillegg!!!\nHvis du ikke bruker et tredjepartstillegg som støtter HLE vil du ikke høre noe lyd.\n\nBytt til LLE-lyd?"
 #2058#  "Den innlastede filen ser ikke ut til å være en gyldig 64DD IPL ROM.\n\nSjekk ROM-en med GoodN64."
