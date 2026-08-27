@@ -802,15 +802,32 @@ void CX64RecompilerOps::ORI()
         m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, m_RegWorkingSet.GetMipsRegState(m_Opcode.rs));
         m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt, m_RegWorkingSet.GetMipsRegHi(m_Opcode.rs));
         m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) | m_Opcode.immediate);
-
-        if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        if (g_GameSettings.core32Bit)
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), m_Opcode.immediate);
+        }
+        else if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
-        return;
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
     }
 
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::XORI()
