@@ -1455,7 +1455,24 @@ void CX64RecompilerOps::SPECIAL_SRL()
 
 void CX64RecompilerOps::SPECIAL_SRA()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (g_GameSettings.core32Bit)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
+        m_Assembler.sar(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), (uint8_t)m_Opcode.sa);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SLLV()
