@@ -1913,7 +1913,18 @@ void CX64RecompilerOps::SPECIAL_AND()
 
         if (m_RegWorkingSet.IsConst(KnownReg))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (m_RegWorkingSet.Is64Bit(KnownReg))
+            {
+                uint64_t Value = m_RegWorkingSet.GetMipsReg(KnownReg);
+                m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, UnknownReg);
+                m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), Value);
+            }
+            else
+            {
+                uint32_t Value = m_RegWorkingSet.GetMipsRegLo(KnownReg);
+                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, m_RegWorkingSet.IsSigned(KnownReg), UnknownReg);
+                m_Assembler.and_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), Value);
+            }
         }
         else
         {
