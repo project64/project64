@@ -1640,7 +1640,15 @@ void CX64RecompilerOps::SPECIAL_DMULT()
 
 void CX64RecompilerOps::SPECIAL_DMULTU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::rax, m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), false);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::rdx, m_Opcode.rt, asmjit::RegType::kX86_Gpq);
+
+    m_Assembler.mul(asmjit::x86::rdx);
+
+    m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", asmjit::x86::rax);
+    m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", asmjit::x86::rdx);
 }
 
 void CX64RecompilerOps::SPECIAL_DDIV()
