@@ -2213,7 +2213,20 @@ void CX64RecompilerOps::SPECIAL_DSRA()
 
 void CX64RecompilerOps::SPECIAL_DSLL32()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
+        m_Assembler.shl(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), (uint8_t)(m_Opcode.sa + 32));
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_DSRL32()
