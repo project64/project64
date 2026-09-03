@@ -820,7 +820,36 @@ void CX64RecompilerOps::SLTI()
 
 void CX64RecompilerOps::SLTIU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    const int32_t Imm = (int16_t)m_Opcode.immediate;
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+        const asmjit::x86::Gp & RtReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        m_Assembler.xor_(RtReg.r32(), RtReg.r32());
+        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+        {
+            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r64(), Imm);
+        }
+        else
+        {
+            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), Imm);
+        }
+        m_Assembler.setb(RtReg.r8Lo());
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::ANDI()
