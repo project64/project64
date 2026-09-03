@@ -1478,7 +1478,8 @@ void CX64RecompilerOps::SPECIAL_SRL()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
+        m_Assembler.shr(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), (uint8_t)m_Opcode.sa);
     }
 }
 
