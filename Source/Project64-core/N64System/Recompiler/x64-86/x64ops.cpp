@@ -240,6 +240,34 @@ void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, ui
     }
 }
 
+void CX64Ops::MoveConst64ToVariable(void * Variable, const char * VariableName, uint64_t Const)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    const bool Imm32Fits = Const == (uint64_t)(int64_t)(int32_t)Const;
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        if (Imm32Fits)
+        {
+            mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), static_cast<uint32_t>(Const));
+        }
+        else
+        {
+            push(asmjit::x86::rax);
+            mov(asmjit::x86::rax, Const);
+            mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), asmjit::x86::rax);
+            pop(asmjit::x86::rax);
+        }
+    }
+    else if (Imm32Fits)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
 void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, const char * ValueName)
 {
     if (g_DebugSettings.recordRecompilerAsm && ValueName != nullptr)

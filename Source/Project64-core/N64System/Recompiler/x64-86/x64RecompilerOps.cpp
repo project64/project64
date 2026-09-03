@@ -1658,7 +1658,45 @@ void CX64RecompilerOps::SPECIAL_DDIV()
 
 void CX64RecompilerOps::SPECIAL_DDIVU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    const bool RtIsConstZero = m_RegWorkingSet.IsConst(m_Opcode.rt) && (m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) == 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) == 0);
+    if (RtIsConstZero)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+        const asmjit::x86::Gp DivReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::rax, m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+
+        asmjit::Label JumpEnd;
+        if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            asmjit::Label JumpNoExcept = m_Assembler.newLabel();
+            m_Assembler.test(DivReg.r64(), DivReg.r64());
+            m_Assembler.JneLabel("NoExcept", JumpNoExcept);
+
+            m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", (uint64_t)-1);
+            m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", asmjit::x86::rax);
+            JumpEnd = m_Assembler.newLabel();
+            m_Assembler.JmpLabel("EndDivu", JumpEnd);
+
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpNoExcept);
+        }
+
+        m_Assembler.xor_(asmjit::x86::rdx, asmjit::x86::rdx);
+        m_Assembler.div(DivReg.r64());
+        m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", asmjit::x86::rax);
+        m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", asmjit::x86::rdx);
+
+        if (JumpEnd.isValid())
+        {
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpEnd);
+        }
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_ADD()
