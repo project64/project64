@@ -1334,7 +1334,32 @@ void CX64RecompilerOps::LDC1()
 
 void CX64RecompilerOps::LD()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (m_Opcode.base == 29 && g_GameSettings.fastSP)
+    {
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, -1);
+        const asmjit::x86::Gp & DestReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        const asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(asmjit::x86::Gpq(), true, true);
+        m_Assembler.mov(DestReg.r64(), asmjit::x86::qword_ptr(StackReg, (int32_t)((int16_t)m_Opcode.offset)));
+        m_Assembler.ror(DestReg.r64(), 32);
+    }
+    else if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SC()
