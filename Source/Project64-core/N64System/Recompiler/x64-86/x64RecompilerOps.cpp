@@ -337,30 +337,32 @@ void CX64RecompilerOps::BNE_Compare()
         {
             m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
             m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            asmjit::x86::Gp RsReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs);
+            asmjit::x86::Gp RtReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
             if (m_RegWorkingSet.Is64Bit(m_Opcode.rs) || m_RegWorkingSet.Is64Bit(m_Opcode.rt))
             {
                 g_Notify->BreakPoint(__FILE__, __LINE__);
             }
             else
             {
-                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt));
-                if (m_Section->m_Cont.FallThrough)
-                {
-                    m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-                    m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-                }
-                else if (m_Section->m_Jump.FallThrough)
-                {
-                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-                }
-                else
-                {
-                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-                    m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-                    m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-                }
+                m_Assembler.cmp(RsReg, RtReg);
+            }
+            if (m_Section->m_Cont.FallThrough)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else if (m_Section->m_Jump.FallThrough)
+            {
+                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            }
+            else
+            {
+                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
             }
         }
         else
@@ -368,26 +370,36 @@ void CX64RecompilerOps::BNE_Compare()
             uint32_t ConstReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
             uint32_t MappedReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
+            m_RegWorkingSet.ProtectGPR(MappedReg);
             if (m_RegWorkingSet.Is64Bit(ConstReg) || m_RegWorkingSet.Is64Bit(MappedReg))
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                asmjit::x86::Gp Mapped64 = m_RegWorkingSet.GetMipsRegMap(MappedReg);
+                if (m_RegWorkingSet.Is32Bit(MappedReg))
+                {
+                    Mapped64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), MappedReg, asmjit::RegType::kX86_Gpq);
+                }
+                const uint64_t ConstVal = m_RegWorkingSet.Is64Bit(ConstReg) ? m_RegWorkingSet.GetMipsReg(ConstReg) : (m_RegWorkingSet.IsSigned(ConstReg) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(ConstReg) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(ConstReg));
+                const asmjit::x86::Gp Const64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+                m_Assembler.MoveConstToX64reg(Const64, ConstVal);
+                m_Assembler.cmp(Mapped64.r64(), Const64);
             }
             else
             {
                 m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(MappedReg).r32(), m_RegWorkingSet.GetMipsRegLo(ConstReg));
-                if (m_Section->m_Cont.FallThrough)
-                {
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
-                }
-                else if (m_Section->m_Jump.FallThrough)
-                {
-                    m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-                    m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-                }
-                else
-                {
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
-                }
+            }
+            if (m_Section->m_Cont.FallThrough)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else if (m_Section->m_Jump.FallThrough)
+            {
+                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            }
+            else
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
             }
         }
     }
