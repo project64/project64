@@ -787,7 +787,35 @@ void CX64RecompilerOps::ADDIU()
 
 void CX64RecompilerOps::SLTI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    const int32_t Imm = (int16_t)m_Opcode.immediate;
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+        const asmjit::x86::Gp & RtReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        m_Assembler.xor_(RtReg.r32(), RtReg.r32());
+        if (g_GameSettings.core32Bit)
+        {
+            m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], (uint32_t)Imm);
+            m_Assembler.setl(RtReg.r8Lo());
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
 }
 
 void CX64RecompilerOps::SLTIU()
