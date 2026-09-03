@@ -397,7 +397,27 @@ void CX64RegInfo::Map_GPR_64bit(int32_t MipsReg, int32_t MipsRegToLoad)
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        Reg = GetMipsRegMap(MipsReg);
+        if (Is32Bit(MipsReg))
+        {
+            Reg = asmjit::x86::Gpq(Reg.id());
+            if (MipsReg == MipsRegToLoad)
+            {
+                if (IsSigned(MipsReg))
+                {
+                    m_Assembler.movsxd(Reg, GetMipsRegMap(MipsReg).r32());
+                }
+                else
+                {
+                    m_Assembler.mov(Reg.r32(), GetMipsRegMap(MipsReg).r32());
+                }
+            }
+        }
+        else
+        {
+            Reg = Reg.r64();
+        }
+        SetX64Protected(Reg.id(), true);
     }
 
     for (int i = 0; i < x64PhysRegCount; i++)
@@ -943,7 +963,7 @@ asmjit::x86::Gp CX64RegInfo::FreeX64Reg(asmjit::RegType RegType)
     {
         if (MapCount[i] > 0 && GetX64Mapped(MapReg[i]) != Stack_Mapped)
         {
-            asmjit::x86::Gp Reg = GetX64RegFromPhysId(MapReg[i], RegType);
+            Reg = GetX64RegFromPhysId(MapReg[i], RegType);
             if (UnMap_X64reg(Reg))
             {
                 return Reg;
