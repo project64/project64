@@ -386,6 +386,19 @@ void CX64Ops::AndConstToVariable(void * Variable, const char * VariableName, uin
     }
 }
 
+void CX64Ops::OrVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        or_(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
 void CX64Ops::XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);

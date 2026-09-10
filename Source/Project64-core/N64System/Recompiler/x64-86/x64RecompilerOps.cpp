@@ -2153,7 +2153,8 @@ void CX64RecompilerOps::SPECIAL_OR()
             {
                 if (g_GameSettings.core32Bit)
                 {
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, KnownReg);
+                    m_Assembler.OrVariableToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd), &m_Reg.m_GPR[UnknownReg].W[0], CRegName::GPR_Lo[UnknownReg]);
                 }
                 else
                 {
