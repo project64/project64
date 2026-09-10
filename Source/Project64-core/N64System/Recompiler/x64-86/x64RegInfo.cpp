@@ -9,6 +9,8 @@
 
 namespace
 {
+static constexpr uint32_t kX64ScratchRegId = asmjit::x86::Gp::kIdR11;
+
 static constexpr uint32_t kX64AllocatableRegIds[] = {
     asmjit::x86::Gp::kIdBx,
     asmjit::x86::Gp::kIdR12,
@@ -24,7 +26,6 @@ static constexpr uint32_t kX64AllocatableRegIds[] = {
     asmjit::x86::Gp::kIdR8,
     asmjit::x86::Gp::kIdR9,
     asmjit::x86::Gp::kIdR10,
-    asmjit::x86::Gp::kIdR11,
 };
 static constexpr uint32_t kX64AllocatableRegCount = sizeof(kX64AllocatableRegIds) / sizeof(kX64AllocatableRegIds[0]);
 asmjit::x86::Gp GetX64RegFromPhysId(uint32_t PhysId, asmjit::RegType RegType = asmjit::RegType::kX86_Gpq)
@@ -523,7 +524,6 @@ asmjit::x86::Gp CX64RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, a
             asmjit::x86::Gp::kIdR8,
             asmjit::x86::Gp::kIdR9,
             asmjit::x86::Gp::kIdR10,
-            asmjit::x86::Gp::kIdR11,
         };
         for (size_t k = 0; k < sizeof(prefer) / sizeof(prefer[0]); k++)
         {
