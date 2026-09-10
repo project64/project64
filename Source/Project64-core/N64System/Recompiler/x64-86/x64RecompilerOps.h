@@ -256,6 +256,7 @@ private:
     CX64Ops m_Assembler;
     CMipsMemoryVM & m_MMU;
     PIPELINE_STAGE m_PipelineStage;
+    CX64RegInfo m_RegBeforeDelay;
     bool m_EffectDelaySlot;
     const uint32_t & m_CompilePC;
     uint32_t m_ColdEntryOffset;

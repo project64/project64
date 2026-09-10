@@ -16,6 +16,7 @@ CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock
     m_Assembler(CodeBlock),
     m_RegWorkingSet(CodeBlock, m_Assembler),
     m_MMU(System.m_MMU_VM),
+    m_RegBeforeDelay(CodeBlock, m_Assembler),
     m_PipelineStage(PIPELINE_STAGE_NORMAL),
     m_EffectDelaySlot(false),
     m_CompilePC(m_Instruction.Address32()),
@@ -146,8 +147,39 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         }
         if (m_EffectDelaySlot)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
+            if ((m_CompilePC & 0xFFC) != 0xFFC)
+            {
+                m_Section->m_Cont.BranchLabel = m_Section->m_ContinueSection != nullptr ? "Continue" : stdstr_f("ExitBlock_%X_Continue", m_Section->m_EnterPC);
+                m_Section->m_Jump.BranchLabel = m_Section->m_JumpSection != nullptr ? "Jump" : stdstr_f("ExitBlock_%X_Jump", m_Section->m_EnterPC);
+            }
+            else
+            {
+                m_Section->m_Cont.BranchLabel = "Continue";
+                m_Section->m_Jump.BranchLabel = "Jump";
+            }
+            if (m_Section->m_Jump.TargetPC != m_Section->m_Cont.TargetPC)
+            {
+                Compile_BranchCompare(CompareType);
+            }
+            if (!m_Section->m_Jump.FallThrough && !m_Section->m_Cont.FallThrough)
+            {
+                if (m_Section->m_Jump.LinkLocation.isValid())
+                {
+                    LinkJump(m_Section->m_Jump);
+                    m_Section->m_Jump.FallThrough = true;
+                }
+                else if (m_Section->m_Cont.LinkLocation.isValid())
+                {
+                    LinkJump(m_Section->m_Cont);
+                    m_Section->m_Cont.FallThrough = true;
+                }
+            }
+            if ((m_CompilePC & 0xFFC) == 0xFFC)
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            m_RegWorkingSet.ResetRegisterProtection();
+            m_RegBeforeDelay = m_RegWorkingSet;
         }
         if (m_PipelineStage == PIPELINE_STAGE_NORMAL)
         {
@@ -169,7 +201,44 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
         }
         if (m_EffectDelaySlot)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CJumpInfo * FallInfo = m_Section->m_Jump.FallThrough ? &m_Section->m_Jump : &m_Section->m_Cont;
+            CJumpInfo * JumpInfo = m_Section->m_Jump.FallThrough ? &m_Section->m_Cont : &m_Section->m_Jump;
+
+            if (FallInfo->FallThrough && !FallInfo->DoneDelaySlot)
+            {
+                m_RegWorkingSet.ResetRegisterProtection();
+                FallInfo->RegSet = m_RegWorkingSet;
+                if (FallInfo == &m_Section->m_Jump)
+                {
+                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                }
+                else
+                {
+                    if (m_Section->m_ContinueSection != nullptr)
+                    {
+                        m_Section->m_Cont.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_ContinueSection)->m_SectionID);
+                    }
+                    else
+                    {
+                        m_Section->m_Cont.BranchLabel = stdstr_f("ExitBlock_%X_Continue", m_Section->m_EnterPC);
+                    }
+                }
+                FallInfo->DoneDelaySlot = true;
+                if (!JumpInfo->DoneDelaySlot)
+                {
+                    FallInfo->FallThrough = false;
+                    FallInfo->LinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JmpLabel(FallInfo->BranchLabel.c_str(), FallInfo->LinkLocation);
+
+                    if (JumpInfo->LinkLocation.isValid())
+                    {
+                        LinkJump(*JumpInfo);
+                        JumpInfo->FallThrough = true;
+                        m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
+                        m_RegWorkingSet = m_RegBeforeDelay;
+                    }
+                }
+            }
         }
         else
         {
