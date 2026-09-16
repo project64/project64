@@ -26,7 +26,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE_KNOWN), Default_RDRamSizeUnknown);
     if (ComboBox)
     {
-        ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
+        ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_KNOWN_TEXT));
         ComboBox->AddItem(wGS(RDRAM_4MB).c_str(), 0x400000);
         ComboBox->AddItem(wGS(RDRAM_8MB).c_str(), 0x800000);
     }
@@ -34,7 +34,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_RDRAM_SIZE_UNKNOWN), Default_RDRamSizeKnown);
     if (ComboBox)
     {
-        ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
+        ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_UNKOWN_TEXT));
         ComboBox->AddItem(wGS(RDRAM_4MB).c_str(), 0x400000);
         ComboBox->AddItem(wGS(RDRAM_8MB).c_str(), 0x800000);
     }
@@ -67,7 +67,7 @@ CDefaultsOptionsPage::CDefaultsOptionsPage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_DISKSEEKTIMING), Default_DiskSeekTiming);
     if (ComboBox)
     {
-        //ComboBox->SetTextField(GetDlgItem(IDC_COUNTFACT_TEXT));
+        ComboBox->SetTextField(GetDlgItem(IDC_DISKSEEKTIMING_TEXT));
         ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_TURBO).c_str(), DiskSeek_Turbo);
         ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_SLOW).c_str(), DiskSeek_Slow);
     }

@@ -87,6 +87,7 @@ void COptionsGameBrowserPage::FixCtrlState(void)
     ::EnableWindow(GetDlgItem(IDC_UP), bEnabled);
     ::EnableWindow(GetDlgItem(IDC_DOWN), bEnabled);
     ::EnableWindow(GetDlgItem(IDC_RECURSION), bEnabled);
+    ::EnableWindow(GetDlgItem(IDC_SHOW_FILE_EXTENSIONS), bEnabled);
 }
 
 void COptionsGameBrowserPage::AddFieldClicked(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
