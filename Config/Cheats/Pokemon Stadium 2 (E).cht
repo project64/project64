@@ -4,13 +4,13 @@ Name=Pokemon Stadium 2 (E)
 $Infinite Health Stadium & Gym Leader Castle
 801DD22D 0030
 
-$Mini Games\Player 1\Clear Cut Challenge gets perfect score
+$Mini Games\Player 1\Clear Cut Challenge Perfect Score
 801744C3 0063
 
 $Mini Games\Player 1\Delibird Delivery Perfect Score
 801AC2CC 0063
 
-$Mini Games\Player 1\Egg Emergency perfect score
+$Mini Games\Player 1\Egg Emergency Perfect score
 80191C3F 0064
 
 $Mini Games\Player 1\Furret Frolic Perfect Score
@@ -31,14 +31,14 @@ Note=Immediatly wins
 D01769E7 0001
 801769E7 0005
 
-$Mini Games\Player 2\Gutsy Golbat has 99 hearts
+$Mini Games\Player 2\Gutsy Golbat has 99 Hearts
 D017714B 0001
 8017714B 0063
 
-$Mini Games\Player 3\Gutsy Golbat has 99 hearts
+$Mini Games\Player 3\Gutsy Golbat has 99 Hearts
 D0177177 0001
 80177177 0063
 
-$Mini Games\Player 4\Gutsy Golbat has 99 hearts
+$Mini Games\Player 4\Gutsy Golbat has 99 Hearts
 D01771A3 0001
 801771A3 0063

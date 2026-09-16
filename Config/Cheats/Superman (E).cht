@@ -1,25 +1,25 @@
 [B44CAB74-07029A29-C:50]
 Name=Superman (E) (M6)
 
-$For More Time Press D-pad up
+$For More Time Press D-pad Up
 D00EA380 0008
 8115F0D2 1724
 D00EA380 0008
 8115F0DA 003C
 
-$Infinite Options\Freezing Breath
+$Infinite\Freezing Breath
 8122CDE8 42C8
 
-$Infinite Options\Health
+$Infinite\Health
 8122CDD4 42C8
 
-$Infinite Options\Laser Eye
+$Infinite\Laser Eye
 8122CDE4 42C8
 
-$Infinite Options\Running Boosts
+$Infinite\Running Boosts
 8122CDDC 42C8
 
-$Infinite Options\X-Ray Vision
+$Infinite\X-Ray Vision
 8122CDE0 42C8
 
 $Level Select

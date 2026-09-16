@@ -23,31 +23,31 @@ $Away Team\Scores
 C8 200 Points
 FA 250 Points
 
-$Create A Player\Max 3 Point
+$Create a Player\Max 3 Point
 8013FF99 0063
 
-$Create A Player\Max Ball Control
+$Create a Player\Max Ball Control
 8013FFA1 0063
 
-$Create A Player\Max Block
+$Create a Player\Max Block
 8013FF9D 0063
 
-$Create A Player\Max Field Goal
+$Create a Player\Max Field Goal
 8013FF98 0063
 
-$Create A Player\Max Free Throw
+$Create a Player\Max Free Throw
 8013FF9A 0063
 
-$Create A Player\Max Power
+$Create a Player\Max Power
 8013FFA2 0063
 
-$Create A Player\Max Rebound
+$Create a Player\Max Rebound
 8013FF9C 0063
 
-$Create A Player\Max Speed
+$Create a Player\Max Speed
 8013FF9F 0063
 
-$Create A Player\Max Steal
+$Create a Player\Max Steal
 8013FF9E 0063
 
 $Home Team\Infinite Time-Outs
@@ -153,7 +153,7 @@ $Options\Level
 01 Exciting
 02 Super Challenge
 
-$Options\Out Of Bounds
+$Options\Out of Bounds
 80144990 00??
 00 1
 01 2

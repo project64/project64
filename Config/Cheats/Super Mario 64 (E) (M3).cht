@@ -1,71 +1,71 @@
 [A03CF036-BCC1C5D2-C:50]
 Name=Super Mario 64 (E) (M3)
 
-$[Slot A Codes]\Have All\120 Stars
-Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A.This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
+$Save File A\Have All\120 Stars
+Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A. This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
 80202F23 0001
 80202F0B 00C7
 50001101 0000
 80202F0C 00FF
 
-$[Slot A Codes]\Have All\key doors unlocked (and mote empty)
+$Save File A\Have All\Key Doors Unlocked (& Moat Drained)
 80202F0A 007E
 
-$[Slot A Codes]\Have All\Max 100 Coin Records For All Levels
+$Save File A\Have All\Max 100 Coin Records for All Levels
 50000F01 0000
 80202F25 0064
 
-$[Slot B Codes]\Have All\120 Stars
-Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A.This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
+$Save File B\Have All\120 Stars
+Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A. This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
 80202F93 0001
 80202F7B 00C7
 50001101 0000
 80202F7C 00FF
 
-$[Slot B Codes]\Have All\key doors unlocked (and mote empty)
+$Save File B\Have All\Key Doors Unlocked (& Moat Drained)
 80202F7A 007E
 
-$[Slot B Codes]\Have All\Max 100 Coin Records For All Levels
+$Save File B\Have All\Max 100 Coin Records for All Levels
 50000F01 0000
 80202F95 0064
 
-$[Slot C Codes]\Have All\120 Stars
-Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A.This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
+$Save File C\Have All\120 Stars
+Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A. This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
 80203003 0001
 80202FEB 00C7
 50001101 0000
 80202FEC 00FF
 
-$[Slot C Codes]\Have All\key doors unlocked (and mote empty)
+$Save File C\Have All\Key Doors Unlocked (& Moat Drained)
 80202FEA 007E
 
-$[Slot C Codes]\Have All\Max 100 Coin Records For All Levels
+$Save File C\Have All\Max 100 Coin Records for All Levels
 50000F01 0000
 80203005 0064
 
-$[Slot D Codes]\Have All\120 Stars
-Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A.This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
+$Save File D\Have All\120 Stars
+Note=Have\120 Stars,once the Code is activated, you will see it as a new option in Save Slot A. This will Have\the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now Have\it all saved to mempak
 80203073 0001
 8020305B 00C7
 50001101 0000
 8020305C 00FF
 
-$[Slot D Codes]\Have All\key doors unlocked (and mote empty)
+$Save File D\Have All\Key Doors Unlocked (& Moat Drained)
 8020305A 007E
 
-$[Slot D Codes]\Have All\Max 100 Coin Records For All Levels
+$Save File D\Have All\Max 100 Coin Records for All Levels
 50000F01 0000
 80203075 0064
 
 $Don't Hurt Mario\Falling
-Note=Press L to levitate & Let go to land
+Note=Press L to levitate and let go to land.
 8036CF6C 00E8
 8136CEB8 FFFF
 
 $Don't Hurt Mario\Monsters
 80309457 0001
 
-$Funny Mario Options\Mario Walks On Water
+$Funny Mario Options\Mario Walks on Water
 802A6204 0800
 802A6206 0024
 81000090 3C04
@@ -95,7 +95,7 @@ Note=Here you can Choose Options with Mario with His Cap off & in His Hand,Do no
 26 Invisible Metal Mario Cap In Hand
 28 Flying Mario Cap In Hand
 
-$Funny Mario Options\Mario's Cap\On & An Extra in His Hand
+$Funny Mario Options\Mario's Cap\On & an Extra in His Hand
 Note=Here you can Choose Options with Mario with His Cap on & An Extra in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
 80309437 00??
 30 Cap In Hand
@@ -104,12 +104,12 @@ Note=Here you can Choose Options with Mario with His Cap on & An Extra in His Ha
 36 Invisible Metal Mario Cap In Hand
 38 Flying Mario Cap In Hand
 
-$Have\Debug Mode
+$Debug Mode
 A02F9748 00??
 01 On
 00 Off
 
-$Have\Level Select
+$Level Select
 A02F973C 0001
 
 $Infinite\Energy & Breath
@@ -137,5 +137,5 @@ Note=Here you can Choose Options with Mario with His Cap on,Do not use with any 
 16 Invisible Metal Mario
 19 Flying Mario
 
-$Press GS For 255 Coins
+$GameShark Button\255 Coins
 893094D8 00FF

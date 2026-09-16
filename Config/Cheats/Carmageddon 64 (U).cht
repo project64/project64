@@ -5,12 +5,12 @@ $Freeze Time at 02:00
 811C479E 1C40
 
 $Have All Groups Completed
-Note=This gives you all Cups for all Groups.
+Note=This gives you all cups for all groups.
 50002801 0000
 801C48DC 0002
 
 $Have Everything Unlocked
-Note=This will unlock Cars, Races, Missions and the in-built Cheat Menu. This will also replace all the Zombies with  Dinosaurs. To access Cheat menu options: Pause Game: Use Control Stick, to scroll the Cheat Menu. Press A, to activate Cheats
+Note=This will unlock cars, races, missions and the in-game cheat menu. This will also replace all the zombies with dinosaurs. To access cheat menu options: Pause Game: Use control stick to scroll the cheat menu. Press A, to activate cheats.
 801C49BD 000F
 
 $Have Infinite\Free Repairs
@@ -64,9 +64,9 @@ $Have Infinite\Underwater Ability
 0000 Off
 
 $Max Credits
-Note=This is also Infinite until disabled
+Note=This is infinite until disabled.
 811C481B FFFF
 
 $Max Kills
-Note=This will automatically Clear the stage if enabled and go back to the stage menu
+Note=This will automatically clear the stage if enabled and go back to the stage menu.
 8109AC46 012C

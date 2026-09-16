@@ -1,7 +1,7 @@
 [80F41131-384645F6-C:4A]
 Name=AeroGauge (J) (V1.1)
 
-$Always 1st
+$Always Place 1st
 8013CD60 0001
 
 $Freeze All Lap Timers
@@ -13,7 +13,7 @@ $Freeze Overall Timer
 Note=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
 8013CD15 0001
 
-$Laps Of Race
+$Laps of Race
 8013CD0E 00??
 01 1 Lap
 02 2 Laps
@@ -23,7 +23,7 @@ $Laps Of Race
 06 Never Ending Laps
 
 $Level Select
-Note=For this cheat to work,as soon as you put the cheat on you must turn it back off,if not you wont beable to quit a Race or even finish one.
+Note=For this cheat to work, as soon as you put the cheat on you must turn it back off, if not you wont be able to quit a race or even finish one.
 8013D01B 00??
 00 Canyon Rush
 01 Bikini Island
@@ -71,5 +71,5 @@ $Play As\Player 2
 08 Reaper
 09 Dominator
 
-$Unlock All Tracks and Vehicles
+$Unlock All Tracks & Vehicles
 8008D1FC 0001

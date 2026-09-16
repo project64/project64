@@ -4,55 +4,55 @@ Name=Paper Mario (U)
 $Have All Spirits
 8010F51E 0007
 
-$Have hammer\Level 1
+$Have\Hammer\Level 1
 Note=Do not use with other level hammer cheats
 8010F291 0000
 
-$Have hammer\Level 2
+$Have\Hammer\Level 2
 Note=Do not use with other level hammer cheats
 8010F291 0001
 
-$Have hammer\Level 3
+$Have\Hammer\Level 3
 Note=Do not use with other level hammer cheats
 8010F291 0002
 
-$Have jump boots\Level 1
+$Have\Jump Boots\Level 1
 Note=Do not use with other level jump boots cheats
 8010F290 0000
 
-$Have jump boots\Level 2
+$Have\Jump Boots\Level 2
 Note=Do not use with other level jump boots cheats
 8010F290 0001
 
-$Have jump boots\Level 3
+$Have\Jump Boots\Level 3
 Note=Do not use with other level jump boots cheats
 8010F290 0002
 
-$Have member\Bombette
+$Have\Member\Bombette
 8010F2BC 0001
 
-$Have member\Bow
+$Have\Member\Bow
 8010F2EC 0001
 
-$Have member\Goomario
+$Have\Member\Goomario
 8010F2AC 0001
 
-$Have member\Kooper
+$Have\Member\Kooper
 8010F2B4 0001
 
-$Have member\Lakitu
+$Have\Member\Lakitu
 8010F2E4 0001
 
-$Have member\Parrakary
+$Have\Member\Parrakary
 8010F2C4 0001
 
-$Have member\Sushie
+$Have\Member\Sushie
 8010F2DC 0001
 
-$Have member\Watt
+$Have\Member\Watt
 8010F2D4 0001
 
-$Have\Attack item
+$Have\Attack Item
 Note=Only use One Have item Option at one time.
 8110F444 ????
 0800 Fire Flower
@@ -63,7 +63,7 @@ Note=Only use One Have item Option at one time.
 0085 Pebble
 0086 Dusty Hammer
 
-$Have\Defense item
+$Have\Defense Item
 Note=Only use One Have item Option at one time.
 8110F444 ????
 0088 Stone Cap
@@ -71,7 +71,7 @@ Note=Only use One Have item Option at one time.
 008B Volt Shroom
 0097 Repel Gel
 
-$Have\Enemy Stats item
+$Have\Enemy Stats Item
 Note=Only use One Have item Option at one time.
 8110F444 ????
 008F Sleep Sheep
@@ -229,87 +229,87 @@ $Infinite\Star Power
 8010F520 0007
 8010F521 0007
 
-$Lots Of Coins
+$Lots of Coins
 8110F29C 03E7
 
-$Max\Badge Points
+$Maximum\Badge Points
 8010F298 00??
 3C 60 Badge Points
 7F 127 Badge Points
 
-$Max\Level
+$Maximum\Level
 8010F299 0063
 
-$Max\Star Pieces
+$Maximum\Star Pieces
 8010F29F 0063
 
-$Max\Star Points
+$Maximum\Star Points
 8010F2A0 0063
 
 $No Star Points (0)
 Note=If emulator hangs at level up, enable this cheat and don't disable it whatsoever!
 8010F2A0 0000
 
-$Upgrade member\Level 1\Bombette
+$Upgrade Member\Level 1\Bombette
 Note=Do not use with level 2 upgrade cheats
 8010F2BD 0001
 
-$Upgrade member\Level 1\Bow
+$Upgrade Member\Level 1\Bow
 Note=Do not use with level 2 upgrade cheats
 8010F2ED 0001
 
-$Upgrade member\Level 1\Goomario
+$Upgrade Member\Level 1\Goomario
 Note=Do not use with level 2 upgrade cheats
 8010F2AD 0001
 
-$Upgrade member\Level 1\Kooper
+$Upgrade Member\Level 1\Kooper
 Note=Do not use with level 2 upgrade cheats
 8010F2B5 0001
 
-$Upgrade member\Level 1\Lakitu
+$Upgrade Member\Level 1\Lakitu
 Note=Do not use with level 2 upgrade cheats
 8010F2E5 0001
 
-$Upgrade member\Level 1\Parrakary
+$Upgrade Member\Level 1\Parrakary
 Note=Do not use with level 2 upgrade cheats
 8010F2C5 0001
 
-$Upgrade member\Level 1\Sushie
+$Upgrade Member\Level 1\Sushie
 Note=Do not use with level 2 upgrade cheats
 8010F2DD 0001
 
-$Upgrade member\Level 1\Watt
+$Upgrade Member\Level 1\Watt
 Note=Do not use with level 2 upgrade cheats
 8010F2D5 0001
 
-$Upgrade member\Level 2\Bombette
+$Upgrade Member\Level 2\Bombette
 Note=Do not use with level 1 upgrade cheats
 8010F2BD 0002
 
-$Upgrade member\Level 2\Bow
+$Upgrade Member\Level 2\Bow
 Note=Do not use with level 1 upgrade cheats
 8010F2ED 0002
 
-$Upgrade member\Level 2\Goomario
+$Upgrade Member\Level 2\Goomario
 Note=Do not use with level 1 upgrade cheats
 8010F2AD 0002
 
-$Upgrade member\Level 2\Kooper
+$Upgrade Member\Level 2\Kooper
 Note=Do not use with level 1 upgrade cheats
 8010F2B5 0002
 
-$Upgrade member\Level 2\Lakitu
+$Upgrade Member\Level 2\Lakitu
 Note=Do not use with level 1 upgrade cheats
 8010F2E5 0002
 
-$Upgrade member\Level 2\Parrakary
+$Upgrade Member\Level 2\Parrakary
 Note=Do not use with level 1 upgrade cheats
 8010F2C5 0002
 
-$Upgrade member\Level 2\Sushie
+$Upgrade Member\Level 2\Sushie
 Note=Do not use with level 1 upgrade cheats
 8010F2DD 0002
 
-$Upgrade member\Level 2\Watt
+$Upgrade Member\Level 2\Watt
 Note=Do not use with level 1 upgrade cheats
 8010F2D5 0002

@@ -2,7 +2,7 @@
 Name=Rayman 2 - The Great Escape (E) (M5)
 
 $All Masks
-Note=Press GS To Activate All Masks
+Note=Press GameShark button to Activate all masks.
 891F1110 8780
 
 $Have All\Crates
@@ -20,17 +20,17 @@ $Have All\Yellow Lums
 50005702 0000
 811F1078 FFFF
 
-$Infinite\Max Health
+$Infinite\Health
 811BC54C 001E
 
 $Infinite\Oxygen
 810F4A80 4396
 
-$Open Options\levels & Map
+$Open Options\Levels & Map
 50000801 0000
 801F1101 00FF
 
-$Open Options\Open all cages
+$Open Options\Open All Cages
 801F1032 0050
 50000602 0000
 811F10E0 FFFF

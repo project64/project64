@@ -1,17 +1,17 @@
 [CCEB3858-26952D97-C:50]
 Name=Toy Story 2 (E)
 
-$Have 99 Coins
+$Have\99 Coins
 810BB4FE 0063
 
-$Have All 5 Collectables
+$Have\All 5 Collectables
 801C7E62 0005
 
-$Hold jump to fly
+$Hold Jump to Fly
 810BB4EC 0002
 
-$Infinite Battery Power
+$Infinite\Battery Power
 810BB4F6 000E
 
-$Infinite Lives
+$Infinite\Lives
 800BB4FA 0009

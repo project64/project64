@@ -1,7 +1,7 @@
 [E328B4FA-004A28E1-C:50]
 Name=Bust-A-Move 3 DX
 
-$Always Have\guide line on
+$Always Have\Guide Line On
 80056CCC 0082
 
 $Next Bubble Select\Player 1
@@ -28,7 +28,7 @@ $Next Bubble Select\Player 2
 07 White
 08 Black
 
-$Play As Select\Player 1
+$Play as Select\Player 1
 800E3250 00??
 00 Bubbloon
 01 Twinkie
@@ -46,7 +46,7 @@ $Play As Select\Player 1
 13 1 of the two Ballons
 14 Water under ballons
 
-$Play As Select\Player 2
+$Play as Select\Player 2
 800E3258 00??
 00 Bubbloon
 01 Twinkie
@@ -64,10 +64,10 @@ $Play As Select\Player 2
 13 1 of the two Ballons
 14 Water under ballons
 
-$Pointer always active
+$Pointer Always Active
 D0056FA0 0002
 80056FA0 0082
 
-$Press GS to Reset Player 2 score to 0
+$GameShark Button\Reset Player 2 Score to 0
 8809D9C0 0000
 8809D9C2 0000

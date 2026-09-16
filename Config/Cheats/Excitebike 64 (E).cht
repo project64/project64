@@ -1,15 +1,15 @@
 [202A8EE4-83F88B89-C:50]
 Name=Excitebike 64 (E)
 
-$Always Low Temp\Player One
+$Always Low Temp\Player 1
 810E4668 0000
 810E466A 0000
 
-$Always Low Temp\Player Two
+$Always Low Temp\Player 2
 810E4E48 0000
 810E4E4A 0000
 
-$In Game Cheat Select\1
+$In-Game Cheat Select\1
 800CDA4A 00??
 01 Transparent riders
 02 All stunts
@@ -18,7 +18,7 @@ $In Game Cheat Select\1
 10 Beat this
 20 Small head mode
 
-$In Game Cheat Select\2
+$In-Game Cheat Select\2
 800CDA4B 00??
 01 Big head mode
 02 Mirror mode
@@ -29,7 +29,7 @@ $In Game Cheat Select\2
 40 Night mode
 80 Odd colour mode
 
-$In-Game cheat modifer
+$In-Game Cheat Modifer
 810CDA4A ????
 0001 Big head mode
 0002 Mirror mode
@@ -49,15 +49,15 @@ $In-Game cheat modifer
 $Infinite Time
 810F0E36 1770
 
-$Max Score Stunt Mode\Player One
+$Max Score Stunt Mode\Player 1
 810E43E8 0098
 810E43EA 967F
 
-$Max Score Stunt Mode\Player Two
+$Max Score Stunt Mode\Player 2
 810E4BC8 0098
 810E4BCA 967F
 
-$Start On Lap
+$Start on Lap
 D00E4681 0000
 800E4681 00??
 01 Lap 1
@@ -66,6 +66,6 @@ D00E4681 0000
 04 Lap 4
 
 $Unlock Original Excitebike
-Note=Press L+R at track selection to Access Soccer,Hill Climb & Excite 3D
+Note=Press L + R at track selection to Access Soccer,Hill Climb & Excite 3D
 D00F6605 0030
 810F2420 FF07

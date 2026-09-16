@@ -22,7 +22,7 @@ $Always Full Special\Ralph
 $Always Full Special\Ruby
 811545F8 0044
 
-$Enable George
+$Enable\George
 8118CF92 0000
 
 $Enable\Lizzie
@@ -43,15 +43,6 @@ $Infinite Health\Lizzie
 $Infinite Health\Ralph
 81154C44 0044
 
-$Infinite Lives\George
-81154808 0063
-
-$Infinite Lives\Lizzie
-81154A24 0063
-
-$Infinite Lives\Ralph
-81154C40 0063
-
 $Infinite\Health\Boris
 811543D4 0044
 
@@ -63,6 +54,15 @@ $Infinite\Health\Myukus
 
 $Infinite\Health\Ruby
 811545F0 0044
+
+$Infinite\Lives\George
+81154808 0063
+
+$Infinite\Lives\Lizzie
+81154A24 0063
+
+$Infinite\Lives\Ralph
+81154C40 0063
 
 $Infinite\Lives\Boris
 811543D0 0063

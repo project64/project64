@@ -13,7 +13,7 @@ $Have All\Moves
 50005306 0000
 81183CE2 00FF
 
-$Have All\Moves At Skill Level 250
+$Have All\Moves at Skill Level 250
 50000E06 0000
 80188F63 00FA
 50001306 0000
@@ -33,7 +33,7 @@ $Infinite\Max Body Stats
 50000602 0000
 8117DCB6 270F
 
-$Infinite\Max Health
+$Infinite\Health
 8117DC40 270F
 8117DC42 270F
 
@@ -53,9 +53,9 @@ $Level 999
 8117DC88 270F
 
 $Level and Battle Select
-Note=The level and battle select screen can be accessed by pressing A at the main menu
+Note=The level and battle select screen can be accessed by pressing A at the main menu.
 801CC8C4 0005
 
-$Press L To Levitate
+$Press L to Levitate
 D005CE51 0020
 8124A0B0 3FCB

@@ -32,19 +32,19 @@ $Infinite Turbos\Player 2
 $Max Tournament Points
 81124A16 00FF
 
-$Press L For Time Is Always 0:00:00\Player 1
+$Press L for Time Is Always 0:00:00\Player 1
 D0137FE5 0020
 810F3900 0000
 D0137FE5 0020
 810F3902 0000
 
-$Press L For Time Is Always 0:00:00\Player 2
+$Press L for Time Is Always 0:00:00\Player 2
 D0137FED 0020
 810F3900 0000
 D0137FED 0020
 810F3902 0000
 
-$Start On Lap Modifier\Player 1
+$Start on Lap Modifier\Player 1
 D0118AA8 0000
 80118AA8 00??
 00 1st
@@ -52,7 +52,7 @@ D0118AA8 0000
 02 3rd
 03 4th
 
-$Start On Lap Modifier\Player 2
+$Start on Lap Modifier\Player 2
 D0119224 0000
 80119224 00??
 00 1st

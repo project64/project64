@@ -1,28 +1,28 @@
 [373F5889-9A6CA80A-C:50]
 Name=Conker's Bad Fur Day (E)
 
-$Access All\Chapters, Scenes,& Multi-Player Characters
+$Access All\Chapters, Scenes,& Multiplayer Characters
 50002401 0000
 800EA120 00FF
 
-$Access All\Characters & Weapons In Multi Race
+$Access All\Characters & Weapons in Multi Race
 810EA122 ??FF
 FF All Characters & Baseball bat
 FB All Characters & Frying Pan
 F3 All Characters & Bones
 
 $Infinite\Accuracy Count Player 1
-Note=MULTI ONLY. Only put this code on once you are in the game,Once you pick up a Gun a shoot once, you will 100%.
+Note=Multiplayer only. Only activate this cheat once you are in the game. Once you pick up a Gun a shoot once, you will 100%.
 800E0F87 0001
 
-$Infinite\Bags In Heist
+$Infinite\Bags in Heist
 800E1004 00FF
 
 $Infinite\Bombs
 802059EA 0030
 
 $Infinite\Head Shot Count Player 1
-Note=MULTI ONLY. Only put this code on once you are in the game
+Note=Multiplayer only. Only activate this cheat once you are in the game.
 800E0F8B 0064
 
 $Infinite\Health\Player 1
@@ -41,19 +41,19 @@ $Infinite\Lives Player 1
 800D2564 0063
 
 $Infinite\Max Kills Player 1
-Note=MULTI ONLY. Only put this code on once you are in the game
+Note=Multiplayer only. Only activate this cheat once you are in the game.
 800E0F67 03E7
 
 $Infinite\Oxygen
 800CC7A2 0001
 
-$Infinite\Pots of cash
+$Infinite\Pots of Cash
 810D256A FFFF
 
-$Infinite\Time In Multi
+$Infinite\Time in Multiplayer
 8109019A 7500
 
-$Play as
+$Play As
 Note=Here you can choose who you want to play as, but only one option at a time. Shadow will not be visible, except when playing as Conker.
 800D255F 00??
 01 Wessle
@@ -92,23 +92,23 @@ Note=Here you can choose who you want to play as, but only one option at a time.
 27 Gregg
 28 Skeleton Gregg
 
-$Press L To Levitate\Player 1
-Note=Press L Button to Levitate & Let go to come back down
+$Press L to Levitate\Player 1
+Note=Press L to levitate and let go to land.
 D0042DA5 0020
 810CC710 41CB
 
-$Press L To Levitate\Player 2
-Note=Press L Button to Levitate & Let go to come back down
+$Press L to Levitate\Player 2
+Note=Press L to levitate and let go to land.
 D0042DAE 0020
 810CCA3C 41CB
 
-$Press L To Levitate\Player 3
-Note=Press L Button to Levitate & Let go to come back down
+$Press L to Levitate\Player 3
+Note=Press L to levitate and let go to land.
 D0042DB5 0020
 810CCD68 41CB
 
-$Press L To Levitate\Player 4
-Note=Press L Button to Levitate & Let go to come back down
+$Press L to Levitate\Player 4
+Note=Press L to levitate and let go to land.
 D0042DBE 0020
 810CD094 41CB
 
@@ -117,8 +117,8 @@ $Wait Animation Trigger
 00 Default at most
 02 Wait animations disabled
 
-$Weapon Select In Multi (On Pick Up)
-Note=Select what Weapon you would like in Multi Player and then on a Weapon Pickup you will have the weapon of your choice.to change for another just Enable the one of your choice to have that instead.(you must have a weapon already to change for the next.
+$Weapon in Multiplayer (On Pick Up)
+Note=Select what Weapon you would like in Multiplayer and then on a Weapon Pickup you will have the weapon of your choice. to change for another just Enable the one of your choice to have that instead.(you must have a weapon already to change for the next.
 80180C4B 00??
 01 Sword
 02 Nothing

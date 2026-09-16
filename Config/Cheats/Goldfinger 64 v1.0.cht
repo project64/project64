@@ -1,36 +1,36 @@
 [B2242748-FFBD61DA-C:45]
 Name=Goldfinger 64 v1.0
 
-$(Everything Unlocked)\Save File 1
-Note=This Unlocks All Levels and Cheat Menu Items
+$Everything Unlocked\Save File 1
+Note=Unlocks all levels and cheat menu items.
 50002902 0000
 810699EE ????
 0000 Clear Save Slot
 FFFF Unlocked
 
-$(Everything Unlocked)\Save File 2
-Note=This Unlocks All Levels and Cheat Menu Items
+$Everything Unlocked\Save File 2
+Note=Unlocks all levels and cheat menu items.
 50002902 0000
 8106992E ????
 0000 Clear Save Slot
 FFFF Unlocked
 
-$(Everything Unlocked)\Save File 3
-Note=This Unlocks All Levels and Cheat Menu Items
+$Everything Unlocked\Save File 3
+Note=Unlocks all levels and cheat menu items.
 50002902 0000
 81069A4E ????
 0000 Clear Save Slot
 FFFF Unlocked
 
-$(Everything Unlocked)\Save File 4
-Note=This Unlocks All Levels and Cheat Menu Items
+$Everything Unlocked\Save File 4
+Note=Unlocks all levels and cheat menu items.
 50002902 0000
 8106998E ????
 0000 Clear Save Slot
 FFFF Unlocked
 
-$Have All\64 Characters In Multi Player
-Note=Enables all Characters selectable to play as in Multi-Player
+$Have All\64 Characters in Multiplayer
+Note=Enables all Characters selectable to play as in Multiplayer
 8002B197 0040
 
 $Have All\Objectives Complete

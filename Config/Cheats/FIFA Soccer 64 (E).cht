@@ -1,7 +1,7 @@
 [C3F19159-65D2BC5A-C:50]
 Name=FIFA Soccer 64 (E) (M3)
 
-$Number Of Goals Player 1
+$Number of Goals\Player 1
 80119043 00??
 01 1 Goal
 02 2 Goals
@@ -18,7 +18,7 @@ $Number Of Goals Player 1
 28 40 Goals
 32 50 Goals
 
-$Number Of Goals Player 2
+$Number of Goals\Player 2
 80119047 00??
 01 1 Goal
 02 2 Goals

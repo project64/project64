@@ -2,38 +2,38 @@
 Name=Gex 64 - Enter the Gecko (E)
 
 $Access All Remote Controls\Red Remotes
-Note=Opens Gate 4 And The Lions Mouth
+Note=Opens gate 4 and the Lion's Mouth.
 50000E01 0000
 800C513E 0007
 
 $All Silver & Gold Gold Remotes
-Note=Opens Gate 3,2,1
+Note=Opens gates 3, 2, 1.
 810C5164 0FFF
 810C5166 FFFF
 810C5168 01E0
 810C516A 007F
 
 $Fully Charged Gex
-Note=Press L Button Once When On One Of The Specific Levels, For Circuit Central Levels Only
+Note=Press L button Once When On One Of The Specific Levels, For Circuit Central Levels Only
 D00AAAB9 0020
 81163CDE 32FF
 
 $Hover & Fly Mode
-Note=Press And Hold L Button + A Button
+Note=Press and hold L + A buttons
 D10BED04 0020
 8114ECA2 0010
 D10BED04 0010
 
-$Infinite Air Codes\Pain In The Asteroids
+$Infinite\Air\Pain in the Asteroids
 D00BED05 0004
 8133CBEE 012B
 
-$Infinite Air Codes\Umpire Strikes Out
+$Infinite\Air\Umpire Strikes Out
 D00BED05 0004
 8136608E 012B
 
-$Infinite Health
+$Infinite\Health
 800C50CB 0063
 
-$Infinite Lives
+$Infinite\Lives
 810C50C6 0063

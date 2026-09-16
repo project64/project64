@@ -7,17 +7,17 @@ $Infinite\Lives
 $Infinite\Specials
 800A3649 0003
 
-$Max\Combo
+$Maximum\Combo
 810A3644 7FFF
 
-$Max\Lower Level
+$Maximum\Lower Level
 800A3658 0003
 
-$Max\Score
+$Maximum\Score
 800A3628 0063
 800A3629 0063
 
-$Max\Upper Level
+$Maximum\Upper Level
 800A3659 0063
 
 $Play As

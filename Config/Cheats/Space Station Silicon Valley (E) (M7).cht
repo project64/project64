@@ -1,7 +1,7 @@
 [FC70E272-08FFE7AA-C:50]
 Name=Space Station Silicon Valley (E) (M7)
 
-$0 Enemies To Kill In Big Celebration Parade
+$0 Enemies to Kill in Big Celebration Parade
 803E4DBB 0000
 
 $All levels open
@@ -26,7 +26,7 @@ $Enable Secret Mini Game
 $Great Score
 813F2E22 03E7
 
-$High Score In Evo's Escape
+$High Score in Evo's Escape
 813E4DDA 7FFF
 
 $Infinite Health\2 Mouse,Hyena
@@ -137,5 +137,5 @@ Note=Only Use Infinite Skill B Codes For Animals You Need
 801E1F5C 0004
 
 $Title Screen
-Note=Press the Pause Button to takes you to Title Screen
+Note=Press the Pause button to takes you to Title Screen
 803F6799 0000

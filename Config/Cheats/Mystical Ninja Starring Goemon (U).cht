@@ -19,11 +19,11 @@ $Ebisumaru\Saw Hammer Modifier
 01 Silver Saw Hammer
 02 Gold Saw Hammer
 
-$Goemon\D-Pad Left To Charge Laser
+$Goemon\D-Pad Left to Charge Laser
 D00C7D3A 0002
 802F706F 0064
 
-$Goemon\D-Pad Up To Refill Oil
+$Goemon\D-Pad Up to Refill Oil
 D0067D3A 0008
 812F706A 03E7
 
@@ -94,11 +94,11 @@ $Play As
 02 Sasuke
 03 Yae
 
-$Press\L To Levitate
+$Press\L to Levitate
 D00C7D3B 0020
 8116A044 4000
 
-$Press\R To Use Chargeable Weapon
+$Press\R to Use Chargeable Weapon
 D00C7D3B 0010
 8120C896 005D
 

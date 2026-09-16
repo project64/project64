@@ -1,17 +1,17 @@
 [85AE781A-C756F05D-C:45]
 Name=Buck Bumble (U)
 
-$Have\[All Guns & Infinite Ammo]
-Note=Press C Left to receive all Guns
+$Have\All Guns & Infinite Ammo
+Note=Press C-Left to receive all guns.
 810FFF8A 0001
 50000B04 0000
 810E92E6 03E8
 
-$Have\[All Keys]
+$Have\All Keys
 810E92E0 0101
 800E92E2 0001
 
-$Have\[High Score]
+$Have\High Score
 810E92CE FFFF
 
 $Have\Max Bonus

@@ -1,17 +1,17 @@
 [4D3E622E-9B828B4E-C:4A]
 Name=F-ZERO X (J)
 
-$Always 1st Place
+$Always Place 1st
 802C4BC2 0001
 
-$Have Boost From Start
+$Have Boost from Start
 D02C4DAC 003F
 802C4925 0050
 
-$Infinite Lives
+$Infinite\Lives
 800E5AA9 0005
 
-$Player 1\Infinite Shield
+$Infinite\Shield - Player 1
 812C4B48 4336
 812C4B4C 4336
 

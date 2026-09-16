@@ -1,7 +1,7 @@
 [D83045C8-F29D3A36-C:50]
 Name=AeroGauge (E) (M3)
 
-$Always 1st
+$Always Place 1st
 8013F040 0001
 
 $Freeze All Timers
@@ -19,7 +19,7 @@ $Language Select
 01 French
 02 German
 
-$Laps Of Race
+$Laps of Race
 8013EFEF 00??
 01 1 Lap
 02 2 Laps
@@ -29,7 +29,7 @@ $Laps Of Race
 06 Never Ending Laps
 
 $Level Select
-Note=For this cheat to work,as soon as you put the cheat on you must turn it back off,if not you wont beable to quit a Race or even finish one.
+Note=For this cheat to work, as soon as you put the cheat on you must turn it back off, if not you wont be able to quit a race or even finish one.
 8013F2FB 00??
 00 Canyon Rush
 01 Bikini Island

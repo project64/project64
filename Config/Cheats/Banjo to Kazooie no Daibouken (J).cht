@@ -1,7 +1,7 @@
 [5168D520-CA5FCD0D-C:4A]
 Name=Banjo to Kazooie no Daibouken (J)
 
-$Have Zero Time all Levels
+$Have Zero Time All Levels
 50000B04 0000
 81386B44 3000
 
@@ -31,7 +31,7 @@ $Infinite\Mumbo Tokens
 80386B07 00FF
 
 $Infinite\Notes
-Note=Just collect one Note to Have 255 Notes in all Worlds.
+Note=Collect one note to have 255 notes in all worlds.
 80386B32 00FF
 80386AA2 0001
 

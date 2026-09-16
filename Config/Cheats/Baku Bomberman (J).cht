@@ -1,7 +1,7 @@
 [E340A49C-74318D41-C:4A]
 Name=Baku Bomberman (J)
 
-$Carry 20 Bombs At A Time
+$Carry 20 Bombs at a Time
 800AEE0F 0014
 
 $Have\Pumped up Red Remote Bombs

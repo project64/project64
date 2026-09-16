@@ -1,71 +1,71 @@
 [BDF9766D-BD068D70-C:45]
 Name=ECW Hardcore Revolution (U)
 
-$1 On 2 & 2 On 1 Modes\Player 1\Can't Be Counted Out
+$1 on 2 & 2 on 1 Modes\Player 1\Can't Be Counted Out
 D0296E4D 0029
 81296ECE 0384
 
-$1 On 2 & 2 On 1 Modes\Player 1\Can't Be Pinned
+$1 on 2 & 2 on 1 Modes\Player 1\Can't Be Pinned
 D0296E4D 0029
 81296F5A FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 1\Infinite Health
+$1 on 2 & 2 on 1 Modes\Player 1\Infinite Health
 D0296E4D 0029
 81296FD0 0000
 D0296E4D 0029
 81296FD2 0000
 
-$1 On 2 & 2 On 1 Modes\Player 1\Instant Recovery
+$1 on 2 & 2 on 1 Modes\Player 1\Instant Recovery
 D0296E4D 0029
 8129703A FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 1\Invincible
+$1 on 2 & 2 on 1 Modes\Player 1\Invincible
 D0296E4D 0029
 8129702E FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 1\Super Speed
+$1 on 2 & 2 on 1 Modes\Player 1\Super Speed
 D0296E4D 0029
 81297032 FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 1\Super Stamina
+$1 on 2 & 2 on 1 Modes\Player 1\Super Stamina
 D0296E4D 0029
 81297036 FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 1\Super Strength
+$1 on 2 & 2 on 1 Modes\Player 1\Super Strength
 D0296E4D 0029
 8129702A FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Can't Be Counted Out
+$1 on 2 & 2 on 1 Modes\Player 2\Can't Be Counted Out
 D0296E4D 0029
 8129816E 0384
 
-$1 On 2 & 2 On 1 Modes\Player 2\Can't Be Pinned
+$1 on 2 & 2 on 1 Modes\Player 2\Can't Be Pinned
 D0296E4D 0029
 812981FA FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Infinite Health
+$1 on 2 & 2 on 1 Modes\Player 2\Infinite Health
 D0296E4D 0029
 81298270 0000
 D0296E4D 0029
 81298272 0000
 
-$1 On 2 & 2 On 1 Modes\Player 2\Instant Recovery
+$1 on 2 & 2 on 1 Modes\Player 2\Instant Recovery
 D0296E4D 0029
 812982DA FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Invincible
+$1 on 2 & 2 on 1 Modes\Player 2\Invincible
 D0296E4D 0029
 812982CE FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Super Speed
+$1 on 2 & 2 on 1 Modes\Player 2\Super Speed
 D0296E4D 0029
 812982D2 FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Super Stamina
+$1 on 2 & 2 on 1 Modes\Player 2\Super Stamina
 D0296E4D 0029
 812982D6 FFFF
 
-$1 On 2 & 2 On 1 Modes\Player 2\Super Strength
+$1 on 2 & 2 on 1 Modes\Player 2\Super Strength
 D0296E4D 0029
 812982CA FFFF
 
@@ -485,10 +485,10 @@ $Character Modifier\Player 2
 33 Trainer
 36 Excel
 
-$Create A Wrestler\Infinite Attribute Points
+$Create a Wrestler\Infinite Attribute Points
 8115DD52 0000
 
-$Create A Wrestler\Infinite Move %
+$Create a Wrestler\Infinite Move %
 80131600 0024
 
 $Tornado, Lumberjack, 1-On-3, 3-On-1 Modes\Player 1\Can't Be Counted Out

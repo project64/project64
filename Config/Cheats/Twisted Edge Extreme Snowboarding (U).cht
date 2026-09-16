@@ -1,7 +1,7 @@
 [BBC99D32-117DAA80-C:45]
 Name=Twisted Edge Extreme Snowboarding (U)
 
-$[Audio Fix]
+$Audio Fix
 81051840 AD99
 
 $Have All\Boards
@@ -21,5 +21,5 @@ $Low Timer
 801495FF 0000
 80149601 0000
 
-$Max\50000 Stunt Points
+$Maximum\50000 Stunt Points
 810829B8 C350

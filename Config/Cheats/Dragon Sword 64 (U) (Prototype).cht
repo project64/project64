@@ -1,18 +1,18 @@
 [40DFEDA0-3AA09CB2-C:50]
 Name=Dragon Sword 64 (U) (Prototype)
 
-$[Character Select]
+$Character Select
 800F84F3 00??
 01 Kailan
 00 Cutter
 02 Aisha
 03 Gouranga
 
-$[Have 999999 Score]
+$Have 999999 Score
 811458C4 000F
 811458C6 423F
 
-$[Press Z for Levitate]
+$Press Z to Levitate
 D00DDF88 0020
 8014665D 00EF
 
@@ -28,7 +28,7 @@ $Infinite Max\Lives (Credits)
 8012920B 0009
 
 $Infinite Max\Sword Use (Press Z)
-Note=Press The Z Button on your controller to use the infinite Sword Flame effect
+Note=Press Z to use the infinite Sword Flame effect.
 80145E81 00??
 00 Off
 D0 On

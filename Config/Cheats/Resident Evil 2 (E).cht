@@ -1,15 +1,15 @@
 [9B500E8E-E90550B3-C:50]
 Name=Resident Evil 2 (E) (M2)
 
-$[Saves Always 0]
+$Saves Always 0
 Note=No matter how many saves you do ithis makes the game think you Have\not saved.
 810E8B50 0000
 
-$Have All Guns In  Chest
+$Have All Guns in Chest
 50000E04 0100
 810E59F4 05FF
 
-$Have All Main Items In Chest
+$Have All Main Items in Chest
 Note=If you want items that are not listed in the Chest, then just use the Have Item On Slot Select code to have what you desire.
 810E5A2C 17FF
 810E5A30 1EFF
@@ -34,7 +34,7 @@ Note=If you want items that are not listed in the Chest, then just use the Have 
 $Have\Fine Condition Always
 810DDEE4 0000
 
-$Have\Item On Slot Select\Slot 01
+$Have\Item on Slot Select\Slot 1
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59C8 00??
 800E59C9 00FF
@@ -57,7 +57,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -80,8 +80,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -179,7 +179,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 02
+$Have\Item on Slot Select\Slot 2
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59CC 00??
 800E59CD 00FF
@@ -202,7 +202,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -225,8 +225,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -324,7 +324,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 03
+$Have\Item on Slot Select\Slot 3
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59D0 00??
 800E59D1 00FF
@@ -347,7 +347,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -370,8 +370,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -469,7 +469,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 04
+$Have\Item on Slot Select\Slot 4
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59D4 00??
 800E59D5 00FF
@@ -492,7 +492,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -515,8 +515,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -614,7 +614,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 05
+$Have\Item on Slot Select\Slot 5
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59D8 00??
 800E59D9 00FF
@@ -637,7 +637,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -660,8 +660,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -759,7 +759,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 06
+$Have\Item on Slot Select\Slot 6
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59DC 00??
 800E59DD 00FF
@@ -782,7 +782,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -805,8 +805,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -904,7 +904,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 07
+$Have\Item on Slot Select\Slot 7
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59E0 00??
 800E59E1 00FF
@@ -927,7 +927,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -950,8 +950,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -1049,7 +1049,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 08
+$Have\Item on Slot Select\Slot 8
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59E4 00??
 800E59E5 00FF
@@ -1072,7 +1072,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -1095,8 +1095,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -1194,7 +1194,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 09
+$Have\Item on Slot Select\Slot 9
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59E8 00??
 800E59E9 00FF
@@ -1217,7 +1217,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -1240,8 +1240,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
@@ -1339,7 +1339,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 8A Up Key
 8B Locker Key
 
-$Have\Item On Slot Select\Slot 10
+$Have\Item on Slot Select\Slot 10
 Note=This will give you the item of your choice and will be infinite on that chosen slot
 800E59EC 00??
 800E59ED 00FF
@@ -1362,7 +1362,7 @@ Note=This will give you the item of your choice and will be infinite on that cho
 10 Flamethrower Leon
 11 Rocket Launcher Claire
 12 Gatling Gun Claire
-13 Machine Gun ???
+13 Machine Gun (?)
 14 Handgun Bullets
 15 Shotgun Shells
 16 Magnum Bullets
@@ -1385,8 +1385,8 @@ Note=This will give you the item of your choice and will be infinite on that cho
 27 Red Herb
 28 Blue Herb
 29 Mixed Herb (Green)
-2A Mixed Herb (Red&Green)
-2B Mixed Herb (Blue&Green)
+2A Mixed Herb (Red & Green)
+2B Mixed Herb (Blue & Green)
 2C Mixed Herb (?)
 2D Mixed Herb (?)
 2E Mixed Herb (?)
