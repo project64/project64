@@ -967,7 +967,7 @@ asmjit::x86::Gp CX64RegInfo::FreeX64Reg(asmjit::RegType RegType)
             {
                 continue;
             }
-            asmjit::x86::Gp Reg = GetX64RegFromPhysId(MapReg[i], RegType);
+            Reg = GetX64RegFromPhysId(MapReg[i], RegType);
             if (UnMap_X64reg(Reg))
             {
                 return Reg;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #if defined(__amd64__) || defined(_M_X64)
 
+#include <Project64-core/N64System/Interpreter/InterpreterOps.h>
 #include <Project64-core/N64System/N64System.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
@@ -2733,7 +2734,17 @@ void CX64RecompilerOps::COP0_CO_TLBP()
 
 void CX64RecompilerOps::COP0_CO_ERET()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
+    m_RegWorkingSet.WriteBackRegisters();
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_System.m_OpCodes, MemberFuncAddress(&R4300iOp::COP0_CO_ERET), "R4300iOp::COP0_CO_ERET");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
+
+    UpdateCounters(m_RegWorkingSet, true, true);
+    CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Eret);
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
 void CX64RecompilerOps::COP1_MF()
@@ -3296,6 +3307,13 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         break;
     }
 
+    case ExitReason_Eret:
+        m_Assembler.MoveVariable64ToX64reg(asmjit::x86::rax, &m_System.m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::rax);
+        m_Assembler.MoveConstToVariable(&m_System.m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        CompileSystemCheck((uint32_t)-1, ExitRegSet);
+        ExitCodeBlock();
+        break;
     case ExitReason_Exception:
         m_Assembler.MoveVariableToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation", false);
         m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);

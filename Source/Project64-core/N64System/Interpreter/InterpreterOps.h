@@ -4,11 +4,13 @@
 #include <Project64-core/N64System/Mips/Register.h>
 
 class CX86RecompilerOps;
+class CX64RecompilerOps;
 
 class R4300iOp :
     public CLogging
 {
     friend CX86RecompilerOps;
+    friend CX64RecompilerOps;
 
 public:
     R4300iOp(CN64System & System, bool Force32bit);
