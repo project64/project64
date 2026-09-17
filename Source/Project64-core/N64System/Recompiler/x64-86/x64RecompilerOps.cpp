@@ -1819,7 +1819,19 @@ void CX64RecompilerOps::SPECIAL_MFHI()
 
 void CX64RecompilerOps::SPECIAL_MTHI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        const asmjit::x86::Gp Val64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+        m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", Val64);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_DSLLV()
