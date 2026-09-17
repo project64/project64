@@ -1789,7 +1789,27 @@ void CX64RecompilerOps::SPECIAL_MFLO()
 
 void CX64RecompilerOps::SPECIAL_MTLO()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    {
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+        {
+            m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs));
+        }
+        else
+        {
+            const asmjit::x86::Gp Val64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+            m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", Val64);
+        }
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_MFHI()
