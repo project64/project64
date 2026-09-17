@@ -264,6 +264,7 @@ private:
     uint32_t m_ExitLabelCount;
 
     static uint32_t m_TempValue32;
+    static uint64_t m_TempValue64;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;
