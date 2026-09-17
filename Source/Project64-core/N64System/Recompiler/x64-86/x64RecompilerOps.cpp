@@ -2334,7 +2334,82 @@ void CX64RecompilerOps::SPECIAL_NOR()
 
 void CX64RecompilerOps::SPECIAL_SLT()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+
+            const bool preMap = (m_Opcode.rd != m_Opcode.rs && m_Opcode.rd != m_Opcode.rt);
+            asmjit::x86::Gp Result8;
+            if (preMap)
+            {
+                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, false, -1);
+                const asmjit::x86::Gp & Rd = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd);
+                m_Assembler.xor_(Rd.r32(), Rd.r32());
+                Result8 = Rd.r8Lo();
+            }
+            else
+            {
+                Result8 = asmjit::x86::r11.r8Lo();
+            }
+
+            if ((m_RegWorkingSet.Is64Bit(m_Opcode.rt) && m_RegWorkingSet.Is64Bit(m_Opcode.rs)) ||
+                (!g_GameSettings.core32Bit && (m_RegWorkingSet.Is64Bit(m_Opcode.rt) || m_RegWorkingSet.Is64Bit(m_Opcode.rs))))
+            {
+                if (m_RegWorkingSet.Is64Bit(m_Opcode.rs) && m_RegWorkingSet.Is64Bit(m_Opcode.rt))
+                {
+                    m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r64(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r64());
+                }
+                else if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+                {
+                    const asmjit::x86::Gp Rt64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
+                    m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r64(), Rt64.r64());
+                }
+                else
+                {
+                    const asmjit::x86::Gp Rs64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+                    m_Assembler.cmp(Rs64.r64(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r64());
+                }
+            }
+            else
+            {
+                m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+            }
+            m_Assembler.setl(Result8);
+            if (!preMap)
+            {
+                m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, false, -1);
+                m_Assembler.movzx(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::r11.r8Lo());
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+    }
+    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else if (g_GameSettings.core32Bit)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SLTU()
