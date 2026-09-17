@@ -1550,7 +1550,8 @@ void CX64RecompilerOps::LD()
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
     }
 }
 
@@ -4192,6 +4193,32 @@ asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
         }
     }
     return AddressReg;
+}
+
+void CX64RecompilerOps::ResetMemoryStack()
+{
+    constexpr int32_t MipsReg = 29;
+    if (m_RegWorkingSet.IsConst(MipsReg))
+    {
+        m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], m_RegWorkingSet.GetMipsRegLo(MipsReg));
+    }
+    else if (m_RegWorkingSet.IsMapped(MipsReg))
+    {
+        m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[MipsReg].UW[0], CRegName::GPR_Lo[MipsReg], m_RegWorkingSet.GetMipsRegMap(MipsReg));
+    }
+
+    const asmjit::x86::Gp MemoryStackReg = m_RegWorkingSet.Get_MemoryStack();
+    if (MemoryStackReg.isValid())
+    {
+        m_CodeBlock.Log("    regcache: unallocate memory stack");
+        m_RegWorkingSet.SetX64Mapped(MemoryStackReg.id(), CX64RegInfo::NotMapped);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(m_Recompiler, MemberFuncAddress(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 #endif
