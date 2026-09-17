@@ -210,7 +210,23 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                 FallInfo->RegSet = m_RegWorkingSet;
                 if (FallInfo == &m_Section->m_Jump)
                 {
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
+                    if (m_Section->m_JumpSection != nullptr)
+                    {
+                        m_Section->m_Jump.BranchLabel = stdstr_f("Section_%d", ((CCodeSection *)m_Section->m_JumpSection)->m_SectionID);
+                    }
+                    else
+                    {
+                        m_Section->m_Jump.BranchLabel = "ExitBlock";
+                    }
+                    if (FallInfo->TargetPC <= (uint32_t)m_CompilePC)
+                    {
+                        UpdateCounters(FallInfo->RegSet, true, true, true);
+                        m_CodeBlock.Log("CompileSystemCheck 12");
+                        CompileSystemCheck(FallInfo->TargetPC, FallInfo->RegSet);
+                        m_RegWorkingSet.ResetRegisterProtection();
+                        FallInfo->Reason = ExitReason_NormalNoSysCheck;
+                        FallInfo->JumpPC = (uint32_t)-1;
+                    }
                 }
                 else
                 {
@@ -236,6 +252,7 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
                         JumpInfo->FallThrough = true;
                         m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
                         m_RegWorkingSet = m_RegBeforeDelay;
+                        return;
                     }
                 }
             }
