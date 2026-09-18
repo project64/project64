@@ -51,5 +51,6 @@ private:
     uint32_t m_BufferRemaining; // Buffer remaining
     uint32_t m_CurrentReadLoc;  // Currently playing buffer
     uint32_t m_CurrentWriteLoc; // Currently writing buffer
+    bool m_DeviceActive;        // False when no playback device could be opened
     uint8_t m_Buffer[MAX_SIZE]; // Emulated buffers
 };
