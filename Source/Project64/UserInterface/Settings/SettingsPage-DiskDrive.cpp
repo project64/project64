@@ -23,6 +23,7 @@ CDiskDrivePage::CDiskDrivePage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_DISKSAVETYPE), Setting_DiskSaveType);
     if (ComboBox)
     {
+        ComboBox->SetTextField(GetDlgItem(IDC_DISKSAVETYPE_TXT));
         ComboBox->AddItem(wGS(DISKSAVE_SHADOW).c_str(), SaveDisk_ShadowFile);
         ComboBox->AddItem(wGS(DISKSAVE_RAM).c_str(), SaveDisk_RAMFile);
     }

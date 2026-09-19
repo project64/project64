@@ -17,7 +17,7 @@ CGameDiskDrivePage::CGameDiskDrivePage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_DISKSEEKTIMING2), Game_DiskSeekTiming);
     if (ComboBox)
     {
-        //ComboBox->SetTextField(GetDlgItem(IDC_MEMORY_SIZE_TEXT));
+        ComboBox->SetTextField(GetDlgItem(IDC_DISKSEEKTIMING_TEXT));
         ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_TURBO).c_str(), DiskSeek_Turbo);
         ComboBox->AddItem(wGS(ROM_DISK_SEEK_TIMING_SLOW).c_str(), DiskSeek_Slow);
     }
