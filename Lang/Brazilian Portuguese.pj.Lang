@@ -1,6 +1,6 @@
 // Meta information
 #1  #  "Português (Brasil)"		// Language ID
-#2  #  "Marcos Spíndula, Felipe e Darkaiser"   // Author
+#2  #  "Marcos Spíndula, Felipe, Darkaiser e MrMadara667"   // Author
 #3  #  "3.01"			            // Version
 #4  #  "08 de julho de 2023"		// Date
 
@@ -9,7 +9,7 @@
 //File menu
 #100#  "&Arquivo"
 #101#  "&Abrir ROM"
-#102#  "Informação &da ROM...."
+#102#  "Informação &da ROM..."
 #103#  "Iniciar emulação"
 #104#  "&Encerrar emulação"
 #105#  "Escolher diretório das ROMs..."
@@ -190,7 +190,7 @@
 
 // Plugin dialog
 #420#  "Sobre"
-#421#  " Plugin RSP (Reality Signal Processor): "
+#421#  " Plugin RSP (Processador de Sinal Reality): "
 #422#  " Plugin de vídeo (gráficos): "
 #423#  " Plugin de áudio (som): "
 #424#  " Plugin de entrada (controle): "
@@ -469,7 +469,7 @@
 
 #2000#  "*** CPU PAUSADA ***"
 #2001#  "CPU retomada"
-#2002#  "Num ciclo permanente que não pode ser abandonado.\nA emulação será interrompida agora.\n\nVerifique a ROM e as suas configurações."
+#2002#  "Em um loop infinito... que não pode ser abandonado.\nA emulação será interrompida agora.\n\nVerifique a ROM e as suas configurações."
 #2003#  "Falha ao atribuir a memória"
 #2004#  "O plugin de vídeo padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin de vídeo (gráficos).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
 #2005#  "O plugin de áudio padrão ou selecionado está ausente ou é inválido.\n\nÉ necessário ir às Configurações e selecionar um plugin de áudio (som).\nVerifique se você tem pelo menos um arquivo de plugin compatível na sua pasta de plugins."
@@ -522,7 +522,7 @@
 #2052#  "Erro do programa"
 #2053#  "Falha ao localizar o nome do arquivo no arquivo 7z"
 #2054#  "Emulação gráfica de baixo nível"
-#2055#  "Os gráficos LLE não são para o uso geral!!!\nÉ aconselhável que você só o utilize para testes e não para jogar jogos.\n\nAlterar para gráficos LLE?"
+#2055#  "Os gráficos LLE não são para o uso geral!!!\nRecomendamos utilizar apenas para testes... e não para jogar jogos.\n\nAlterar para gráficos LLE?"
 #2056#  "Emulação sonora de alto nível"
 #2057#  "O áudio HLE requer um plugin de terceiros!!!\nSe você não tem um plugin de áudio de terceiros que suporta HLE, não poderá ouvir o som.\n\nAlterar para áudio HLE?"
 #2058#  "O arquivo carregado não parece ser uma ROM IPL válida do 64DD.\n\nVerifique as ROMs com o GoodN64."
@@ -544,7 +544,7 @@
 #3003#  "Sobre"
 #3004#  "Jogou recentemente"
 #3005#  "Jogos"
-#3006#  "Diretório do hogo"
+#3006#  "Diretório do Jogo"
 #3007#  "Selecione uma pasta para examinar"
 #3008#  "Incluir subdiretórios"
 #3009#  "Pasta principal"
