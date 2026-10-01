@@ -1380,11 +1380,12 @@ void CX64RecompilerOps::SH()
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            SH_KnownAddress(Address, &m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), 0);
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+            SH_KnownAddress(Address, &TempReg, 0);
         }
     }
     else
