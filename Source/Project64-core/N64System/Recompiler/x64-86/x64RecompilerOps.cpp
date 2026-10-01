@@ -2949,7 +2949,11 @@ void CX64RecompilerOps::COP0_CO_TLBWR()
 
 void CX64RecompilerOps::COP0_CO_TLBP()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_TLB, MemberFuncAddress(&CTLB::Probe), "CTLB::Probe");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
 }
 
 void CX64RecompilerOps::COP0_CO_ERET()
