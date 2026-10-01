@@ -32,6 +32,12 @@ public:
     void MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
     void MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src);
+    void MovByteToAddress(uintptr_t Address, const asmjit::x86::Gp & Src);
+    void MovByteToAddress(uintptr_t Address, uint8_t Value);
+    void MovWordToAddress(uintptr_t Address, const asmjit::x86::Gp & Src);
+    void MovWordToAddress(uintptr_t Address, uint16_t Value);
+    void MovDwordToAddress(uintptr_t Address, const asmjit::x86::Gp & Src);
+    void MovDwordToAddress(uintptr_t Address, uint32_t Value);
     void AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubVariableFromX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName);

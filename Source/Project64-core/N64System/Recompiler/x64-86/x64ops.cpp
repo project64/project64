@@ -306,6 +306,84 @@ void CX64Ops::MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variabl
     }
 }
 
+void CX64Ops::MovByteToAddress(uintptr_t Address, const asmjit::x86::Gp & Src)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::byte_ptr(Address), Src.r8Lo());
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::byte_ptr(asmjit::x86::r11), Src.r8Lo());
+    }
+}
+
+void CX64Ops::MovByteToAddress(uintptr_t Address, uint8_t Value)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::byte_ptr(Address), Value);
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::byte_ptr(asmjit::x86::r11), Value);
+    }
+}
+
+void CX64Ops::MovWordToAddress(uintptr_t Address, const asmjit::x86::Gp & Src)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::word_ptr(Address), Src.r16());
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::word_ptr(asmjit::x86::r11), Src.r16());
+    }
+}
+
+void CX64Ops::MovWordToAddress(uintptr_t Address, uint16_t Value)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::word_ptr(Address), Value);
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::word_ptr(asmjit::x86::r11), Value);
+    }
+}
+
+void CX64Ops::MovDwordToAddress(uintptr_t Address, const asmjit::x86::Gp & Src)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::dword_ptr(Address), Src.r32());
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::dword_ptr(asmjit::x86::r11), Src.r32());
+    }
+}
+
+void CX64Ops::MovDwordToAddress(uintptr_t Address, uint32_t Value)
+{
+    if (asmjit::Support::isUInt32(Address))
+    {
+        mov(asmjit::x86::dword_ptr(Address), Value);
+    }
+    else
+    {
+        mov(asmjit::x86::r11, Address);
+        mov(asmjit::x86::dword_ptr(asmjit::x86::r11), Value);
+    }
+}
+
 void CX64Ops::MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);

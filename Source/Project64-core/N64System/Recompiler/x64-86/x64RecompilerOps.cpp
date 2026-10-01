@@ -3898,11 +3898,11 @@ void CX64RecompilerOps::SB_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
                 const uintptr_t dst = (uintptr_t)(m_MMU.Rdram() + (PAddr ^ 3));
                 if (ValueReg != nullptr)
                 {
-                    m_Assembler.mov(asmjit::x86::byte_ptr(dst), ValueReg->r8Lo());
+                    m_Assembler.MovByteToAddress(dst, *ValueReg);
                 }
                 else
                 {
-                    m_Assembler.mov(asmjit::x86::byte_ptr(dst), (uint8_t)ValueConst);
+                    m_Assembler.MovByteToAddress(dst, (uint8_t)ValueConst);
                 }
             }
             else if (g_DebugSettings.breakOnUnhandledMemory)
@@ -3959,14 +3959,14 @@ void CX64RecompilerOps::SH_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
             }
             else if (PAddr < m_MMU.RdramSize())
             {
-                const uintptr_t dst = reinterpret_cast<uintptr_t>(m_MMU.Rdram() + (PAddr ^ 2));
+                const uintptr_t dst = (uintptr_t)(m_MMU.Rdram() + (PAddr ^ 2));
                 if (ValueReg != nullptr)
                 {
-                    m_Assembler.mov(asmjit::x86::word_ptr(dst), ValueReg->r16());
+                    m_Assembler.MovWordToAddress(dst, *ValueReg);
                 }
                 else
                 {
-                    m_Assembler.mov(asmjit::x86::word_ptr(dst), (uint16_t)ValueConst);
+                    m_Assembler.MovWordToAddress(dst, (uint16_t)ValueConst);
                 }
             }
             else if (g_DebugSettings.breakOnUnhandledMemory)
@@ -4014,14 +4014,14 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
         }
         else if (PAddr < m_MMU.RdramSize())
         {
-            const uintptr_t dst = reinterpret_cast<uintptr_t>(m_MMU.Rdram() + PAddr);
+            const uintptr_t dst = (uintptr_t)(m_MMU.Rdram() + PAddr);
             if (ValueReg != nullptr)
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+                m_Assembler.MovDwordToAddress(dst, *ValueReg);
             }
             else
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+                m_Assembler.MovDwordToAddress(dst, ValueConst);
             }
         }
         else if (g_DebugSettings.breakOnUnhandledMemory)
@@ -4035,11 +4035,11 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
             const uintptr_t dst = (uintptr_t)(m_MMU.Dmem() + (PAddr - 0x04000000u));
             if (ValueReg != nullptr)
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+                m_Assembler.MovDwordToAddress(dst, *ValueReg);
             }
             else
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+                m_Assembler.MovDwordToAddress(dst, ValueConst);
             }
         }
         else if (PAddr < 0x04002000u)
@@ -4047,11 +4047,11 @@ void CX64RecompilerOps::SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * 
             const uintptr_t dst = (uintptr_t)(m_MMU.Imem() + (PAddr - 0x04001000u));
             if (ValueReg != nullptr)
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueReg->r32());
+                m_Assembler.MovDwordToAddress(dst, *ValueReg);
             }
             else
             {
-                m_Assembler.mov(asmjit::x86::dword_ptr(dst), ValueConst);
+                m_Assembler.MovDwordToAddress(dst, ValueConst);
             }
         }
         else
