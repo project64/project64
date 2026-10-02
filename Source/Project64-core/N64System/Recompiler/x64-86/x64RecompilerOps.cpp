@@ -1295,7 +1295,7 @@ void CX64RecompilerOps::LBU()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-    } 
+    }
     else
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
@@ -2067,7 +2067,96 @@ void CX64RecompilerOps::SPECIAL_MULTU()
 
 void CX64RecompilerOps::SPECIAL_DIV()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) == 0)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    else
+    {
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+        m_RegWorkingSet.UnMap_X64reg(asmjit::x86::edx);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+        m_RegWorkingSet.UnMap_X64reg(asmjit::x86::eax);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+
+        asmjit::x86::Gp RegRs = m_RegWorkingSet.IsMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rs);
+        m_RegWorkingSet.SetX64Protected(RegRs.id(), true);
+        asmjit::x86::Gp DivReg = m_RegWorkingSet.IsMapped(m_Opcode.rt) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+        m_RegWorkingSet.SetX64Protected(DivReg.id(), true);
+
+        asmjit::Label JumpEnd, JumpEnd2;
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) == (uint32_t)-1)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (!m_RegWorkingSet.IsConst(m_Opcode.rs))
+        {
+            m_Assembler.cmp(DivReg.r32(), 0);
+            asmjit::Label JumpNotDiv0 = m_Assembler.newLabel();
+            m_Assembler.JneLabel(stdstr_f("NotDiv0_%08X", m_CompilePC).c_str(), JumpNotDiv0);
+
+            m_Assembler.cmp(RegRs.r32(), 0);
+            asmjit::Label JumpPositive = m_Assembler.newLabel();
+            m_Assembler.JgeLabel(stdstr_f("RsPositive_%08X", m_CompilePC).c_str(), JumpPositive);
+            m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", 1ull);
+            asmjit::Label JumpLoSet = m_Assembler.newLabel();
+            m_Assembler.JmpLabel(stdstr_f("LoSet_%08X", m_CompilePC).c_str(), JumpLoSet);
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpPositive);
+            m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", (uint64_t)-1);
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpLoSet);
+            m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", RegRs);
+            const asmjit::x86::Gp SignReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+            m_Assembler.mov(SignReg.r32(), RegRs.r32());
+            m_Assembler.sar(SignReg.r32(), 31);
+            m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", SignReg);
+            JumpEnd = m_Assembler.newLabel();
+            m_Assembler.JmpLabel(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), JumpEnd);
+
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpNotDiv0);
+            m_Assembler.cmp(DivReg.r32(), (uint32_t)-1);
+            asmjit::Label JumpValidDiv0 = m_Assembler.newLabel();
+            m_Assembler.JneLabel(stdstr_f("ValidDiv0_%08X", m_CompilePC).c_str(), JumpValidDiv0);
+
+            m_Assembler.cmp(RegRs.r32(), (uint32_t)0x80000000);
+            asmjit::Label JumpValidDiv1 = m_Assembler.newLabel();
+            m_Assembler.JneLabel(stdstr_f("ValidDiv1_%08X", m_CompilePC).c_str(), JumpValidDiv1);
+
+            m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", 0xFFFFFFFF80000000ull);
+            m_Assembler.MoveConst64ToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", 0);
+            JumpEnd2 = m_Assembler.newLabel();
+            m_Assembler.JmpLabel(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), JumpEnd2);
+
+            m_CodeBlock.Log("");
+            m_Assembler.bind(JumpValidDiv0);
+            m_Assembler.bind(JumpValidDiv1);
+        }
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), false);
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::edx, -1);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, m_Opcode.rs);
+        m_Assembler.cdq();
+        m_Assembler.idiv(DivReg.r32());
+
+        m_Assembler.MovDwordToVariable(&m_Reg.m_LO.UW[0], "RegLO.UW[0]", asmjit::x86::eax);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", asmjit::x86::edx);
+        m_Assembler.sar(asmjit::x86::eax, 31);
+        m_Assembler.sar(asmjit::x86::edx, 31);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_LO.UW[1], "RegLO.UW[1]", asmjit::x86::eax);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", asmjit::x86::edx);
+
+        if (JumpEnd.isValid())
+        {
+            m_Assembler.bind(JumpEnd);
+        }
+        if (JumpEnd2.isValid())
+        {
+            m_Assembler.bind(JumpEnd2);
+        }
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_DIVU()

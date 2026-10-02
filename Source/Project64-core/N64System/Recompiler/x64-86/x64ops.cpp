@@ -183,6 +183,15 @@ void CX64Ops::JmpLabel(const char * LabelName, asmjit::Label & JumpLabel)
     jmp(JumpLabel);
 }
 
+void CX64Ops::JgeLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddLabelSymbol(JumpLabel, LabelName);
+    }
+    jge(JumpLabel);
+}
+
 void CX64Ops::JleLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     if (g_DebugSettings.recordRecompilerAsm)
