@@ -211,10 +211,15 @@ static void DMEMMOVE(CHle * hle, uint32_t w1, uint32_t w2)
 
 static void LOADADPCM(CHle * hle, uint32_t w1, uint32_t w2)
 {
-    uint16_t count = (w1 & 0xFFFF);
+    uint32_t count = align(w1 & 0xFFFF, 8);
     uint32_t address = get_address(hle, w2);
 
-    dram_load_u16(hle, (uint16_t *)hle->alist_audio().table, address, align(count, 8) >> 1);
+    if ((count >> 1) > sizeof(hle->alist_audio().table) / sizeof(hle->alist_audio().table[0]))
+    {
+        hle->WarnMessage("Invalid ADPCM table byte count: 0x%x", count);
+        return;
+    }
+    dram_load_u16(hle, (uint16_t *)hle->alist_audio().table, address, count >> 1);
 }
 
 static void INTERLEAVE(CHle * hle, uint32_t UNUSED(w1), uint32_t w2)

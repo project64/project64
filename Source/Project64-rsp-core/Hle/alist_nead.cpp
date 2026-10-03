@@ -29,6 +29,11 @@ static void LOADADPCM(CHle * hle, uint32_t w1, uint32_t w2)
     uint16_t count = w1;
     uint32_t address = (w2 & 0xffffff);
 
+    if ((count >> 1) > sizeof(hle->alist_nead().table) / sizeof(hle->alist_nead().table[0]))
+    {
+        hle->WarnMessage("Invalid ADPCM table byte count: 0x%x", count);
+        return;
+    }
     dram_load_u16(hle, (uint16_t *)hle->alist_nead().table, address, count >> 1);
 }
 
