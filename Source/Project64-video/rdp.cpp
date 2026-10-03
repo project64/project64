@@ -4101,10 +4101,18 @@ void rdphalf_1()
         WriteTrace(TraceRDP, TraceDebug, "rdphalf_1 - lle triangle");
         rdp_cmd_ptr = 0;
         rdp_cmd_cur = 0;
+        const uint32_t command_words = rdp_command_length[cmd & 0x3f] / sizeof(rdp_cmd_data[0]);
+        const uint32_t buffer_words = sizeof(rdp_cmd_data) / sizeof(rdp_cmd_data[0]);
         uint32_t a;
 
         do
         {
+            if (rdp_cmd_ptr >= command_words || rdp_cmd_ptr >= buffer_words)
+            {
+                WriteTrace(TraceRDP, TraceWarning, "rdphalf_1 - malformed triangle command");
+                rdp.halt = true;
+                return;
+            }
             rdp_cmd_data[rdp_cmd_ptr++] = rdp.cmd1;
             // check DL counter
             if (rdp.dl_count != -1)
@@ -4129,6 +4137,13 @@ void rdphalf_1()
             // Go to the next instruction
             rdp.pc[rdp.pc_i] = (a + 8) & BMASK;
         } while ((rdp.cmd0 >> 24) != 0xb3);
+
+        if (rdp_cmd_ptr + 1 != command_words)
+        {
+            WriteTrace(TraceRDP, TraceWarning, "rdphalf_1 - malformed triangle command");
+            rdp.halt = true;
+            return;
+        }
         rdp_cmd_data[rdp_cmd_ptr++] = rdp.cmd1;
         cmd = (rdp_cmd_data[rdp_cmd_cur] >> 24) & 0x3f;
         rdp.cmd0 = rdp_cmd_data[rdp_cmd_cur + 0];
