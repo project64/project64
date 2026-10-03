@@ -526,28 +526,38 @@ void uc9_send_signal()
 void uc9_movemem()
 {
     WriteTrace(TraceRDP, TraceDebug, "uc9:movemem");
-    int idx = rdp.cmd0 & 0x0E;
-    int ofs = ((rdp.cmd0 >> 6) & 0x1ff) << 3;
-    int len = (1 + ((rdp.cmd0 >> 15) & 0x1ff)) << 3;
-    WriteTrace(TraceRDP, TraceDebug, "uc9:movemem ofs: %d, len: %d. ", ofs, len);
+    uint32_t idx = rdp.cmd0 & 0x0E;
+    uint32_t ofs = ((rdp.cmd0 >> 6) & 0x1ff) << 3;
+    uint32_t len = (1 + ((rdp.cmd0 >> 15) & 0x1ff)) << 3;
+    WriteTrace(TraceRDP, TraceDebug, "uc9:movemem ofs: %u, len: %u. ", ofs, len);
     int flag = rdp.cmd0 & 0x01;
     uint32_t addr = segoffset(rdp.cmd1);
     switch (idx)
     {
     case 0: //save/load
+    {
+        const uint32_t dmem_addr = (idx << 3) + ofs;
+        if (dmem_addr > 0x1000 || len > 0x1000 - dmem_addr ||
+            addr > gfx.RDRAM_SIZE || len > gfx.RDRAM_SIZE - addr)
+        {
+            WriteTrace(TraceRDP, TraceWarning,
+                "uc9:movemem invalid range: DMEM 0x%x + 0x%x, RDRAM 0x%x + 0x%x",
+                dmem_addr, len, addr, len);
+            return;
+        }
+
         if (flag == 0)
         {
-            int dmem_addr = (idx << 3) + ofs;
-            WriteTrace(TraceRDP, TraceDebug, "Load to DMEM. %08lx -> %08lx", addr, dmem_addr);
+            WriteTrace(TraceRDP, TraceDebug, "Load to DMEM. %08x -> %08x", addr, dmem_addr);
             memcpy(gfx.DMEM + dmem_addr, gfx.RDRAM + addr, len);
         }
         else
         {
-            int dmem_addr = (idx << 3) + ofs;
-            WriteTrace(TraceRDP, TraceDebug, "Load from DMEM. %08lx -> %08lx", dmem_addr, addr);
+            WriteTrace(TraceRDP, TraceDebug, "Load from DMEM. %08x -> %08x", dmem_addr, addr);
             memcpy(gfx.RDRAM + addr, gfx.DMEM + dmem_addr, len);
         }
         break;
+    }
 
     case 4:  // model matrix
     case 6:  // projection matrix
