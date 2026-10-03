@@ -45,6 +45,28 @@ static int16_t * alist_s16(CHle * hle, uint16_t dmem)
     return (int16_t *)u16(hle->alist_buffer(), dmem);
 }
 
+static bool alist_valid_range(CHle * hle, uint32_t dmem, uint32_t count)
+{
+    const uint32_t buffer_size = 0x1000;
+
+    if (dmem > buffer_size || count > buffer_size - dmem)
+    {
+        hle->WarnMessage("Invalid audio buffer range: 0x%04x + 0x%x", dmem, count);
+        return false;
+    }
+    return true;
+}
+
+static bool alist_valid_sample_range(CHle * hle, uint32_t dmem, uint32_t count)
+{
+    if ((dmem & 1) != 0)
+    {
+        hle->WarnMessage("Unaligned audio buffer offset: 0x%04x", dmem);
+        return false;
+    }
+    return alist_valid_range(hle, dmem, count);
+}
+
 static void sample_mix(int16_t * dst, int16_t src, int16_t gain)
 {
     *dst = clamp_s16(*dst + ((src * gain) >> 15));
@@ -133,8 +155,13 @@ void alist_set_address(CHle * hle, uint32_t so, uint32_t * segments, size_t n)
     segments[segment] = offset;
 }
 
-void alist_clear(CHle * hle, uint16_t dmem, uint16_t count)
+void alist_clear(CHle * hle, uint16_t dmem, uint32_t count)
 {
+    if (!alist_valid_range(hle, dmem, count))
+    {
+        return;
+    }
+
     while (count != 0)
     {
         *alist_u8(hle, dmem++) = 0;
@@ -142,26 +169,39 @@ void alist_clear(CHle * hle, uint16_t dmem, uint16_t count)
     }
 }
 
-void alist_load(CHle * hle, uint16_t dmem, uint32_t address, uint16_t count)
-{
-    // Enforce DMA alignment constraints
-    dmem &= ~3;
-    address &= ~7;
-    count = (uint16_t)align(count, 8);
-    memcpy(hle->alist_buffer() + dmem, hle->dram() + address, count);
-}
-
-void alist_save(CHle * hle, uint16_t dmem, uint32_t address, uint16_t count)
+void alist_load(CHle * hle, uint16_t dmem, uint32_t address, uint32_t count)
 {
     // Enforce DMA alignment constraints
     dmem &= ~3;
     address &= ~7;
     count = align(count, 8);
+    if (!alist_valid_range(hle, dmem, count))
+    {
+        return;
+    }
+    memcpy(hle->alist_buffer() + dmem, hle->dram() + address, count);
+}
+
+void alist_save(CHle * hle, uint16_t dmem, uint32_t address, uint32_t count)
+{
+    // Enforce DMA alignment constraints
+    dmem &= ~3;
+    address &= ~7;
+    count = align(count, 8);
+    if (!alist_valid_range(hle, dmem, count))
+    {
+        return;
+    }
     memcpy(hle->dram() + address, hle->alist_buffer() + dmem, count);
 }
 
-void alist_move(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count)
+void alist_move(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint32_t count)
 {
+    if (!alist_valid_range(hle, dmemo, count) || !alist_valid_range(hle, dmemi, count))
+    {
+        return;
+    }
+
     while (count != 0)
     {
         *alist_u8(hle, dmemo++) = *alist_u8(hle, dmemi++);
@@ -171,6 +211,13 @@ void alist_move(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count)
 
 void alist_copy_every_other_sample(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count)
 {
+    const uint32_t output_size = (uint32_t)count * 2;
+    const uint32_t input_size = (count == 0) ? 0 : (uint32_t)(count - 1) * 4 + 2;
+    if (!alist_valid_sample_range(hle, dmemo, output_size) || !alist_valid_sample_range(hle, dmemi, input_size))
+    {
+        return;
+    }
+
     while (count != 0)
     {
         *alist_s16(hle, dmemo) = *alist_s16(hle, dmemi);
@@ -182,6 +229,11 @@ void alist_copy_every_other_sample(CHle * hle, uint16_t dmemo, uint16_t dmemi, u
 
 void alist_repeat64(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint8_t count)
 {
+    if (!alist_valid_range(hle, dmemi, 128) || !alist_valid_range(hle, dmemo, (uint32_t)count * 128))
+    {
+        return;
+    }
+
     uint16_t buffer[64];
     memcpy(buffer, hle->alist_buffer() + dmemi, 128);
 
@@ -195,6 +247,14 @@ void alist_repeat64(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint8_t count)
 
 void alist_copy_blocks(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t block_size, uint8_t count)
 {
+    const uint32_t block_count = (count == 0) ? 1 : count;
+    const uint32_t bytes_per_block = (block_size == 0) ? 0x20 : align(block_size, 0x20);
+    const uint32_t total_size = block_count * bytes_per_block;
+    if (!alist_valid_range(hle, dmemo, total_size) || !alist_valid_range(hle, dmemi, total_size))
+    {
+        return;
+    }
+
     int block_left = count;
 
     do
@@ -215,6 +275,16 @@ void alist_copy_blocks(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t bloc
 
 void alist_interleave(CHle * hle, uint16_t dmemo, uint16_t left, uint16_t right, uint16_t count)
 {
+    const uint32_t groups = count >> 2;
+    const uint32_t input_size = groups * 4;
+    const uint32_t output_size = groups * 8;
+    if (!alist_valid_sample_range(hle, dmemo, output_size) ||
+        !alist_valid_sample_range(hle, left, input_size) ||
+        !alist_valid_sample_range(hle, right, input_size))
+    {
+        return;
+    }
+
     uint16_t * dst = (uint16_t *)(hle->alist_buffer() + dmemo);
     const uint16_t * srcL = (uint16_t *)(hle->alist_buffer() + left);
     const uint16_t * srcR = (uint16_t *)(hle->alist_buffer() + right);
@@ -245,6 +315,16 @@ void alist_interleave(CHle * hle, uint16_t dmemo, uint16_t left, uint16_t right,
 
 void alist_envmix_exp(CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16_t dmem_dr, uint16_t dmem_wl, uint16_t dmem_wr, uint16_t dmemi, uint16_t count, int16_t dry, int16_t wet, const int16_t * vol, const int16_t * target, const int32_t * rate, uint32_t address)
 {
+    const uint32_t buffer_size = align(count, 16);
+    if (!alist_valid_sample_range(hle, dmemi, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dr, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wr, buffer_size))
+    {
+        return;
+    }
+
     size_t n = (aux) ? 4 : 2;
 
     const int16_t * const in = (int16_t *)(hle->alist_buffer() + dmemi);
@@ -342,6 +422,16 @@ void alist_envmix_exp(CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16_
 
 void alist_envmix_ge(CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16_t dmem_dr, uint16_t dmem_wl, uint16_t dmem_wr, uint16_t dmemi, uint16_t count, int16_t dry, int16_t wet, const int16_t * vol, const int16_t * target, const int32_t * rate, uint32_t address)
 {
+    const uint32_t buffer_size = count & ~1U;
+    if (!alist_valid_sample_range(hle, dmemi, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dr, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wr, buffer_size))
+    {
+        return;
+    }
+
     unsigned k;
     size_t n = (aux) ? 4 : 2;
 
@@ -414,6 +504,16 @@ void alist_envmix_ge(CHle * hle, bool init, bool aux, uint16_t dmem_dl, uint16_t
 
 void alist_envmix_lin(CHle * hle, bool init, uint16_t dmem_dl, uint16_t dmem_dr, uint16_t dmem_wl, uint16_t dmem_wr, uint16_t dmemi, uint16_t count, int16_t dry, int16_t wet, const int16_t * vol, const int16_t * target, const int32_t * rate, uint32_t address)
 {
+    const uint32_t buffer_size = count & ~1U;
+    if (!alist_valid_sample_range(hle, dmemi, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dr, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wr, buffer_size))
+    {
+        return;
+    }
+
     size_t k;
     struct ramp_t ramps[2];
     int16_t save_buffer[40];
@@ -480,6 +580,12 @@ void alist_envmix_lin(CHle * hle, bool init, uint16_t dmem_dl, uint16_t dmem_dr,
 
 void alist_mix(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16_t gain)
 {
+    const uint32_t buffer_size = count & ~1U;
+    if (!alist_valid_sample_range(hle, dmemo, buffer_size) || !alist_valid_sample_range(hle, dmemi, buffer_size))
+    {
+        return;
+    }
+
     int16_t * dst = (int16_t *)(hle->alist_buffer() + dmemo);
     const int16_t * src = (int16_t *)(hle->alist_buffer() + dmemi);
 
@@ -497,14 +603,29 @@ void alist_mix(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16
 
 void alist_envmix_nead(CHle * hle, bool swap_wet_LR, uint16_t dmem_dl, uint16_t dmem_dr, uint16_t dmem_wl, uint16_t dmem_wr, uint16_t dmemi, unsigned count, uint16_t * env_values, uint16_t * env_steps, const int16_t * xors)
 {
+    if (count > 0x800)
+    {
+        hle->WarnMessage("Invalid audio sample count: 0x%x", count);
+        return;
+    }
+
+    // Make sure count is a multiple of 8
+    count = align(count, 8);
+    const uint32_t buffer_size = count * 2;
+    if (!alist_valid_sample_range(hle, dmemi, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_dr, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wl, buffer_size) ||
+        !alist_valid_sample_range(hle, dmem_wr, buffer_size))
+    {
+        return;
+    }
+
     int16_t * in = (int16_t *)(hle->alist_buffer() + dmemi);
     int16_t * dl = (int16_t *)(hle->alist_buffer() + dmem_dl);
     int16_t * dr = (int16_t *)(hle->alist_buffer() + dmem_dr);
     int16_t * wl = (int16_t *)(hle->alist_buffer() + dmem_wl);
     int16_t * wr = (int16_t *)(hle->alist_buffer() + dmem_wr);
-
-    // Make sure count is a multiple of 8
-    count = align(count, 8);
 
     if (swap_wet_LR)
     {
@@ -542,6 +663,12 @@ void alist_envmix_nead(CHle * hle, bool swap_wet_LR, uint16_t dmem_dl, uint16_t 
 
 void alist_add(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count)
 {
+    const uint32_t buffer_size = count & ~1U;
+    if (!alist_valid_sample_range(hle, dmemo, buffer_size) || !alist_valid_sample_range(hle, dmemi, buffer_size))
+    {
+        return;
+    }
+
     int16_t * dst = (int16_t *)(hle->alist_buffer() + dmemo);
     const int16_t * src = (int16_t *)(hle->alist_buffer() + dmemi);
 
@@ -559,6 +686,12 @@ void alist_add(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count)
 
 void alist_multQ44(CHle * hle, uint16_t dmem, uint16_t count, int8_t gain)
 {
+    const uint32_t buffer_size = count & ~1U;
+    if (!alist_valid_sample_range(hle, dmem, buffer_size))
+    {
+        return;
+    }
+
     int16_t * dst = (int16_t *)(hle->alist_buffer() + dmem);
 
     count >>= 1;
@@ -572,7 +705,7 @@ void alist_multQ44(CHle * hle, uint16_t dmem, uint16_t count, int8_t gain)
     }
 }
 
-static void alist_resample_reset(CHle * hle, uint16_t pos, uint32_t * pitch_accu)
+static void alist_resample_reset(CHle * hle, uint32_t pos, uint32_t * pitch_accu)
 {
     unsigned k;
 
@@ -583,7 +716,7 @@ static void alist_resample_reset(CHle * hle, uint16_t pos, uint32_t * pitch_accu
     *pitch_accu = 0;
 }
 
-static void alist_resample_load(CHle * hle, uint32_t address, uint16_t pos, uint32_t * pitch_accu)
+static void alist_resample_load(CHle * hle, uint32_t address, uint32_t pos, uint32_t * pitch_accu)
 {
     *sample(hle, pos + 0) = *dram_u16(hle, address + 0);
     *sample(hle, pos + 1) = *dram_u16(hle, address + 2);
@@ -593,7 +726,7 @@ static void alist_resample_load(CHle * hle, uint32_t address, uint16_t pos, uint
     *pitch_accu = *dram_u16(hle, address + 8);
 }
 
-static void alist_resample_save(CHle * hle, uint32_t address, uint16_t pos, uint32_t pitch_accu)
+static void alist_resample_save(CHle * hle, uint32_t address, uint32_t pos, uint32_t pitch_accu)
 {
     *dram_u16(hle, address + 0) = *sample(hle, pos + 0);
     *dram_u16(hle, address + 2) = *sample(hle, pos + 1);
@@ -607,10 +740,19 @@ void alist_resample(CHle * hle, bool init, bool flag2, uint16_t dmemo, uint16_t 
 {
     uint32_t pitch_accu;
 
-    uint16_t ipos = dmemi >> 1;
-    uint16_t opos = dmemo >> 1;
+    if ((dmemi & 1) != 0 || dmemi < 8)
+    {
+        hle->WarnMessage("Invalid audio resample input offset: 0x%04x", dmemi);
+        return;
+    }
+
+    uint32_t ipos = (dmemi >> 1) - 4;
+    uint32_t opos = dmemo >> 1;
     count >>= 1;
-    ipos -= 4;
+    if (!alist_valid_sample_range(hle, dmemo, (uint32_t)count * 2) || !alist_valid_range(hle, ipos * 2, 8))
+    {
+        return;
+    }
 
     if (flag2)
     {
@@ -628,6 +770,10 @@ void alist_resample(CHle * hle, bool init, bool flag2, uint16_t dmemo, uint16_t 
 
     while (count != 0)
     {
+        if (!alist_valid_range(hle, ipos * 2, 8))
+        {
+            return;
+        }
         const int16_t * lut = RESAMPLE_LUT + ((pitch_accu & 0xfc00) >> 8);
 
         *sample(hle, opos++) = clamp_s16((
@@ -643,17 +789,35 @@ void alist_resample(CHle * hle, bool init, bool flag2, uint16_t dmemo, uint16_t 
         --count;
     }
 
+    if (!alist_valid_range(hle, ipos * 2, 8))
+    {
+        return;
+    }
     alist_resample_save(hle, address, ipos, pitch_accu);
 }
 
 void alist_resample_zoh(CHle * hle, uint16_t dmemo, uint16_t dmemi, uint16_t count, uint32_t pitch, uint32_t pitch_accu)
 {
-    uint16_t ipos = dmemi >> 1;
-    uint16_t opos = dmemo >> 1;
+    if ((dmemi & 1) != 0)
+    {
+        hle->WarnMessage("Unaligned audio buffer offset: 0x%04x", dmemi);
+        return;
+    }
+
+    uint32_t ipos = dmemi >> 1;
+    uint32_t opos = dmemo >> 1;
     count >>= 1;
+    if (!alist_valid_sample_range(hle, dmemo, (uint32_t)count * 2))
+    {
+        return;
+    }
 
     while (count != 0)
     {
+        if (!alist_valid_range(hle, ipos * 2, 2))
+        {
+            return;
+        }
         *sample(hle, opos++) = *sample(hle, ipos);
 
         pitch_accu += pitch;
@@ -701,6 +865,20 @@ static unsigned int adpcm_predict_frame_2bits(CHle * hle, int16_t * dst, uint16_
 
 void alist_adpcm(CHle * hle, bool init, bool loop, bool two_bit_per_sample, uint16_t dmemo, uint16_t dmemi, uint16_t count, const int16_t * codebook, uint32_t loop_address, uint32_t last_frame_address)
 {
+    if ((count & 0x1f) != 0)
+    {
+        hle->WarnMessage("Invalid ADPCM byte count: 0x%x", count);
+        return;
+    }
+
+    const uint32_t frames = count >> 5;
+    const uint32_t input_size = frames * (two_bit_per_sample ? 5 : 9);
+    const uint32_t output_size = (uint32_t)count + 32;
+    if (!alist_valid_range(hle, dmemi, input_size) || !alist_valid_sample_range(hle, dmemo, output_size))
+    {
+        return;
+    }
+
     int16_t last_frame[16];
     size_t i;
 
@@ -728,7 +906,13 @@ void alist_adpcm(CHle * hle, bool init, bool loop, bool two_bit_per_sample, uint
         int16_t frame[16];
         uint8_t code = *alist_u8(hle, dmemi++);
         unsigned char scale = (code & 0xf0) >> 4;
-        const int16_t * const cb_entry = codebook + ((code & 0xf) << 4);
+        const uint8_t predictor = code & 0xf;
+        if (predictor >= 8)
+        {
+            hle->WarnMessage("Invalid ADPCM predictor: 0x%x", predictor);
+            return;
+        }
+        const int16_t * const cb_entry = codebook + (predictor << 4);
 
         dmemi += predict_frame(hle, frame, dmemi, scale);
 
@@ -750,6 +934,17 @@ void alist_filter(CHle * hle, uint16_t dmem, uint16_t count, uint32_t address, c
     int x;
     int16_t outbuff[0x3c0];
     int16_t * outp = outbuff;
+
+    const uint32_t buffer_size = align(count, 16);
+    if (buffer_size == 0 || buffer_size > sizeof(outbuff))
+    {
+        hle->WarnMessage("Invalid audio filter byte count: 0x%x", count);
+        return;
+    }
+    if (!alist_valid_sample_range(hle, dmem, buffer_size))
+    {
+        return;
+    }
 
     int16_t * const lutt6 = (int16_t *)(hle->dram() + lut_address[0]);
     int16_t * const lutt5 = (int16_t *)(hle->dram() + lut_address[1]);
@@ -858,6 +1053,15 @@ void alist_filter(CHle * hle, uint16_t dmem, uint16_t count, uint32_t address, c
 
 void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t count, uint16_t gain, int16_t * table, uint32_t address)
 {
+    const uint32_t buffer_size = align(count, 16);
+    if (buffer_size == 0 ||
+        !alist_valid_sample_range(hle, dmemo, buffer_size) ||
+        !alist_valid_sample_range(hle, dmemi, buffer_size))
+    {
+        return;
+    }
+    count = (uint16_t)buffer_size;
+
     int16_t * dst = (int16_t *)(hle->alist_buffer() + dmemo);
 
     const int16_t * const h1 = table;
@@ -866,8 +1070,6 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
     unsigned i;
     int16_t l1, l2;
     int16_t h2_before[8];
-
-    count = align(count, 16);
 
     if (init)
     {
@@ -914,13 +1116,20 @@ void alist_polef(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t
 
 void alist_iirf(CHle * hle, bool init, uint16_t dmemo, uint16_t dmemi, uint16_t count, int16_t * table, uint32_t address)
 {
+    const uint32_t buffer_size = align(count, 16);
+    if (buffer_size == 0 ||
+        !alist_valid_sample_range(hle, dmemo, buffer_size) ||
+        !alist_valid_sample_range(hle, dmemi, buffer_size))
+    {
+        return;
+    }
+    count = (uint16_t)buffer_size;
+
     int16_t * dst = (int16_t *)(hle->alist_buffer() + dmemo);
     int32_t i, prev;
     int16_t frame[8];
     int16_t ibuf[4];
     uint16_t index = 7;
-
-    count = align(count, 16);
 
     if (init)
     {
