@@ -19,7 +19,8 @@ SoundDriverBase::SoundDriverBase() :
     m_AI_DMASecondaryBytes(0),
     m_CurrentReadLoc(0),
     m_CurrentWriteLoc(0),
-    m_BufferRemaining(0)
+    m_BufferRemaining(0),
+    m_DeviceActive(false)
 {
     memset(&m_Buffer, 0, sizeof(m_Buffer));
 }
@@ -49,6 +50,13 @@ void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)
     {
         while ((m_BufferRemaining) == m_MaxBufferSize)
         {
+            if (!m_DeviceActive)
+            {
+                // No playback device: nothing will ever drain the buffer, so
+                // consume it silently rather than block emulation forever
+                LoadAiBuffer(nullptr, m_BufferRemaining);
+                break;
+            }
             pjutil::Sleep(1);
         }
     }
@@ -86,9 +94,14 @@ void SoundDriverBase::AI_Startup()
     m_AI_DMAPrimaryBuffer = m_AI_DMASecondaryBuffer = nullptr;
     m_MaxBufferSize = MAX_SIZE;
     m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
-    if (Initialize())
+    m_DeviceActive = Initialize();
+    if (m_DeviceActive)
     {
         StartAudio();
+    }
+    else
+    {
+        WriteTrace(TraceAudioDriver, TraceWarning, "No audio device available, running silent");
     }
     WriteTrace(TraceAudioDriver, TraceDebug, "Start");
 }
