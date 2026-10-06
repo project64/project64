@@ -5,8 +5,7 @@
 COptionsDirectoriesPage::COptionsDirectoriesPage(HWND hParent, const RECT & rcDispay) :
     m_InUpdateSettings(false)
 {
-    Create(hParent);
-    if (m_hWnd == nullptr)
+    if (!Create(hParent, rcDispay))
     {
         return;
     }
