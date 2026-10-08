@@ -2386,7 +2386,20 @@ void CX64RecompilerOps::SPECIAL_AND()
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (m_RegWorkingSet.Is64Bit(m_Opcode.rt) || m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                uint32_t Value = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) & m_RegWorkingSet.GetMipsReg(m_Opcode.rs);
+                if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+                {
+                    m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+                }
+                m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Value);
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
+            }
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
         {
