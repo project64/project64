@@ -2857,7 +2857,27 @@ void CX64RecompilerOps::SPECIAL_SLTU()
     {
         if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (m_RegWorkingSet.Is64Bit(m_Opcode.rt) || m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            else
+            {
+                if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+                {
+                    m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+                }
+
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+                if (m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) < m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt))
+                {
+                    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 1);
+                }
+                else
+                {
+                    m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, 0);
+                }
+            }
         }
         else if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
         {
