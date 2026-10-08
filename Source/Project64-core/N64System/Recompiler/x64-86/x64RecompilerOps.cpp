@@ -2307,7 +2307,13 @@ void CX64RecompilerOps::SPECIAL_ADDU()
 
     if (m_RegWorkingSet.IsConst(source1) && m_RegWorkingSet.IsConst(source2))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint32_t temp = m_RegWorkingSet.GetMipsRegLo(source1) + m_RegWorkingSet.GetMipsRegLo(source2);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+        }
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, temp);
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
         return;
     }
 
@@ -2322,7 +2328,7 @@ void CX64RecompilerOps::SPECIAL_ADDU()
     }
     else
     {
-        m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), asmjit::x86::dword_ptr((uintptr_t)&m_Reg.m_GPR[source2].W[0]));
+        m_Assembler.AddDwordFromVariable(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd), &m_Reg.m_GPR[source2].W[0], CRegName::GPR_Lo[source2]);
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rd == 29)
