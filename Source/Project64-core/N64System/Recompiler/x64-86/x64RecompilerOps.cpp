@@ -2338,7 +2338,13 @@ void CX64RecompilerOps::SPECIAL_SUBU()
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint32_t temp = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) - m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+        }
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, temp);
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
     }
     else
     {
