@@ -537,7 +537,56 @@ void CX64RecompilerOps::BNE_Compare()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        asmjit::x86::Gp Reg;
+
+        if (!g_GameSettings.core32Bit)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else
+        {
+            Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+        }
+
+        m_Assembler.CmpRegToVariable(Reg, &m_Reg.m_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs]);
+        if (m_Section->m_Cont.FallThrough)
+        {
+            if (g_GameSettings.core32Bit)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else
+            {
+                m_Section->m_Jump.LinkLocation2 = m_Assembler.newLabel();
+                m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation2);
+            }
+        }
+        else if (m_Section->m_Jump.FallThrough)
+        {
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            if (Jump.isValid())
+            {
+                m_CodeBlock.Log("");
+                m_Assembler.bind(Jump);
+            }
+        }
+        else
+        {
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            if (g_GameSettings.core32Bit)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else
+            {
+                m_Section->m_Jump.LinkLocation2 = m_Assembler.newLabel();
+                m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation2);
+            }
+        }
     }
 }
 
