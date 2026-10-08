@@ -400,7 +400,7 @@ bool CIniFileBase::MoveToSectionNameData(const char * lpSectionName, bool Change
             m_CurrentSection = lpSectionName;
             m_CurrentSectionFilePos = 0;
         }
-        m_File.Seek(m_lastSectionSearch, CFileBase::begin);
+        m_File.Seek(0, CFileBase::begin);
         bFoundSection = true;
     }
 
