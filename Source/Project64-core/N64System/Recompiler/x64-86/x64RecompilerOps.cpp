@@ -1385,7 +1385,16 @@ void CX64RecompilerOps::SB()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        asmjit::x86::Gp ValueReg;
+        if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+            {
+                m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            }
+            ValueReg = m_RegWorkingSet.IsUnknown(m_Opcode.rt) ? m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt) : m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+        }
+        CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt), 8);
     }
 }
 
