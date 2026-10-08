@@ -1132,7 +1132,26 @@ void CX64RecompilerOps::RESERVED31()
 
 void CX64RecompilerOps::LB()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    {
+        const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if (g_DebugSettings.haveReadBP && g_Debugger != nullptr)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+        LB_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, true);
+    }
+    else
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
 }
 
 void CX64RecompilerOps::LH()
@@ -3831,6 +3850,64 @@ uint32_t CX64RecompilerOps::ColdEntryOffset(void) const
 uint32_t CX64RecompilerOps::WarmEntryOffset(void) const
 {
     return m_WarmEntryOffset;
+}
+
+void CX64RecompilerOps::LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool SignExtend)
+{
+    if (VAddr < 0x80000000 || VAddr >= 0xC0000000)
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    uint32_t PAddr = 0;
+    if (!m_MMU.VAddrToPAddr(VAddr, PAddr))
+    {
+        m_Assembler.xor_(Reg.r32(), Reg.r32());
+        m_CodeBlock.Log("%s\nFailed to translate address %08X", __FUNCTION__, VAddr);
+        if (g_DebugSettings.breakOnUnhandledMemory)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        return;
+    }
+
+    switch (PAddr & 0xFFF00000u)
+    {
+    case 0x00000000u:
+    case 0x00100000u:
+    case 0x00200000u:
+    case 0x00300000u:
+    case 0x00400000u:
+    case 0x00500000u:
+    case 0x00600000u:
+    case 0x00700000u:
+        if (PAddr < m_MMU.RdramSize())
+        {
+            const uintptr_t src = reinterpret_cast<uintptr_t>(m_MMU.Rdram() + (PAddr ^ 3));
+            m_Assembler.MoveConstToX64reg(asmjit::x86::r11, src, stdstr_f("RDRAM + (0x%X ^ 3)", PAddr).c_str());
+            if (SignExtend)
+            {
+                m_Assembler.movsx(Reg.r32(), asmjit::x86::byte_ptr(asmjit::x86::r11));
+            }
+            else
+            {
+                m_Assembler.movzx(Reg.r32(), asmjit::x86::byte_ptr(asmjit::x86::r11));
+            }
+        }
+        else
+        {
+            m_Assembler.xor_(Reg.r32(), Reg.r32());
+        }
+        break;
+    default:
+        m_Assembler.xor_(Reg.r32(), Reg.r32());
+        if (g_DebugSettings.breakOnUnhandledMemory)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        break;
+    }
 }
 
 bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned)
