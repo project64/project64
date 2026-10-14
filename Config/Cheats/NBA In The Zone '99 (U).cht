@@ -18,28 +18,28 @@ $Away Team\Time Outs
 00 None
 07 Infinite
 
-$Create A Player Codes\Max 3 Point
+$Create a Player Codes\Max 3 Point
 802C5EFC 0063
 
-$Create A Player Codes\Max Capaility
+$Create a Player Codes\Max Capaility
 802C5F02 0063
 
-$Create A Player Codes\Max Defensive
+$Create a Player Codes\Max Defensive
 802C5EFF 0063
 
-$Create A Player Codes\Max Free Throw
+$Create a Player Codes\Max Free Throw
 802C5EFD 0063
 
-$Create A Player Codes\Max Offensive
+$Create a Player Codes\Max Offensive
 802C5EFE 0063
 
-$Create A Player Codes\Max Rebound
+$Create a Player Codes\Max Rebound
 802C5F00 0063
 
-$Create A Player Codes\Max Shooting
+$Create a Player Codes\Max Shooting
 802C5EFB 0063
 
-$Create A Player Codes\Max Techinque
+$Create a Player Codes\Max Techinque
 802C5F01 0063
 
 $Home Team\Score

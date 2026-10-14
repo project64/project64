@@ -46,14 +46,14 @@ $Have All\Machine Parts
 $Have All\Vechicles
 810A5968 FFFF
 
-$Infinite\Max Health
+$Infinite\Health
 8109F702 000C
 8109F706 000C
 
-$Max\Ticket Switches
+$Maximum\Ticket Switches
 810A59A2 00C8
 
-$Max\Tinker Toys
+$Maximum\Tinker Toys
 810A599E 270F
 
 $Mine Blowing\Infinite Time

@@ -1,7 +1,7 @@
 [F568D51E-7E49BA1E-C:45]
 Name=Bomberman 64 (U)
 
-$Carry 20 Bombs At A Time
+$Carry 20 Bombs at a Time
 800AEE0F 0014
 
 $Have\Pumped up Red Remote Bombs

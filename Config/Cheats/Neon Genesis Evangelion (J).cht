@@ -1,26 +1,26 @@
 [147E0EDB-36C5B12C-C:4A]
 Name=Neon Genesis Evangelion (J)
 
-$(Press GS)\To Kill Enemy
-Note=Don't Press GS after the Enemy is killed, only during the fight! and only use on Press GS Cheat at a time
+$GameShark Button\To Kill Enemy
+Note=Don't Press GameShark button after the Enemy is killed, only during the fight. Do not use with any other 'GameShark button' cheat.
 891F2454 0000
 891F2456 0000
 891F2458 0000
 891F245A 0000
 
-$(Press GS)\To Refill Health
-Note=Don't Press GS after the Enemy is killed, only during the fight!
+$GameShark Button\To Refill Health
+Note=Don't Press GameShark button after the Enemy is killed, only during the fight!
 891F0F18 42C8
 891F0F1A 0000
 
-$(Press L)\ For One Hit Kill
+$Press L\For One Hit Kill
 Note=Don't Press L after the Enemy is killed, only during the fight!
 D0149DD5 0020
 811F2458 0000
 D0149DD5 0020
 811F245A 0000
 
-$(Press R)\For Level Warp
+$Press R\For Level Warp
 Note=Press Reset and enjoy!
 D00D5115 0015
 800D5115 00??

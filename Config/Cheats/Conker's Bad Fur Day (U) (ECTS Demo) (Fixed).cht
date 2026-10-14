@@ -1,8 +1,8 @@
 [A08D0F77-6F82E38C-C:45]
 Name=Conker's Bad Fur Day (U) (ECTS Demo) (Fixed)
 
-$(Tap L Twice) To Skip Intro
-Note=On game start up, as soon as you see the N64 Logo, Tap the L Button twice letting go eachtime.
+$Tap L Twice to Skip Intro
+Note=On game start up, as soon as you see the N64 logo, tap the L button twice letting go each time.
 D00A6289 0020
 800A679F 0024
 
@@ -30,11 +30,11 @@ $Infinite Oxygen
 $Infinite Time in Multi
 810770DA 8C9E
 
-$Press L To Levitate\Player 1
+$Press L to Levitate\Player 1
 D00D1055 0020
 810B3E08 4200
 
-$Start with Infinite  9  Granades or Bombs
+$Start with Infinite 9 Granades or Bombs
 Note=This works for all Players, including player 1 in story mode.
 800B9B70 0009
 
@@ -60,7 +60,7 @@ $Map Warp
 0F Fangy Test room.
 10 Haybot/water raising room. Dying will play all the cutscenes but will crash. Enabling the expansion pack shows weird broken red eye textures
 11 strange maze room. Has a switch, and a random grate.
-12 CRASHES GAME
+12 CRASH
 13 War plane crash area. Devoid of almost anything
 14 Bugga the Knuts arena. Doesn't have much in it. Is the hole normally there?
 15 Inside the Windmill?

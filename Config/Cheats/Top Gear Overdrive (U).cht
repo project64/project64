@@ -1,11 +1,11 @@
 [D741CD80-ACA9B912-C:45]
 Name=Top Gear Overdrive
 
-$[Press F9]\All Cars (All Modes)
+$GameShark Button\All Cars (All Modes)
 880E990B 000E
 881022F1 000E
 
-$[Press F9]\Jump To Season 6
+$GameShark Button\Jump to Season 6
 881022E8 0005
 
 $Car Select

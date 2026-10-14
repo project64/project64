@@ -10,14 +10,14 @@ $Invincible
 $Level Select
 D009A913 0000
 8009A913 00??
-00 Level 1 - Shaolin Temple - China
-01 Level 2 - Wind Realm
-02 Level 3 - Earth Realm
-03 Level 4 - Water Realm
-04 Level 5 - Fire Ream
-05 Level 6 - Prison
-06 Level 7 - Bridge
-07 Level 8 - Fortress
+00 Level 1: Shaolin Temple - China
+01 Level 2: Wind Realm
+02 Level 3: Earth Realm
+03 Level 4: Water Realm
+04 Level 5: Fire Ream
+05 Level 6: Prison
+06 Level 7: Bridge
+07 Level 8: Fortress
 
 $Max Experience
 8111200E FC9A

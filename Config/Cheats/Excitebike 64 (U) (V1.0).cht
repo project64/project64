@@ -5,7 +5,7 @@ $Always Low Temp
 810E4F98 0000
 810E4F9A 0000
 
-$Auto-Pilot Always On Turbo (Original Excitebike Mode)
+$Auto-Pilot Always on Turbo (Original Excitebike Mode)
 810E3142 19AA
 
 $Earthquake Mode
@@ -40,7 +40,7 @@ $Slow\Movement (Player)
 $Steering Control
 800C9E50 0040
 
-$Super Speed For All
+$Super Speed for All
 800CA9A0 0040
 800CA9A1 0070
 

@@ -1,17 +1,17 @@
 [A150743E-CF2522CD-C:45]
 Name=Toy Story 2 (U)
 
-$Have 99 Coins
+$Have\99 Coins
 810BB10E 0063
 
-$Have All 5 Collectables
+$Have\All 5 Collectables
 801C7A72 0005
 
-$Hold jump to fly
+$Hold Jump to Fly
 810BB0FC 0002
 
-$Infinite Battery Power
+$Infinite\Battery Power
 810BB106 000E
 
-$Infinite Lives
+$Infinite\Lives
 800BB10A 0009

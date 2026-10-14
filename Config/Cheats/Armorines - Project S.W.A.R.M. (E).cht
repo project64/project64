@@ -1,7 +1,7 @@
 [3CC77150-21CDB987-C:50]
 Name=Armorines - Project S.W.A.R.M. (E)
 
-$[Press L For Levitate]
+$Press L to Levitate
 D10F7550 0020
 816FE35C 43D5
 
@@ -15,7 +15,7 @@ $Enable Cheat Select
 04 Infinite Ammo
 06 All Weapons With Infinite Ammo
 07 Invincible With Infinite Ammo and All Weapons
-40 Fast run
+40 Fast Run
 41 Invincible With Fast Run
 42 All Weapons With Fast Run
 43 Invincible With All Weapons And Fast Run

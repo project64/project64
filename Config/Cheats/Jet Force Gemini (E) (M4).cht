@@ -1,7 +1,7 @@
 [68D7A1DE-0079834A-C:50]
 Name=Jet Force Gemini (E) (M4)
 
-$[Resolution Fix]
+$Resolution Fix
 800FE6F2 0003
 800FE6DE 0003
 800FEDEA 00D0
@@ -10,7 +10,7 @@ $Access\All Characters
 80208910 FFFF
 
 $Access\All Floyd Awards
-Note=only enable One character at a time when using this code
+Note=Only enable one character at a time when using this cheat.
 50000501 0000
 80208908 0005
 
@@ -90,7 +90,7 @@ $Lupus\Infinite\Max Ammo All Guns
 $Lupus\Infinite\Mizar Tokens
 81208B3A 03E7
 
-$Lupus\Max\Blue & White Heads
+$Lupus\Maximum\Blue & White Heads
 81208B30 03E7
 81208B2E 03E7
 
@@ -133,6 +133,6 @@ $Vela\Infinite\Max Ammo All Guns
 $Vela\Infinite\Mizar Tokens
 81208A4E 03E7
 
-$Vela\Max\Blue & White Heads
+$Vela\Maximum\Blue & White Heads
 81208A44 03E7
 81208A42 03E7

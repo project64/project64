@@ -13,53 +13,53 @@ $Access\All Cups
 50000302 0000
 812CB7C8 0001
 
-$Always 1st
+$Always Place 1st
 813E00E8 0001
 
-$Infinite\Boomerang's
+$Infinite\Boomerangs
 8039B464 0004
 8039B467 0004
 8039B469 0009
 
-$Infinite\Bullet's
+$Infinite\Bullets
 8039B464 0007
 8039B467 0007
 8039B469 0009
 
-$Infinite\CREDITS
+$Infinite\Credits
 80388F3D 0003
 
-$Infinite\Magnet's
+$Infinite\Magnets
 8039B464 0001
 8039B467 0001
 8039B469 0009
 
-$Infinite\Seeker's
+$Infinite\Seekers
 8039B464 0005
 8039B467 0005
 8039B469 0009
 
-$Infinite\Shield's
+$Infinite\Shields
 8039B464 0008
 8039B467 0008
 8039B469 0009
 
-$Infinite\Stinger's
+$Infinite\Stingers
 8039B464 0003
 8039B467 0003
 8039B469 0009
 
-$Infinite\Stopper's
+$Infinite\Stoppers
 8039B464 0006
 8039B467 0006
 8039B469 0009
 
-$Infinite\Turbo's
+$Infinite\Turbos
 8039B464 0000
 8039B467 0000
 8039B469 0009
 
-$Laps To Race
+$Laps to Race
 813BBD5C 00??
 01 1 Lap
 02 2 laps

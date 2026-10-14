@@ -34,7 +34,7 @@ $Galaxian\Score\Player 1
 $Galaxian\Score\Player 2
 810BC780 9999
 
-$Ms Pac-Man\Eat All Ghosts All The Time
+$Ms Pac-Man\Eat All Ghosts All the Time
 810BC100 0000
 810BC102 0000
 810BC12C 0000
@@ -53,7 +53,7 @@ $Ms Pac-Man\Infinite\Credits
 $Ms Pac-Man\Infinite\Lives\Player 2
 800BBE27 0004
 
-$Ms Pac-Man\Infinite\Lives\Player P1
+$Ms Pac-Man\Infinite\Lives\Player 1
 800BBE23 0004
 
 $Ms Pac-Man\Score Modifier\Player 1
@@ -62,7 +62,7 @@ $Ms Pac-Man\Score Modifier\Player 1
 $Ms Pac-Man\Score\Player 2
 810BC7EC 9999
 
-$Pac-Man\Eat All Ghosts All The Time
+$Pac-Man\Eat All Ghosts All the Time
 810A8760 0000
 810A8762 0000
 810A878C 0000

@@ -1,19 +1,19 @@
 [033F4C13-319EE7A7-C:45]
 Name=007 - The World Is Not Enough (U)
 
-$Fail Objectives To Complete Them
+$Fail Objectives to Complete Them
 810315B8 2402
 810315BA 0011
 
-$Go Solo In Multiplayer
+$Go Solo in Multiplayer
 D00E0778 0042
 801002B7 0001
 
 $Have\All\Gadgets
 80112F6D 0001
 
-$Have\All\Guns On All Levels
-Note=Once you pick up a Gun You will have all weapons
+$Have\All\Guns on All Levels
+Note=Once you pick up a gun, you will have all weapons.
 8105F224 0810
 8105F226 0000
 8105F228 2442
@@ -84,28 +84,28 @@ Note=Once you pick up a Gun You will have all weapons
 8140007E 01FC
 
 $Have\All\Levels Unlocked
-Note=For Single Player Mode Only
+Note=For single player mode only.
 81102EE6 0021
 
 $Have\All\Skins + Everyone is Evil
 50005C0C 0000
 800BF687 0081
 
-$Have\Tons Of Nightvision
-Note=For Battery Only
+$Have\Tons of Nightvision
+Note=For battery only.
 81064C82 1500
 
-$Infinite\Ammo On All Levels
+$Infinite\Ammo on All Levels
 810648DC 2400
 
-$Infinite\Ammo On Clip
+$Infinite\Ammo on Clip
 810649AC 2400
 
 $Infinite\Time
-Note=Underground Uprising
+Note=Underground Uprising.
 8138EE3A 19B8
 
-$Invincibility On All levels
+$Invincibility on All levels
 81112F68 0101
 
 $Level select
@@ -118,12 +118,12 @@ $Skip Intro
 D03B0E5F 0004
 803B0E5F 0009
 
-$Stop Bond From Going Downhill on Cold Reception
-Note=Press L to Stop, & R to Go
+$Stop Bond from Going Downhill on Cold Reception
+Note=Press L to stop, and R to go.
 D10E0778 0020
 803A8466 0001
 D10E0778 0010
 803A8466 0000
 
-$Time Taken Clock At 0:00
+$Time Taken Clock at 0:00
 80102F02 0000

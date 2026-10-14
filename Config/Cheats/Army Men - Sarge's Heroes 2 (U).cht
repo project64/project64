@@ -9,15 +9,15 @@ $Have\All Weapons & Ammo
 8116368E 0001
 
 $Have\Invisible Soldier
-Note=you are Invisible to most enimies who just can not dectect or see you.
+Note=you are Invisible to most enemies who just can not dectect or see you.
 8115D052 0001
 
 $Have\Large Mode
-Note=Do not use with Mini Mode only use one at a time
+Note=Do not use with 'Mini Mode'.
 811636AE 0001
 
 $Have\Mini Mode
-Note=Do not use with Big Mode only use one at a time
+Note=Do not use with 'Large Mode'.
 8115D06A 0001
 
 $Infinite\Continues
@@ -30,7 +30,7 @@ $Move Faster
 800B9705 00FF
 800B9749 00FF
 
-$Play as
+$Play As
 81164372 00??
 07 Big Green One
 08 Vikki

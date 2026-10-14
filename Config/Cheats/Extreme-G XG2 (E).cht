@@ -1,7 +1,7 @@
 [1185EC85-4B5A7731-C:50]
 Name=Extreme-G XG2 (E) (M5)
 
-$[Screen Hud Clear]
+$Screen HUD Clear
 Note=If you are using a Plugin other then Jabos 1.5 and can not see through the Thick Hud on the Screen. then Let the game load 1st before Putting this code on,Or it will give an error and Freeze
 80092C6B 0004
 

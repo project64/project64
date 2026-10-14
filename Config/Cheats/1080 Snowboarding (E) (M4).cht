@@ -7,7 +7,7 @@ $Enable All Levels & Boarders
 81250AC6 FCFF
 80250AC8 0007
 
-$Infinite Damage All Players and Levels
+$Infinite Damage All Players & Levels
 803F4C01 0000
 
 $Play As
@@ -21,8 +21,8 @@ $Play As
 06 Gold Boarder
 07 Panda Boarder
 
-$Prees L For Infinite Lives & Continues
-Note=Whenever you've lost a life, Press L.Do not press L when on the main menu or during the intro Only use this feature in Match Race
+$Prees L for Infinite Lives & Continues
+Note=Whenever you've lost a life, press L. Do not press L when on the main menu or during the intro. Only use this feature in Match Race.
 D00556A9 0020
 8026B14B 0003
 

@@ -1,7 +1,7 @@
 [417DD4F4-1B482FE2-C:45]
 Name=Mortal Kombat 4 (U)
 
-$1 Round To Win Player 1
+$1 Round to Win Player 1
 D01050F3 0000
 801050F3 0001
 
@@ -25,8 +25,8 @@ $Infinite\Health Player 2
 $Infinite\Time
 8010511B 0063
 
-$Play\As Goro Player 1
+$Play As\Goro Player 1
 800FE293 000F
 
-$Play\As Noob Saibot Player 1
+$Play As\Noob Saibot Player 1
 800FE293 0011

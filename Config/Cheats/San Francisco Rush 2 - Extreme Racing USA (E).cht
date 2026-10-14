@@ -16,7 +16,7 @@ $All Keys,Cars & Cans
 50000E02 0000
 810C4574 FFFF
 
-$Always 1st
+$Always Place 1st
 80115499 0000
 
 $Best Stunt Points
@@ -26,7 +26,7 @@ Note=On Track
 $Easy Difficulty
 8010FFAA 0000
 
-$Laps To Race
+$Laps to Race
 811088D0 00??
 01 1 Lap
 02 2 laps
@@ -43,7 +43,7 @@ Note=On Stunt Track
 50000502 0000
 810C4702 FFFF
 
-$Max Points In Total
+$Max Points in Total
 810E235A 03E7
 
 $No\Checkpoints Extended Time
@@ -52,7 +52,7 @@ $No\Checkpoints Extended Time
 $No\Wind
 80116E98 0000
 
-$Number Of Drones In Race
+$Number of Drones in Race
 810E1B88 00??
 01 1 Drone
 02 2 Drones

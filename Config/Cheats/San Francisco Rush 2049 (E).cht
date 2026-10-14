@@ -23,17 +23,17 @@ Note=Stunt Mode
 50000440 0000
 81163BBC FFFF
 
-$Always 1st
+$Always Place 1st
 80177D4E 0000
 
-$Easy Difficulty level
+$Easy Difficulty Level
 80177A3C 0000
 
-$Extended Time In Battle & Stunt Mode To 2.05 Hours
+$Extended Time in Battle & Stunt Mode to 2.05 Hours
 811633BA 457C
 811636EE 4514
 
-$Laps To Race
+$Laps to Race
 81177A18 00??
 01 1 Lap
 02 2 laps
@@ -52,7 +52,7 @@ $Max Points Stunt Mode
 $Max Race Points
 8117CE22 03E7
 
-$Number Of Drones In Race
+$Number of Drones in Race
 81163240 00??
 01 1 Drone
 02 2 Drones
@@ -71,7 +71,7 @@ D017055A 0004
 811139D0 0202
 
 $Stunt Wings Circuit Mode
-Note=Press D-Pad Up On Wing Select
+Note=Press D-Pad Up on Wing select.
 D017055A 0004
 50000C02 0000
 801756A1 0202

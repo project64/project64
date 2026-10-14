@@ -8,7 +8,7 @@ $Access All Moves
 8037C3A3 00FF
 
 $Character Select
-Note=When Mumbo transforms you hold:C-Up for the Termite,C-Right for the Pumpkin,C-Down for the Walrus,C-Left for the Crocc,R for the Bumble Bee,L for the Washing Machine,Press nothing to turn into Banjo
+Note=When Mumbo transforms you, hold: C-Up for the Termite, C-Right for the Pumpkin, C-Down for the Walrus, C-Left for the Crocc, R for the Bumble Bee or L for the Washing Machine.
 D0281251 0008
 8037C2D3 0002
 D0281251 0001
@@ -22,9 +22,13 @@ D0281251 0010
 D0281251 0020
 8037C2D3 0007
 
-$Do Shock Spring Jump From Anywhere
-Note=Press A Button. Do not use with Take Off And Fly From Anywhere
+$Shock Spring Jump Anywhere
+Note=Press A button. Do not use with 'Take Off Anywhere'.
 8037C1D2 0002
+
+$Take Off Anywhere
+Note=Press A button. Do not use with 'Shock Spring Jump Anywhere'.
+8037C1D1 0002
 
 $Game 100% Complete
 8137C3A0 001F
@@ -80,15 +84,15 @@ $Infinite\Mumbo Tokens
 80385FA2 00FF
 
 $Infinite\Notes
-Note=Just collect one Note to Have 255 Notes in all Worlds.
+Note=Collect one note to have 255 notes in all worlds.
 80385FF2 00FF
 80385F62 0001
 
 $Infinite\Red Feathers
 80385F6F 00FF
 
-$Press L To Levitate
-Note=Press L To Levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D0281251 0020
 8137C4BC 43E0
 
@@ -96,7 +100,3 @@ $Secret Items
 81283400 ????
 FFFF Have All Collected
 0000 Have None
-
-$Take Off And Fly From Anywhere
-Note=Press A Button. Do not use with Do Shock Spring Jump From Anywhere
-8037C1D1 0002

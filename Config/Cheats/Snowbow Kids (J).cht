@@ -5,8 +5,8 @@ $1 Lap Race
 D01215A8 0000
 801215A8 0009
 
-$999 Trick Game Pts
-Note=Press the A Button to stop Count,or it will continue to grow without stoping.
+$999 Trick Game Points
+Note=Press the A button to stop Count,or it will continue to grow without stoping.
 81121360 03E7
 
 $Access Gold Medals
@@ -20,7 +20,7 @@ $Infinite\Cash
 8012160A C350
 
 $Infinite\Lucky Dip
-Note="Lucky Dip is Infinite Usage Of What Ever You Get From Each Red Box"
+Note=Infinite usage of whatever you get from each red box.
 801215B4 0003
 
 $Infinite\Tools Options

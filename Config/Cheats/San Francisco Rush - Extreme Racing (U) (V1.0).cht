@@ -69,8 +69,8 @@ Note=You receive the Hotrod and Taxi with this code, but you may have to go thro
 810CACDA FFFF
 810CACF0 FFFF
 
-$Press GS For Track Select
-Note=With this code, press GS when on the track selction screen and press A to select that track!
+$GameShark Button\Track Select
+Note=With this code, press GameShark button when on the track selction screen and press A to select that track!
 88100050 00??
 00 Track 1
 01 Track 2

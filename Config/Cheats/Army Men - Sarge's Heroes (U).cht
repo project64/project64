@@ -1,22 +1,22 @@
 [862C0657-8DFD896D-C:45]
 Name=Army Men - Sarge's Heroes (U)
 
-$(Multi-player)\Have All\Weapons and items\Player 1
+$Multiplayer\Have All\Weapons & Items\Player 1
 8133BA4E FFFE
 
-$(Multi-player)\Have All\Weapons and items\Player 2
+$Multiplayer\Have All\Weapons & Items\Player 2
 8133BC0A FFFE
 
-$(Multi-player)\Have All\Weapons and items\Player 3
+$Multiplayer\Have All\Weapons & Items\Player 3
 8133BDC6 FFFE
 
-$(Multi-player)\Have All\Weapons and items\Player 4
+$Multiplayer\Have All\Weapons & Items\Player 4
 8133BF82 FFFE
 
-$(Multi-player)\Max Kills\Player 1
+$Multiplayer\Max Kills\Player 1
 8033B9BC FFFF
 
-$(Multi-player)\Max Kills\Player 2
+$Multiplayer\Max Kills\Player 2
 8033BB78 FFFF
 
 $Access\All Guns
@@ -29,7 +29,7 @@ $Can't Fail Missions
 810A04FA ED40
 
 $Enable\Cheat Menu
-Note=Enable before you enter in game and you will find the cheat menu when you press the Start Button
+Note=Enable before you enter in game and you will find the cheat menu when you press the Start button
 8003E22F 0003
 8004609F 0003
 
@@ -38,30 +38,30 @@ Note=When this code is activated, a display of numbers will show on the screen a
 801599E7 0001
 
 $Enable\Level Select Menu
-Note=This must be used with Enable Cheat Menu and enabled before you enter in game and you will find the level select menu replaces the cheat menu when you press the Start Button
+Note=This must be used with Enable Cheat Menu and enabled before you enter in game and you will find the level select menu replaces the cheat menu when you press the Start button
 810AA696 9214
 
 $Enemies Don't Recongnize You Easily
 8005742D 0001
 
 $Have\Invisible Soldier
-Note=you are Invisible to most enimies who just can not dectect or see you.
+Note=you are Invisible to most enemies who just can not dectect or see you.
 80159683 0001
 
 $Have\Large Mode
-Note=Do not use with Mini Mode only use one at a time
+Note=Do not use with 'Mini Mode'.
 8015FCDF 0001
 
-$Have\Less Enemies In Levels
-Note=Do not use with No Enemies In Levels, only use one at a time
+$Have\Less Enemies in Levels
+Note=Do not use with 'No Enemies in Levels'.
 80056688 0020
 
 $Have\Mini Mode
-Note=Do not use with Large Mode only use one at a time
+Note=Do not use with 'Large Mode'.
 80159699 0001
 
-$Have\No Enemies In Levels
-Note=Do not use with Less Enemies In Levels, only use one at a time
+$Have\No Enemies in Levels
+Note=Do not use with 'Less Enemies in Levels'.
 80056D4C 0020
 
 $Improved Gun Handling

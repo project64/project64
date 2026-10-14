@@ -1,10 +1,10 @@
 [66572080-28E348E1-C:4A]
 Name=Super Robot Spirits (J)
 
-$Infinite Hp
+$Infinite HP
 802016A7 0000
 
-$Infinite Sp
+$Infinite SP
 802016AB 005A
 
 $Infinite Time
@@ -22,7 +22,7 @@ $Play As
 07 VOLTES V
 08 1st BOSS
 
-$Player 2 Health Mod
+$Player 2 Health Modifier
 80206AF7 00??
 00 Infinite Health
 C8 Instant Death

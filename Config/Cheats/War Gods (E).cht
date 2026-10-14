@@ -58,12 +58,12 @@ $Play As
 0A Grox
 0B Exor
 
-$Press D-Pad\Left to Play As Grox
+$Press D-Pad\Left to Play as Grox
 Note=Press D-Pad Left at the character Select screen to Replace Maximus with Grox. Do not use with the Play As Cheat
 D033C263 0004
 800EAF87 000A
 
-$Press D-Pad\Right to Play As Exor
+$Press D-Pad\Right to Play as Exor
 Note=Press D-Pad Right at the character Select screen to Replace Maximus with Exor. Do not use with the Play As Cheat
 D033C263 0008
 800EAF87 000B

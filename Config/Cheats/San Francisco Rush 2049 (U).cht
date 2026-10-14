@@ -19,7 +19,7 @@ $Have\All\Gold & Silver Coins\Track 5
 $Have\All\Gold & Silver Coins\Track 6
 8113A2F0 FFFF
 
-$Infinate Ammo\All Players In Battle
+$Infinate Ammo\All Players in Battle
 80152B9D 0050
 80152F55 0050
 8015330D 0050
@@ -36,7 +36,7 @@ D0037AA4 0020
 4380 210 mph
 4393 270 mph
 
-$Start On Lap Modifier
+$Start on Lap Modifier
 D014AA38 0000
 8014AA38 00??
 01 1 Lap

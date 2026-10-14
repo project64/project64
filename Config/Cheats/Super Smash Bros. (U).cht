@@ -2,16 +2,16 @@
 Name=Super Smash Bros. (U)
 
 $Bonus Stage Character Modifier (Training Mode)
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 8018F1D3 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -26,17 +26,17 @@ Note=Only put this on after you have alreay Chose your Character on the Main Men
 18 Polygon Kirby
 1A Giant Donkey Kong
 
-$Enable Item Switch Menu  (All Modes)
-Note=Go into Vs Mode & then Vs Options & then Press Up On the D-Pad Or Analogue Stick & then click the A Button to enter the Item Switch Menu. This Cheat Works For All Modes
+$Enable Item Switch Menu (All Modes)
+Note=Go into Vs Mode & then Vs Options & then Press Up On the D-Pad Or Analogue Stick & then click the A button to enter the Item Switch Menu. This Cheat Works For All Modes
 811348E2 0004
 
-$Give Kirby A Wierd Blow-Up
+$Give Kirby a Wierd Blow-Up
 8025E158 000A
 
 $Have All Characters
 810A4938 0FF0
 
-$P1 Press Down On D-Pad To Make Items Appear In Random Spots
+$P1 Press Down on D-Pad to Make Items Appear in Random Spots
 D109EFA4 0400
 8118D0A2 0001
 
@@ -47,16 +47,16 @@ $Story Mode\Infinite Time
 810A4B2E 43CB
 
 $Story Mode\Player 1\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code could also result freezing at the end of the Level.
 800A4B3B 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -151,16 +151,16 @@ D1045188 0010
 0D Final Stage (Vs Master Hand)
 
 $Story Mode\Player 2\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4BAF 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -182,16 +182,16 @@ $Story Mode\Player 2\Low % Health
 810A4BFA 0000
 
 $Story Mode\Player 3\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4C23 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -213,16 +213,16 @@ $Story Mode\Player 3\Low % Health
 810A4C6E 0000
 
 $Story Mode\Player 4\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4C97 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -243,7 +243,7 @@ $Story Mode\Player 4\Infinite Lives
 $Story Mode\Player 4\Low % Health
 810A4CE2 0000
 
-$Story Mode\Skip Straight To Master Hand
+$Story Mode\Skip Straight to Master Hand
 800A4AE7 000D
 
 $VS. Mode\Have Mushroom Kindom
@@ -253,16 +253,16 @@ $VS. Mode\Infinite Time
 810A4D1E 43CB
 
 $VS. Mode\Player 1\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4D2B 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -296,16 +296,16 @@ $VS. Mode\Player 1\Low % Health
 810A4D76 0000
 
 $VS. Mode\Player 2\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4D9F 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -324,16 +324,16 @@ $VS. Mode\Player 2\Low % Health
 810A4DEA 0000
 
 $VS. Mode\Player 3\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4E13 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff
@@ -352,16 +352,16 @@ $VS. Mode\Player 3\Low % Health
 810A4E5E 0000
 
 $VS. Mode\Player 4\Character Modifier
-Note=Only put this on after you have alreay Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time.Using this Code This could also result freezing at the end of the Level.
+Note=Only put this on after you have already Chose your Character on the Main Menu,& Do not use more then 1 Character Modifier at a time. Using this Code This could also result freezing at the end of the Level.
 800A4E87 00??
 00 Mario
 01 Fox
-02 DK
+02 Donkey Kong
 03 Samus
 04 Luigi
 05 Link
 06 Yoshi
-07 C. Falcon
+07 Captain Falcon
 08 Kirby
 09 Pikachu
 0A Jigglypuff

@@ -1,7 +1,7 @@
 [D666593B-D7A25C07-C:4A]
 Name=Rockman DASH
 
-$Buster Parts Slot Select\Slot 01
+$Buster Parts Slot Select\Slot 1
 8020CED3 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -38,7 +38,7 @@ $Buster Parts Slot Select\Slot 01
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 02
+$Buster Parts Slot Select\Slot 2
 8020CED4 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -75,7 +75,7 @@ $Buster Parts Slot Select\Slot 02
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 03
+$Buster Parts Slot Select\Slot 3
 8020CED5 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -112,7 +112,7 @@ $Buster Parts Slot Select\Slot 03
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 04
+$Buster Parts Slot Select\Slot 4
 8020CED6 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -149,7 +149,7 @@ $Buster Parts Slot Select\Slot 04
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 05
+$Buster Parts Slot Select\Slot 5
 8020CED7 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -186,7 +186,7 @@ $Buster Parts Slot Select\Slot 05
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 06
+$Buster Parts Slot Select\Slot 6
 8020CED8 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -223,7 +223,7 @@ $Buster Parts Slot Select\Slot 06
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 07
+$Buster Parts Slot Select\Slot 7
 8020CED9 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -260,7 +260,7 @@ $Buster Parts Slot Select\Slot 07
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 08
+$Buster Parts Slot Select\Slot 8
 8020CEDA 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -297,7 +297,7 @@ $Buster Parts Slot Select\Slot 08
 20 Rapid Fire
 21 Helmet
 
-$Buster Parts Slot Select\Slot 09
+$Buster Parts Slot Select\Slot 9
 8020CEDB 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -1222,7 +1222,7 @@ $Buster Parts Slot Select\Slot 33
 20 Rapid Fire
 21 Helmet
 
-$Equipped Buster Parts\Slot 01
+$Equipped Buster Parts\Slot 1
 8020CED0 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -1259,7 +1259,7 @@ $Equipped Buster Parts\Slot 01
 20 Rapid Fire
 21 Helmet
 
-$Equipped Buster Parts\Slot 02
+$Equipped Buster Parts\Slot 2
 8020CED1 00??
 00 Nothing
 01 Blaster Unit Omega
@@ -1296,7 +1296,7 @@ $Equipped Buster Parts\Slot 02
 20 Rapid Fire
 21 Helmet
 
-$Equipped Buster Parts\Slot 03
+$Equipped Buster Parts\Slot 3
 8020CED2 00??
 00 Nothing
 01 Blaster Unit Omega

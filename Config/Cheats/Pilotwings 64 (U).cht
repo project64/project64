@@ -2,7 +2,7 @@
 Name=Pilotwings 64 (U)
 
 $Choose Vehicle
-Note=Make your Choice & then Press GS To Activate,But do not use with any other Press GS Cheat Codes.
+Note=Make your choice the then press the GameShark button to activate. Do not use with any other 'GameShark button' cheat.
 883626A7 00??
 00 Hang Glider
 01 Rocket Belt
@@ -12,19 +12,19 @@ Note=Make your Choice & then Press GS To Activate,But do not use with any other 
 05 Jumble Hopper
 06 Birdman
 
-$Fly As Gray Plane In USA Level
-Note=Press GS To Activate,But do not use with any other Press GS Cheat Codes.
+$Fly as Gray Plane in USA Level
+Note=Press GameShark button to activate. Do not use with any other 'GameShark button' cheat.
 89362748 0008
 813627B0 3F30
 8024CDF5 006E
 
-$Fly As Yellow Plane In USA Level
-Note=Press GS To Activate,But do not use with any other Press GS Cheat Codes.
+$Fly as Yellow Plane in USA Level
+Note=Press GameShark button to activate. Do not use with any other 'GameShark button' cheat.
 89362748 0009
 813627B0 3EE0
 8024CDF5 006E
 
-$Have Perfect Score in all Class & Level's
+$Have Perfect Score in all Class & Levels
 Note=With these codes, if you want them to save, you have to play a level, and lose and just choose quit after it tallies up your score. Also dont keep the code active once you save the level at 100%, turn the code off and continue with the other levels!
 8036427D 0064
 803642AD 0064
@@ -72,12 +72,12 @@ Note=With these codes, if you want them to save, you have to play a level, and l
 80365065 0064
 80365095 0064
 
-$Infinite Fuel\Gyrocopter
+$Infinite\Fuel\Gyrocopter
 80362821 0081
 
-$Infinite Fuel\Rocket Belt
+$Infinite\Fuel\Rocket Belt
 80362841 0081
 
 $Time Always 00'00'10
-Note=This Cheat code is for All Events
+Note=This cheat is for all events.
 80362750 0001

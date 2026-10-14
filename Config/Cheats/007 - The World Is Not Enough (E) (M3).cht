@@ -1,11 +1,11 @@
 [3B941695-F90A5EEB-C:50]
 Name=007 - The World Is Not Enough (E) (M3)
 
-$Access\All Gadgets and Items
+$Access\All Gadgets & Items
 801147DD 0001
 
-$Access\All Guns and Weapons
-Note=This also comes with Ammo
+$Access\All Guns & Weapons
+Note=This also comes with ammo.
 801147DC 0001
 
 $Access\All Levels & Difficulties
@@ -22,28 +22,28 @@ $Infinite\Time
 $Invincible
 811147D8 0101
 
-$Multi Player\Access All Arenas
+$Multiplayer\Access All Arenas
 801147EB 0001
 811147EC 0101
 801147EE 0001
 
-$Multi Player\Access All Evil Skins
+$Multiplayer\Access All Evil Skins
 50005C0C 0000
 800C0167 0081
 
-$Multi Player\Access All Scenarios
+$Multiplayer\Access All Scenarios
 801147EF 0001
 811147F0 0101
 
-$Multi Player\Access All Weapon Modes
+$Multiplayer\Access All Weapon Modes
 811147F2 0101
 801147F4 0001
 
-$Multi Player\Access Evil Q
+$Multiplayer\Access Evil Q
 800C06EF 0081
 
-$Multi Player\Access Good Q
+$Multiplayer\Access Good Q
 800C06EF 0001
 
-$Multi Player\Invincible
+$Multiplayer\Invincible
 811147D8 0101

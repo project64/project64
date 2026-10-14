@@ -7,7 +7,7 @@ $Access All Moves
 8037CD72 00FF
 8037CD73 00FF
 
-$Do Anywhere Option\Take off anywhere
+$Take Off Anywhere
 Note=Press A
 D0285734 0080
 8037CBA1 0001
@@ -15,50 +15,50 @@ D0285734 0080
 $Have\All Jinjos
 8038695B 00FF
 
-$Have\Blubbers Gold
+$Have\Blubber's Gold
 80386973 00FF
 
-$Have\Chimpys Oranges
+$Have\Chimpy's Oranges
 80386977 00FF
 
-$Have\Eyries Caterpillars
+$Have\Eyrie's Caterpillars
 8038699B 00FF
 
-$Have\Nabnuts Acorns
+$Have\Nabnut's Acorns
 8038699F 00FF
 
-$Have\Present Option\Blue
+$Have\Christmas Presents\Blue
 80386993 00FF
 
-$Have\Present Option\Green
+$Have\Christmas Presents\Green
 8038698F 00FF
 
-$Have\Present Option\Red
+$Have\Christmas Presents\Red
 80386997 00FF
 
 $Have\Running Shoes
 8137CA88 5019
 
-$Have\Zero Time all Levels
+$Have\Zero Time All Levels
 50000B04 0000
 813869E4 3000
 
-$Infinite\255 Eggs
+$Infinite\Eggs
 80386947 00FF
 
-$Infinite\255 Gold Feathers
+$Infinite\Gold Feathers
 80386953 00FF
 
-$Infinite\255 Jigsaws
+$Infinite\Jiggies
 803869AB 00FF
 
-$Infinite\255 Notes
+$Infinite\Notes
 80386943 00FF
 
-$Infinite\255 Red Feathers
+$Infinite\Red Feathers
 8038694F 00FF
 
-$Infinite\8 Skulls
+$Infinite\Mumbo Tokens
 803869A7 0008
 
 $Infinite\Air
@@ -71,8 +71,8 @@ $Infinite\Health
 $Infinite\Lives
 8038696B 0009
 
-$Press L To Levitate
-Note=Press L To Levitate & Let go to land
+$Press L to Levitate
+Note=Press L to levitate and let go to land.
 D0285735 0020
 8137CE8C 43E0
 

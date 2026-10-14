@@ -19,13 +19,13 @@ $Level 11 Vulcan Cannon\Player 1
 $Level 11 Vulcan Cannon\Player 2
 801239D3 000A
 
-$Press L For Rapid Fire Select\Player 1
+$Press L for Rapid Fire Select\Player 1
 D011BE01 0020
 8011D497 00??
 14 On Flak
 28 On Nuke & Laser
 
-$Press L For Rapid Fire Select\Player 2
+$Press L for Rapid Fire Select\Player 2
 D011BE09 0020
 8011D49B 00??
 14 On Flak

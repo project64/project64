@@ -4,7 +4,7 @@ Name=Tony Hawk's Pro Skater (E)
 $10x Trick Multiplier
 800D60FE 0001
 
-$Access All gold medals
+$Access All Gold Medals
 Note=Also opens San Francisco & Downtown Minneapolis
 50000C14 0000
 800DEA03 00FF
@@ -13,18 +13,18 @@ Note=Also opens San Francisco & Downtown Minneapolis
 50000C14 0000
 800DEA08 00FF
 
-$Access all Levels,tapes,boards & Officer Dick
+$Access All Levels, Tapes, Boards & Officer Dick
 50000C14 0000
 800DE9FC 001E
 
-$Max\Air
+$Maximum\Air
 800D62DC 00FF
 
-$Max\Balance
+$Maximum\Balance
 800D62DF 00FF
 
-$Max\Speed
+$Maximum\Speed
 800DE83A 0001
 
-$Max\Turning
+$Maximum\Turning
 800D6220 00FF
