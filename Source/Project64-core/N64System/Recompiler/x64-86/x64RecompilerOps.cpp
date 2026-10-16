@@ -1164,7 +1164,15 @@ void CX64RecompilerOps::ORI()
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (g_GameSettings.core32Bit)
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.rs);
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), m_Opcode.immediate);
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
