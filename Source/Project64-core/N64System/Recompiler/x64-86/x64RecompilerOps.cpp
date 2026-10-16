@@ -770,7 +770,31 @@ void CX64RecompilerOps::BLEZ_Compare()
     }
     else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (m_RegWorkingSet.Is32Bit(m_Opcode.rs))
+        {
+            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), 0);
+            if (m_Section->m_Jump.FallThrough)
+            {
+                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JgLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            }
+            else if (m_Section->m_Cont.FallThrough)
+            {
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JleLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+            else
+            {
+                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JgLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+                m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+            }
+        }
+        else
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
     }
     else if (g_GameSettings.core32Bit)
     {
