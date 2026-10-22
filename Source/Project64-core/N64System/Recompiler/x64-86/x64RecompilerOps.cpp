@@ -3509,7 +3509,23 @@ void CX64RecompilerOps::COP1_CF()
 
 void CX64RecompilerOps::COP1_MT()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+    }
+    else
+    {
+        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt).r32());
+    }
 }
 
 void CX64RecompilerOps::COP1_DMT()
