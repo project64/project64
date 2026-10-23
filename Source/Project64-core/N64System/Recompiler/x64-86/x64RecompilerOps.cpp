@@ -1295,7 +1295,7 @@ void CX64RecompilerOps::LBU()
     if (m_RegWorkingSet.IsConst(m_Opcode.base))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
-    } 
+    }
     else
     {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
