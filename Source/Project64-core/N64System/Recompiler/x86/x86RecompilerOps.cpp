@@ -9958,7 +9958,11 @@ void CX86RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
         {
             LoadReg = m_Opcode.rt;
         }
-        m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+        // Only keep base mapped if it is still needed, a 64-bit base uses two registers and LWL/LWR already need most of them
+        if (!AddressReg.isValid() || (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base)))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+        }
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, LoadReg);
     }
     asmjit::Label Load64AddrDone;
