@@ -1,7 +1,6 @@
 #pragma once
 #include <Project64-plugin-spec/Input.h>
 #include "Button.h"
-#include "DeviceNotification.h"
 #include "N64Controller.h"
 #include "Shortcuts.h"
 #include <Common/CriticalSection.h>
@@ -105,6 +104,7 @@ private:
     };
 
     void RefreshDeviceList(void);
+    bool TakeDeviceChangeEvents(void);
     void CloseJoystickDevices(void);
     void SyncJoystickState(DEVICE_ENTRY & dev);
     static void FillJoyState(const DEVICE_ENTRY & dev, DIJOYSTATE_COMPAT & j);
@@ -131,7 +131,6 @@ private:
     void ApplyPumpTimerInterval(void);
     static LRESULT CALLBACK PumpWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    DeviceNotification m_DeviceNotification;
     DEVICE_MAP m_Devices;
     CriticalSection m_DeviceCS;
     HINSTANCE m_hinst;
