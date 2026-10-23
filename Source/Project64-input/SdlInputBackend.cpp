@@ -53,6 +53,8 @@ CSdlInput::CSdlInput(HINSTANCE hinst) :
         SDL_GameControllerEventState(SDL_ENABLE);
         SDL_JoystickEventState(SDL_ENABLE);
         RefreshDeviceList();
+        // Devices already connected at start up are in the list, so their added events are not needed
+        TakeDeviceChangeEvents();
     }
 }
 
@@ -122,6 +124,10 @@ LRESULT CALLBACK CSdlInput::PumpWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         if (wParam == kPumpTimerId && self->m_SdlInited)
         {
             SDL_PumpEvents();
+            if (self->TakeDeviceChangeEvents() && g_InputPlugin != nullptr)
+            {
+                g_InputPlugin->DevicesChanged();
+            }
         }
         return 0;
     case WM_DESTROY:
@@ -273,6 +279,7 @@ void CSdlInput::MapShortcutDevice(SHORTCUTS& Shortcuts)
 
 void CSdlInput::RefreshDeviceList(void)
 {
+    CGuard Guard(m_DeviceCS);
     CloseJoystickDevices();
     m_Devices.clear();
 
@@ -842,6 +849,22 @@ void CSdlInput::GetAxis(N64CONTROLLER & Controller, BUTTONS * Keys)
 void CSdlInput::DevicesChanged(void)
 {
     RefreshDeviceList();
+}
+
+bool CSdlInput::TakeDeviceChangeEvents(void)
+{
+    // Only joystick added/removed events are used, discard everything else so the SDL event queue does not fill up.
+    // Device events are left in place by the flush so one queued by another thread pumping events is not lost.
+    SDL_FlushEvents(SDL_FIRSTEVENT, SDL_JOYDEVICEADDED - 1);
+    SDL_FlushEvents(SDL_JOYDEVICEREMOVED + 1, SDL_LASTEVENT);
+
+    bool Changed = false;
+    SDL_Event Events[16];
+    while (SDL_PeepEvents(Events, sizeof(Events) / sizeof(Events[0]), SDL_GETEVENT, SDL_JOYDEVICEADDED, SDL_JOYDEVICEREMOVED) > 0)
+    {
+        Changed = true;
+    }
+    return Changed;
 }
 
 CSdlInput::ScanResult CSdlInput::ScanKeyboard(const GUID & DeviceGuid, uint8_t * KeyboardState, BUTTON & pButton)
