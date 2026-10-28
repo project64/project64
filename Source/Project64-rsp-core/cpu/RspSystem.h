@@ -11,6 +11,18 @@
 
 class RSPRegisterHandlerPlugin;
 
+class CRSPSystem;
+
+#if !defined(__i386__) && !defined(_M_IX86) && !defined(__amd64__) && !defined(_M_X64)
+class CRSPRecompiler
+{
+public:
+    CRSPRecompiler(CRSPSystem &)
+    {
+    }
+};
+#endif
+
 class CRSPSystem :
     public CHleTask
 {

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(_M_ARM64)
 
 #include <Project64-core/N64System/Recompiler/Aarch64/Aarch64RecompilerOps.h>
 #include <Project64-core/Notification.h>
@@ -807,6 +807,16 @@ void CAarch64RecompilerOps::EnterCodeBlock()
 void CAarch64RecompilerOps::CompileExitCode()
 {
     g_Notify->BreakPoint(__FILE__, __LINE__);
+}
+
+uint32_t CAarch64RecompilerOps::ColdEntryOffset(void) const
+{
+    return 0;
+}
+
+uint32_t CAarch64RecompilerOps::WarmEntryOffset(void) const
+{
+    return 0;
 }
 
 void CAarch64RecompilerOps::CompileInPermLoop(CRegInfo & /*RegSet*/, uint32_t /*ProgramCounter*/)

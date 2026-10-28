@@ -17,7 +17,7 @@ typedef CX64RegInfo CRegInfo;
 
 typedef CArmRegInfo CRegInfo;
 
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) || defined(_M_ARM64)
 
 #include <Project64-core/N64System/Recompiler/Aarch64/Aarch64RegInfo.h>
 typedef CAarch64RegInfo CRegInfo;

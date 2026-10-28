@@ -81,7 +81,7 @@ private:
 #elif defined(__arm__) || defined(_M_ARM)
 #include <Project64-core/N64System/Recompiler/Arm/ArmRecompilerOps.h>
 
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) || defined(_M_ARM64)
 #include <Project64-core/N64System/Recompiler/Aarch64/Aarch64RecompilerOps.h>
 
 #endif

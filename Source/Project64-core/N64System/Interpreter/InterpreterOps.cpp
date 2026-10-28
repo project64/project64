@@ -13,6 +13,11 @@
 #include <float.h>
 #include <math.h>
 
+#if defined(_M_ARM64)
+#undef float32_t
+#undef float64_t
+#endif
+
 extern "C"
 {
 #include "softfloat.h"

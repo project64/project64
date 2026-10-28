@@ -112,7 +112,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Setting_AutoZipInstantSave, new CSettingTypeApplication("Settings", "Auto Zip Saves", (uint32_t) true));
     AddHandler(Setting_EraseGameDefaults, new CSettingTypeApplication("Settings", "Erase on default", (uint32_t) true));
     AddHandler(Setting_CheckEmuRunning, new CSettingTypeApplication("Settings", "Check Running", (uint32_t) true));
-#ifndef _M_X64
+#if defined(_M_IX86) || defined(__i386__)
     AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", false));
 #else
     AddHandler(Setting_ForceInterpreterCPU, new CSettingTypeApplication("Settings", "Force Interpreter CPU", true));
@@ -167,7 +167,7 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
     AddHandler(Rdb_FuncLookupMode, new CSettingTypeRomDatabase("FuncFind", (uint32_t)FuncFind_PhysicalLookup));
     AddHandler(Rdb_RegCache, new CSettingTypeRDB("Reg Cache", true));
     AddHandler(Rdb_FpuRegCache, new CSettingTypeRDB("FPU Reg Cache", false));
-#if defined(ANDROID) || defined(__amd64__) || defined(_M_X64)
+#if defined(ANDROID) || defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_None));
 #else
     AddHandler(Rdb_BlockLinkingMode, new CSettingTypeRDBLinking("Linking", (uint32_t)BlockLinking_Eager));
@@ -264,6 +264,9 @@ void CSettings::AddHowToHandleSetting(const char * BaseDirectory)
 #elif (defined(__amd64__) || defined(_M_X64))
     AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory-x64", Directory_PluginInitial));
     AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Plugin Directory", "Sync Directory-x64", Directory_PluginInitial));
+#elif defined(_M_ARM64) || defined(__aarch64__)
+    AddHandler(Directory_PluginSelected, new CSettingTypeApplicationPath("Plugin Directory", "Directory-ARM64", Directory_PluginInitial));
+    AddHandler(Directory_PluginSyncSelected, new CSettingTypeApplicationPath("Plugin Directory", "Sync Directory-ARM64", Directory_PluginInitial));
 #endif
     AddHandler(Directory_PluginSync, new CSettingTypeSelectedDirectory("Dir:SyncPlugin", Directory_PluginSyncInitial, Directory_PluginSyncSelected, Directory_PluginSyncUseSelected, Directory_PluginSync));
 

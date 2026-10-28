@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(_M_ARM64)
 
 #include <Project64-core/N64System/Recompiler/Aarch64/Aarch64ops.h>
 #include <Project64-core/N64System/Recompiler/CodeBlock.h>

@@ -1,5 +1,5 @@
 #pragma once
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(_M_ARM64)
 
 #include <Project64-core/N64System/Mips/R4300iOpcode.h>
 #include <Project64-core/N64System/Recompiler/Aarch64/Aarch64ops.h>
@@ -224,6 +224,8 @@ public:
     void CompileSystemCheck(uint32_t TargetPC, const CRegInfo & RegSet);
     void CompileExecuteBP(void);
     void CompileExecuteDelaySlotBP(void);
+    uint32_t ColdEntryOffset(void) const;
+    uint32_t WarmEntryOffset(void) const;
 
     CAarch64Ops & Assembler()
     {

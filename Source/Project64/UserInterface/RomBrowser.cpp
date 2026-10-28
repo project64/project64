@@ -1064,16 +1064,15 @@ void CRomBrowser::SaveRomListColoumnInfo(void)
     WriteTrace(TraceUserInterface, TraceDebug, "Done");
 }
 
-int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t /*lp*/, uint32_t lpData)
+int CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
 {
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path
-        // It would be FALSE if you were passing a PIDL
-        if (lpData)
+        // wParam is TRUE because lpData is a wide path, not a PIDL.
+        if (lpData != 0)
         {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
+            SendMessage(hwnd, BFFM_SETSELECTIONW, TRUE, lpData);
             SetWindowText(hwnd, wGS(DIR_SELECT_ROM).c_str());
         }
         break;
@@ -1084,20 +1083,20 @@ int32_t CALLBACK CRomBrowser::SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uin
 void CRomBrowser::SelectRomDir(void)
 {
     wchar_t SelectedDir[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
+    BROWSEINFO bi = {};
 
     std::wstring title = wGS(SELECT_ROM_DIR);
 
-    stdstr RomDir = g_Settings->LoadStringVal(RomList_GameDir).c_str();
+    std::wstring RomDir = stdstr(g_Settings->LoadStringVal(RomList_GameDir)).ToUTF16();
     bi.hwndOwner = m_MainWindow;
     bi.pidlRoot = nullptr;
     bi.pszDisplayName = SelectedDir;
     bi.lpszTitle = title.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
-    bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
-    bi.lParam = (UINT_PTR)RomDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    bi.lpfn = SelectRomDirCallBack;
+    bi.lParam = (LPARAM)RomDir.c_str();
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (pidl != nullptr)
     {
         wchar_t Directory[_MAX_PATH];
         if (SHGetPathFromIDList(pidl, Directory))
@@ -1107,6 +1106,7 @@ void CRomBrowser::SelectRomDir(void)
             Notify().AddRecentDir(NewRomDir.GetDriveDirectory().c_str());
             RefreshRomList();
         }
+        CoTaskMemFree(pidl);
     }
 }
 

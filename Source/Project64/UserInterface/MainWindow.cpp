@@ -96,7 +96,11 @@ bool CMainGui::RegisterWinClass(void)
 
     WNDCLASS wcl;
 
-    wcl.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    // CS_OWNDC would give this window one private DC. The video plugin's OpenGL
+    // context then owns that DC and the menu bar stops painting until the pointer
+    // moves over it. The render target is a child window, so the frame does not
+    // need a private DC.
+    wcl.style = CS_HREDRAW | CS_VREDRAW;
     wcl.cbClsExtra = 0;
     wcl.cbWndExtra = 0;
     wcl.hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_PJ64_Icon));
@@ -396,10 +400,48 @@ void CMainGui::Create(const char * WindowTitle)
     m_Created = m_hMainWindow != nullptr;
 }
 
+static wchar_t StatusPaneText[2][500];
+
+static LRESULT CALLBACK StatusBarSubclassProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR)
+{
+    if (msg == WM_ERASEBKGND)
+    {
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        FillRect((HDC)wParam, &rc, GetSysColorBrush(COLOR_BTNFACE));
+        return 1;
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+static void MakeStatusBarOpaque(HWND bar)
+{
+    // Themed status bars leave the main pane transparent over this window's
+    // black background and only fill the pane that receives text. That pane
+    // is the white rectangle at the bottom right.
+    HMODULE themeLib = LoadLibraryW(L"uxtheme.dll");
+    if (themeLib != nullptr)
+    {
+        typedef HRESULT(WINAPI * SetWindowThemeFn)(HWND, LPCWSTR, LPCWSTR);
+        SetWindowThemeFn setWindowTheme = (SetWindowThemeFn)GetProcAddress(themeLib, "SetWindowTheme");
+        if (setWindowTheme != nullptr)
+        {
+            setWindowTheme(bar, L" ", L" ");
+        }
+        FreeLibrary(themeLib);
+    }
+    SetWindowSubclass(bar, StatusBarSubclassProc, 1, 0);
+    SendMessage(bar, SB_SETBKCOLOR, 0, (LPARAM)GetSysColor(COLOR_BTNFACE));
+}
+
 void CMainGui::CreateStatusBar(void)
 {
     m_hStatusWnd = (HWND)CreateStatusWindow(WS_CHILD | WS_VISIBLE, L"", m_hMainWindow, StatusBarID);
-    SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, 0, (LPARAM) "");
+    LONG_PTR style = GetWindowLongPtr(m_hStatusWnd, GWL_STYLE);
+    SetWindowLongPtr(m_hStatusWnd, GWL_STYLE, style & ~SBARS_SIZEGRIP);
+    MakeStatusBarOpaque(m_hStatusWnd);
+    SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, 0 | SBT_OWNERDRAW, (LPARAM)L"");
+    SendMessage((HWND)m_hStatusWnd, SB_SETTEXT, 1 | SBT_OWNERDRAW, (LPARAM)L"");
     ShowWindow(m_hStatusWnd, g_Settings->LoadBool((SettingID)UserInterface_ShowStatusBar) ? SW_SHOW : SW_HIDE);
 }
 
@@ -457,16 +499,41 @@ bool CMainGui::ProcessGuiMessages(void)
 
 void CMainGui::Resize(WPARAM /*fwSizeType*/, WORD nWidth, WORD nHeight)
 {
+    if (m_hStatusWnd == nullptr)
+    {
+        return;
+    }
+
     RECT clrect, swrect;
     GetClientRect(m_hMainWindow, &clrect);
-    GetClientRect(m_hStatusWnd, &swrect);
+    GetWindowRect(m_hStatusWnd, &swrect);
+
+    // The status bar is only its own height. Using the main window's client
+    // height here stretched the bar over the game, and the pane that receives
+    // status text was left as a white box in the corner.
+    const int statusHeight = swrect.bottom - swrect.top;
+    if (statusHeight <= 0 || nHeight == 0)
+    {
+        return;
+    }
+
+    const int maxStatus = (int)(80 * DPIScale(m_hStatusWnd));
+    int barHeight = statusHeight;
+    if (barHeight <= 0 || barHeight > maxStatus)
+    {
+        barHeight = (int)(22 * DPIScale(m_hStatusWnd));
+    }
 
     int Parts[2];
-    Parts[0] = (int)(nWidth - 135 * DPIScale(m_hStatusWnd));
-    Parts[1] = nWidth;
+    const int rightPane = (int)(135 * DPIScale(m_hStatusWnd));
+    Parts[0] = nWidth > rightPane ? (int)nWidth - rightPane : (int)nWidth / 2;
+    Parts[1] = -1;
 
     SendMessage(m_hStatusWnd, SB_SETPARTS, 2, (LPARAM)&Parts[0]);
-    MoveWindow(m_hStatusWnd, 0, clrect.bottom - swrect.bottom, nWidth, nHeight, TRUE);
+    SendMessage(m_hStatusWnd, SB_SETTEXT, 0 | SBT_OWNERDRAW, (LPARAM)StatusPaneText[0]);
+    SendMessage(m_hStatusWnd, SB_SETTEXT, 1 | SBT_OWNERDRAW, (LPARAM)StatusPaneText[1]);
+    MoveWindow(m_hStatusWnd, 0, clrect.bottom - barHeight, nWidth, barHeight, TRUE);
+    InvalidateRect(m_hStatusWnd, nullptr, TRUE);
 }
 
 void CMainGui::Show(bool Visible)
@@ -555,24 +622,24 @@ void CMainGui::RefreshMenu(void)
 
 void CMainGui::SetStatusText(int Panel, const wchar_t * Text)
 {
-    static wchar_t Message[2][500];
     if (Panel >= 2)
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    wchar_t * Msg = Message[Panel];
+    wchar_t * Msg = StatusPaneText[Panel];
 
-    memset(Msg, 0, sizeof(Message[0]));
-    _snwprintf(Msg, sizeof(Message[0]) / sizeof(Message[0][0]), L"%s", Text);
-    Msg[(sizeof(Message[0]) / sizeof(Message[0][0])) - 1] = 0;
+    memset(Msg, 0, sizeof(StatusPaneText[0]));
+    _snwprintf(Msg, sizeof(StatusPaneText[0]) / sizeof(StatusPaneText[0][0]), L"%s", Text);
+    Msg[(sizeof(StatusPaneText[0]) / sizeof(StatusPaneText[0][0])) - 1] = 0;
     if (GetCurrentThreadId() == m_ThreadId)
     {
-        SendMessage(m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
+        SendMessage(m_hStatusWnd, SB_SETTEXT, Panel | SBT_OWNERDRAW, (LPARAM)Msg);
+        InvalidateRect(m_hStatusWnd, nullptr, TRUE);
     }
     else
     {
-        PostMessage(m_hStatusWnd, SB_SETTEXT, Panel, (LPARAM)Msg);
+        PostMessage(m_hStatusWnd, SB_SETTEXT, Panel | SBT_OWNERDRAW, (LPARAM)Msg);
     }
 }
 
@@ -608,6 +675,17 @@ void CMainGui::SaveWindowLoc(void)
 
 LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LPARAM lParam)
 {
+    static const UINT uiCommand = RegisterWindowMessageW(L"Project64_GLideN64_UiCommand");
+    if (uiCommand != 0 && uMsg == uiCommand)
+    {
+        auto command = reinterpret_cast<void (*)()>(lParam);
+        if (command != nullptr)
+        {
+            command();
+        }
+        return 1;
+    }
+
     switch (uMsg)
     {
     case WM_CREATE:
@@ -742,6 +820,14 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
                 _this->RomBrowserMaximize(false);
             }
         }
+        if (_this && CGuiSettings::bCPURunning() && g_BaseSystem && !_this->RomBrowserVisible())
+        {
+            DrawMenuBar(hWnd);
+            if (g_Plugins->Gfx() && g_Plugins->Gfx()->MoveScreen)
+            {
+                g_Plugins->Gfx()->MoveScreen((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam));
+            }
+        }
     }
     break;
     case WM_NOTIFY:
@@ -756,6 +842,19 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
     case WM_DRAWITEM:
     {
         CMainGui * _this = (CMainGui *)GetProp(hWnd, L"Class");
+        DRAWITEMSTRUCT * drawItem = (DRAWITEMSTRUCT *)lParam;
+        if (_this != nullptr && drawItem != nullptr && drawItem->hwndItem == _this->m_hStatusWnd)
+        {
+            FillRect(drawItem->hDC, &drawItem->rcItem, GetSysColorBrush(COLOR_BTNFACE));
+            const wchar_t * text = reinterpret_cast<const wchar_t *>(drawItem->itemData);
+            if (text != nullptr && text[0] != 0)
+            {
+                SetBkMode(drawItem->hDC, TRANSPARENT);
+                SetTextColor(drawItem->hDC, GetSysColor(COLOR_BTNTEXT));
+                DrawTextW(drawItem->hDC, text, -1, &drawItem->rcItem, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX | DT_END_ELLIPSIS);
+            }
+            break;
+        }
         if (_this)
         {
             if (!_this->RomListDrawItem(wParam, lParam))
@@ -767,16 +866,9 @@ LRESULT CALLBACK CMainGui::MainGui_Proc(HWND hWnd, DWORD uMsg, WPARAM wParam, LP
     break;
     case WM_PAINT:
     {
-        //			CMainGui * _this = (CMainGui *)GetProp(hWnd,"Class");
-        //			CN64System * System  = _this->m_System;
-
-        //			if (bCPURunning() && Settings->Load(CPU_Paused)) {
-        //				CPlugins * Plugins = System->Plugins();
-        //				if (Plugins->Gfx()->DrawScreen) {
-        //					Plugins->Gfx()->DrawScreen();
-        //				}
-        //			}
-        ValidateRect(hWnd, nullptr);
+        PAINTSTRUCT paint = {};
+        BeginPaint(hWnd, &paint);
+        EndPaint(hWnd, &paint);
     }
     break;
     case WM_KEYUP:

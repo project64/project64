@@ -56,7 +56,7 @@ private:
 #if defined(__i386__) || defined(_M_IX86)
     UDWORD m_Reg[8];
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
 #if defined(_MSC_VER)
     uint64_t m_Reg[6] alignas(16);
 #else
@@ -103,7 +103,7 @@ public:
 #if defined(__i386__) || defined(_M_IX86)
     uint8_t & Value();
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     uint8_t * Value();
 #endif
 
@@ -114,7 +114,7 @@ private:
 #if defined(__i386__) || defined(_M_IX86)
     uint8_t m_Flag;
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     alignas(16) uint16_t m_Flags[8];
 #endif
 };

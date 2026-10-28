@@ -36,6 +36,8 @@ CCodeBlock::CCodeBlock(CN64System & System, uint32_t VAddrEnter) :
     m_RecompilerOps = new CX64RecompilerOps(System, *this);
 #elif defined(__arm__) || defined(_M_ARM)
     m_RecompilerOps = new CArmRecompilerOps(System, *this);
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    m_RecompilerOps = new CAarch64RecompilerOps(System.m_MMU_VM, *this);
 #else
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
@@ -95,6 +97,8 @@ CCodeBlock::~CCodeBlock()
         delete (CX86RecompilerOps *)m_RecompilerOps;
 #elif defined(__amd64__) || defined(_M_X64)
         delete (CX64RecompilerOps *)m_RecompilerOps;
+#elif defined(__aarch64__) || defined(_M_ARM64)
+        delete (CAarch64RecompilerOps *)m_RecompilerOps;
 #else
         g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif

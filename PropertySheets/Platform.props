@@ -90,7 +90,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Platform)'!='ARM64'">Cdecl</CallingConvention>
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
@@ -215,5 +215,18 @@
     </Link>
   </ItemDefinitionGroup>
   <!-- END x64 -->
+
+  <!-- ARM64 -->
+  <ItemDefinitionGroup Condition="'$(Platform)'=='ARM64'">
+    <Lib>
+      <TargetMachine>MachineARM64</TargetMachine>
+    </Lib>
+    <Link>
+      <TargetMachine>MachineARM64</TargetMachine>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- END ARM64 -->
 
 </Project>

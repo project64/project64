@@ -67,10 +67,14 @@ public:
         }
         m_StartTimeHi = HiValue;
         m_StartTimeLo = LoValue;
-#else
+#elif defined(_M_X64) || defined(__amd64__)
         _mm_lfence();
         m_StartTime = __rdtsc();
         _mm_lfence();
+#else
+        LARGE_INTEGER counter;
+        QueryPerformanceCounter(&counter);
+        m_StartTime = (uint64_t)counter.QuadPart;
 #endif
         return OldTimerAddr;
     }
@@ -94,11 +98,15 @@ public:
         int64_t StopTime = ((uint64_t)HiValue << 32) + (uint64_t)LoValue;
         int64_t StartTime = ((uint64_t)m_StartTimeHi << 32) + (uint64_t)m_StartTimeLo;
         int64_t TimeTaken = StopTime - StartTime;
-#else
+#elif defined(_M_X64) || defined(__amd64__)
         _mm_lfence();
         uint64_t currentTime = __rdtsc();
         _mm_lfence();
         int64_t TimeTaken = currentTime - m_StartTime;
+#else
+        LARGE_INTEGER counter;
+        QueryPerformanceCounter(&counter);
+        int64_t TimeTaken = (int64_t)((uint64_t)counter.QuadPart - m_StartTime);
 #endif
         PROFILE_ENRTY Entry = m_Entries.find(m_CurrentTimerAddr);
         if (Entry != m_Entries.end())
@@ -129,9 +137,18 @@ public:
     {
         DWORD_PTR oldMask = SetThreadAffinityMask(GetCurrentThread(), 1);
         auto start_time = std::chrono::high_resolution_clock::now();
+#if defined(_M_ARM64) || defined(__aarch64__)
+        LARGE_INTEGER startCounter, endCounter;
+        QueryPerformanceCounter(&startCounter);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        QueryPerformanceCounter(&endCounter);
+        uint64_t start_cycles = (uint64_t)startCounter.QuadPart;
+        uint64_t end_cycles = (uint64_t)endCounter.QuadPart;
+#else
         uint64_t start_cycles = __rdtsc();
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         uint64_t end_cycles = __rdtsc();
+#endif
         auto end_time = std::chrono::high_resolution_clock::now();
         SetThreadAffinityMask(GetCurrentThread(), oldMask);
         double elapsed_seconds = std::chrono::duration<double>(end_time - start_time).count();

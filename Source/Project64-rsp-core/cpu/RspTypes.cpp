@@ -12,7 +12,7 @@ int16_t & RSPAccumulator::Low(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].HW[1];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((int16_t *)&m_Reg[0])[Index];
 #endif
 }
@@ -21,7 +21,7 @@ int16_t & RSPAccumulator::Mid(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].HW[2];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((int16_t *)&m_Reg[2])[Index];
 #endif
 }
@@ -30,7 +30,7 @@ int16_t & RSPAccumulator::High(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].HW[3];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((int16_t *)&m_Reg[4])[Index];
 #endif
 }
@@ -39,7 +39,7 @@ uint16_t & RSPAccumulator::ULow(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].UHW[1];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((uint16_t *)&m_Reg[0])[Index];
 #endif
 }
@@ -48,7 +48,7 @@ uint16_t & RSPAccumulator::UMid(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].UHW[2];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((uint16_t *)&m_Reg[2])[Index];
 #endif
 }
@@ -57,7 +57,7 @@ uint16_t & RSPAccumulator::UHigh(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return m_Reg[Index].UHW[3];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return ((uint16_t *)&m_Reg[4])[Index];
 #endif
 }
@@ -88,7 +88,7 @@ int64_t RSPAccumulator::Get(uint8_t Index)
 {
 #if defined(__i386__) || defined(_M_IX86)
     return (((int64_t)m_Reg[Index].HW[3]) << 32) | (((int64_t)m_Reg[Index].UHW[2]) << 16) | m_Reg[Index].UHW[1];
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return (((int64_t)((int16_t *)&m_Reg[4])[Index]) << 32) | (((int64_t)((uint16_t)((int16_t *)&m_Reg[2])[Index])) << 16) | ((uint16_t)((int16_t *)&m_Reg[0])[Index]);
 #endif
 }
@@ -99,7 +99,7 @@ void RSPAccumulator::Set(uint8_t Index, int64_t Value)
     m_Reg[Index].HW[3] = (int16_t)(Value >> 32);
     m_Reg[Index].HW[2] = (int16_t)(Value >> 16);
     m_Reg[Index].HW[1] = (int16_t)(Value);
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     ((int16_t *)&m_Reg[0])[Index] = (int16_t)(Value & 0xFFFF);
     ((int16_t *)&m_Reg[2])[Index] = (int16_t)((Value >> 16) & 0xFFFF);
     ((int16_t *)&m_Reg[4])[Index] = (int16_t)((Value >> 32) & 0xFFFF);
@@ -132,7 +132,7 @@ void RSPAccumulator::Reset(void)
     {
 #if defined(__i386__) || defined(_M_IX86)
         m_Reg[i].UDW = 0;
-#elif defined(__amd64__) || defined(_M_X64)
+#elif defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
         m_Reg[i] = 0;
 #endif
     }
@@ -196,7 +196,7 @@ void RSPFlag::Clear(void)
 #if defined(__i386__) || defined(_M_IX86)
     m_Flag = 0;
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     for (int i = 0; i < 8; i++)
     {
         m_Flags[i] = 0;
@@ -216,7 +216,7 @@ bool RSPFlag::Set(uint8_t Index, bool Value)
         m_Flag &= ~(1 << (7 - Index));
     }
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     m_Flags[Index] = Value ? 0xFFFF : 0;
 #endif
     return Value;
@@ -227,7 +227,7 @@ bool RSPFlag::Get(uint8_t Index) const
 #if defined(__i386__) || defined(_M_IX86)
     return (m_Flag & (1 << (7 - Index))) != 0;
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     return m_Flags[Index] != 0;
 #endif
 }
@@ -237,7 +237,7 @@ uint8_t RSPFlag::GetPacked(void) const
 #if defined(__i386__) || defined(_M_IX86)
     return m_Flag;
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     uint8_t result = 0;
     for (int i = 0; i < 8; i++)
     {
@@ -255,7 +255,7 @@ void RSPFlag::SetPacked(uint8_t value)
 #if defined(__i386__) || defined(_M_IX86)
     m_Flag = value;
 #endif
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
     for (int i = 0; i < 8; i++)
     {
         m_Flags[i] = (value & (1 << (7 - i))) ? 0xFFFF : 0;
@@ -270,7 +270,7 @@ uint8_t & RSPFlag::Value()
 }
 #endif
 
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
 uint8_t * RSPFlag::Value()
 {
     return (uint8_t *)&m_Flags[0];

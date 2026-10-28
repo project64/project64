@@ -1,5 +1,7 @@
 #include <Project64-rsp-core/Hle/HleTask.h>
+#if defined(__amd64__) || defined(_M_X64)
 #include <Project64-rsp-core/Recompiler/RspCodeBlock.h>
+#endif
 #include <Project64-rsp-core/Recompiler/RspProfiling.h>
 #include <Project64-rsp-core/cpu/RSPRegisterHandlerPlugin.h>
 #include <Project64-rsp-core/cpu/RspMemory.h>

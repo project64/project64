@@ -393,7 +393,7 @@ CCompiledFunc * CRecompiler::CompileCode()
         ret.first->second->SetNext(Func);
     }
 
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(_M_ARM64)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #endif
     if (g_ModuleLogLevel[TraceRecompiler] >= TraceDebug)
@@ -529,7 +529,7 @@ void CRecompiler::ResetMemoryStackPos()
 
 void CRecompiler::DumpFunctionTimes()
 {
-#if defined(__aarch64__) || defined(__amd64__) || defined(_M_X64)
+#if defined(__aarch64__) || defined(_M_ARM64) || defined(__amd64__) || defined(_M_X64)
     g_Notify->BreakPoint(__FILE__, __LINE__);
 #else
     CPath LogFileName(g_Settings->LoadStringVal(Directory_Log).c_str(), "FunctionTimes.csv");

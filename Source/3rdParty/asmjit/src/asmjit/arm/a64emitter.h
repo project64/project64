@@ -11,6 +11,11 @@
 #include "../arm/a64instdb.h"
 #include "../arm/a64operand.h"
 
+// MSVC's <arm64_neon.h> defines mvn() as a macro. That collides with the AArch64 mnemonic.
+#ifdef mvn
+#undef mvn
+#endif
+
 ASMJIT_BEGIN_SUB_NAMESPACE(a64)
 
 #define ASMJIT_INST_0x(NAME, ID) \

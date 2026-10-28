@@ -179,7 +179,7 @@ private:
     static void AddField(ROMBROWSER_FIELDS_LIST & Fields, const char * Name, int32_t Pos, int32_t ID, int32_t Width, LanguageStringID LangID, bool UseDefault);
 
     // Callback
-    static int CALLBACK SelectRomDirCallBack(HWND hwnd, uint32_t uMsg, uint32_t lp, uint32_t lpData);
+    static int CALLBACK SelectRomDirCallBack(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
     static int CALLBACK RomList_CompareItems(LPARAM lParam1, LPARAM lParam2, void * lParamSort);
 
     // Watch directory changed function

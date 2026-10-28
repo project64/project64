@@ -1,4 +1,4 @@
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
 
 #include "RSPInstruction-x64.h"
 #include "RSPRegisters.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(__amd64__) || defined(_M_X64)
+#if defined(__amd64__) || defined(_M_X64) || defined(_M_ARM64) || defined(__aarch64__)
 #include "RSPOpcode.h"
 #include <stdint.h>
 #include <string>

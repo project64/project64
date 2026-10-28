@@ -10,6 +10,7 @@ public:
     {
         MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog);
         MSG_WM_CTLCOLORSTATIC(OnCtlColorStatic);
+        MSG_WM_CTLCOLORLISTBOX(OnCtlColorListBox);
         MSG_WM_ERASEBKGND(OnEraseBackground);
         COMMAND_ID_HANDLER_EX(IDC_SELECT_GAME_DIR, SelectGameDir);
         COMMAND_ID_HANDLER(IDOK, OnOkCmd);
@@ -32,10 +33,11 @@ private:
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     LRESULT OnCtlColorStatic(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled);
     HBRUSH OnCtlColorStatic(CDCHandle dc, CStatic wndStatic);
+    HBRUSH OnCtlColorListBox(CDCHandle dc, CListBox listBox);
     BOOL OnEraseBackground(CDCHandle dc);
     LRESULT OnOkCmd(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
-    static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
+    static int CALLBACK SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 
     CBitmapPicture m_Logo;
 };

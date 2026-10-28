@@ -2,6 +2,40 @@
 
 #include "WelcomeScreen.h"
 #include "resource.h"
+#include <commctrl.h>
+
+namespace
+{
+LRESULT CALLBACK LanguageComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR)
+{
+    if (msg == WM_CTLCOLORLISTBOX || msg == WM_CTLCOLOREDIT || msg == WM_CTLCOLORSTATIC)
+    {
+        HDC dc = (HDC)wParam;
+        SetTextColor(dc, GetSysColor(COLOR_WINDOWTEXT));
+        SetBkColor(dc, GetSysColor(COLOR_WINDOW));
+        return (LRESULT)GetSysColorBrush(COLOR_WINDOW);
+    }
+    return DefSubclassProc(hwnd, msg, wParam, lParam);
+}
+
+void MakeLanguageComboReadable(HWND combo)
+{
+    HMODULE themeLib = LoadLibraryW(L"uxtheme.dll");
+    if (themeLib != nullptr)
+    {
+        typedef HRESULT(WINAPI * SetWindowThemeFn)(HWND, LPCWSTR, LPCWSTR);
+        auto setWindowTheme = (SetWindowThemeFn)GetProcAddress(themeLib, "SetWindowTheme");
+        if (setWindowTheme != nullptr)
+        {
+            setWindowTheme(combo, L"", L"");
+        }
+        FreeLibrary(themeLib);
+    }
+    SetWindowSubclass(combo, LanguageComboProc, 1, 0);
+    SendMessage(combo, CB_SETMINVISIBLE, 10, 0);
+    SendMessage(combo, CB_SETTOPINDEX, 0, 0);
+}
+} // namespace
 
 WelcomeScreen::WelcomeScreen()
 {
@@ -10,19 +44,21 @@ WelcomeScreen::WelcomeScreen()
 void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
 {
     wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
+    BROWSEINFO bi = {};
 
-    stdstr InitialDir = g_Settings->LoadStringVal(RomList_GameDir);
+    // Keep this alive until SHBrowseForFolder returns. The callback receives the
+    // pointer as LPARAM; a 32-bit DWORD truncates it on x64 and ARM64.
+    std::wstring InitialDir = stdstr(g_Settings->LoadStringVal(RomList_GameDir)).ToUTF16();
     std::wstring wTitle = L"Select Game Directory";
     bi.hwndOwner = m_hWnd;
     bi.pidlRoot = nullptr;
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
+    bi.lpfn = SelectDirCallBack;
     bi.lParam = (LPARAM)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (pidl != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
         {
@@ -33,6 +69,7 @@ void WelcomeScreen::SelectGameDir(UINT /*Code*/, int /*id*/, HWND /*ctl*/)
                 GetDlgItem(IDC_GAME_DIR).SetWindowText(Directory);
             }
         }
+        CoTaskMemFree(pidl);
     }
 }
 
@@ -43,18 +80,15 @@ LRESULT WelcomeScreen::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*l
 
     LanguageList LangList = g_Lang->GetLangList();
     CComboBox LangCB(GetDlgItem(IDC_LANG_SEL));
+    MakeLanguageComboReadable(LangCB);
     for (LanguageList::iterator Language = LangList.begin(); Language != LangList.end(); Language++)
     {
-        int Index = LangCB.AddString(stdstr(Language->LanguageName).ToUTF16().c_str());
-        if (_stricmp(Language->LanguageName.c_str(), "English") == 0)
-        {
-            LangCB.SetCurSel(Index);
-        }
+        LangCB.AddString(stdstr(Language->LanguageName).ToUTF16().c_str());
     }
-    if (LangCB.GetCurSel() < 0)
-    {
-        LangCB.SetCurSel(0);
-    }
+    // CBS_SORT moves items as they are inserted, so choose English after the list is complete.
+    int english = LangCB.FindStringExact(-1, L"English");
+    LangCB.SetCurSel(english >= 0 ? english : 0);
+    LangCB.SetTopIndex(0);
     CButton(GetDlgItem(IDC_RADIO_GLIDEN64)).SetCheck(BST_CHECKED);
     return TRUE;
 }
@@ -80,9 +114,23 @@ BOOL WelcomeScreen::OnEraseBackground(CDCHandle dc)
     return TRUE;
 }
 
-HBRUSH WelcomeScreen::OnCtlColorStatic(CDCHandle dc, CStatic /*wndStatic*/)
+HBRUSH WelcomeScreen::OnCtlColorListBox(CDCHandle dc, CListBox /*listBox*/)
 {
+    dc.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
+    dc.SetBkColor(GetSysColor(COLOR_WINDOW));
+    return GetSysColorBrush(COLOR_WINDOW);
+}
+
+HBRUSH WelcomeScreen::OnCtlColorStatic(CDCHandle dc, CStatic wndStatic)
+{
+    dc.SetTextColor(RGB(0, 0, 0));
     dc.SetBkColor(RGB(255, 255, 255));
+    // DC_BRUSH leaves the language combo's list and selection text unpainted on
+    // 64-bit Windows with per-monitor DPI. A real white brush keeps the names visible.
+    if (wndStatic.GetDlgCtrlID() == IDC_LANG_SEL)
+    {
+        return (HBRUSH)GetStockObject(WHITE_BRUSH);
+    }
     dc.SetDCBrushColor(RGB(255, 255, 255));
     return (HBRUSH)GetStockObject(DC_BRUSH);
 }
@@ -116,16 +164,15 @@ LRESULT WelcomeScreen::OnOkCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
     return TRUE;
 }
 
-int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
+int CALLBACK WelcomeScreen::SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
 {
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is TRUE since you are passing a path
-        // It would be FALSE if you were passing a PIDL
-        if (lpData)
+        // wParam is TRUE because lpData is a wide path, not a PIDL.
+        if (lpData != 0)
         {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
+            SendMessage(hwnd, BFFM_SETSELECTIONW, TRUE, lpData);
         }
         break;
     }

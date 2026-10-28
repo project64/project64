@@ -20,6 +20,7 @@ Debugger=1
 [Plugin Directory]
 Directory-x86=..\..\..\Plugin\Win32\
 Directory-x64=..\..\..\Plugin\x64\
+Directory-ARM64=..\..\..\Plugin\ARM64\
 Use Selected=1
 
 [Native Save Directory]

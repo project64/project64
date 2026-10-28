@@ -20,7 +20,7 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
 #define MY_CPU_AMD64
 #endif
 
-#if defined(MY_CPU_AMD64) || defined(_M_IA64)
+#if defined(MY_CPU_AMD64) || defined(_M_IA64) || defined(_M_ARM64) || defined(__aarch64__)
 #define MY_CPU_64BIT
 #endif
 
@@ -36,7 +36,7 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
 #define MY_CPU_32BIT
 #endif
 
-#if defined(_WIN32) && defined(_M_ARM)
+#if defined(_WIN32) && (defined(_M_ARM) || defined(_M_ARM64))
 #define MY_CPU_ARM_LE
 #endif
 
@@ -44,7 +44,7 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
 #define MY_CPU_IA64_LE
 #endif
 
-#if defined(MY_CPU_X86_OR_AMD64)
+#if defined(MY_CPU_X86_OR_AMD64) || defined(_M_ARM64) || defined(__aarch64__)
 #define MY_CPU_LE_UNALIGN
 #endif
 

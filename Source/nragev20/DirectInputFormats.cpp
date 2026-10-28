@@ -1,0 +1,122 @@
+/*
+ * c_dfDIKeyboard, c_dfDIMouse2 and c_dfDIJoystick.
+ *
+ * The old DirectX SDK ships these tables inside dinput8.lib for x86 and x64.
+ * The Windows SDK import library for ARM64 does not, and dinput8.dll does not
+ * export them. The layouts below match the tables in the x64 SDK library
+ * (object offsets, types, flags, and which GUIDs are referenced).
+ */
+#if defined(_M_ARM64)
+
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+
+#ifndef DIDFT_OPTIONAL
+#define DIDFT_OPTIONAL 0x80000000
+#endif
+
+static DIOBJECTDATAFORMAT c_rgodfDIKeyboard[256];
+
+static struct KeyboardFormatInit
+{
+    KeyboardFormatInit()
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            c_rgodfDIKeyboard[i].pguid = &GUID_Key;
+            c_rgodfDIKeyboard[i].dwOfs = (DWORD)i;
+            c_rgodfDIKeyboard[i].dwType = DIDFT_BUTTON | DIDFT_MAKEINSTANCE(i) | DIDFT_OPTIONAL;
+            c_rgodfDIKeyboard[i].dwFlags = 0;
+        }
+    }
+} g_KeyboardFormatInit;
+
+extern const DIDATAFORMAT c_dfDIKeyboard = {
+    sizeof(DIDATAFORMAT),
+    sizeof(DIOBJECTDATAFORMAT),
+    DIDF_RELAXIS,
+    256,
+    256,
+    c_rgodfDIKeyboard,
+};
+
+static const DIOBJECTDATAFORMAT c_rgodfDIMouse2[] = {
+    { &GUID_XAxis, 0x00, DIDFT_AXIS | DIDFT_ANYINSTANCE, 0 },
+    { &GUID_YAxis, 0x04, DIDFT_AXIS | DIDFT_ANYINSTANCE, 0 },
+    { &GUID_ZAxis, 0x08, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x0C, DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0 },
+    { nullptr, 0x0D, DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0 },
+    { nullptr, 0x0E, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x0F, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x10, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x11, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x12, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x13, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+};
+
+extern const DIDATAFORMAT c_dfDIMouse2 = {
+    sizeof(DIDATAFORMAT),
+    sizeof(DIOBJECTDATAFORMAT),
+    DIDF_RELAXIS,
+    20,
+    sizeof(c_rgodfDIMouse2) / sizeof(c_rgodfDIMouse2[0]),
+    const_cast<DIOBJECTDATAFORMAT *>(c_rgodfDIMouse2),
+};
+
+static const DIOBJECTDATAFORMAT c_rgodfDIJoystick[] = {
+    { &GUID_XAxis, 0x00, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_YAxis, 0x04, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_ZAxis, 0x08, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_RxAxis, 0x0C, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_RyAxis, 0x10, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_RzAxis, 0x14, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_Slider, 0x18, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_Slider, 0x1C, DIDFT_AXIS | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, DIDOI_ASPECTPOSITION },
+    { &GUID_POV, 0x20, DIDFT_POV | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { &GUID_POV, 0x24, DIDFT_POV | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { &GUID_POV, 0x28, DIDFT_POV | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { &GUID_POV, 0x2C, DIDFT_POV | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x30, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x31, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x32, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x33, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x34, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x35, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x36, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x37, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x38, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x39, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3A, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3B, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3C, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3D, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3E, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x3F, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x40, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x41, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x42, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x43, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x44, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x45, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x46, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x47, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x48, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x49, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4A, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4B, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4C, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4D, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4E, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+    { nullptr, 0x4F, DIDFT_BUTTON | DIDFT_ANYINSTANCE | DIDFT_OPTIONAL, 0 },
+};
+
+extern const DIDATAFORMAT c_dfDIJoystick = {
+    sizeof(DIDATAFORMAT),
+    sizeof(DIOBJECTDATAFORMAT),
+    DIDF_ABSAXIS,
+    0x50,
+    sizeof(c_rgodfDIJoystick) / sizeof(c_rgodfDIJoystick[0]),
+    const_cast<DIOBJECTDATAFORMAT *>(c_rgodfDIJoystick),
+};
+
+#endif

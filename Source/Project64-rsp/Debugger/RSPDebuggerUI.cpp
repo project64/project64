@@ -4,7 +4,11 @@
 #include <Project64-rsp-core/Recompiler/RspRecompilerCPU-x86.h>
 #include <Project64-rsp-core/Settings/RspSettings.h>
 #include <Project64-rsp-core/cpu/RSPCpu.h>
+#if defined(__i386__) || defined(_M_IX86)
 #include <Project64-rsp-core/cpu/RSPInstruction-x86.h>
+#else
+#include <Project64-rsp-core/cpu/RSPInstruction-x64.h>
+#endif
 #include <Project64-rsp-core/cpu/RspLog.h>
 #include <Project64-rsp-core/cpu/RspSystem.h>
 #include <Project64-rsp/RSP Command.h>

@@ -69,7 +69,7 @@ private:
     void ResetDirectory(CModifiedEditBox & EditBox, SettingID Type);
     void ResetDefaultSelected(CModifiedButton & ButtonDefault, CModifiedButton & ButtonSelected, SettingID Type);
 
-    static int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData);
+    static int CALLBACK SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 
     CPartialGroupBox m_PluginGroup, m_AutoSaveGroup, m_InstantSaveGroup,
         m_ScreenShotGroup, m_TextureGroup;

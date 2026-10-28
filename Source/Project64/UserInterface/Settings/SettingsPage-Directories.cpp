@@ -45,16 +45,15 @@ COptionsDirectoriesPage::COptionsDirectoriesPage(HWND hParent, const RECT & rcDi
     UpdatePageSettings();
 }
 
-int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD /*lp*/, DWORD lpData)
+int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
 {
     switch (uMsg)
     {
     case BFFM_INITIALIZED:
-        // WParam is true since you are passing a path
-        // It would be false if you were passing a PIDL
-        if (lpData)
+        // wParam is TRUE because lpData is a wide path, not a PIDL.
+        if (lpData != 0)
         {
-            SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
+            SendMessage(hwnd, BFFM_SETSELECTIONW, TRUE, lpData);
         }
         break;
     }
@@ -64,19 +63,19 @@ int CALLBACK COptionsDirectoriesPage::SelectDirCallBack(HWND hwnd, DWORD uMsg, D
 void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedEditBox & EditBox, CModifiedButton & Default, CModifiedButton & selected)
 {
     wchar_t Buffer[MAX_PATH], Directory[MAX_PATH];
-    LPITEMIDLIST pidl;
-    BROWSEINFO bi;
+    BROWSEINFO bi = {};
 
-    std::string InitialDir = GetCWindowText(EditBox);
+    std::wstring InitialDir = stdstr(GetCWindowText(EditBox)).ToUTF16();
     std::wstring wTitle = wGS(Title);
     bi.hwndOwner = m_hWnd;
     bi.pidlRoot = nullptr;
     bi.pszDisplayName = Buffer;
     bi.lpszTitle = wTitle.c_str();
     bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
-    bi.lpfn = (BFFCALLBACK)SelectDirCallBack;
-    bi.lParam = (INT_PTR)InitialDir.c_str();
-    if ((pidl = SHBrowseForFolder(&bi)) != nullptr)
+    bi.lpfn = SelectDirCallBack;
+    bi.lParam = (LPARAM)InitialDir.c_str();
+    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
+    if (pidl != nullptr)
     {
         if (SHGetPathFromIDList(pidl, Directory))
         {
@@ -89,6 +88,7 @@ void COptionsDirectoriesPage::SelectDirectory(LanguageStringID Title, CModifiedE
             selected.SetCheck(BM_SETCHECK);
             SendMessage(GetParent(), PSM_CHANGED, (WPARAM)m_hWnd, 0);
         }
+        CoTaskMemFree(pidl);
     }
 }
 
