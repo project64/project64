@@ -2338,7 +2338,60 @@ void CX64RecompilerOps::SPECIAL_DIV()
 
 void CX64RecompilerOps::SPECIAL_DIVU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::edx);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::eax);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+
+    const asmjit::x86::Gp RegRs = m_RegWorkingSet.IsMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rs);
+    m_RegWorkingSet.SetX64Protected(RegRs.id(), true);
+    const asmjit::x86::Gp DivReg = m_RegWorkingSet.IsMapped(m_Opcode.rt) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+    m_RegWorkingSet.SetX64Protected(DivReg.id(), true);
+
+    // Dividing by zero sets LO to -1 and HI to the sign extended dividend
+    const bool RtConstNonZero = m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) != 0;
+    asmjit::Label JumpEnd;
+    if (!RtConstNonZero)
+    {
+        m_Assembler.test(DivReg.r32(), DivReg.r32());
+        asmjit::Label JumpNotDiv0 = m_Assembler.newLabel();
+        m_Assembler.JneLabel(stdstr_f("NotDiv0_%08X", m_CompilePC).c_str(), JumpNotDiv0);
+
+        m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", (uint64_t)-1);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", RegRs);
+        const asmjit::x86::Gp SignReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+        m_Assembler.mov(SignReg.r32(), RegRs.r32());
+        m_Assembler.sar(SignReg.r32(), 31);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", SignReg);
+        JumpEnd = m_Assembler.newLabel();
+        m_Assembler.JmpLabel(stdstr_f("EndDivu_%08X", m_CompilePC).c_str(), JumpEnd);
+
+        m_CodeBlock.Log("");
+        m_Assembler.bind(JumpNotDiv0);
+    }
+
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), false);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::edx, -1);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::eax, m_Opcode.rs);
+    m_Assembler.xor_(asmjit::x86::edx, asmjit::x86::edx);
+    m_Assembler.div(DivReg.r32());
+
+    // The quotient and remainder are each sign extended from 32 bits
+    m_Assembler.MovDwordToVariable(&m_Reg.m_LO.UW[0], "RegLO.UW[0]", asmjit::x86::eax);
+    m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", asmjit::x86::edx);
+    m_Assembler.sar(asmjit::x86::eax, 31);
+    m_Assembler.sar(asmjit::x86::edx, 31);
+    m_Assembler.MovDwordToVariable(&m_Reg.m_LO.UW[1], "RegLO.UW[1]", asmjit::x86::eax);
+    m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", asmjit::x86::edx);
+
+    if (JumpEnd.isValid())
+    {
+        m_CodeBlock.Log("");
+        m_Assembler.bind(JumpEnd);
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_DMULT()
