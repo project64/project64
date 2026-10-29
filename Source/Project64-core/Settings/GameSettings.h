@@ -23,7 +23,9 @@ struct GameSettings
     bool syncToAudio;
     bool fullSpeed;
     bool fastSP;
+#if defined(__i386__) || defined(_M_IX86)
     bool core32Bit;
+#endif
     bool rspAudioSignal;
     bool regCaching;
     bool fpuRegCaching;

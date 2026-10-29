@@ -306,11 +306,13 @@ void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
 {
     MemoryUnused = false;
+#if defined(__i386__) || defined(_M_IX86)
     if (g_GameSettings.core32Bit && (uint64_t)((int32_t)VAddr) != VAddr)
     {
         MemoryUnused = true;
         return false;
     }
+#endif
     MemorySegment Segment = VAddrMemorySegment(VAddr);
     if (Segment == MemorySegment_Mapped)
     {

@@ -38,7 +38,9 @@ void RefreshGameSettings(void)
     g_GameSettings.delayDP = g_Settings->LoadBool(Game_DelayDP);
     g_GameSettings.fixedAudio = g_Settings->LoadBool(Game_FixedAudio);
     g_GameSettings.fullSpeed = g_Settings->LoadBool(Game_FullSpeed);
+#if defined(__i386__) || defined(_M_IX86)
     g_GameSettings.core32Bit = g_Settings->LoadBool(Game_32Bit);
+#endif
 #ifdef ANDROID
     g_GameSettings.fastSP = false;
 #else

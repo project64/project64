@@ -766,50 +766,31 @@ void CX64RegInfo::WriteBackRegisters()
         case CRegBase::STATE_UNKNOWN:
             break;
         case CRegBase::STATE_CONST_32_SIGN:
-            if (!g_GameSettings.core32Bit)
+            if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000)))
             {
-                if (!bEdiZero && (!GetMipsRegLo(count) || !(GetMipsRegLo(count) & 0x80000000)))
-                {
-                    m_Assembler.xor_(asmjit::x86::edi, asmjit::x86::edi);
-                    bEdiZero = true;
-                }
-                if (!bEsiSign && (GetMipsRegLo(count) & 0x80000000))
-                {
-                    m_Assembler.mov(asmjit::x86::esi, 0xFFFFFFFFu);
-                    bEsiSign = true;
-                }
-                if ((GetMipsRegLo(count) & 0x80000000) != 0)
-                {
-                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[1], CRegName::GPR_Hi[count], asmjit::x86::esi);
-                }
-                else
-                {
-                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[1], CRegName::GPR_Hi[count], asmjit::x86::edi);
-                }
+                m_Assembler.xor_(asmjit::x86::edi, asmjit::x86::edi);
+                bEdiZero = true;
+            }
+            if (!bEsiSign && (GetMipsRegLo(count) & 0x80000000))
+            {
+                m_Assembler.mov(asmjit::x86::esi, 0xFFFFFFFFu);
+                bEsiSign = true;
+            }
+            if ((GetMipsRegLo(count) & 0x80000000) != 0)
+            {
+                m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[1], CRegName::GPR_Hi[count], asmjit::x86::esi);
+            }
+            else
+            {
+                m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[1], CRegName::GPR_Hi[count], asmjit::x86::edi);
             }
 
             if (GetMipsRegLo(count) == 0)
             {
-                if (g_GameSettings.core32Bit)
-                {
-                    if (!bEdiZero)
-                    {
-                        m_Assembler.xor_(asmjit::x86::edi, asmjit::x86::edi);
-                        bEdiZero = true;
-                    }
-                }
                 m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[0], CRegName::GPR_Lo[count], asmjit::x86::edi);
             }
             else if (GetMipsRegLo(count) == 0xFFFFFFFF)
             {
-                if (g_GameSettings.core32Bit)
-                {
-                    if (!bEsiSign)
-                    {
-                        m_Assembler.mov(asmjit::x86::esi, 0xFFFFFFFFu);
-                        bEsiSign = true;
-                    }
-                }
                 m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[0], CRegName::GPR_Lo[count], asmjit::x86::esi);
             }
             else
@@ -876,17 +857,14 @@ void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
         else
         {
             m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegMap(Reg));
-            if (!g_GameSettings.core32Bit)
+            if (IsSigned(Reg))
             {
-                if (IsSigned(Reg))
-                {
-                    m_Assembler.sar(GetMipsRegMap(Reg).r32(), 31);
-                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegMap(Reg));
-                }
-                else
-                {
-                    m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0u);
-                }
+                m_Assembler.sar(GetMipsRegMap(Reg).r32(), 31);
+                m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], GetMipsRegMap(Reg));
+            }
+            else
+            {
+                m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], 0u);
             }
         }
     }

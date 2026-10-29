@@ -32,7 +32,11 @@ CN64System::CN64System(CPlugins * Plugins, uint32_t randomizer_seed, bool SavesR
     //m_Cheats(m_MMU_VM),
     m_Reg(*this, m_SystemEvents),
     m_TLB(m_MMU_VM, m_Reg, m_Recomp),
+#if defined(__i386__) || defined(_M_IX86)
     m_OpCodes(*this, !SyncSystem && g_Settings->LoadDword(Game_CpuType) != CPU_Interpreter && g_GameSettings.core32Bit),
+#else
+    m_OpCodes(*this, false),
+#endif
     m_Recomp(nullptr),
     m_InReset(false),
     m_NextTimer(0),
@@ -1158,6 +1162,7 @@ void CN64System::SyncSystem()
         ErrorFound = true;
     }
 #endif
+#if defined(__i386__) || defined(_M_IX86)
     if (g_GameSettings.core32Bit)
     {
         if ((uint32_t)m_Reg.m_PROGRAM_COUNTER != (uint32_t)m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
@@ -1181,6 +1186,7 @@ void CN64System::SyncSystem()
         }
     }
     else
+#endif
     {
         if (m_Reg.m_PROGRAM_COUNTER != m_SyncCPU->m_Reg.m_PROGRAM_COUNTER)
         {
@@ -1345,6 +1351,7 @@ void CN64System::DumpSyncErrors()
         {
             Error.LogF("PROGRAM_COUNTER 0x%08X%08X, 0x%08X%08X\r\n", (uint32_t)(m_Reg.m_PROGRAM_COUNTER >> 32), (uint32_t)m_Reg.m_PROGRAM_COUNTER, (uint32_t)(m_SyncCPU->m_Reg.m_PROGRAM_COUNTER >> 32), (uint32_t)m_SyncCPU->m_Reg.m_PROGRAM_COUNTER);
         }
+#if defined(__i386__) || defined(_M_IX86)
         if (g_GameSettings.core32Bit)
         {
             for (count = 0; count < 32; count++)
@@ -1358,6 +1365,7 @@ void CN64System::DumpSyncErrors()
             }
         }
         else
+#endif
         {
             for (count = 0; count < 32; count++)
             {

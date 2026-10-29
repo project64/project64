@@ -247,6 +247,23 @@ void CX64Ops::CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, con
     }
 }
 
+void CX64Ops::CmpMapped64HiToVariable(const asmjit::x86::Gp & Mapped64, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    using namespace asmjit::x86;
+    mov(rax, Mapped64.r64());
+    shr(rax, 32);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        cmp(eax, asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        mov(r11, (uintptr_t)Variable);
+        cmp(eax, dword_ptr(r11));
+    }
+}
+
 void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);
@@ -559,6 +576,20 @@ void CX64Ops::XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, 
     else
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+}
+
+void CX64Ops::XorVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        xor_(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        mov(asmjit::x86::r11, (uintptr_t)Variable);
+        xor_(Reg.r64(), asmjit::x86::qword_ptr(asmjit::x86::r11));
     }
 }
 
