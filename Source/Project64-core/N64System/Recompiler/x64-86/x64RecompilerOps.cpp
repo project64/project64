@@ -3579,7 +3579,10 @@ void CX64RecompilerOps::COP1_CT()
     }
     else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+        m_Assembler.mov(TempReg.r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+        m_Assembler.and_(TempReg.r32(), 0x183FFFFu);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], TempReg);
     }
     else
     {
