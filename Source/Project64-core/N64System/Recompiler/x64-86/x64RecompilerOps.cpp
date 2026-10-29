@@ -1701,7 +1701,21 @@ void CX64RecompilerOps::LWC1()
 
 void CX64RecompilerOps::LDC1()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 64, false);
+
+    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.ft], stdstr_f("m_FPR_D[%d]", m_Opcode.ft).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(FprPtrReg), ValueReg.r64());
 }
 
 void CX64RecompilerOps::LD()
