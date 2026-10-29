@@ -3242,7 +3242,17 @@ void CX64RecompilerOps::COP0_CO_ERET()
 
 void CX64RecompilerOps::COP1_MF()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+    m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), asmjit::x86::dword_ptr(FprPtrReg));
 }
 
 void CX64RecompilerOps::COP1_DMF()
