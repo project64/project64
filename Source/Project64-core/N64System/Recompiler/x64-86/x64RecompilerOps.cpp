@@ -8,6 +8,12 @@
 #include <Project64-core/N64System/Recompiler/Recompiler.h>
 #include <Project64-core/N64System/Recompiler/x64-86/x64RecompilerOps.h>
 #include <Project64-core/N64System/SystemGlobals.h>
+
+extern "C"
+{
+#include "softfloat.h"
+}
+
 uint32_t CX64RecompilerOps::m_TempValue32 = 0;
 uint64_t CX64RecompilerOps::m_TempValue64 = 0;
 
@@ -3761,7 +3767,56 @@ void CX64RecompilerOps::COP1_D_CMP()
 
 void CX64RecompilerOps::COP1_W_CVT_S()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    static const uint32_t MxcsrRoundingMode[4] = {0x0000, 0x6000, 0x4000, 0x2000};
+    static uint32_t MxcsrSave[2];
+    static_assert(sizeof(softfloat_roundingMode) == 1 && sizeof(softfloat_exceptionFlags) == 1, "softfloat state is stored as a byte");
+
+    CompileCop1Test();
+
+    m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
+
+    const asmjit::x86::Gp AddrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+
+    m_Assembler.MoveVariableToX64reg(TempReg, &m_Reg.m_FPCR[31], "_FPCR[31]", false);
+    m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
+    m_Assembler.mov(ValueReg.r32(), TempReg.r32());
+    m_Assembler.shr(ValueReg.r32(), 1);
+    m_Assembler.xor_(ValueReg.r32(), TempReg.r32());
+    m_Assembler.MoveConstToX64reg(AddrReg, (uintptr_t)&softfloat_roundingMode, "softfloat_roundingMode");
+    m_Assembler.mov(asmjit::x86::byte_ptr(AddrReg), ValueReg.r8());
+    m_Assembler.MoveConstByteToVariable(&softfloat_exceptionFlags, "softfloat_exceptionFlags", 0);
+
+    m_Assembler.MoveVariable64ToX64reg(AddrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(AddrReg));
+
+    m_Assembler.MoveConstToX64reg(AddrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
+    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(AddrReg, TempReg.r64(), 2));
+    m_Assembler.MoveConstToX64reg(AddrReg, (uintptr_t)MxcsrSave, "MxcsrSave");
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(AddrReg));
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(AddrReg, 4));
+    m_Assembler.and_(asmjit::x86::dword_ptr(AddrReg, 4), ~0x6000);
+    m_Assembler.or_(asmjit::x86::dword_ptr(AddrReg, 4), TempReg.r32());
+    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(AddrReg, 4));
+    m_Assembler.cvtsi2ss(asmjit::x86::xmm0, ValueReg.r32());
+    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(AddrReg));
+
+    m_Assembler.cvttss2si(TempReg.r32(), asmjit::x86::xmm0);
+    m_Assembler.cmp(TempReg.r32(), ValueReg.r32());
+    asmjit::Label ExactLabel = m_Assembler.newLabel();
+    m_Assembler.JeLabel("Exact", ExactLabel);
+    m_Assembler.MoveConstByteToVariable(&softfloat_exceptionFlags, "softfloat_exceptionFlags", softfloat_flag_inexact);
+    m_Assembler.MoveConstToX64reg(AddrReg, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.or_(asmjit::x86::dword_ptr(AddrReg), FPCSR_CI);
+    m_Assembler.test(asmjit::x86::dword_ptr(AddrReg), FPCSR_EI);
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint, &CX64Ops::JneLabel);
+    m_Assembler.or_(asmjit::x86::dword_ptr(AddrReg), FPCSR_FI);
+    m_Assembler.bind(ExactLabel);
+
+    m_Assembler.movd(ValueReg.r32(), asmjit::x86::xmm0);
+    m_Assembler.MoveVariable64ToX64reg(AddrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(AddrReg), ValueReg.r64());
 }
 
 void CX64RecompilerOps::COP1_W_CVT_D()
@@ -3986,6 +4041,23 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::TriggerException), "CRegisters::TriggerException");
         m_Assembler.add(asmjit::x86::rsp, 32);
         m_Assembler.MoveVariable32ToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation");
+        m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
+        m_Assembler.cdq();
+        m_Assembler.MovDwordToVariable((void *)(((uint8_t *)&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+        ExitCodeBlock();
+        break;
+    }
+    case ExitReason_ExceptionFloatingPoint:
+    {
+        const bool InDelaySlot = m_PipelineStage == PIPELINE_STAGE_JUMP || m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT;
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", InDelaySlot ? PIPELINE_STAGE_JUMP : PIPELINE_STAGE_NORMAL);
+        m_Assembler.mov(asmjit::x86::rdx, EXC_FPE);
+        m_Assembler.xor_(asmjit::x86::r8d, asmjit::x86::r8d);
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::TriggerException), "CRegisters::TriggerException");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        m_Assembler.MoveVariableToX64reg(asmjit::x86::eax, &g_System->m_JumpToLocation, "System->m_JumpToLocation", false);
         m_Assembler.MovDwordToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::eax);
         m_Assembler.cdq();
         m_Assembler.MovDwordToVariable((void *)(((uint8_t *)&g_Reg->m_PROGRAM_COUNTER) + 4), "PROGRAM_COUNTER+4", asmjit::x86::edx);
