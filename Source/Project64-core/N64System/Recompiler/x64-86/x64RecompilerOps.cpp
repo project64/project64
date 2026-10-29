@@ -1763,7 +1763,21 @@ void CX64RecompilerOps::LL()
 
 void CX64RecompilerOps::LWC1()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 32, false);
+
+    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
+    m_Assembler.mov(asmjit::x86::dword_ptr(FprPtrReg), ValueReg.r32());
 }
 
 void CX64RecompilerOps::LDC1()
@@ -5219,6 +5233,11 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
         m_Assembler.test(AddressReg.r32(), 1);
         CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_AddressErrorExceptionRead32, &CX64Ops::JneLabel, &AddressReg);
     }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.test(AddressReg.r32(), 3);
+        CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_AddressErrorExceptionRead32, &CX64Ops::JneLabel, &AddressReg);
+    }
     else if (ValueSize == 64)
     {
         m_Assembler.test(AddressReg.r32(), 7);
@@ -5261,6 +5280,10 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
         m_Assembler.mov(DestReg.r64(), asmjit::x86::qword_ptr(AddressReg, HostOffsetReg));
         m_Assembler.ror(DestReg.r64(), 32);
     }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.mov(DestReg.r32(), asmjit::x86::dword_ptr(AddressReg, HostOffsetReg));
+    }
     else
     {
         m_Assembler.xor_(AddressReg.r32(), ValueSize == 8 ? 3 : 2);
@@ -5301,7 +5324,7 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
     m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
     if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
     {
-        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", m_PipelineStage);
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
     }
 
     m_RegWorkingSet.BeforeCallDirect();
@@ -5323,6 +5346,10 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
     else if (ValueSize == 16)
     {
         m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LH_VAddr32), "CMipsMemoryVM::LH_VAddr32");
+    }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LW_VAddr32), "CMipsMemoryVM::LW_VAddr32");
     }
     else
     {
@@ -5355,7 +5382,7 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
     else
     {
         m_Assembler.MoveVariableToX64reg(DestReg, &m_TempValue32, "TempValue32", false);
-        if (SignExtend)
+        if (SignExtend && ValueSize != 32)
         {
             if (ValueSize == 8)
             {
