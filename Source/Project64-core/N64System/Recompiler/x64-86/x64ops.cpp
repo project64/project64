@@ -228,6 +228,15 @@ void CX64Ops::JaLabel(const char * LabelName, asmjit::Label & JumpLabel)
     ja(JumpLabel);
 }
 
+void CX64Ops::JaeLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddLabelSymbol(JumpLabel, LabelName);
+    }
+    jae(JumpLabel);
+}
+
 void CX64Ops::JbLabel(const char * LabelName, asmjit::Label & JumpLabel)
 {
     if (g_DebugSettings.recordRecompilerAsm)

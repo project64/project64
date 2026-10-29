@@ -3345,6 +3345,30 @@ namespace
     uint32_t FpuMxcsrSave[2];
 }
 
+// Saves the host MXCSR and loads one with the guest rounding mode, all exceptions masked and no flush to zero.
+// PtrReg is left pointing at FpuMxcsrSave for CompileFpuLeaveMxcsr
+void CX64RecompilerOps::CompileFpuEnterMxcsr(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & PtrReg, const asmjit::x86::Gp & TempReg)
+{
+    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(FcsrPtr));
+    m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
+    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
+    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
+    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FpuMxcsrSave, "FpuMxcsrSave");
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg));
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
+    m_Assembler.and_(asmjit::x86::dword_ptr(PtrReg, 4), ~0xE07F); // clear FTZ, rounding, DAZ and exception flags
+    m_Assembler.or_(asmjit::x86::dword_ptr(PtrReg, 4), 0x1F80);   // mask all exceptions
+    m_Assembler.or_(asmjit::x86::dword_ptr(PtrReg, 4), TempReg.r32());
+    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
+}
+
+// Stores the raised exception flags to FpuMxcsrSave[1] and restores the host MXCSR
+void CX64RecompilerOps::CompileFpuLeaveMxcsr(const asmjit::x86::Gp & PtrReg)
+{
+    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
+    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(PtrReg));
+}
+
 // Matches R4300iOp::SetFPUException, Flags holds the raised exceptions as FCSR flag bits
 void CX64RecompilerOps::CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & Flags, const asmjit::x86::Gp & Temp, asmjit::Label & Unimplemented, asmjit::Label & Exception)
 {
@@ -3383,7 +3407,6 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
     const asmjit::x86::Gp FsReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp FtReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    const asmjit::x86::Gp MxcsrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
 
     asmjit::Label SpecialInput = m_Assembler.newLabel();
     asmjit::Label InputsDone = m_Assembler.newLabel();
@@ -3418,24 +3441,11 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
     m_CodeBlock.Log("      InputsDone:");
     m_Assembler.bind(InputsDone);
 
-    // Run the operation with the guest rounding mode, all exceptions masked and no flush to zero
-    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(FcsrPtr));
-    m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
-    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
-    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
-    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FpuMxcsrSave, "FpuMxcsrSave");
-    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg));
-    m_Assembler.mov(MxcsrReg.r32(), asmjit::x86::dword_ptr(PtrReg));
-    m_Assembler.and_(MxcsrReg.r32(), ~0xE07F);
-    m_Assembler.or_(MxcsrReg.r32(), 0x1F80);
-    m_Assembler.or_(MxcsrReg.r32(), TempReg.r32());
-    m_Assembler.mov(asmjit::x86::dword_ptr(PtrReg, 4), MxcsrReg.r32());
-    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
+    CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg);
     m_Assembler.movd(asmjit::x86::xmm0, FsReg.r32());
     m_Assembler.movd(asmjit::x86::xmm1, FtReg.r32());
     m_Assembler.emit(InstId, asmjit::x86::xmm0, asmjit::x86::xmm1);
-    m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
-    m_Assembler.ldmxcsr(asmjit::x86::dword_ptr(PtrReg));
+    CompileFpuLeaveMxcsr(PtrReg);
 
     // FsReg now holds the result, FtReg the raised exceptions as FCSR flag bits
     m_Assembler.movd(FsReg.r32(), asmjit::x86::xmm0);
@@ -3641,7 +3651,66 @@ void CX64RecompilerOps::COP1_S_CVT_D()
 
 void CX64RecompilerOps::COP1_S_CVT_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+
+    asmjit::Label Unimplemented = m_Assembler.newLabel();
+    asmjit::Label Exception = m_Assembler.newLabel();
+    asmjit::Label Exact = m_Assembler.newLabel();
+
+    // InitFpuOperation clears the cause bits
+    m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+
+    // CheckFPUInput32Conv: subnormal, infinity, NaN or a magnitude of 2^53 or more is unimplemented
+    m_Assembler.mov(TempReg.r32(), ValueReg.r32());
+    m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
+    m_Assembler.cmp(TempReg.r32(), 0x5A000000);
+    m_Assembler.JaeLabel("Unimplemented", Unimplemented);
+    m_Assembler.sub(TempReg.r32(), 1);
+    m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
+    m_Assembler.JbLabel("Unimplemented", Unimplemented);
+
+    // f32_to_i32 rounds with the guest rounding mode, out of range sets invalid and returns 0x80000000
+    CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg);
+    m_Assembler.movd(asmjit::x86::xmm0, ValueReg.r32());
+    m_Assembler.cvtss2si(ValueReg.r32(), asmjit::x86::xmm0);
+    CompileFpuLeaveMxcsr(PtrReg);
+
+    // CheckFPUInvalidException: invalid is unimplemented, otherwise inexact sets the cause and flag or raises the exception
+    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, 4));
+    m_Assembler.test(TempReg.r32(), 0x01);
+    m_Assembler.JneLabel("Unimplemented", Unimplemented);
+    m_Assembler.test(TempReg.r32(), 0x20);
+    m_Assembler.JeLabel("Exact", Exact);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CI);
+    m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EI);
+    m_Assembler.JneLabel("FpuException", Exception);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FI);
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Exact:");
+    m_Assembler.bind(Exact);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+
+    m_Assembler.EnterSecondarySection();
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Unimplemented:");
+    m_Assembler.bind(Unimplemented);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CE);
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      FpuException:");
+    m_Assembler.bind(Exception);
+    CompileExit((uint32_t)-1, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint);
+    m_Assembler.EnterPrimarySection();
 }
 
 void CX64RecompilerOps::COP1_S_CVT_L()
