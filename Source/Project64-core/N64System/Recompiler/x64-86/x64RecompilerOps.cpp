@@ -1877,12 +1877,30 @@ void CX64RecompilerOps::SPECIAL_SRA()
             m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
         }
 
-        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? (uint32_t)(int32_t)((int64_t)m_RegWorkingSet.GetMipsReg(m_Opcode.rt) >> m_Opcode.sa) : (uint32_t)(m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) >> m_Opcode.sa));
+        const int64_t RtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rt) : (m_RegWorkingSet.IsSigned(m_Opcode.rt) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (uint32_t)(RtValue >> m_Opcode.sa));
         m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rt))
+    {
+        // The low word of the 64-bit shift only depends on the high word through the sign/zero extension
+        const bool Signed = m_RegWorkingSet.IsSigned(m_Opcode.rt);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
+        if (Signed)
+        {
+            m_Assembler.sar(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), (uint8_t)m_Opcode.sa);
+        }
+        else
+        {
+            m_Assembler.shr(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), (uint8_t)m_Opcode.sa);
+        }
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        // Shift the full 64-bit value, the result is the sign extended low word
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
+        m_Assembler.sar(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), (uint8_t)m_Opcode.sa);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rd);
     }
 }
 
