@@ -219,6 +219,24 @@ void CX64Ops::JgLabel(const char * LabelName, asmjit::Label & JumpLabel)
     jg(JumpLabel);
 }
 
+void CX64Ops::JaLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddLabelSymbol(JumpLabel, LabelName);
+    }
+    ja(JumpLabel);
+}
+
+void CX64Ops::JbLabel(const char * LabelName, asmjit::Label & JumpLabel)
+{
+    if (g_DebugSettings.recordRecompilerAsm)
+    {
+        AddLabelSymbol(JumpLabel, LabelName);
+    }
+    jb(JumpLabel);
+}
+
 void CX64Ops::CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);

@@ -23,6 +23,8 @@ public:
     void JgeLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JleLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JgLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void JaLabel(const char * LabelName, asmjit::Label & JumpLabel);
+    void JbLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const);
     void CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const);

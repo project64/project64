@@ -254,6 +254,8 @@ private:
     void ExitCodeBlock(void);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void CompileCop1Test();
+    void COP1_S_Arithmetic(uint32_t InstId);
+    void CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & Flags, const asmjit::x86::Gp & Temp, asmjit::Label & Unimplemented, asmjit::Label & Exception);
 
     CRecompiler *& m_Recompiler;
     CN64Rom & m_Rom;
