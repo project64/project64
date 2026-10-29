@@ -1023,20 +1023,22 @@ void CX64RecompilerOps::ORI()
         m_RegWorkingSet.SetMipsRegHi(m_Opcode.rt, m_RegWorkingSet.GetMipsRegHi(m_Opcode.rs));
         m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) | m_Opcode.immediate);
     }
-    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs))
     {
-        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+        // The immediate is zero extended and only sets the low 16 bits, so the sign extension of rs is kept
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, m_RegWorkingSet.IsSigned(m_Opcode.rs), m_Opcode.rs);
+        if (m_Opcode.immediate != 0)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), m_Opcode.immediate);
         }
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, m_Opcode.rs);
+        if (m_Opcode.immediate != 0)
+        {
+            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r64(), m_Opcode.immediate);
+        }
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
