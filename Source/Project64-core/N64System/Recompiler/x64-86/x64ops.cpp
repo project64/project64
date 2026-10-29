@@ -247,23 +247,6 @@ void CX64Ops::CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, con
     }
 }
 
-void CX64Ops::CmpMapped64HiToVariable(const asmjit::x86::Gp & Mapped64, void * Variable, const char * VariableName)
-{
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    using namespace asmjit::x86;
-    mov(rax, Mapped64.r64());
-    shr(rax, 32);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        cmp(eax, asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(r11, (uintptr_t)Variable);
-        cmp(eax, dword_ptr(r11));
-    }
-}
-
 void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);

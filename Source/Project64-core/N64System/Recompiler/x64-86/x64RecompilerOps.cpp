@@ -497,66 +497,30 @@ void CX64RecompilerOps::BNE_Compare()
         uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
         uint32_t UnknownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
 
-        if (m_RegWorkingSet.IsConst(KnownReg))
+        if (m_RegWorkingSet.IsMapped(KnownReg))
         {
-            if (m_RegWorkingSet.Is64Bit(KnownReg))
-            {
-                m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], m_RegWorkingSet.GetMipsRegHi(KnownReg));
-            }
-            else if (m_RegWorkingSet.IsSigned(KnownReg))
-            {
-                m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], (m_RegWorkingSet.GetMipsRegLo_S(KnownReg) >> 31));
-            }
-            else
-            {
-                m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], 0);
-            }
+            m_RegWorkingSet.ProtectGPR(KnownReg);
         }
-        else
-        {
-            if (m_RegWorkingSet.Is64Bit(KnownReg))
-            {
-                m_Assembler.CmpMapped64HiToVariable(m_RegWorkingSet.GetMipsRegMap(KnownReg), &m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
-            }
-            else if (m_RegWorkingSet.IsSigned(KnownReg))
-            {
-                m_RegWorkingSet.ProtectGPR(KnownReg);
-                m_Assembler.CmpMapped64HiToVariable(m_RegWorkingSet.GetMipsRegMap(KnownReg), &m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg]);
-            }
-            else
-            {
-                m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[UnknownReg].W[1], CRegName::GPR_Hi[UnknownReg], 0);
-            }
-        }
-        if (m_Section->m_Jump.FallThrough)
-        {
-            Jump = m_Assembler.newLabel();
-            m_Assembler.JneLabel("Continue", Jump);
-        }
-        else
+        asmjit::x86::Gp Known64 = m_RegWorkingSet.IsMapped(KnownReg) && m_RegWorkingSet.Is64Bit(KnownReg) ? m_RegWorkingSet.GetMipsRegMap(KnownReg) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), KnownReg, asmjit::RegType::kX86_Gpq);
+        const asmjit::x86::Gp Unknown64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), UnknownReg, asmjit::RegType::kX86_Gpq);
+        m_Assembler.cmp(Known64.r64(), Unknown64.r64());
+
+        if (m_Section->m_Cont.FallThrough)
         {
             m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
             m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-        }
-        if (m_Section->m_Cont.FallThrough)
-        {
-            m_Section->m_Jump.LinkLocation2 = m_Assembler.newLabel();
-            m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation2);
         }
         else if (m_Section->m_Jump.FallThrough)
         {
             m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
             m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-
-            if (Jump.isValid())
-            {
-                m_CodeBlock.Log("");
-                m_Assembler.bind(Jump);
-            }
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
         }
     }
     else
