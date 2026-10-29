@@ -48,6 +48,7 @@ public:
     void AndVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void AndVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void OrVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
+    void OrVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void XorVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName);
     void TestVariable(void * Variable, const char * VariableName, uint32_t Const);

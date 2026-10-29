@@ -549,6 +549,20 @@ void CX64Ops::OrVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, c
     }
 }
 
+void CX64Ops::OrVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
+{
+    AddNumberSymbol((uintptr_t)Variable, VariableName);
+    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    {
+        or_(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
+    }
+    else
+    {
+        mov(asmjit::x86::r11, (uintptr_t)Variable);
+        or_(Reg.r64(), asmjit::x86::qword_ptr(asmjit::x86::r11));
+    }
+}
+
 void CX64Ops::XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
     AddNumberSymbol((uintptr_t)Variable, VariableName);

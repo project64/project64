@@ -2571,136 +2571,106 @@ void CX64RecompilerOps::SPECIAL_OR()
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
+        const uint64_t rtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) : (m_RegWorkingSet.IsSigned(m_Opcode.rt) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        const uint64_t rsValue = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
         if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
         {
             m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
         }
-
-        if (m_RegWorkingSet.Is64Bit(m_Opcode.rt) || m_RegWorkingSet.Is64Bit(m_Opcode.rs))
+        m_RegWorkingSet.SetMipsReg(m_Opcode.rd, rtValue | rsValue);
+        if ((m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == -1) ||
+            (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) >= 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == 0))
         {
-            const uint64_t rtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) : (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt);
-            const uint64_t rsValue = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs);
-            m_RegWorkingSet.SetMipsReg(m_Opcode.rd, (uint64_t)(rtValue | rsValue));
-
-            if ((m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == -1) ||
-                (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) >= 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == 0))
-            {
-                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
-            }
-            else
-            {
-                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_64);
-            }
-        }
-        else
-        {
-            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) | m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
             m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
         }
-        return;
-    }
-
-    const bool RsConstZero = m_RegWorkingSet.IsConst(m_Opcode.rs) && (m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) == 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) == 0);
-    const bool RtConstZero = m_RegWorkingSet.IsConst(m_Opcode.rt) && (m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) == 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) == 0);
-    if (RsConstZero || RtConstZero)
-    {
-        const int Source = RsConstZero ? m_Opcode.rt : m_Opcode.rs;
-
-        if (Source == 0 || m_RegWorkingSet.IsConst(Source))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else if (m_RegWorkingSet.Is32Bit(Source))
-        {
-            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, m_RegWorkingSet.IsSigned(Source), Source);
-        }
         else
         {
-            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, Source);
-        }
-    }
-    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rs))
-    {
-        const int source1 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rt : m_Opcode.rs;
-        const int source2 = m_Opcode.rd == m_Opcode.rt ? m_Opcode.rs : m_Opcode.rt;
-
-        m_RegWorkingSet.ProtectGPR(source1);
-        m_RegWorkingSet.ProtectGPR(source2);
-        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, source1);
-
-        if (m_RegWorkingSet.IsMapped(source2))
-        {
-            m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(source2).r32());
-        }
-        else if (m_RegWorkingSet.IsConst(source2))
-        {
-            const uint32_t value = m_RegWorkingSet.GetMipsRegLo(source2);
-            if (value != 0)
-            {
-                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), value);
-            }
-        }
-        else
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-    }
-    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs))
-    {
-        if (m_RegWorkingSet.IsMapped(m_Opcode.rt) && m_RegWorkingSet.IsMapped(m_Opcode.rs))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else
-        {
-            const uint32_t ConstReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
-            const uint32_t MappedReg = m_RegWorkingSet.IsConst(m_Opcode.rt) ? m_Opcode.rs : m_Opcode.rt;
-            uint64_t ConstValue;
-            if (m_RegWorkingSet.Is64Bit(ConstReg))
-            {
-                ConstValue = m_RegWorkingSet.GetMipsReg(ConstReg);
-            }
-            else if (m_RegWorkingSet.IsSigned(ConstReg))
-            {
-                ConstValue = (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(ConstReg);
-            }
-            else
-            {
-                ConstValue = m_RegWorkingSet.GetMipsRegLo(ConstReg);
-            }
-            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, MappedReg);
-            if (ConstValue != 0)
-            {
-                const asmjit::x86::Gp temp64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-                m_Assembler.mov(temp64.r64(), ConstValue);
-                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), temp64.r64());
-            }
-        }
-    }
-    else if (m_RegWorkingSet.IsKnown(m_Opcode.rt) || m_RegWorkingSet.IsKnown(m_Opcode.rs))
-    {
-        const uint32_t KnownReg = m_RegWorkingSet.IsKnown(m_Opcode.rt) ? m_Opcode.rt : m_Opcode.rs;
-
-        if (m_RegWorkingSet.IsConst(KnownReg))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else
-        {
-            m_RegWorkingSet.ProtectGPR(KnownReg);
-            if (KnownReg == m_Opcode.rd)
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
-            else
-            {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
-            }
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_64);
         }
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        // Load the non constant register into rd, if rd is also a source it has to be the one loaded
+        uint32_t Source, Other;
+        if (m_Opcode.rd == m_Opcode.rs && !m_RegWorkingSet.IsConst(m_Opcode.rs))
+        {
+            Source = m_Opcode.rs;
+        }
+        else if (m_Opcode.rd == m_Opcode.rt && !m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            Source = m_Opcode.rt;
+        }
+        else
+        {
+            Source = m_RegWorkingSet.IsConst(m_Opcode.rs) ? m_Opcode.rt : m_Opcode.rs;
+        }
+        Other = Source == m_Opcode.rs ? m_Opcode.rt : m_Opcode.rs;
+
+        // Other can be rd when it is a constant, so read its value before rd gets mapped
+        const bool OtherConst = m_RegWorkingSet.IsConst(Other);
+        const uint64_t OtherValue = !OtherConst ? 0 : (m_RegWorkingSet.Is64Bit(Other) ? m_RegWorkingSet.GetMipsReg(Other) : (m_RegWorkingSet.IsSigned(Other) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(Other) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(Other)));
+        // or with itself leaves the value unchanged
+        const bool SameReg = m_Opcode.rs == m_Opcode.rt;
+
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+
+        // Two 32-bit values extended the same way or to a value that is still extended that way
+        if (m_RegWorkingSet.IsKnown(m_Opcode.rt) && m_RegWorkingSet.IsKnown(m_Opcode.rs) &&
+            m_RegWorkingSet.Is32Bit(m_Opcode.rt) && m_RegWorkingSet.Is32Bit(m_Opcode.rs) &&
+            m_RegWorkingSet.IsSigned(m_Opcode.rt) == m_RegWorkingSet.IsSigned(m_Opcode.rs))
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, m_RegWorkingSet.IsSigned(Source), Source);
+            if (OtherConst)
+            {
+                if ((uint32_t)OtherValue != 0)
+                {
+                    m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), (uint32_t)OtherValue);
+                }
+            }
+            else if (!SameReg)
+            {
+                m_Assembler.or_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), m_RegWorkingSet.GetMipsRegMap(Other).r32());
+            }
+        }
+        else
+        {
+            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, Source);
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rd);
+            const asmjit::x86::Gp Rd64 = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64();
+            if (OtherConst)
+            {
+                if (asmjit::Support::isInt32((int64_t)OtherValue))
+                {
+                    if (OtherValue != 0)
+                    {
+                        m_Assembler.or_(Rd64, (int32_t)OtherValue);
+                    }
+                }
+                else
+                {
+                    const asmjit::x86::Gp Temp64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+                    m_Assembler.MoveConstToX64reg(Temp64, OtherValue);
+                    m_Assembler.or_(Rd64, Temp64.r64());
+                }
+            }
+            else if (!SameReg)
+            {
+                if (m_RegWorkingSet.IsUnknown(Other))
+                {
+                    m_Assembler.OrVariable64ToX64reg(Rd64, &m_Reg.m_GPR[Other].UDW, CRegName::GPR[Other]);
+                }
+                else if (m_RegWorkingSet.Is64Bit(Other))
+                {
+                    m_Assembler.or_(Rd64, m_RegWorkingSet.GetMipsRegMap(Other).r64());
+                }
+                else
+                {
+                    const asmjit::x86::Gp Other64 = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), Other, asmjit::RegType::kX86_Gpq);
+                    m_Assembler.or_(Rd64, Other64.r64());
+                }
+            }
+        }
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rd == 29)
