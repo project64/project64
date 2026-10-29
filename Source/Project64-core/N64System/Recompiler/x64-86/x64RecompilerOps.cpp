@@ -943,20 +943,52 @@ void CX64RecompilerOps::SLTI()
         return;
     }
 
+    const int64_t Imm = (int16_t)m_Opcode.immediate;
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const int64_t RsValue = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, RsValue < Imm ? 1 : 0);
+        return;
     }
-    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+
+    // rt can only be written before the compare if it is not also the source register
+    const bool preMap = m_Opcode.rt != m_Opcode.rs;
+    asmjit::x86::Gp Result;
+    if (preMap)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        Result = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32();
     }
     else
     {
+        Result = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    }
+    m_Assembler.xor_(Result.r32(), Result.r32());
+
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs) && m_RegWorkingSet.IsSigned(m_Opcode.rs))
+    {
+        // A sign extended 32-bit value compares the same as its 64-bit form against the sign extended immediate
+        m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), (int32_t)Imm);
+    }
+    else
+    {
+        const asmjit::x86::Gp Rs64 = m_RegWorkingSet.Is64BitMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+        m_Assembler.cmp(Rs64.r64(), (int32_t)Imm);
+    }
+    m_Assembler.setl(Result.r8Lo());
+
+    if (!preMap)
+    {
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
-        const asmjit::x86::Gp & RtReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
-        m_Assembler.xor_(RtReg.r32(), RtReg.r32());
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), Result.r32());
     }
 }
 
@@ -967,30 +999,53 @@ void CX64RecompilerOps::SLTIU()
         return;
     }
 
-    const int32_t Imm = (int16_t)m_Opcode.immediate;
+    // The immediate is sign extended to 64 bits and then compared unsigned
+    const uint64_t Imm = (uint64_t)(int64_t)(int16_t)m_Opcode.immediate;
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint64_t RsValue = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegInfo::STATE_CONST_32_SIGN);
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rt, RsValue < Imm ? 1 : 0);
+        return;
     }
-    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+
+    // rt can only be written before the compare if it is not also the source register
+    const bool preMap = m_Opcode.rt != m_Opcode.rs;
+    asmjit::x86::Gp Result;
+    if (preMap)
     {
-        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
         m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
-        const asmjit::x86::Gp & RtReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
-        m_Assembler.xor_(RtReg.r32(), RtReg.r32());
-        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
-        {
-            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r64(), Imm);
-        }
-        else
-        {
-            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), Imm);
-        }
-        m_Assembler.setb(RtReg.r8Lo());
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        Result = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32();
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        Result = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    }
+    m_Assembler.xor_(Result.r32(), Result.r32());
+
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs) && m_RegWorkingSet.IsSigned(m_Opcode.rs))
+    {
+        // Two sign extended 32-bit values compare the same unsigned as their 64-bit forms
+        m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), (int32_t)(int16_t)m_Opcode.immediate);
+    }
+    else
+    {
+        const asmjit::x86::Gp Rs64 = m_RegWorkingSet.Is64BitMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+        m_Assembler.cmp(Rs64.r64(), (int32_t)(int16_t)m_Opcode.immediate);
+    }
+    m_Assembler.setb(Result.r8Lo());
+
+    if (!preMap)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), Result.r32());
     }
 }
 
