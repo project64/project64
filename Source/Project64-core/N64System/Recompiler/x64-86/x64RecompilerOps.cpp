@@ -1441,7 +1441,7 @@ void CX64RecompilerOps::SB()
 
 void CX64RecompilerOps::SH()
 {
-    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (g_DebugSettings.haveWriteBP)
@@ -1450,33 +1450,39 @@ void CX64RecompilerOps::SH()
             return;
         }
 
-        if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+        // An aligned known address directly in RDRAM can be written without going through the memory map,
+        // everything else (including the address error for a misaligned address) uses the general path below
+        uint32_t PAddr = 0;
+        if ((Address & 1) == 0 && Address >= 0x80000000 && Address < 0xC0000000 && !g_GameSettings.smmStoreInstruc && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize())
         {
-            SH_KnownAddress(Address, nullptr, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
-        }
-        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
-        {
-            SH_KnownAddress(Address, &m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), 0);
-        }
-        else
-        {
-            const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
-            SH_KnownAddress(Address, &TempReg, 0);
-        }
-    }
-    else
-    {
-        asmjit::x86::Gp ValueReg;
-        if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
-        {
-            if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+            if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+            {
+                SH_KnownAddress(Address, nullptr, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+            }
+            else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
             {
                 m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+                SH_KnownAddress(Address, &m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), 0);
             }
-            ValueReg = m_RegWorkingSet.IsUnknown(m_Opcode.rt) ? m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt) : m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+            else
+            {
+                const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+                SH_KnownAddress(Address, &TempReg, 0);
+            }
+            return;
         }
-        CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt), 16);
     }
+
+    asmjit::x86::Gp ValueReg;
+    if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+        }
+        ValueReg = m_RegWorkingSet.IsUnknown(m_Opcode.rt) ? m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt) : m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+    }
+    CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt), 16);
 }
 
 void CX64RecompilerOps::SWL()
