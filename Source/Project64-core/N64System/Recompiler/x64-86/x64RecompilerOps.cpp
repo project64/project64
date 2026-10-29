@@ -1185,7 +1185,7 @@ void CX64RecompilerOps::LB()
         return;
     }
 
-    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (g_DebugSettings.haveReadBP && g_Debugger != nullptr)
@@ -1193,18 +1193,53 @@ void CX64RecompilerOps::LB()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
-        LB_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, true);
+
+        // A known address directly in RDRAM can be read without going through the memory map,
+        // everything else uses the general path below
+        uint32_t PAddr = 0;
+        if (Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize())
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+            LB_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, true);
+            return;
+        }
     }
-    else
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 8, true);
 }
 
 void CX64RecompilerOps::LH()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
+    {
+        const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if (g_DebugSettings.haveReadBP && g_Debugger != nullptr)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        // An aligned known address directly in RDRAM can be read without going through the memory map,
+        // everything else (including the address error for a misaligned address) uses the general path below
+        uint32_t PAddr = 0;
+        if ((Address & 1) == 0 && Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize())
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+            LH_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, true);
+            return;
+        }
+    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 16, true);
 }
 
 void CX64RecompilerOps::LWL()
@@ -1345,16 +1380,29 @@ void CX64RecompilerOps::LBU()
         return;
     }
 
-    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+        if (g_DebugSettings.haveReadBP && g_Debugger != nullptr)
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+            return;
+        }
+
+        // A known address directly in RDRAM can be read without going through the memory map,
+        // everything else uses the general path below
+        uint32_t PAddr = 0;
+        if (Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize())
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+            LB_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, false);
+            return;
+        }
     }
-    else
-    {
-        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
-        asmjit::x86::Gp AddressReg;
-        CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 8, false);
-    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 8, false);
 }
 
 void CX64RecompilerOps::LHU()
@@ -1364,7 +1412,7 @@ void CX64RecompilerOps::LHU()
         return;
     }
 
-    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
         if (g_DebugSettings.haveReadBP && g_Debugger != nullptr)
@@ -1372,15 +1420,21 @@ void CX64RecompilerOps::LHU()
             g_Notify->BreakPoint(__FILE__, __LINE__);
             return;
         }
-        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
-        LH_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, false);
+
+        // An aligned known address directly in RDRAM can be read without going through the memory map,
+        // everything else (including the address error for a misaligned address) uses the general path below
+        uint32_t PAddr = 0;
+        if ((Address & 1) == 0 && Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize())
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+            LH_KnownAddress(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), Address, false);
+            return;
+        }
     }
-    else
-    {
-        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
-        asmjit::x86::Gp AddressReg;
-        CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 16, false);
-    }
+
+    m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, m_Opcode.base == m_Opcode.rt ? m_Opcode.rt : -1);
+    asmjit::x86::Gp AddressReg;
+    CompileLoadMemoryValue(AddressReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), asmjit::x86::Gp(), 16, false);
 }
 
 void CX64RecompilerOps::LWR()
