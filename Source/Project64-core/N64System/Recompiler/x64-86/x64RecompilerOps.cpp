@@ -3304,23 +3304,19 @@ void CX64RecompilerOps::COP1_CT()
         return;
     }
 
-    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
-    {
-        const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
-        m_Assembler.mov(TempReg.r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
-        m_Assembler.and_(TempReg.r32(), 0x183FFFFu);
-        m_Assembler.MovDwordToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], TempReg);
-    }
-    else
-    {
-        const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
-        m_Assembler.and_(TempReg.r32(), 0x183FFFFu);
-        m_Assembler.MovDwordToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], TempReg);
-    }
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+    m_Assembler.and_(ValueReg.r32(), 0x183FFFFu);
+    m_Assembler.MovDwordToVariable(&m_Reg.m_FPCR[m_Opcode.fs], CRegName::FPR_Ctrl[m_Opcode.fs], ValueReg);
+
+    // Matches CRegisters::Cop1_CT, an exception is raised if a cause bit is set with its enable bit or unimplemented operation is set
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    m_Assembler.mov(TempReg.r32(), ValueReg.r32());
+    m_Assembler.shl(TempReg.r32(), 5);
+    m_Assembler.and_(TempReg.r32(), FPCSR_CV | FPCSR_CZ | FPCSR_CO | FPCSR_CU | FPCSR_CI);
+    m_Assembler.or_(TempReg.r32(), FPCSR_CE);
+    m_Assembler.test(TempReg.r32(), ValueReg.r32());
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint, &CX64Ops::JneLabel);
     m_RegWorkingSet.SetRoundingModel(CRegBase::RoundUnknown);
 }
 
