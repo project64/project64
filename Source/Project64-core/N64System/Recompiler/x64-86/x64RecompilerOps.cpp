@@ -922,12 +922,37 @@ void CX64RecompilerOps::BGEZ_Compare()
         }
         else
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Section->m_Jump.FallThrough = true;
+            m_Section->m_Cont.FallThrough = false;
         }
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (g_GameSettings.core32Bit)
+        {
+            m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[m_Opcode.rs].W[0], CRegName::GPR_Lo[m_Opcode.rs], 0);
+        }
+        else
+        {
+            m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs], 0);
+        }
+        if (m_Section->m_Cont.FallThrough)
+        {
+            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JgeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+        }
+        else if (m_Section->m_Jump.FallThrough)
+        {
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        }
+        else
+        {
+            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+            m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+        }
     }
 }
 
