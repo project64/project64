@@ -1347,7 +1347,7 @@ void CX64RecompilerOps::LH()
 
 void CX64RecompilerOps::LWL()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    LoadWordPartial(true);
 }
 
 void CX64RecompilerOps::LW()
@@ -1542,7 +1542,7 @@ void CX64RecompilerOps::LHU()
 
 void CX64RecompilerOps::LWR()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    LoadWordPartial(false);
 }
 
 void CX64RecompilerOps::LWU()
@@ -1644,7 +1644,7 @@ void CX64RecompilerOps::SH()
 
 void CX64RecompilerOps::SWL()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    StoreWordPartial(true);
 }
 
 void CX64RecompilerOps::SW()
@@ -1794,7 +1794,7 @@ void CX64RecompilerOps::SW()
 
 void CX64RecompilerOps::SWR()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    StoreWordPartial(false);
 }
 
 void CX64RecompilerOps::SDL()
@@ -5836,10 +5836,148 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
     m_Assembler.bind(AfterStore);
 }
 
-// Returns a temp register holding base + offset as a zero extended 32-bit address. The base register
-// itself is never returned: the upper 32 bits of a mapped register are not guaranteed to be zero, and
-// the address register is used in 64-bit addressing ([AddressReg + HostOffsetReg]) and modified by the
-// 8 and 16-bit byte swapping
+void CX64RecompilerOps::StoreWordPartial(bool Left)
+{
+    // The variable shift count has to be in cl, so ecx is reserved before anything else is mapped
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rcx);
+    const asmjit::x86::Gp OffsetReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::ecx, -1);
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    asmjit::x86::Gp AddressReg = BaseOffsetAddress();
+    m_Assembler.mov(OffsetReg.r32(), AddressReg.r32());
+    m_Assembler.and_(OffsetReg.r32(), 3);
+    m_Assembler.and_(AddressReg.r32(), ~3u);
+
+    // Read the aligned word, directly mapped memory uses the read map, everything else goes through
+    // MemoryValue32 which raises a store TLB miss for the unaligned address when it fails
+    const CRegInfo ExitRegSet = m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    const asmjit::x86::Gp PageIndexReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    m_Assembler.mov(PageIndexReg.r32(), AddressReg.r32());
+    m_Assembler.shr(PageIndexReg.r32(), 12);
+    const asmjit::x86::Gp HostOffsetReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(HostOffsetReg, &m_MMU.m_MemoryReadMap, "MMU->m_MemoryReadMap");
+    m_Assembler.mov(HostOffsetReg.r64(), asmjit::x86::qword_ptr(HostOffsetReg, PageIndexReg, 3));
+    m_Assembler.cmp(HostOffsetReg.r64(), (int64_t)-1);
+    asmjit::Label ReadMiss = m_Assembler.newLabel();
+    asmjit::Label ReadDone = m_Assembler.newLabel();
+    asmjit::Label ReadException = m_Assembler.newLabel();
+    m_Assembler.JeLabel(stdstr_f("MemoryReadMap_%X_Miss", m_CompilePC).c_str(), ReadMiss);
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(AddressReg, HostOffsetReg));
+
+    // The slow path is compiled with the register state at the read, before anything else is mapped
+    const CX64RegInfo ReadRegSet(m_RegWorkingSet);
+    m_Assembler.EnterSecondarySection();
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MemoryReadMap_%X_Miss:", m_CompilePC);
+    m_Assembler.bind(ReadMiss);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::edx, AddressReg.r32());
+    m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "TempValue32");
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::MemoryValue32), "CMipsMemoryVM::MemoryValue32");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+    m_Assembler.JeLabel(stdstr_f("MemoryReadMap_%X_Exception", m_CompilePC).c_str(), ReadException);
+    m_Assembler.MoveVariableToX64reg(ValueReg, &m_TempValue32, "TempValue32", false);
+    m_Assembler.JmpLabel(stdstr_f("MemoryReadMap_%X_Done", m_CompilePC).c_str(), ReadDone);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MemoryReadMap_%X_Exception:", m_CompilePC);
+    m_Assembler.bind(ReadException);
+    m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.mov(asmjit::x86::edx, AddressReg.r32());
+    m_Assembler.or_(asmjit::x86::edx, OffsetReg.r32());
+    m_Assembler.movsxd(asmjit::x86::rdx, asmjit::x86::edx);
+    m_Assembler.mov(asmjit::x86::r8d, EXC_WMISS);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(g_Reg, MemberFuncAddress(&CRegisters::TriggerAddressException), "CRegisters::TriggerAddressException");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
+    CompileExit(m_CompilePC, (uint32_t)-1, ExitRegSet, ExitReason_Exception);
+    m_Assembler.EnterPrimarySection();
+    m_RegWorkingSet = ReadRegSet;
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      MemoryReadMap_%X_Done:", m_CompilePC);
+    m_Assembler.bind(ReadDone);
+
+    const asmjit::x86::Gp TableReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveConstToX64reg(TableReg, (uintptr_t)(Left ? R4300iOp::SWL_MASK : R4300iOp::SWR_MASK), Left ? "R4300iOp::SWL_MASK" : "R4300iOp::SWR_MASK");
+    m_Assembler.and_(ValueReg.r32(), asmjit::x86::dword_ptr(TableReg, OffsetReg.r64(), 2));
+
+    const asmjit::x86::Gp RtReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+    m_Assembler.MoveConstToX64reg(TableReg, (uintptr_t)(Left ? R4300iOp::SWL_SHIFT : R4300iOp::SWR_SHIFT), Left ? "R4300iOp::SWL_SHIFT" : "R4300iOp::SWR_SHIFT");
+    m_Assembler.mov(OffsetReg.r32(), asmjit::x86::dword_ptr(TableReg, OffsetReg.r64(), 2));
+    if (Left)
+    {
+        m_Assembler.shr(RtReg.r32(), asmjit::x86::cl);
+    }
+    else
+    {
+        m_Assembler.shl(RtReg.r32(), asmjit::x86::cl);
+    }
+    m_Assembler.add(ValueReg.r32(), RtReg.r32());
+
+    CompileStoreMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 0, 32);
+}
+
+void CX64RecompilerOps::LoadWordPartial(bool Left)
+{
+    // The variable shift count has to be in cl, so ecx is reserved before anything else is mapped
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rcx);
+    const asmjit::x86::Gp OffsetReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::ecx, -1);
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    asmjit::x86::Gp AddressReg = BaseOffsetAddress();
+    m_Assembler.mov(OffsetReg.r32(), AddressReg.r32());
+    m_Assembler.and_(OffsetReg.r32(), 3);
+    m_Assembler.and_(AddressReg.r32(), ~3u);
+
+    // rt is still read after the load, so the load goes to a temp and rt keeps its value if the load raises an exception
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 32, false);
+
+    const asmjit::x86::Gp TableReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp RtReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+    m_Assembler.MoveConstToX64reg(TableReg, (uintptr_t)(Left ? R4300iOp::LWL_MASK : R4300iOp::LWR_MASK), Left ? "R4300iOp::LWL_MASK" : "R4300iOp::LWR_MASK");
+    m_Assembler.and_(RtReg.r32(), asmjit::x86::dword_ptr(TableReg, OffsetReg.r64(), 2));
+    m_Assembler.MoveConstToX64reg(TableReg, (uintptr_t)(Left ? R4300iOp::LWL_SHIFT : R4300iOp::LWR_SHIFT), Left ? "R4300iOp::LWL_SHIFT" : "R4300iOp::LWR_SHIFT");
+    m_Assembler.mov(OffsetReg.r32(), asmjit::x86::dword_ptr(TableReg, OffsetReg.r64(), 2));
+    if (Left)
+    {
+        m_Assembler.shl(ValueReg.r32(), asmjit::x86::cl);
+    }
+    else
+    {
+        m_Assembler.shr(ValueReg.r32(), asmjit::x86::cl);
+    }
+    m_Assembler.add(RtReg.r32(), ValueReg.r32());
+
+    if (m_Opcode.rt != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), RtReg.r32());
+    }
+}
+
 asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress()
 {
     asmjit::x86::Gp AddressReg;
