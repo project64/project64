@@ -916,11 +916,6 @@ void CX64RecompilerOps::JAL()
 
 void CX64RecompilerOps::ADDI()
 {
-    if (g_GameSettings.fastSP && m_Opcode.rs == 29 && m_Opcode.rt == 29)
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
-
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
         const int32_t rs = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs);
@@ -930,6 +925,7 @@ void CX64RecompilerOps::ADDI()
         {
             CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow);
             m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+            return;
         }
         else if (m_Opcode.rt != 0)
         {
@@ -954,9 +950,19 @@ void CX64RecompilerOps::ADDI()
         }
     }
 
-    if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
+    // The memory stack is only updated once the overflow check has passed and sp has been written
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        if (m_Opcode.rs == 29)
+        {
+            const asmjit::x86::Gp StackReg = m_RegWorkingSet.Map_MemoryStack(asmjit::x86::Gpq(), true, true);
+            m_Assembler.add(StackReg.r64(), (int32_t)((int16_t)m_Opcode.immediate));
+        }
+        else
+        {
+            m_RegWorkingSet.ResetRegisterProtection();
+            ResetMemoryStack();
+        }
     }
 }
 
@@ -990,7 +996,8 @@ void CX64RecompilerOps::ADDIU()
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29 && m_Opcode.rs != 29)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
     }
 }
 
