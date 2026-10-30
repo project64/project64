@@ -242,6 +242,7 @@ private:
     CX64RecompilerOps & operator=(const CX64RecompilerOps &) = delete;
 
     bool LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool ResultSigned);
+    void LW_PhysicalAddressCall(const asmjit::x86::Gp & Reg, uint32_t PAddr, bool ResultSigned);
     void SW_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst);
     void SH_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst);
     void SB_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst);

@@ -4748,7 +4748,7 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         }
         else
         {
-            m_Assembler.xor_(Reg, Reg);
+            LW_PhysicalAddressCall(Reg, PAddr, ResultSigned);
         }
         return false;
     case 0x04000000u:
@@ -4773,14 +4773,7 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
                 break;
             case 0x04080000u: m_Assembler.MoveVariableToX64reg(Reg, &m_Reg.SP_PC_REG, "SP_PC_REG", ResultSigned); break;
             default:
-                m_RegWorkingSet.BeforeCallDirect();
-                m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr, stdstr_f("PAddr 0x%08X", PAddr).c_str());
-                m_Assembler.MoveConstToX64reg(asmjit::x86::r8, reinterpret_cast<uintptr_t>(&m_TempValue32), "m_TempValue32");
-                m_Assembler.sub(asmjit::x86::rsp, 32);
-                m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LW_PhysicalAddress), "CMipsMemoryVM::LW_PhysicalAddress");
-                m_Assembler.add(asmjit::x86::rsp, 32);
-                m_RegWorkingSet.AfterCallDirect();
-                m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32", ResultSigned);
+                LW_PhysicalAddressCall(Reg, PAddr, ResultSigned);
                 break;
             }
         }
@@ -4805,6 +4798,19 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         UpdateCounters(m_RegWorkingSet, false, true);
         m_RegWorkingSet.BeforeCallDirect();
         m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(&m_MMU.m_VideoInterfaceHandler), "g_MMU->m_VideoInterfaceHandler");
+        m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr & 0x1FFFFFFFu);
+        m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "m_TempValue32");
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.mov(asmjit::x86::r11, asmjit::x86::qword_ptr(asmjit::x86::rcx));
+        m_Assembler.call(asmjit::x86::qword_ptr(asmjit::x86::r11));
+        m_Assembler.add(asmjit::x86::rsp, 32);
+        m_RegWorkingSet.AfterCallDirect();
+        m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32", ResultSigned);
+        return false;
+    case 0x04500000u:
+        UpdateCounters(m_RegWorkingSet, false, true, false);
+        m_RegWorkingSet.BeforeCallDirect();
+        m_Assembler.MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(&m_MMU.m_AudioInterfaceHandler), "g_MMU->m_AudioInterfaceHandler");
         m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr & 0x1FFFFFFFu);
         m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "m_TempValue32");
         m_Assembler.sub(asmjit::x86::rsp, 32);
@@ -4883,6 +4889,18 @@ bool CX64RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
         break;
     }
     return false;
+}
+
+void CX64RecompilerOps::LW_PhysicalAddressCall(const asmjit::x86::Gp & Reg, uint32_t PAddr, bool ResultSigned)
+{
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, PAddr, stdstr_f("PAddr 0x%08X", PAddr).c_str());
+    m_Assembler.MoveConstToX64reg(asmjit::x86::r8, reinterpret_cast<uintptr_t>(&m_TempValue32), "m_TempValue32");
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::LW_PhysicalAddress), "CMipsMemoryVM::LW_PhysicalAddress");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
+    m_Assembler.MoveVariableToX64reg(Reg, &m_TempValue32, "m_TempValue32", ResultSigned);
 }
 
 void CX64RecompilerOps::SB_KnownAddress(uint32_t VAddr, const asmjit::x86::Gp * ValueReg, uint32_t ValueConst)
