@@ -1292,7 +1292,7 @@ void CX64RecompilerOps::LW()
         g_Notify->BreakPoint(__FILE__, __LINE__);
         return;
     }
-    const asmjit::x86::Gp AddressReg = BaseOffsetAddress(false);
+    const asmjit::x86::Gp AddressReg = BaseOffsetAddress();
     CRegInfo ExitRegSet = m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp);
 
     m_Assembler.test(AddressReg.r32(), 3);
@@ -1623,7 +1623,7 @@ void CX64RecompilerOps::SW()
         m_RegWorkingSet.SetX64Protected(ValueReg.id(), true);
     }
 
-    const asmjit::x86::Gp AddressReg = BaseOffsetAddress(false);
+    const asmjit::x86::Gp AddressReg = BaseOffsetAddress();
     CRegInfo ExitRegSet = m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp);
     m_Assembler.test(AddressReg.r32(), 3);
     CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_AddressErrorExceptionWrite32, &CX64Ops::JneLabel, &AddressReg);
@@ -5238,7 +5238,7 @@ void CX64RecompilerOps::CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, con
     const bool CreatedAddressReg = !AddressReg.isValid();
     if (CreatedAddressReg)
     {
-        AddressReg = BaseOffsetAddress(false);
+        AddressReg = BaseOffsetAddress();
     }
     else
     {
@@ -5453,7 +5453,7 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
 
     if (!AddressReg.isValid())
     {
-        AddressReg = BaseOffsetAddress(ValueSize == 32);
+        AddressReg = BaseOffsetAddress();
     }
     else
     {
@@ -5648,22 +5648,20 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
     m_Assembler.bind(AfterStore);
 }
 
-asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress(bool UseBaseRegister)
+// Returns a temp register holding base + offset as a zero extended 32-bit address. The base register
+// itself is never returned: the upper 32 bits of a mapped register are not guaranteed to be zero, and
+// the address register is used in 64-bit addressing ([AddressReg + HostOffsetReg]) and modified by the
+// 8 and 16-bit byte swapping
+asmjit::x86::Gp CX64RecompilerOps::BaseOffsetAddress()
 {
     asmjit::x86::Gp AddressReg;
     if (m_RegWorkingSet.IsMapped(m_Opcode.base))
     {
-        const asmjit::x86::Gp & BaseReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.base);
         if (m_Opcode.offset != 0)
         {
             m_RegWorkingSet.ProtectGPR(m_Opcode.base);
             AddressReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
-            m_Assembler.lea(AddressReg, asmjit::x86::ptr(BaseReg.r32(), (int16_t)m_Opcode.offset));
-        }
-        else if (UseBaseRegister)
-        {
-            m_RegWorkingSet.ProtectGPR(m_Opcode.base);
-            AddressReg = BaseReg;
+            m_Assembler.lea(AddressReg, asmjit::x86::ptr(m_RegWorkingSet.GetMipsRegMap(m_Opcode.base).r32(), (int16_t)m_Opcode.offset));
         }
         else
         {

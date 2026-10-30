@@ -249,7 +249,7 @@ private:
     void LB_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VAddr, bool SignExtend);
     void CompileLoadMemoryValue(asmjit::x86::Gp & AddressReg, const asmjit::x86::Gp & ValueReg, const asmjit::x86::Gp & ValueRegHi, uint8_t ValueSize, bool SignExtend);
     void CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, const asmjit::x86::Gp & ValueReg, const asmjit::x86::Gp & ValueRegHi, uint64_t Value, uint8_t ValueSize);
-    asmjit::x86::Gp BaseOffsetAddress(bool UseBaseRegister);
+    asmjit::x86::Gp BaseOffsetAddress();
     void ResetMemoryStack(void);
     void ExitCodeBlock(void);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
