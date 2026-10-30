@@ -2646,7 +2646,58 @@ void CX64RecompilerOps::SPECIAL_ADDU()
 
 void CX64RecompilerOps::SPECIAL_SUB()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs) && m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        const int32_t Rs = m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs);
+        const int32_t Rt = m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt);
+        const int32_t Result = (int32_t)((uint32_t)Rs - (uint32_t)Rt);
+
+        // If the subtraction overflows the code below always raises the exception
+        if ((((Rs ^ Rt) & (Rs ^ Result)) & 0x80000000) == 0)
+        {
+            if (m_Opcode.rd != 0)
+            {
+                if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+                {
+                    m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+                }
+                m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (uint32_t)Result);
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
+            }
+            return;
+        }
+    }
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+    m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+    const asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rs);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        m_Assembler.sub(Reg.r32(), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        m_Assembler.sub(Reg.r32(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+    }
+    else
+    {
+        m_Assembler.SubVariableFromX64reg(Reg, &m_Reg.m_GPR[m_Opcode.rt].W[0], CRegName::GPR_Lo[m_Opcode.rt]);
+    }
+
+    // rd is not written when the subtraction overflows
+    CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow, &CX64Ops::JoLabel);
+
+    if (m_Opcode.rd != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), Reg.r32());
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SUBU()
