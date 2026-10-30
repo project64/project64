@@ -4226,9 +4226,25 @@ void CX64RecompilerOps::CompileExitCode()
 {
 }
 
-void CX64RecompilerOps::CompileInPermLoop(CRegInfo & /*RegSet*/, uint32_t /*ProgramCounter*/)
+void CX64RecompilerOps::CompileInPermLoop(CRegInfo & RegSet, uint32_t ProgramCounter)
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_Assembler.MoveConstToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", ProgramCounter);
+    RegSet.WriteBackRegisters();
+    UpdateCounters(RegSet, false, true, false);
+
+    // All registers have been written back, so no caller saved registers need preserving around the calls
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_System.m_OpCodes, MemberFuncAddress(&R4300iOp::InPermLoop), "R4300iOp::InPermLoop");
+    m_Assembler.CallThis(g_SystemTimer, MemberFuncAddress(&CSystemTimer::TimerDone), "CSystemTimer::TimerDone");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_CodeBlock.Log("CompileSystemCheck 3");
+    CompileSystemCheck((uint32_t)-1, RegSet);
+    if (g_SyncSystem)
+    {
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_BaseSystem, MemberFuncAddress(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+    }
 }
 
 void CX64RecompilerOps::SyncRegState(const CRegInfo & /*SyncTo*/)
