@@ -556,7 +556,65 @@ void CX64RecompilerOps::BEQ_Compare()
 
 void CX64RecompilerOps::BGTZ_Compare()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        const int64_t Value = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        m_Section->m_Jump.FallThrough = Value > 0;
+        m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
+        return;
+    }
+
+    // A zero extended 32-bit value is never negative, so it is only > 0 when it is not zero
+    const bool ZeroExtended = m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs) && !m_RegWorkingSet.IsSigned(m_Opcode.rs);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs))
+    {
+        m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), 0);
+    }
+    else
+    {
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+        const asmjit::x86::Gp Rs64 = m_RegWorkingSet.IsMapped(m_Opcode.rs) ? m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs) : m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+        m_Assembler.cmp(Rs64.r64(), 0);
+    }
+
+    if (m_Section->m_Jump.FallThrough)
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        if (ZeroExtended)
+        {
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        }
+        else
+        {
+            m_Assembler.JleLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        }
+    }
+    else if (m_Section->m_Cont.FallThrough)
+    {
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        if (ZeroExtended)
+        {
+            m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+        }
+        else
+        {
+            m_Assembler.JgLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+        }
+    }
+    else
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        if (ZeroExtended)
+        {
+            m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        }
+        else
+        {
+            m_Assembler.JleLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        }
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
 }
 
 void CX64RecompilerOps::BLEZ_Compare()
