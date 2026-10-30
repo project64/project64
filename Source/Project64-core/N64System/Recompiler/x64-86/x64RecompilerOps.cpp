@@ -1848,7 +1848,18 @@ void CX64RecompilerOps::SC()
 
 void CX64RecompilerOps::SWC1()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(ValueReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(ValueReg));
+    CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), 0, 32);
 }
 
 void CX64RecompilerOps::SDC1()
@@ -5454,6 +5465,11 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
         m_Assembler.test(AddressReg.r32(), 1);
         CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_AddressErrorExceptionWrite32, &CX64Ops::JneLabel, &AddressReg);
     }
+    else if (ValueSize == 32)
+    {
+        m_Assembler.test(AddressReg.r32(), 3);
+        CompileExit(m_CompilePC, m_CompilePC, ExitRegSet, ExitReason_AddressErrorExceptionWrite32, &CX64Ops::JneLabel, &AddressReg);
+    }
     else if (ValueSize == 64)
     {
         m_Assembler.test(AddressReg.r32(), 7);
@@ -5502,6 +5518,17 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
         else
         {
             m_Assembler.mov(asmjit::x86::word_ptr(AddressReg, HostOffsetReg), ValueReg.r16());
+        }
+    }
+    else if (ValueSize == 32)
+    {
+        if (!ValueReg.isValid())
+        {
+            m_Assembler.mov(asmjit::x86::dword_ptr(AddressReg, HostOffsetReg), (uint32_t)Value);
+        }
+        else
+        {
+            m_Assembler.mov(asmjit::x86::dword_ptr(AddressReg, HostOffsetReg), ValueReg.r32());
         }
     }
     else if (ValueSize == 64)
@@ -5563,6 +5590,19 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
         }
         FunctPtr = MemberFuncAddress(&CMipsMemoryVM::SH_VAddr32);
         FunctName = "CMipsMemoryVM::SH_VAddr32";
+    }
+    else if (ValueSize == 32)
+    {
+        if (!ValueReg.isValid())
+        {
+            m_Assembler.mov(asmjit::x86::r8d, (uint32_t)Value);
+        }
+        else
+        {
+            m_Assembler.mov(asmjit::x86::r8d, ValueReg.r32());
+        }
+        FunctPtr = MemberFuncAddress(&CMipsMemoryVM::SW_VAddr32);
+        FunctName = "CMipsMemoryVM::SW_VAddr32";
     }
     else if (ValueSize == 64)
     {
