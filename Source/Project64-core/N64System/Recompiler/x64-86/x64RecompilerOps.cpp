@@ -2918,7 +2918,8 @@ void CX64RecompilerOps::SPECIAL_OR()
 
     if (g_GameSettings.fastSP && m_Opcode.rd == 29)
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
     }
 }
 
