@@ -295,6 +295,13 @@ void CX64RegInfo::BeforeCallDirect(void)
         m_Assembler.push(Reg);
         m_CallDirectPushIds[m_CallDirectPushCount++] = physId;
     }
+
+    // Win64 requires rsp to be 16 byte aligned at the call, an odd number of pushes leaves it 8 bytes off
+    if (((m_CallDirectPushCount - m_CallDirectPushBase) & 1) != 0)
+    {
+        m_CodeBlock.Log("    regcache: align stack for call");
+        m_Assembler.sub(asmjit::x86::rsp, 8);
+    }
 }
 
 void CX64RegInfo::AfterCallDirect(void)
@@ -305,6 +312,10 @@ void CX64RegInfo::AfterCallDirect(void)
         return;
     }
 
+    if (((m_CallDirectPushCount - m_CallDirectPushBase) & 1) != 0)
+    {
+        m_Assembler.add(asmjit::x86::rsp, 8);
+    }
     while (m_CallDirectPushCount > m_CallDirectPushBase)
     {
         const uint32_t physId = m_CallDirectPushIds[--m_CallDirectPushCount];

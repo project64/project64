@@ -752,9 +752,9 @@ void CX64Ops::X64BreakPoint(const char * FileName, int32_t LineNumber)
 
     MoveConstToX64reg(asmjit::x86::rcx, reinterpret_cast<uintptr_t>(FileName), FileName);
     mov(asmjit::x86::edx, LineNumber);
-    sub(asmjit::x86::rsp, 32);
+    sub(asmjit::x86::rsp, 40); // 15 pushes, extra 8 keeps rsp 16 byte aligned
     CallFunc(reinterpret_cast<uintptr_t>(&CX64Ops::BreakPointNotification), "BreakPointNotification");
-    add(asmjit::x86::rsp, 32);
+    add(asmjit::x86::rsp, 40);
 
     pop(asmjit::x86::r15);
     pop(asmjit::x86::r14);
