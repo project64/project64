@@ -257,7 +257,7 @@ private:
     void ExitCodeBlock(void);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void CompileCop1Test();
-    void COP1_S_Arithmetic(uint32_t InstId);
+    void COP1_S_Arithmetic(uint32_t InstId, bool UseFt = true);
     void CompileFpuEnterMxcsr(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & PtrReg, const asmjit::x86::Gp & TempReg);
     void CompileFpuLeaveMxcsr(const asmjit::x86::Gp & PtrReg);
     void CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & Flags, const asmjit::x86::Gp & Temp, asmjit::Label & Unimplemented, asmjit::Label & Exception);

@@ -3741,8 +3741,9 @@ void CX64RecompilerOps::CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, 
     m_Assembler.JneLabel("FpuException", Exception);
 }
 
-// Matches the interpreter: InitFpuOperation, CheckFPUInputs32, the operation, CheckFPUResult32
-void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
+// Matches the interpreter: InitFpuOperation, CheckFPUInputs32 (CheckFPUInput32 when only fs is used),
+// the operation, CheckFPUResult32
+void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId, bool UseFt)
 {
     CompileCop1Test();
 
@@ -3767,8 +3768,11 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
 
     m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
     m_Assembler.mov(FsReg.r32(), asmjit::x86::dword_ptr(PtrReg));
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UW[m_Opcode.ft], stdstr_f("m_FPR_UW[%d]", m_Opcode.ft).c_str());
-    m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    if (UseFt)
+    {
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UW[m_Opcode.ft], stdstr_f("m_FPR_UW[%d]", m_Opcode.ft).c_str());
+        m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    }
 
     // Zero, infinity, subnormal and NaN inputs all have an exponent of 0 or 0xFF
     m_Assembler.mov(TempReg.r32(), FsReg.r32());
@@ -3776,19 +3780,29 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
     m_Assembler.JeLabel("SpecialInput", SpecialInput);
     m_Assembler.cmp(TempReg.r32(), 0x7F800000);
     m_Assembler.JeLabel("SpecialInput", SpecialInput);
-    m_Assembler.mov(TempReg.r32(), FtReg.r32());
-    m_Assembler.and_(TempReg.r32(), 0x7F800000);
-    m_Assembler.JeLabel("SpecialInput", SpecialInput);
-    m_Assembler.cmp(TempReg.r32(), 0x7F800000);
-    m_Assembler.JeLabel("SpecialInput", SpecialInput);
+    if (UseFt)
+    {
+        m_Assembler.mov(TempReg.r32(), FtReg.r32());
+        m_Assembler.and_(TempReg.r32(), 0x7F800000);
+        m_Assembler.JeLabel("SpecialInput", SpecialInput);
+        m_Assembler.cmp(TempReg.r32(), 0x7F800000);
+        m_Assembler.JeLabel("SpecialInput", SpecialInput);
+    }
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      InputsDone:");
     m_Assembler.bind(InputsDone);
 
     CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg);
     m_Assembler.movd(asmjit::x86::xmm0, FsReg.r32());
-    m_Assembler.movd(asmjit::x86::xmm1, FtReg.r32());
-    m_Assembler.emit(InstId, asmjit::x86::xmm0, asmjit::x86::xmm1);
+    if (UseFt)
+    {
+        m_Assembler.movd(asmjit::x86::xmm1, FtReg.r32());
+        m_Assembler.emit(InstId, asmjit::x86::xmm0, asmjit::x86::xmm1);
+    }
+    else
+    {
+        m_Assembler.emit(InstId, asmjit::x86::xmm0, asmjit::x86::xmm0);
+    }
     CompileFpuLeaveMxcsr(PtrReg);
 
     // FsReg now holds the result, FtReg the raised exceptions as FCSR flag bits
@@ -3822,24 +3836,28 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId)
     m_CodeBlock.Log("      SpecialInput:");
     m_Assembler.bind(SpecialInput);
     const asmjit::x86::Gp Inputs[2] = {FsReg, FtReg};
-    for (const asmjit::x86::Gp & Input : Inputs)
+    const size_t InputCount = UseFt ? 2 : 1;
+    for (size_t i = 0; i < InputCount; i++)
     {
+        const asmjit::x86::Gp & Input = Inputs[i];
         m_Assembler.mov(TempReg.r32(), Input.r32());
         m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
         m_Assembler.sub(TempReg.r32(), 1);
         m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
         m_Assembler.JbLabel("Unimplemented", Unimplemented);
     }
-    for (const asmjit::x86::Gp & Input : Inputs)
+    for (size_t i = 0; i < InputCount; i++)
     {
+        const asmjit::x86::Gp & Input = Inputs[i];
         m_Assembler.mov(TempReg.r32(), Input.r32());
         m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
         m_Assembler.sub(TempReg.r32(), 0x7F800001);
         m_Assembler.cmp(TempReg.r32(), 0x003FFFFF);
         m_Assembler.JbLabel("Unimplemented", Unimplemented);
     }
-    for (const asmjit::x86::Gp & Input : Inputs)
+    for (size_t i = 0; i < InputCount; i++)
     {
+        const asmjit::x86::Gp & Input = Inputs[i];
         m_Assembler.mov(TempReg.r32(), Input.r32());
         m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
         m_Assembler.cmp(TempReg.r32(), 0x7F800000);
@@ -3940,7 +3958,7 @@ void CX64RecompilerOps::COP1_S_NEG()
 
 void CX64RecompilerOps::COP1_S_SQRT()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_Arithmetic(asmjit::x86::Inst::kIdSqrtss, false);
 }
 
 void CX64RecompilerOps::COP1_S_MOV()
