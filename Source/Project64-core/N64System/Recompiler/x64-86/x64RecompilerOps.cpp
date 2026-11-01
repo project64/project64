@@ -4125,47 +4125,47 @@ void CX64RecompilerOps::COP1_S_SQRT()
 
 void CX64RecompilerOps::COP1_S_MOV()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_Move();
 }
 
 void CX64RecompilerOps::COP1_S_ROUND_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundToNearest, false, true);
 }
 
 void CX64RecompilerOps::COP1_S_TRUNC_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardZero, false, true);
 }
 
 void CX64RecompilerOps::COP1_S_CEIL_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardPlusInfinity, false, true);
 }
 
 void CX64RecompilerOps::COP1_S_FLOOR_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardMinusInfinity, false, true);
 }
 
 void CX64RecompilerOps::COP1_S_ROUND_W()
 {
-    COP1_S_ToWord(FPRoundingMode_RoundToNearest);
+    COP1_ToInteger(FPRoundingMode_RoundToNearest, false, false);
 }
 
 void CX64RecompilerOps::COP1_S_TRUNC_W()
 {
-    COP1_S_ToWord(FPRoundingMode_RoundTowardZero);
+    COP1_ToInteger(FPRoundingMode_RoundTowardZero, false, false);
 }
 
 void CX64RecompilerOps::COP1_S_CEIL_W()
 {
-    COP1_S_ToWord(FPRoundingMode_RoundTowardPlusInfinity);
+    COP1_ToInteger(FPRoundingMode_RoundTowardPlusInfinity, false, false);
 }
 
 void CX64RecompilerOps::COP1_S_FLOOR_W()
 {
-    COP1_S_ToWord(FPRoundingMode_RoundTowardMinusInfinity);
+    COP1_ToInteger(FPRoundingMode_RoundTowardMinusInfinity, false, false);
 }
 
 void CX64RecompilerOps::COP1_S_CVT_D()
@@ -4175,10 +4175,10 @@ void CX64RecompilerOps::COP1_S_CVT_D()
 
 void CX64RecompilerOps::COP1_S_CVT_W()
 {
-    COP1_S_ToWord(-1);
+    COP1_ToInteger(-1, false, false);
 }
 
-void CX64RecompilerOps::COP1_S_ToWord(int32_t RoundingMode)
+void CX64RecompilerOps::COP1_ToInteger(int32_t RoundingMode, bool DoubleInput, bool LongResult)
 {
     CompileCop1Test();
 
@@ -4195,22 +4195,53 @@ void CX64RecompilerOps::COP1_S_ToWord(int32_t RoundingMode)
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    if (DoubleInput)
+    {
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
+        m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
 
-    // CheckFPUInput32Conv: subnormal, infinity, NaN or a magnitude of 2^53 or more is unimplemented
-    m_Assembler.mov(TempReg.r32(), ValueReg.r32());
-    m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
-    m_Assembler.cmp(TempReg.r32(), 0x5A000000);
-    m_Assembler.JaeLabel("Unimplemented", Unimplemented);
-    m_Assembler.sub(TempReg.r32(), 1);
-    m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
-    m_Assembler.JbLabel("Unimplemented", Unimplemented);
+        // CheckFPUInput64Conv: subnormal, infinity, NaN or a magnitude of 2^53 (exponent 0x434) or more is unimplemented
+        asmjit::Label InputValid = m_Assembler.newLabel();
+        m_Assembler.mov(TempReg.r64(), ValueReg.r64());
+        m_Assembler.shl(TempReg.r64(), 1);
+        m_Assembler.JeLabel("InputValid", InputValid);
+        m_Assembler.shr(TempReg.r64(), 53);
+        m_Assembler.JeLabel("Unimplemented", Unimplemented);
+        m_Assembler.cmp(TempReg.r32(), 0x434);
+        m_Assembler.JaeLabel("Unimplemented", Unimplemented);
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      InputValid:");
+        m_Assembler.bind(InputValid);
+    }
+    else
+    {
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+        m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
 
-    // f32_to_i32 rounds with the rounding mode, out of range sets invalid and returns 0x80000000
+        // CheckFPUInput32Conv: subnormal, infinity, NaN or a magnitude of 2^53 or more is unimplemented
+        m_Assembler.mov(TempReg.r32(), ValueReg.r32());
+        m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
+        m_Assembler.cmp(TempReg.r32(), 0x5A000000);
+        m_Assembler.JaeLabel("Unimplemented", Unimplemented);
+        m_Assembler.sub(TempReg.r32(), 1);
+        m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
+        m_Assembler.JbLabel("Unimplemented", Unimplemented);
+    }
+
+    // Rounds with the rounding mode, out of range sets invalid and returns 0x80000000 (a long result always fits
+    // because the magnitude is below 2^53)
+    const asmjit::x86::Gp ResultReg = LongResult ? asmjit::x86::Gp(ValueReg.r64()) : asmjit::x86::Gp(ValueReg.r32());
     CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg, RoundingMode);
-    m_Assembler.movd(asmjit::x86::xmm0, ValueReg.r32());
-    m_Assembler.cvtss2si(ValueReg.r32(), asmjit::x86::xmm0);
+    if (DoubleInput)
+    {
+        m_Assembler.movq(asmjit::x86::xmm0, ValueReg.r64());
+        m_Assembler.cvtsd2si(ResultReg, asmjit::x86::xmm0);
+    }
+    else
+    {
+        m_Assembler.movd(asmjit::x86::xmm0, ValueReg.r32());
+        m_Assembler.cvtss2si(ResultReg, asmjit::x86::xmm0);
+    }
     CompileFpuLeaveMxcsr(PtrReg);
 
     // CheckFPUInvalidException: invalid is unimplemented, otherwise inexact sets the cause and flag or raises the exception
@@ -4244,7 +4275,7 @@ void CX64RecompilerOps::COP1_S_ToWord(int32_t RoundingMode)
 
 void CX64RecompilerOps::COP1_S_CVT_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(-1, false, true);
 }
 
 void CX64RecompilerOps::COP1_S_CMP()
@@ -4380,7 +4411,7 @@ void CX64RecompilerOps::COP1_Compare(bool Double)
     m_Assembler.EnterPrimarySection();
 }
 
-void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt)
+void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt, bool SingleResult)
 {
     // Flushed double subnormal result indexed by (rounding mode << 1) | sign
     static const uint64_t FlushSubnormal64[8] = {0x0000000000000000ull, 0x8000000000000000ull, 0x0000000000000000ull, 0x8000000000000000ull, 0x0010000000000000ull, 0x8000000000000000ull, 0x0000000000000000ull, 0x8010000000000000ull};
@@ -4444,20 +4475,41 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt)
     }
     CompileFpuLeaveMxcsr(PtrReg);
 
-    // FsReg now holds the result, FtReg the raised exceptions as FCSR flag bits
-    m_Assembler.movq(FsReg.r64(), asmjit::x86::xmm0);
+    // FsReg now holds the result (a single is zero extended), FtReg the raised exceptions as FCSR flag bits
+    if (SingleResult)
+    {
+        m_Assembler.movd(FsReg.r32(), asmjit::x86::xmm0);
+    }
+    else
+    {
+        m_Assembler.movq(FsReg.r64(), asmjit::x86::xmm0);
+    }
     m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, 4));
     m_Assembler.and_(TempReg.r32(), 0x3F);
     m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)MxcsrToFcsrFlags.Value, "MxcsrToFcsrFlags");
     m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
 
-    // CheckFPUResult64, zero and infinity results come back to ResultNormal
-    m_Assembler.mov(TempReg.r64(), FsReg.r64());
-    m_Assembler.shl(TempReg.r64(), 1);
-    m_Assembler.shr(TempReg.r64(), 53);
-    m_Assembler.JeLabel("ResultExponentZero", ResultExponentZero);
-    m_Assembler.cmp(TempReg.r32(), 0x7FF);
-    m_Assembler.JeLabel("ResultExponentMax", ResultExponentMax);
+    if (SingleResult)
+    {
+        // CheckFPUResult32: a single NaN goes to ResultExponentMax and a subnormal to ResultExponentZero
+        m_Assembler.mov(TempReg.r32(), FsReg.r32());
+        m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
+        m_Assembler.cmp(TempReg.r32(), 0x7F800000);
+        m_Assembler.JaLabel("ResultExponentMax", ResultExponentMax);
+        m_Assembler.sub(TempReg.r32(), 1);
+        m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
+        m_Assembler.JbLabel("ResultExponentZero", ResultExponentZero);
+    }
+    else
+    {
+        // CheckFPUResult64, zero and infinity results come back to ResultNormal
+        m_Assembler.mov(TempReg.r64(), FsReg.r64());
+        m_Assembler.shl(TempReg.r64(), 1);
+        m_Assembler.shr(TempReg.r64(), 53);
+        m_Assembler.JeLabel("ResultExponentZero", ResultExponentZero);
+        m_Assembler.cmp(TempReg.r32(), 0x7FF);
+        m_Assembler.JeLabel("ResultExponentMax", ResultExponentMax);
+    }
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      ResultNormal:");
     m_Assembler.bind(ResultNormal);
@@ -4520,13 +4572,16 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt)
     m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
     m_Assembler.JmpLabel("InputsDone", InputsDone);
 
-    // Exponent 0x7FF: infinity is a normal result, anything else is a NaN
+    // Exponent 0x7FF: infinity is a normal result, anything else is a NaN (a single result only gets here for a NaN)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      ResultExponentMax:");
     m_Assembler.bind(ResultExponentMax);
-    m_Assembler.mov(TempReg.r64(), FsReg.r64());
-    m_Assembler.shl(TempReg.r64(), 12);
-    m_Assembler.JeLabel("ResultNormal", ResultNormal);
+    if (!SingleResult)
+    {
+        m_Assembler.mov(TempReg.r64(), FsReg.r64());
+        m_Assembler.shl(TempReg.r64(), 12);
+        m_Assembler.JeLabel("ResultNormal", ResultNormal);
+    }
     asmjit::Label NaNNoFlags = m_Assembler.newLabel();
     m_Assembler.test(FtReg.r32(), FtReg.r32());
     m_Assembler.JeLabel("NaNNoFlags", NaNNoFlags);
@@ -4534,16 +4589,26 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      NaNNoFlags:");
     m_Assembler.bind(NaNNoFlags);
-    m_Assembler.MoveConstToX64reg(FsReg, 0x7FF7FFFFFFFFFFFFull);
+    if (SingleResult)
+    {
+        m_Assembler.mov(FsReg.r32(), 0x7FBFFFFF);
+    }
+    else
+    {
+        m_Assembler.MoveConstToX64reg(FsReg, 0x7FF7FFFFFFFFFFFFull);
+    }
     m_Assembler.JmpLabel("ResultDone", ResultDone);
 
-    // Exponent 0: zero is a normal result, anything else is a subnormal
+    // Exponent 0: zero is a normal result, anything else is a subnormal (a single result only gets here for a subnormal)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      ResultExponentZero:");
     m_Assembler.bind(ResultExponentZero);
-    m_Assembler.mov(TempReg.r64(), FsReg.r64());
-    m_Assembler.shl(TempReg.r64(), 1);
-    m_Assembler.JeLabel("ResultNormal", ResultNormal);
+    if (!SingleResult)
+    {
+        m_Assembler.mov(TempReg.r64(), FsReg.r64());
+        m_Assembler.shl(TempReg.r64(), 1);
+        m_Assembler.JeLabel("ResultNormal", ResultNormal);
+    }
     asmjit::Label SubnormalNoFlags = m_Assembler.newLabel();
     m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FS);
     m_Assembler.JeLabel("Unimplemented", Unimplemented);
@@ -4559,10 +4624,20 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt)
     m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(FcsrPtr));
     m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
     m_Assembler.shl(TempReg.r32(), 1);
-    m_Assembler.shr(FsReg.r64(), 63);
-    m_Assembler.or_(TempReg.r32(), FsReg.r32());
-    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FlushSubnormal64, "FlushSubnormal64");
-    m_Assembler.mov(FsReg.r64(), asmjit::x86::qword_ptr(PtrReg, TempReg.r64(), 3));
+    if (SingleResult)
+    {
+        m_Assembler.shr(FsReg.r32(), 31);
+        m_Assembler.or_(TempReg.r32(), FsReg.r32());
+        m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FlushSubnormal32, "FlushSubnormal32");
+        m_Assembler.mov(FsReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
+    }
+    else
+    {
+        m_Assembler.shr(FsReg.r64(), 63);
+        m_Assembler.or_(TempReg.r32(), FsReg.r32());
+        m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FlushSubnormal64, "FlushSubnormal64");
+        m_Assembler.mov(FsReg.r64(), asmjit::x86::qword_ptr(PtrReg, TempReg.r64(), 3));
+    }
     m_Assembler.JmpLabel("ResultDone", ResultDone);
 
     m_CodeBlock.Log("");
@@ -4600,12 +4675,12 @@ void CX64RecompilerOps::COP1_D_DIV()
 
 void CX64RecompilerOps::COP1_D_ABS()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_D_ExactOp(false);
 }
 
 void CX64RecompilerOps::COP1_D_NEG()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_D_ExactOp(true);
 }
 
 void CX64RecompilerOps::COP1_D_SQRT()
@@ -4615,62 +4690,62 @@ void CX64RecompilerOps::COP1_D_SQRT()
 
 void CX64RecompilerOps::COP1_D_MOV()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_Move();
 }
 
 void CX64RecompilerOps::COP1_D_ROUND_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundToNearest, true, true);
 }
 
 void CX64RecompilerOps::COP1_D_TRUNC_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardZero, true, true);
 }
 
 void CX64RecompilerOps::COP1_D_CEIL_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardPlusInfinity, true, true);
 }
 
 void CX64RecompilerOps::COP1_D_FLOOR_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardMinusInfinity, true, true);
 }
 
 void CX64RecompilerOps::COP1_D_ROUND_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundToNearest, true, false);
 }
 
 void CX64RecompilerOps::COP1_D_TRUNC_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardZero, true, false);
 }
 
 void CX64RecompilerOps::COP1_D_CEIL_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardPlusInfinity, true, false);
 }
 
 void CX64RecompilerOps::COP1_D_FLOOR_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(FPRoundingMode_RoundTowardMinusInfinity, true, false);
 }
 
 void CX64RecompilerOps::COP1_D_CVT_S()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_D_Arithmetic(asmjit::x86::Inst::kIdCvtsd2ss, false, true);
 }
 
 void CX64RecompilerOps::COP1_D_CVT_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(-1, true, false);
 }
 
 void CX64RecompilerOps::COP1_D_CVT_L()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_ToInteger(-1, true, true);
 }
 
 void CX64RecompilerOps::COP1_D_CMP()
@@ -4733,17 +4808,205 @@ void CX64RecompilerOps::COP1_W_CVT_S()
 
 void CX64RecompilerOps::COP1_W_CVT_D()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    CompileCop1Test();
+
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+
+    // InitFpuOperation clears the cause bits, every int32 converts to a double exactly so nothing else is raised
+    m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    m_Assembler.cvtsi2sd(asmjit::x86::xmm0, ValueReg.r32());
+    m_Assembler.movq(ValueReg.r64(), asmjit::x86::xmm0);
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+}
+
+void CX64RecompilerOps::COP1_L_ToFloat(bool Double)
+{
+    CompileCop1Test();
+
+    const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+
+    asmjit::Label Unimplemented = m_Assembler.newLabel();
+    asmjit::Label Exception = m_Assembler.newLabel();
+    asmjit::Label Exact = m_Assembler.newLabel();
+
+    // InitFpuOperation clears the cause bits
+    m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+
+    // A value outside -2^55 to 2^55 - 1 is unimplemented, inside that range value >> 55 is 0 or -1
+    m_Assembler.mov(TempReg.r64(), ValueReg.r64());
+    m_Assembler.sar(TempReg.r64(), 55);
+    m_Assembler.add(TempReg.r64(), 1);
+    m_Assembler.cmp(TempReg.r64(), 1);
+    m_Assembler.JaLabel("Unimplemented", Unimplemented);
+
+    // i64_to_f32 / i64_to_f64 round with the guest rounding mode, the result can only be inexact
+    CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg);
+    if (Double)
+    {
+        m_Assembler.cvtsi2sd(asmjit::x86::xmm0, ValueReg.r64());
+    }
+    else
+    {
+        m_Assembler.cvtsi2ss(asmjit::x86::xmm0, ValueReg.r64());
+    }
+    CompileFpuLeaveMxcsr(PtrReg);
+    if (Double)
+    {
+        m_Assembler.movq(ValueReg.r64(), asmjit::x86::xmm0);
+    }
+    else
+    {
+        m_Assembler.movd(ValueReg.r32(), asmjit::x86::xmm0);
+    }
+
+    // CheckFPUResult32/64 with only inexact possible: set the cause and flag or raise the exception
+    m_Assembler.test(asmjit::x86::dword_ptr(PtrReg, 4), 0x20);
+    m_Assembler.JeLabel("Exact", Exact);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CI);
+    m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EI);
+    m_Assembler.JneLabel("FpuException", Exception);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FI);
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Exact:");
+    m_Assembler.bind(Exact);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+
+    m_Assembler.EnterSecondarySection();
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Unimplemented:");
+    m_Assembler.bind(Unimplemented);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CE);
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      FpuException:");
+    m_Assembler.bind(Exception);
+    CompileExit((uint32_t)-1, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint);
+    m_Assembler.EnterPrimarySection();
+}
+
+void CX64RecompilerOps::COP1_D_ExactOp(bool Negate)
+{
+    CompileCop1Test();
+
+    const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+
+    asmjit::Label ExponentZero = m_Assembler.newLabel();
+    asmjit::Label ExponentMax = m_Assembler.newLabel();
+    asmjit::Label InputValid = m_Assembler.newLabel();
+    asmjit::Label Unimplemented = m_Assembler.newLabel();
+    asmjit::Label Exception = m_Assembler.newLabel();
+    asmjit::Label StoreResult = m_Assembler.newLabel();
+
+    // InitFpuOperation clears the cause bits
+    m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+
+    // CheckFPUInput64, values with an exponent of 0 or 0x7FF are checked in the secondary section
+    m_Assembler.mov(TempReg.r64(), ValueReg.r64());
+    m_Assembler.shl(TempReg.r64(), 1);
+    m_Assembler.shr(TempReg.r64(), 53);
+    m_Assembler.JeLabel("ExponentZero", ExponentZero);
+    m_Assembler.cmp(TempReg.r32(), 0x7FF);
+    m_Assembler.JeLabel("ExponentMax", ExponentMax);
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      InputValid:");
+    m_Assembler.bind(InputValid);
+
+    // Multiplying by -1.0 and fabs are exact and raise nothing, so the result is the input with the sign bit flipped or cleared
+    if (Negate)
+    {
+        m_Assembler.btc(ValueReg.r64(), 63);
+    }
+    else
+    {
+        m_Assembler.btr(ValueReg.r64(), 63);
+    }
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      StoreResult:");
+    m_Assembler.bind(StoreResult);
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+
+    m_Assembler.EnterSecondarySection();
+
+    // Exponent 0: zero is valid, anything else is a subnormal
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      ExponentZero:");
+    m_Assembler.bind(ExponentZero);
+    m_Assembler.mov(TempReg.r64(), ValueReg.r64());
+    m_Assembler.shl(TempReg.r64(), 1);
+    m_Assembler.JeLabel("InputValid", InputValid);
+    m_Assembler.JmpLabel("Unimplemented", Unimplemented);
+
+    // Exponent 0x7FF: infinity is valid, a NaN with the quiet bit clear is unimplemented
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      ExponentMax:");
+    m_Assembler.bind(ExponentMax);
+    m_Assembler.mov(TempReg.r64(), ValueReg.r64());
+    m_Assembler.shl(TempReg.r64(), 12);
+    m_Assembler.JeLabel("InputValid", InputValid);
+    m_Assembler.bt(ValueReg.r64(), 51);
+    m_Assembler.JaeLabel("Unimplemented", Unimplemented);
+
+    // Quiet NaN: invalid operation, then the NaN result is replaced
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CV);
+    m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EV);
+    m_Assembler.JneLabel("FpuException", Exception);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
+    m_Assembler.MoveConstToX64reg(ValueReg, 0x7FF7FFFFFFFFFFFFull);
+    m_Assembler.JmpLabel("StoreResult", StoreResult);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Unimplemented:");
+    m_Assembler.bind(Unimplemented);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CE);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      FpuException:");
+    m_Assembler.bind(Exception);
+    CompileExit((uint32_t)-1, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint);
+
+    m_Assembler.EnterPrimarySection();
+}
+
+void CX64RecompilerOps::COP1_Move()
+{
+    CompileCop1Test();
+
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
 }
 
 void CX64RecompilerOps::COP1_L_CVT_S()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_L_ToFloat(false);
 }
 
 void CX64RecompilerOps::COP1_L_CVT_D()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_L_ToFloat(true);
 }
 
 void CX64RecompilerOps::UnknownOpcode()

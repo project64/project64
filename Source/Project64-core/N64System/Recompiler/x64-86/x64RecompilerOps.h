@@ -268,7 +268,10 @@ private:
     };
     void COP1_S_ExactOp(ExactFpuOp Op);
     void CompileFpuEnterMxcsr(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & PtrReg, const asmjit::x86::Gp & TempReg, int32_t RoundingMode = -1);
-    void COP1_S_ToWord(int32_t RoundingMode);
+    void COP1_ToInteger(int32_t RoundingMode, bool DoubleInput, bool LongResult);
+    void COP1_L_ToFloat(bool Double);
+    void COP1_D_ExactOp(bool Negate);
+    void COP1_Move();
     void CompileFpuLeaveMxcsr(const asmjit::x86::Gp & PtrReg);
     void CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & Flags, const asmjit::x86::Gp & Temp, asmjit::Label & Unimplemented, asmjit::Label & Exception);
 
