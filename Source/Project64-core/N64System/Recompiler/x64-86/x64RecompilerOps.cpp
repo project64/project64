@@ -84,7 +84,8 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
     {
         if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CompileCop1Test();
+            m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
         }
         if (m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4 == m_CompilePC + 8 && (m_CompilePC & 0xFFC) != 0xFFC)
         {
@@ -302,7 +303,8 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
     {
         if (CompareType == RecompilerBranchCompare_COP1BCF || CompareType == RecompilerBranchCompare_COP1BCT)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            CompileCop1Test();
+            m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
         }
         if (g_GameSettings.blockLinkingMode != BlockLinking_Eager || (m_CompilePC & 0xFFC) == 0xFFC)
         {
@@ -802,12 +804,46 @@ void CX64RecompilerOps::BGEZ_Compare()
 
 void CX64RecompilerOps::COP1_BCF_Compare()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    if (m_Section->m_Cont.FallThrough)
+    {
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
+    else if (m_Section->m_Jump.FallThrough)
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JneLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+    }
+    else
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JneLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
 }
 
 void CX64RecompilerOps::COP1_BCT_Compare()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_Assembler.TestVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", FPCSR_C);
+    if (m_Section->m_Cont.FallThrough)
+    {
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JneLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
+    else if (m_Section->m_Jump.FallThrough)
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+    }
+    else
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JeLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
 }
 
 void CX64RecompilerOps::J()
