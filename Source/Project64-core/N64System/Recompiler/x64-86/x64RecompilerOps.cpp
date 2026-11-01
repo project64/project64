@@ -2725,7 +2725,54 @@ void CX64RecompilerOps::SPECIAL_DMULTU()
 
 void CX64RecompilerOps::SPECIAL_DDIV()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rdx);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+    m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rax);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+    const asmjit::x86::Gp DivReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), false);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::rdx, -1, asmjit::RegType::kX86_Gpq);
+    m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
+    m_RegWorkingSet.Map_TempReg(asmjit::x86::rax, m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+
+    asmjit::Label JumpEnd = m_Assembler.newLabel();
+    const bool RtIsConstNonZero = m_RegWorkingSet.IsConst(m_Opcode.rt) && (m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) != 0 : m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) != 0);
+    if (!RtIsConstNonZero)
+    {
+        // Dividing by zero sets LO to 1 for a negative dividend and -1 otherwise, HI to the dividend
+        asmjit::Label JumpNotDiv0 = m_Assembler.newLabel();
+        m_Assembler.test(DivReg.r64(), DivReg.r64());
+        m_Assembler.JneLabel("NotDiv0", JumpNotDiv0);
+        m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", asmjit::x86::rax);
+        m_Assembler.mov(asmjit::x86::rdx, asmjit::x86::rax);
+        m_Assembler.sar(asmjit::x86::rdx, 63);
+        m_Assembler.shl(asmjit::x86::rdx, 1);
+        m_Assembler.not_(asmjit::x86::rdx);
+        m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", asmjit::x86::rdx);
+        m_Assembler.JmpLabel("EndDdiv", JumpEnd);
+        m_CodeBlock.Log("");
+        m_Assembler.bind(JumpNotDiv0);
+    }
+
+    // A dividend of 0x8000000000000000 sets LO to the dividend and HI to 0, this also avoids the idiv overflow for -1
+    asmjit::Label JumpDivide = m_Assembler.newLabel();
+    m_Assembler.MoveConstToX64reg(asmjit::x86::rdx, 0x8000000000000000ull);
+    m_Assembler.cmp(asmjit::x86::rax, asmjit::x86::rdx);
+    m_Assembler.JneLabel("Divide", JumpDivide);
+    m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", asmjit::x86::rax);
+    m_Assembler.MoveConst64ToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", 0);
+    m_Assembler.JmpLabel("EndDdiv", JumpEnd);
+    m_CodeBlock.Log("");
+    m_Assembler.bind(JumpDivide);
+
+    m_Assembler.cqo();
+    m_Assembler.idiv(DivReg.r64());
+    m_Assembler.MovQwordToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", asmjit::x86::rax);
+    m_Assembler.MovQwordToVariable(&m_Reg.m_HI.UDW, "RegHI.UDW", asmjit::x86::rdx);
+    m_CodeBlock.Log("");
+    m_Assembler.bind(JumpEnd);
 }
 
 void CX64RecompilerOps::SPECIAL_DDIVU()
