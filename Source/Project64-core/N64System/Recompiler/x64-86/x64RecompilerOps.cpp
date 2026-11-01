@@ -4023,12 +4023,86 @@ void CX64RecompilerOps::COP1_S_DIV()
 
 void CX64RecompilerOps::COP1_S_ABS()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_SignBit(false);
 }
 
 void CX64RecompilerOps::COP1_S_NEG()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_SignBit(true);
+}
+
+void CX64RecompilerOps::COP1_S_SignBit(bool Negate)
+{
+    CompileCop1Test();
+
+    const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+
+    asmjit::Label NaNInput = m_Assembler.newLabel();
+    asmjit::Label Unimplemented = m_Assembler.newLabel();
+    asmjit::Label Exception = m_Assembler.newLabel();
+    asmjit::Label StoreResult = m_Assembler.newLabel();
+
+    // InitFpuOperation clears the cause bits
+    m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
+
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+
+    // CheckFPUInput32: a NaN goes to NaNInput with the absolute value in TempReg, a subnormal is unimplemented
+    m_Assembler.mov(TempReg.r32(), ValueReg.r32());
+    m_Assembler.and_(TempReg.r32(), 0x7FFFFFFF);
+    m_Assembler.cmp(TempReg.r32(), 0x7F800000);
+    m_Assembler.JaLabel("NaNInput", NaNInput);
+    m_Assembler.sub(TempReg.r32(), 1);
+    m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
+    m_Assembler.JbLabel("Unimplemented", Unimplemented);
+
+    if (Negate)
+    {
+        m_Assembler.xor_(ValueReg.r32(), 0x80000000);
+    }
+    else
+    {
+        m_Assembler.and_(ValueReg.r32(), 0x7FFFFFFF);
+    }
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      StoreResult:");
+    m_Assembler.bind(StoreResult);
+    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
+    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+
+    m_Assembler.EnterSecondarySection();
+
+    // A NaN in the 0x7F800001 - 0x7FBFFFFF range (either sign) is unimplemented
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      NaNInput:");
+    m_Assembler.bind(NaNInput);
+    m_Assembler.cmp(TempReg.r32(), 0x7FC00000);
+    m_Assembler.JbLabel("Unimplemented", Unimplemented);
+
+    // Quiet NaN: invalid operation, then the NaN result is replaced
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CV);
+    m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EV);
+    m_Assembler.JneLabel("FpuException", Exception);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
+    m_Assembler.mov(ValueReg.r32(), 0x7FBFFFFF);
+    m_Assembler.JmpLabel("StoreResult", StoreResult);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Unimplemented:");
+    m_Assembler.bind(Unimplemented);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CE);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      FpuException:");
+    m_Assembler.bind(Exception);
+    CompileExit((uint32_t)-1, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint);
+
+    m_Assembler.EnterPrimarySection();
 }
 
 void CX64RecompilerOps::COP1_S_SQRT()
