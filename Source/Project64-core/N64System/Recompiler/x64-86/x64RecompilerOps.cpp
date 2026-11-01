@@ -4023,15 +4023,15 @@ void CX64RecompilerOps::COP1_S_DIV()
 
 void CX64RecompilerOps::COP1_S_ABS()
 {
-    COP1_S_SignBit(false);
+    COP1_S_ExactOp(ExactFpuOp_Abs);
 }
 
 void CX64RecompilerOps::COP1_S_NEG()
 {
-    COP1_S_SignBit(true);
+    COP1_S_ExactOp(ExactFpuOp_Neg);
 }
 
-void CX64RecompilerOps::COP1_S_SignBit(bool Negate)
+void CX64RecompilerOps::COP1_S_ExactOp(ExactFpuOp Op)
 {
     CompileCop1Test();
 
@@ -4061,13 +4061,19 @@ void CX64RecompilerOps::COP1_S_SignBit(bool Negate)
     m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
     m_Assembler.JbLabel("Unimplemented", Unimplemented);
 
-    if (Negate)
+    switch (Op)
     {
+    case ExactFpuOp_Neg:
         m_Assembler.xor_(ValueReg.r32(), 0x80000000);
-    }
-    else
-    {
+        break;
+    case ExactFpuOp_Abs:
         m_Assembler.and_(ValueReg.r32(), 0x7FFFFFFF);
+        break;
+    case ExactFpuOp_CvtD:
+        m_Assembler.movd(asmjit::x86::xmm0, ValueReg.r32());
+        m_Assembler.cvtss2sd(asmjit::x86::xmm0, asmjit::x86::xmm0);
+        m_Assembler.movq(ValueReg.r64(), asmjit::x86::xmm0);
+        break;
     }
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      StoreResult:");
@@ -4089,7 +4095,14 @@ void CX64RecompilerOps::COP1_S_SignBit(bool Negate)
     m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EV);
     m_Assembler.JneLabel("FpuException", Exception);
     m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
-    m_Assembler.mov(ValueReg.r32(), 0x7FBFFFFF);
+    if (Op == ExactFpuOp_CvtD)
+    {
+        m_Assembler.MoveConstToX64reg(ValueReg, 0x7FF7FFFFFFFFFFFFull);
+    }
+    else
+    {
+        m_Assembler.mov(ValueReg.r32(), 0x7FBFFFFF);
+    }
     m_Assembler.JmpLabel("StoreResult", StoreResult);
 
     m_CodeBlock.Log("");
@@ -4157,7 +4170,7 @@ void CX64RecompilerOps::COP1_S_FLOOR_W()
 
 void CX64RecompilerOps::COP1_S_CVT_D()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_ExactOp(ExactFpuOp_CvtD);
 }
 
 void CX64RecompilerOps::COP1_S_CVT_W()
