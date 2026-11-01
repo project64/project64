@@ -355,7 +355,21 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         m_Section->m_Cont.LinkLocation2 = asmjit::Label();
         if (Link)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            R4300iInstruction Instruction(m_CompilePC, m_Opcode.Value);
+            uint32_t ReadReg1, ReadReg2;
+            Instruction.ReadsGPR(ReadReg1, ReadReg2);
+
+            if (ReadReg1 != 31 && ReadReg2 != 31)
+            {
+                m_RegWorkingSet.UnMap_GPR(31, false);
+                m_RegWorkingSet.SetMipsRegLo(31, (uint32_t)(m_CompilePC + 8));
+                m_RegWorkingSet.SetMipsRegState(31, CRegBase::STATE_CONST_32_SIGN);
+            }
+            else
+            {
+                m_Section->m_Cont.LinkAddress = (uint32_t)(m_CompilePC + 8);
+                m_Section->m_Jump.LinkAddress = (uint32_t)(m_CompilePC + 8);
+            }
         }
 
         Compile_BranchCompare(CompareType);
@@ -365,7 +379,10 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
         m_Section->m_Cont.RegSet.SetBlockCycleCount(m_Section->m_Cont.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
         if (m_Section->m_Cont.LinkAddress != (uint32_t)-1)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Section->m_Cont.RegSet.UnMap_GPR(31, false);
+            m_Section->m_Cont.RegSet.SetMipsRegLo(31, m_Section->m_Cont.LinkAddress);
+            m_Section->m_Cont.RegSet.SetMipsRegState(31, CRegBase::STATE_CONST_32_SIGN);
+            m_Section->m_Cont.LinkAddress = (uint32_t)-1;
         }
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
@@ -378,11 +395,26 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
 
         if (g_GameSettings.blockLinkingMode == BlockLinking_Eager)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Section->m_Jump.RegSet = m_RegWorkingSet;
+            m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
+            if (m_Section->m_Jump.LinkAddress != (uint32_t)-1)
+            {
+                m_Section->m_Jump.RegSet.UnMap_GPR(31, false);
+                m_Section->m_Jump.RegSet.SetMipsRegLo(31, m_Section->m_Jump.LinkAddress);
+                m_Section->m_Jump.RegSet.SetMipsRegState(31, CRegBase::STATE_CONST_32_SIGN);
+                m_Section->m_Jump.LinkAddress = (uint32_t)-1;
+            }
+            m_Section->GenerateSectionLinkage();
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
         else if (m_Section->m_Cont.FallThrough)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            if (m_Section->m_Jump.LinkLocation.isValid())
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+            m_Section->GenerateSectionLinkage();
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
         }
     }
     else if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT_DONE)
