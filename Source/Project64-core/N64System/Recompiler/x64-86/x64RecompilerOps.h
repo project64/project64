@@ -255,6 +255,7 @@ private:
     void LoadWordPartial(bool Left);
     void ResetMemoryStack(void);
     void ExitCodeBlock(void);
+    void OverflowDelaySlot(bool TestTimer);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void CompileCop1Test();
     void COP1_S_Arithmetic(uint32_t InstId, bool UseFt = true);

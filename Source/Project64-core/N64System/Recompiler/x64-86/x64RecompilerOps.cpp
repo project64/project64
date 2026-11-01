@@ -185,7 +185,56 @@ void CX64RecompilerOps::Compile_Branch(RecompilerBranchCompare CompareType, bool
             }
             if ((m_CompilePC & 0xFFC) == 0xFFC)
             {
-                g_Notify->BreakPoint(__FILE__, __LINE__);
+                // The delay slot is on the next page, so the interpreter runs it and then jumps to m_JumpToLocation
+                asmjit::Label DelayLinkLocation;
+                if (m_Section->m_Jump.FallThrough)
+                {
+                    if (m_Section->m_Jump.LinkLocation.isValid() || m_Section->m_Jump.LinkLocation2.isValid())
+                    {
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)m_Section->m_Jump.TargetPC);
+                }
+                else if (m_Section->m_Cont.FallThrough)
+                {
+                    if (m_Section->m_Cont.LinkLocation.isValid() || m_Section->m_Cont.LinkLocation2.isValid())
+                    {
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)m_Section->m_Cont.TargetPC);
+                }
+
+                if (m_Section->m_Jump.LinkLocation.isValid() || m_Section->m_Jump.LinkLocation2.isValid())
+                {
+                    if (DelayLinkLocation.isValid())
+                    {
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    DelayLinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JmpLabel("DoDelaySlot", DelayLinkLocation);
+
+                    LinkJump(m_Section->m_Jump);
+                    m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)m_Section->m_Jump.TargetPC);
+                }
+                if (m_Section->m_Cont.LinkLocation.isValid() || m_Section->m_Cont.LinkLocation2.isValid())
+                {
+                    if (DelayLinkLocation.isValid())
+                    {
+                        g_Notify->BreakPoint(__FILE__, __LINE__);
+                    }
+                    DelayLinkLocation = m_Assembler.newLabel();
+                    m_Assembler.JmpLabel("DoDelaySlot", DelayLinkLocation);
+
+                    LinkJump(m_Section->m_Cont);
+                    m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)m_Section->m_Cont.TargetPC);
+                }
+                if (DelayLinkLocation.isValid())
+                {
+                    m_CodeBlock.Log("");
+                    m_Assembler.bind(DelayLinkLocation);
+                }
+                OverflowDelaySlot(false);
+                return;
             }
             m_RegWorkingSet.ResetRegisterProtection();
             m_RegBeforeDelay = m_RegWorkingSet;
@@ -3729,28 +3778,28 @@ void CX64RecompilerOps::COP1_CT()
 
 namespace
 {
-    // Rounding control bits for MXCSR indexed by the FCSR rounding mode
-    const uint32_t MxcsrRoundingMode[4] = {0x0000, 0x6000, 0x4000, 0x2000};
+// Rounding control bits for MXCSR indexed by the FCSR rounding mode
+const uint32_t MxcsrRoundingMode[4] = {0x0000, 0x6000, 0x4000, 0x2000};
 
-    // FCSR flag bits indexed by the MXCSR exception flags
-    struct MxcsrFlagMap
+// FCSR flag bits indexed by the MXCSR exception flags
+struct MxcsrFlagMap
+{
+    uint32_t Value[64];
+    MxcsrFlagMap()
     {
-        uint32_t Value[64];
-        MxcsrFlagMap()
+        for (uint32_t i = 0; i < 64; i++)
         {
-            for (uint32_t i = 0; i < 64; i++)
-            {
-                Value[i] = ((i & 0x01) ? FPCSR_FV : 0) | ((i & 0x04) ? FPCSR_FZ : 0) | ((i & 0x08) ? FPCSR_FO : 0) | ((i & 0x10) ? FPCSR_FU : 0) | ((i & 0x20) ? FPCSR_FI : 0);
-            }
+            Value[i] = ((i & 0x01) ? FPCSR_FV : 0) | ((i & 0x04) ? FPCSR_FZ : 0) | ((i & 0x08) ? FPCSR_FO : 0) | ((i & 0x10) ? FPCSR_FU : 0) | ((i & 0x20) ? FPCSR_FI : 0);
         }
-    };
-    const MxcsrFlagMap MxcsrToFcsrFlags;
+    }
+};
+const MxcsrFlagMap MxcsrToFcsrFlags;
 
-    // Flushed single subnormal result indexed by (rounding mode << 1) | sign
-    const uint32_t FlushSubnormal32[8] = {0x00000000, 0x80000000, 0x00000000, 0x80000000, 0x00800000, 0x80000000, 0x00000000, 0x80800000};
+// Flushed single subnormal result indexed by (rounding mode << 1) | sign
+const uint32_t FlushSubnormal32[8] = {0x00000000, 0x80000000, 0x00000000, 0x80000000, 0x00800000, 0x80000000, 0x00000000, 0x80800000};
 
-    uint32_t FpuMxcsrSave[2];
-}
+uint32_t FpuMxcsrSave[2];
+} // namespace
 
 // Saves the host MXCSR and loads one with the guest rounding mode (or the fixed RoundingMode when it is not -1),
 // all exceptions masked and no flush to zero. PtrReg is left pointing at FpuMxcsrSave for CompileFpuLeaveMxcsr
@@ -5336,6 +5385,56 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
         WriteTrace(TraceRecompiler, TraceError, "CX64RecompilerOps::CompileExit: unhandled exit reason (%d)", reason);
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
+}
+
+void CX64RecompilerOps::OverflowDelaySlot(bool TestTimer)
+{
+    m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
+    m_RegWorkingSet.WriteBackRegisters();
+    UpdateCounters(m_RegWorkingSet, false, true);
+    if (m_PipelineStage == PIPELINE_STAGE_DELAY_SLOT)
+    {
+        m_Assembler.MoveVariable64ToX64reg(asmjit::x86::rax, &g_System->m_JumpToLocation, "System::m_JumpToLocation");
+        m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", asmjit::x86::rax);
+        m_Assembler.MoveVariable64ToX64reg(asmjit::x86::rax, &g_System->m_JumpDelayLocation, "System::JumpDelayLocation");
+        m_Assembler.MovQwordToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", asmjit::x86::rax);
+    }
+    else
+    {
+        m_Assembler.MoveConst64ToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", (uint64_t)(int64_t)(int32_t)(m_CompilePC + 4));
+    }
+    m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    if (g_SyncSystem)
+    {
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_BaseSystem, MemberFuncAddress(&CN64System::SyncSystem), "CN64System::SyncSystem");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+    }
+
+    if (TestTimer)
+    {
+        m_Assembler.MoveConstByteToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
+    }
+
+    // The interpreter runs the delay slot instruction and then jumps to m_JumpToLocation
+    m_Assembler.mov(asmjit::x86::edx, g_GameSettings.countPerOp);
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_System.m_OpCodes, MemberFuncAddress(&R4300iOp::ExecuteOps), "R4300iOp::ExecuteOps");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+
+    if (g_GameSettings.fastSP && g_Recompiler)
+    {
+        m_Assembler.sub(asmjit::x86::rsp, 32);
+        m_Assembler.CallThis(g_Recompiler, MemberFuncAddress(&CRecompiler::ResetMemoryStackPos), "CRecompiler::ResetMemoryStackPos");
+        m_Assembler.add(asmjit::x86::rsp, 32);
+    }
+    if (g_SyncSystem)
+    {
+        UpdateSyncCPU(m_RegWorkingSet, g_GameSettings.countPerOp);
+    }
+
+    ExitCodeBlock();
+    m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
 void CX64RecompilerOps::ExitCodeBlock(void)
