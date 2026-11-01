@@ -5616,10 +5616,7 @@ void CX64RecompilerOps::OverflowDelaySlot(bool TestTimer)
         m_Assembler.add(asmjit::x86::rsp, 32);
     }
 
-    if (TestTimer)
-    {
-        m_Assembler.MoveConstByteToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
-    }
+    m_Assembler.MoveConstByteToVariable(&g_System->m_TestTimer, "R4300iOp::m_TestTimer", TestTimer);
 
     // The interpreter runs the delay slot instruction and then jumps to m_JumpToLocation
     m_Assembler.mov(asmjit::x86::edx, g_GameSettings.countPerOp);
