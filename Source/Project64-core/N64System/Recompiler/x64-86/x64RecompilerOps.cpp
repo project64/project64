@@ -772,74 +772,53 @@ void CX64RecompilerOps::BGEZ_Compare()
 {
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
-        if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else if (m_RegWorkingSet.IsSigned(m_Opcode.rs))
-        {
-            m_Section->m_Jump.FallThrough = m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) >= 0;
-            m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
-        }
-        else
-        {
-            m_Section->m_Jump.FallThrough = true;
-            m_Section->m_Cont.FallThrough = false;
-        }
+        const int64_t Value = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        m_Section->m_Jump.FallThrough = Value >= 0;
+        m_Section->m_Cont.FallThrough = !m_Section->m_Jump.FallThrough;
+        return;
     }
-    else if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
+
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rs) && m_RegWorkingSet.Is32Bit(m_Opcode.rs) && !m_RegWorkingSet.IsSigned(m_Opcode.rs))
+    {
+        // A zero extended 32-bit value is never negative
+        m_Section->m_Jump.FallThrough = true;
+        m_Section->m_Cont.FallThrough = false;
+        return;
+    }
+
+    // Only the sign matters: a sign extended 32-bit value, the full 64-bit value or the high word in memory
+    if (m_RegWorkingSet.IsMapped(m_Opcode.rs))
     {
         if (m_RegWorkingSet.Is64Bit(m_Opcode.rs))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else if (m_RegWorkingSet.IsSigned(m_Opcode.rs))
-        {
-            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), 0);
-            if (m_Section->m_Cont.FallThrough)
-            {
-                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-                m_Assembler.JgeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-            }
-            else if (m_Section->m_Jump.FallThrough)
-            {
-                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-                m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-            }
-            else
-            {
-                m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-                m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-                m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-                m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-            }
+            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r64(), 0);
         }
         else
         {
-            m_Section->m_Jump.FallThrough = true;
-            m_Section->m_Cont.FallThrough = false;
+            m_Assembler.cmp(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32(), 0);
         }
     }
     else
     {
         m_Assembler.CmpConstToVariable(&m_Reg.m_GPR[m_Opcode.rs].W[1], CRegName::GPR_Hi[m_Opcode.rs], 0);
-        if (m_Section->m_Cont.FallThrough)
-        {
-            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-            m_Assembler.JgeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-        }
-        else if (m_Section->m_Jump.FallThrough)
-        {
-            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-            m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-        }
-        else
-        {
-            m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
-            m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
-            m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
-            m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
-        }
+    }
+
+    if (m_Section->m_Cont.FallThrough)
+    {
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JgeLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
+    }
+    else if (m_Section->m_Jump.FallThrough)
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+    }
+    else
+    {
+        m_Section->m_Cont.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JlLabel(m_Section->m_Cont.BranchLabel.c_str(), m_Section->m_Cont.LinkLocation);
+        m_Section->m_Jump.LinkLocation = m_Assembler.newLabel();
+        m_Assembler.JmpLabel(m_Section->m_Jump.BranchLabel.c_str(), m_Section->m_Jump.LinkLocation);
     }
 }
 
