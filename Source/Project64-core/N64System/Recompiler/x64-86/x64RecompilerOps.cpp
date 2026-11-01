@@ -4082,7 +4082,135 @@ void CX64RecompilerOps::COP1_S_CVT_L()
 
 void CX64RecompilerOps::COP1_S_CMP()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_Compare(false);
+}
+
+// Matches R4300iOp::COP1_S_CMP and R4300iOp::COP1_D_CMP
+void CX64RecompilerOps::COP1_Compare(bool Double)
+{
+    CompileCop1Test();
+
+    const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp FsReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp FtReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    const asmjit::x86::Gp ResultReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+
+    asmjit::Label Unordered = m_Assembler.newLabel();
+    asmjit::Label ConditionReady = m_Assembler.newLabel();
+    asmjit::Label Invalid = m_Assembler.newLabel();
+    asmjit::Label Exception = m_Assembler.newLabel();
+
+    // InitFpuOperation clears the cause bits
+    m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
+
+    if (Double)
+    {
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
+        m_Assembler.mov(FsReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.ft], stdstr_f("m_FPR_UDW[%d]", m_Opcode.ft).c_str());
+        m_Assembler.mov(FtReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+    }
+    else
+    {
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
+        m_Assembler.mov(FsReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UW[m_Opcode.ft], stdstr_f("m_FPR_UW[%d]", m_Opcode.ft).c_str());
+        m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    }
+
+    // ucomiss/ucomisd: unordered sets ZF, PF and CF, less sets CF, equal sets ZF
+    m_Assembler.xor_(ResultReg.r32(), ResultReg.r32());
+    if (Double)
+    {
+        m_Assembler.movq(asmjit::x86::xmm0, FsReg.r64());
+        m_Assembler.movq(asmjit::x86::xmm1, FtReg.r64());
+        m_Assembler.ucomisd(asmjit::x86::xmm0, asmjit::x86::xmm1);
+    }
+    else
+    {
+        m_Assembler.movd(asmjit::x86::xmm0, FsReg.r32());
+        m_Assembler.movd(asmjit::x86::xmm1, FtReg.r32());
+        m_Assembler.ucomiss(asmjit::x86::xmm0, asmjit::x86::xmm1);
+    }
+    m_Assembler.JpLabel("Unordered", Unordered);
+    const bool TestLess = (m_Opcode.funct & 4) != 0, TestEqual = (m_Opcode.funct & 2) != 0;
+    if (TestLess && TestEqual)
+    {
+        m_Assembler.setbe(ResultReg.r8Lo());
+    }
+    else if (TestLess)
+    {
+        m_Assembler.setb(ResultReg.r8Lo());
+    }
+    else if (TestEqual)
+    {
+        m_Assembler.sete(ResultReg.r8Lo());
+    }
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      ConditionReady:");
+    m_Assembler.bind(ConditionReady);
+    m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~FPCSR_C);
+    m_Assembler.shl(ResultReg.r32(), 23);
+    m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), ResultReg.r32());
+
+    m_Assembler.EnterSecondarySection();
+
+    // At least one input is a NaN, invalid is raised for a signalling compare or when either input is
+    // in the 0x7FC00000 - 0x7FFFFFFF range for singles or the 0x7FF8000000000000 - 0x7FFFFFFFFFFFFFFF
+    // range for doubles (either sign), the same as the interpreter
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      Unordered:");
+    m_Assembler.bind(Unordered);
+    if ((m_Opcode.funct & 8) == 0)
+    {
+        asmjit::Label NotInvalid = m_Assembler.newLabel();
+        const asmjit::x86::Gp Inputs[2] = {FsReg, FtReg};
+        for (const asmjit::x86::Gp & Input : Inputs)
+        {
+            if (Double)
+            {
+                // Drop the sign, leaving the exponent and top mantissa bit: >= 0xFFF is >= 0x7FF8000000000000
+                m_Assembler.shl(Input.r64(), 1);
+                m_Assembler.shr(Input.r64(), 52);
+                m_Assembler.cmp(Input.r32(), 0xFFF);
+            }
+            else
+            {
+                m_Assembler.and_(Input.r32(), 0x7FFFFFFF);
+                m_Assembler.cmp(Input.r32(), 0x7FC00000);
+            }
+            m_Assembler.JaeLabel("Invalid", Invalid);
+        }
+        m_Assembler.JmpLabel("NotInvalid", NotInvalid);
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      Invalid:");
+        m_Assembler.bind(Invalid);
+        m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CV);
+        m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EV);
+        m_Assembler.JneLabel("FpuException", Exception);
+        m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
+        m_CodeBlock.Log("");
+        m_CodeBlock.Log("      NotInvalid:");
+        m_Assembler.bind(NotInvalid);
+    }
+    else
+    {
+        m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_CV);
+        m_Assembler.test(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_EV);
+        m_Assembler.JneLabel("FpuException", Exception);
+        m_Assembler.or_(asmjit::x86::dword_ptr(FcsrPtr), FPCSR_FV);
+    }
+    m_Assembler.mov(ResultReg.r32(), (m_Opcode.funct & 1) != 0 ? 1 : 0);
+    m_Assembler.JmpLabel("ConditionReady", ConditionReady);
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      FpuException:");
+    m_Assembler.bind(Exception);
+    CompileExit((uint32_t)-1, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionFloatingPoint);
+
+    m_Assembler.EnterPrimarySection();
 }
 
 void CX64RecompilerOps::COP1_D_ADD()
@@ -4182,7 +4310,7 @@ void CX64RecompilerOps::COP1_D_CVT_L()
 
 void CX64RecompilerOps::COP1_D_CMP()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_Compare(true);
 }
 
 void CX64RecompilerOps::COP1_W_CVT_S()
