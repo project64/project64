@@ -1363,12 +1363,100 @@ void CX64RecompilerOps::LUI()
 
 void CX64RecompilerOps::DADDI()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    const int64_t Imm = (int16_t)m_Opcode.immediate;
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        const int64_t Rs = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        const int64_t Result = (int64_t)((uint64_t)Rs + (uint64_t)Imm);
+        if ((~(Rs ^ Imm) & (Rs ^ Result)) & 0x8000000000000000ll)
+        {
+            CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow);
+            m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
+            return;
+        }
+        if (m_Opcode.rt == 0)
+        {
+            return;
+        }
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+        m_RegWorkingSet.SetMipsReg(m_Opcode.rt, (uint64_t)Result);
+        if ((m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rt) == -1) ||
+            (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) >= 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rt) == 0))
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
+        }
+        else
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_64);
+        }
+    }
+    else
+    {
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rs);
+        const asmjit::x86::Gp Reg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+        m_Assembler.add(Reg.r64(), (int32_t)Imm);
+
+        // rt is not written when the addition overflows
+        CompileExit(m_CompilePC, m_CompilePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_ExceptionOverflow, &CX64Ops::JoLabel);
+        if (m_Opcode.rt == 0)
+        {
+            return;
+        }
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r64(), Reg.r64());
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
 }
 
 void CX64RecompilerOps::DADDIU()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rt == 0)
+    {
+        return;
+    }
+
+    const int64_t Imm = (int16_t)m_Opcode.immediate;
+    if (m_RegWorkingSet.IsConst(m_Opcode.rs))
+    {
+        const int64_t Rs = m_RegWorkingSet.Is64Bit(m_Opcode.rs) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rs) : (m_RegWorkingSet.IsSigned(m_Opcode.rs) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rs) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs));
+        const int64_t Result = (int64_t)((uint64_t)Rs + (uint64_t)Imm);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rt, false);
+        }
+        m_RegWorkingSet.SetMipsReg(m_Opcode.rt, (uint64_t)Result);
+        if ((m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rt) == -1) ||
+            (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) >= 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rt) == 0))
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_32_SIGN);
+        }
+        else
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rt, CRegBase::STATE_CONST_64);
+        }
+    }
+    else
+    {
+        m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, m_Opcode.rs);
+        if (Imm != 0)
+        {
+            m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r64(), (int32_t)Imm);
+        }
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
 }
 
 void CX64RecompilerOps::LDL()
