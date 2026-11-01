@@ -3725,14 +3725,21 @@ namespace
     uint32_t FpuMxcsrSave[2];
 }
 
-// Saves the host MXCSR and loads one with the guest rounding mode, all exceptions masked and no flush to zero.
-// PtrReg is left pointing at FpuMxcsrSave for CompileFpuLeaveMxcsr
-void CX64RecompilerOps::CompileFpuEnterMxcsr(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & PtrReg, const asmjit::x86::Gp & TempReg)
+// Saves the host MXCSR and loads one with the guest rounding mode (or the fixed RoundingMode when it is not -1),
+// all exceptions masked and no flush to zero. PtrReg is left pointing at FpuMxcsrSave for CompileFpuLeaveMxcsr
+void CX64RecompilerOps::CompileFpuEnterMxcsr(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & PtrReg, const asmjit::x86::Gp & TempReg, int32_t RoundingMode)
 {
-    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(FcsrPtr));
-    m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
-    m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
-    m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
+    if (RoundingMode >= 0)
+    {
+        m_Assembler.mov(TempReg.r32(), MxcsrRoundingMode[RoundingMode & FPCSR_RM_MASK]);
+    }
+    else
+    {
+        m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(FcsrPtr));
+        m_Assembler.and_(TempReg.r32(), FPCSR_RM_MASK);
+        m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
+        m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(PtrReg, TempReg.r64(), 2));
+    }
     m_Assembler.MoveConstToX64reg(PtrReg, (uintptr_t)FpuMxcsrSave, "FpuMxcsrSave");
     m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg));
     m_Assembler.stmxcsr(asmjit::x86::dword_ptr(PtrReg, 4));
@@ -4024,22 +4031,22 @@ void CX64RecompilerOps::COP1_S_FLOOR_L()
 
 void CX64RecompilerOps::COP1_S_ROUND_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_ToWord(FPRoundingMode_RoundToNearest);
 }
 
 void CX64RecompilerOps::COP1_S_TRUNC_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_ToWord(FPRoundingMode_RoundTowardZero);
 }
 
 void CX64RecompilerOps::COP1_S_CEIL_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_ToWord(FPRoundingMode_RoundTowardPlusInfinity);
 }
 
 void CX64RecompilerOps::COP1_S_FLOOR_W()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    COP1_S_ToWord(FPRoundingMode_RoundTowardMinusInfinity);
 }
 
 void CX64RecompilerOps::COP1_S_CVT_D()
@@ -4048,6 +4055,11 @@ void CX64RecompilerOps::COP1_S_CVT_D()
 }
 
 void CX64RecompilerOps::COP1_S_CVT_W()
+{
+    COP1_S_ToWord(-1);
+}
+
+void CX64RecompilerOps::COP1_S_ToWord(int32_t RoundingMode)
 {
     CompileCop1Test();
 
@@ -4076,8 +4088,8 @@ void CX64RecompilerOps::COP1_S_CVT_W()
     m_Assembler.cmp(TempReg.r32(), 0x007FFFFF);
     m_Assembler.JbLabel("Unimplemented", Unimplemented);
 
-    // f32_to_i32 rounds with the guest rounding mode, out of range sets invalid and returns 0x80000000
-    CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg);
+    // f32_to_i32 rounds with the rounding mode, out of range sets invalid and returns 0x80000000
+    CompileFpuEnterMxcsr(FcsrPtr, PtrReg, TempReg, RoundingMode);
     m_Assembler.movd(asmjit::x86::xmm0, ValueReg.r32());
     m_Assembler.cvtss2si(ValueReg.r32(), asmjit::x86::xmm0);
     CompileFpuLeaveMxcsr(PtrReg);
