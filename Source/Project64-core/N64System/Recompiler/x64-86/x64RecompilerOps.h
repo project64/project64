@@ -258,7 +258,7 @@ private:
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void CompileCop1Test();
     void COP1_S_Arithmetic(uint32_t InstId, bool UseFt = true);
-    void COP1_D_Arithmetic(uint32_t InstId, bool UseFt = true);
+    void COP1_D_Arithmetic(uint32_t InstId, bool UseFt = true, bool SingleResult = false);
     void COP1_Compare(bool Double);
     enum ExactFpuOp
     {
