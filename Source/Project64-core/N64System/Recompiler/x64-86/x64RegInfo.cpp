@@ -525,6 +525,15 @@ asmjit::x86::Gp CX64RegInfo::Map_TempReg(asmjit::x86::Gp Reg, int32_t MipsReg, a
         {
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
+
+        if (GetX64Protected(Reg.id()))
+        {
+            g_Notify->BreakPoint(__FILE__, __LINE__);
+        }
+        else if (!IsTempMapped(GetX64Mapped(Reg.id())))
+        {
+            UnMap_X64reg(Reg);
+        }
     }
     else
     {

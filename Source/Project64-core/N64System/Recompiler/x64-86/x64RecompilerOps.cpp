@@ -2710,8 +2710,15 @@ void CX64RecompilerOps::SPECIAL_DDIVU()
     else
     {
         m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
+        m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rdx);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
         m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), true);
+        m_RegWorkingSet.UnMap_X64reg(asmjit::x86::rax);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), true);
         const asmjit::x86::Gp DivReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::edx.id(), false);
+        m_RegWorkingSet.Map_TempReg(asmjit::x86::rdx, -1, asmjit::RegType::kX86_Gpq);
+        m_RegWorkingSet.SetX64Protected(asmjit::x86::eax.id(), false);
         m_RegWorkingSet.Map_TempReg(asmjit::x86::rax, m_Opcode.rs, asmjit::RegType::kX86_Gpq);
 
         asmjit::Label JumpEnd;
