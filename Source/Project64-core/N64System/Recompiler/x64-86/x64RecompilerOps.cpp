@@ -921,7 +921,8 @@ void CX64RecompilerOps::J()
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2)));
+            OverflowDelaySlot(false);
             return;
         }
         R4300iOpcode DelaySlot;
@@ -969,7 +970,9 @@ void CX64RecompilerOps::JAL()
         m_Assembler.add(m_RegWorkingSet.GetMipsRegMap(31).r32(), (m_CompilePC + 8) & ~0xF0000000);
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler.MoveConst64ToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", (uint64_t)(int64_t)(int32_t)((m_CompilePC & 0xF0000000) + (m_Opcode.target << 2)));
+            OverflowDelaySlot(false);
+            return;
         }
         m_Section->m_Jump.TargetPC = (m_CompilePC & 0xF0000000) + (m_Opcode.target << 2);
         m_Section->m_Jump.JumpPC = (uint32_t)m_CompilePC;
@@ -2368,7 +2371,10 @@ void CX64RecompilerOps::SPECIAL_JR()
     {
         if ((m_CompilePC & 0xFFC) == 0xFFC)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            const asmjit::x86::Gp TargetReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+            m_Assembler.MovQwordToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", TargetReg);
+            OverflowDelaySlot(true);
+            return;
         }
 
         m_Section->m_Jump.FallThrough = false;
@@ -2450,17 +2456,25 @@ void CX64RecompilerOps::SPECIAL_JALR()
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
 
+        if ((m_CompilePC & 0xFFC) == 0xFFC)
+        {
+            const asmjit::x86::Gp TargetReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
+            m_Assembler.MovQwordToVariable(&g_System->m_JumpToLocation, "System::m_JumpToLocation", TargetReg);
+            if (m_Opcode.rd != 0)
+            {
+                m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+                m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (uint32_t)(m_CompilePC + 8));
+                m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+            }
+            OverflowDelaySlot(true);
+            return;
+        }
+
         if (m_Opcode.rd != 0)
         {
             m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
             m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (uint32_t)(m_CompilePC + 8));
             m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
-        }
-
-        if ((m_CompilePC & 0xFFC) == 0xFFC)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
         }
 
         m_Section->m_Jump.FallThrough = false;
