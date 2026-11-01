@@ -3250,6 +3250,21 @@ void CX64RecompilerOps::SPECIAL_OR()
         return;
     }
 
+    CompileOr();
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
+}
+
+void CX64RecompilerOps::CompileOr()
+{
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
     if (m_RegWorkingSet.IsConst(m_Opcode.rt) && m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
         const uint64_t rtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) : (m_RegWorkingSet.IsSigned(m_Opcode.rt) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
@@ -3352,12 +3367,6 @@ void CX64RecompilerOps::SPECIAL_OR()
                 }
             }
         }
-    }
-
-    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
-    {
-        m_RegWorkingSet.ResetRegisterProtection();
-        ResetMemoryStack();
     }
 }
 
@@ -3480,7 +3489,46 @@ void CX64RecompilerOps::SPECIAL_XOR()
 
 void CX64RecompilerOps::SPECIAL_NOR()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    if (m_Opcode.rd == 0)
+    {
+        return;
+    }
+
+    CompileOr();
+    if (m_RegWorkingSet.IsConst(m_Opcode.rd))
+    {
+        const uint64_t Value = ~(m_RegWorkingSet.Is64Bit(m_Opcode.rd) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rd) : (m_RegWorkingSet.IsSigned(m_Opcode.rd) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rd)));
+        m_RegWorkingSet.SetMipsReg(m_Opcode.rd, Value);
+        if ((m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) < 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == -1) ||
+            (m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rd) >= 0 && m_RegWorkingSet.GetMipsRegHi_S(m_Opcode.rd) == 0))
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
+        }
+        else
+        {
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_64);
+        }
+    }
+    else if (m_RegWorkingSet.Is32Bit(m_Opcode.rd) && m_RegWorkingSet.IsSigned(m_Opcode.rd))
+    {
+        // The complement of a sign extended value is still sign extended
+        m_Assembler.not_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32());
+    }
+    else
+    {
+        // The complement of a zero extended value sets the high word, so it has to be 64-bit
+        if (m_RegWorkingSet.Is32Bit(m_Opcode.rd))
+        {
+            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rd);
+        }
+        m_Assembler.not_(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64());
+    }
+
+    if (g_GameSettings.fastSP && m_Opcode.rd == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
 }
 
 void CX64RecompilerOps::SPECIAL_SLT()
