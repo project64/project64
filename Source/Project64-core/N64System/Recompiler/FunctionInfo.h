@@ -24,6 +24,10 @@ public:
     {
         return m_Function;
     }
+    const Func FunctionWarm() const
+    {
+        return m_FunctionWarm;
+    }
     const MD5Digest & Hash() const
     {
         return m_Hash;
@@ -58,6 +62,7 @@ private:
 
     MD5Digest m_Hash;
     Func m_Function;
+    Func m_FunctionWarm;
 
     CCompiledFunc * m_Next;
     uint64_t m_MemContents[2], *m_MemLocation[2];

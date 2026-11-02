@@ -7,6 +7,7 @@ CCompiledFunc::CCompiledFunc(const CCodeBlock & CodeBlock) :
     m_MaxPC(CodeBlock.VAddrLast()),
     m_Hash(CodeBlock.Hash()),
     m_Function((Func)CodeBlock.CompiledLocationCold()),
+    m_FunctionWarm((Func)CodeBlock.CompiledLocationWarm()),
     m_Next(nullptr)
 {
     m_MemContents[0] = CodeBlock.MemContents(0);
@@ -19,6 +20,10 @@ CCompiledFunc::CCompiledFunc(const CCodeBlock & CodeBlock) :
     if ((((uint32_t)m_Function) % 2) == 0)
     {
         m_Function = (Func)(((uint32_t)m_Function) + 1);
+    }
+    if ((((uint32_t)m_FunctionWarm) % 2) == 0)
+    {
+        m_FunctionWarm = (Func)(((uint32_t)m_FunctionWarm) + 1);
     }
 #endif
 }

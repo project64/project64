@@ -255,7 +255,7 @@ private:
     void StoreWordPartial(bool Left);
     void LoadWordPartial(bool Left);
     void ResetMemoryStack(void);
-    void ExitCodeBlock(void);
+    void ExitCodeBlock(uint32_t TargetPC = (uint32_t)-1);
     void OverflowDelaySlot(bool TestTimer);
     void UpdateSyncCPU(CRegInfo & RegSet, uint32_t Cycles);
     void CompileCop1Test();

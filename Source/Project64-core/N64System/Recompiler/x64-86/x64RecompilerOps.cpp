@@ -355,7 +355,7 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
             CompileCop1Test();
             m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
         }
-        if (g_GameSettings.blockLinkingMode != BlockLinking_Eager || (m_CompilePC & 0xFFC) == 0xFFC)
+        if (!GameLinkBlocks() || (m_CompilePC & 0xFFC) == 0xFFC)
         {
             m_Section->m_Jump.JumpPC = (uint32_t)m_CompilePC;
             m_Section->m_Jump.TargetPC = (uint32_t)(m_CompilePC + ((int16_t)m_Opcode.offset << 2) + 4);
@@ -442,7 +442,7 @@ void CX64RecompilerOps::Compile_BranchLikely(RecompilerBranchCompare CompareType
             m_PipelineStage = PIPELINE_STAGE_DO_DELAY_SLOT;
         }
 
-        if (g_GameSettings.blockLinkingMode == BlockLinking_Eager)
+        if (GameLinkBlocks())
         {
             m_Section->m_Jump.RegSet = m_RegWorkingSet;
             m_Section->m_Jump.RegSet.SetBlockCycleCount(m_Section->m_Jump.RegSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
@@ -5257,6 +5257,7 @@ void CX64RecompilerOps::UnknownOpcode()
 
 void CX64RecompilerOps::EnterCodeBlock()
 {
+    m_ColdEntryOffset = (uint32_t)m_Assembler.offset();
     m_Assembler.push(asmjit::x86::rbx);
     m_Assembler.push(asmjit::x86::rbp);
     m_Assembler.push(asmjit::x86::rsi);
@@ -5266,6 +5267,7 @@ void CX64RecompilerOps::EnterCodeBlock()
     m_Assembler.push(asmjit::x86::r14);
     m_Assembler.push(asmjit::x86::r15);
     m_Assembler.sub(asmjit::x86::rsp, FunctionStackSize);
+    m_WarmEntryOffset = (uint32_t)m_Assembler.offset();
 }
 
 void CX64RecompilerOps::CompileExitCode()
@@ -5469,7 +5471,7 @@ void CX64RecompilerOps::CompileExit(uint32_t JumpPC, uint32_t TargetPC, CRegInfo
             ExitCodeBlock();
             m_Assembler.bind(ValidPCJump);
         }
-        ExitCodeBlock();
+        ExitCodeBlock(reason == ExitReason_CheckPCAlignment ? (uint32_t)-1 : TargetPC);
         break;
     case ExitReason_ExceptionOverflow:
     {
@@ -5639,13 +5641,29 @@ void CX64RecompilerOps::OverflowDelaySlot(bool TestTimer)
     m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
 }
 
-void CX64RecompilerOps::ExitCodeBlock(void)
+void CX64RecompilerOps::ExitCodeBlock(uint32_t TargetPC)
 {
     if (g_SyncSystem)
     {
         m_Assembler.sub(asmjit::x86::rsp, 32);
         m_Assembler.CallThis(g_BaseSystem, MemberFuncAddress(&CN64System::SyncSystem), "CN64System::SyncSystem");
         m_Assembler.add(asmjit::x86::rsp, 32);
+    }
+
+    const bool CanLink = TargetPC != (uint32_t)-1 && (g_GameSettings.blockLinkingMode == BlockLinking_Adaptive || g_GameSettings.blockLinkingMode == BlockLinking_Eager) &&
+                         !g_DebugSettings.haveWriteBP && !g_DebugSettings.haveReadBP &&
+                         (((uint32_t)m_CompilePC & 0xFFFFF000) == (TargetPC & 0xFFFFF000));
+    if (CanLink)
+    {
+        asmjit::Label JmpEnd = m_Assembler.newLabel();
+        asmjit::Label MovImmEnd = m_Assembler.newLabel();
+        m_Assembler.long_().jmp(JmpEnd);
+        m_Assembler.bind(JmpEnd);
+        m_Assembler.mov(asmjit::x86::rax, (uint64_t)0x8000000000000000ull);
+        m_Assembler.bind(MovImmEnd);
+        m_Assembler.MovQwordToVariable(&m_ExitLinkRel32, "CRecompiler::m_ExitLinkRel32", asmjit::x86::rax);
+        m_Assembler.MoveConstToVariable(&m_ExitLinkTargetPC, "CRecompiler::m_ExitLinkTargetPC", TargetPC);
+        m_CodeBlock.AddExitNativeLinkSite(JmpEnd, MovImmEnd, 8);
     }
     m_Assembler.add(asmjit::x86::rsp, FunctionStackSize);
     m_Assembler.pop(asmjit::x86::r15);

@@ -63,6 +63,8 @@ protected:
     CRegisters & m_Reg;
     CTLB & m_TLB;
     CCodeBlock & m_CodeBlock;
+    uint8_t *& m_ExitLinkRel32;
+    uint32_t & m_ExitLinkTargetPC;
     R4300iInstruction m_Instruction;
     const R4300iOpcode & m_Opcode;
     CCodeSection * m_Section;

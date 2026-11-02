@@ -45,7 +45,12 @@ extern GameSettings g_GameSettings;
 
 inline bool GameLinkBlocks(void)
 {
+#if defined(__amd64__) || defined(_M_X64)
+    // x64 eager linking uses the lazy linking until the background optimization is in place
+    return false;
+#else
     return g_GameSettings.blockLinkingMode == BlockLinking_Eager && !g_DebugSettings.haveWriteBP && !g_DebugSettings.haveReadBP;
+#endif
 }
 
 void SetupGameSettings(void);

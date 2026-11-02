@@ -2,6 +2,7 @@
 #include <Common/md5.h>
 #include <Project64-core/N64System/Recompiler/CodeSection.h>
 #include <Project64-core/N64System/Recompiler/RecompilerOps.h>
+#include <vector>
 
 #if !defined(_MSC_VER) && !defined(_Printf_format_string_)
 #define _Printf_format_string_
@@ -100,6 +101,7 @@ public:
     uint32_t NextTest();
 
     void Log(_Printf_format_string_ const char * Text, ...);
+    void AddExitNativeLinkSite(const asmjit::Label & JmpEnd, const asmjit::Label & MovImmEnd, uint32_t MovImmSize);
 
 private:
     CCodeBlock();
@@ -114,6 +116,14 @@ private:
     bool SetSection(CCodeSection *& Section, CCodeSection * CurrentSection, uint32_t TargetPC, bool LinkAllowed, uint32_t CurrentPC);
     bool AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t & ContinuePC, bool & LikelyBranch, bool & IncludeDelaySlot, bool & EndBlock, bool & PermLoop);
     void handleError(asmjit::Error err, const char * message, asmjit::BaseEmitter * origin);
+    void ApplyExitNativeLinkMovPatches(void);
+
+    struct SExitNativeLinkSite
+    {
+        asmjit::Label JmpEnd;
+        asmjit::Label MovImmEnd;
+        uint32_t MovImmSize;
+    };
 
     asmjit::Environment m_Environment;
     asmjit::CodeHolder m_CodeHolder;
@@ -138,4 +148,5 @@ private:
     uint64_t * m_MemLocation[2];
     CRecompilerOps * m_RecompilerOps;
     std::string m_CodeLog;
+    std::vector<SExitNativeLinkSite> m_ExitNativeLinkSites;
 };

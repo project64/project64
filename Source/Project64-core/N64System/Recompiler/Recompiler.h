@@ -7,12 +7,16 @@
 #include <Project64-core/N64System/Recompiler/RecompilerMemory.h>
 #include <Project64-core/Settings/DebugSettings.h>
 
+#include <vector>
+
 class CLog;
 
 class CRecompiler :
     public CFunctionMap,
     public CRecompMemory
 {
+    friend class CRecompilerOpsBase;
+
 public:
     enum REMOVE_REASON
     {
@@ -58,6 +62,11 @@ private:
 
     CCompiledFunc * CompileCode();
 
+    void ApplyExitNativeRel32Patch(uint8_t * Rel32WritePtr, const uint8_t * DestWarmEntry);
+    void TryPatchExitNativeLinkBeforeExec(const CCompiledFunc * info);
+    void UnlinkExitNativeLinks();
+    void ClearExitNativeLinkState();
+
     typedef struct
     {
         uint32_t Address;
@@ -88,4 +97,7 @@ private:
     CLog * m_LogFile;
     HighResTimeStamp m_RecompStartTime;
     HighResTimeStamp m_RecompEndTime;
+    uint8_t * m_ExitLinkRel32;
+    uint32_t m_ExitLinkTargetPC;
+    std::vector<uint8_t *> m_ExitLinkPatchedSites;
 };

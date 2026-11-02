@@ -12,7 +12,9 @@ CRecompiler::CRecompiler(CN64System & System, bool & EndEmulation) :
     m_EndEmulation(EndEmulation),
     m_MemoryStack(0),
     PROGRAM_COUNTER(System.m_Reg.m_PROGRAM_COUNTER),
-    m_LogFile(nullptr)
+    m_LogFile(nullptr),
+    m_ExitLinkRel32(nullptr),
+    m_ExitLinkTargetPC(0)
 {
     CFunctionMap::AllocateMemory();
     ResetMemoryStackPos();
@@ -98,6 +100,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
             CCompiledFunc * info = table[TableEntry];
             if (info != nullptr)
             {
+                TryPatchExitNativeLinkBeforeExec(info);
                 (info->Function())();
                 continue;
             }
@@ -120,6 +123,7 @@ void CRecompiler::RecompilerMain_VirtualTable()
         }
 
         table[TableEntry] = info;
+        TryPatchExitNativeLinkBeforeExec(info);
         (info->Function())();
     }
 }
@@ -160,6 +164,7 @@ void CRecompiler::RecompilerMain_Lookup()
                 }
                 JumpTable()[PhysicalAddr >> 2] = info;
             }
+            TryPatchExitNativeLinkBeforeExec(info);
             (info->Function())();
         }
         else
@@ -243,6 +248,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
                 uint64_t PreNonCPUTime = m_System.m_CPU_Usage.NonCPUTime();
                 HighResTimeStamp StartTime, EndTime;
                 StartTime.SetToNow();
+                TryPatchExitNativeLinkBeforeExec(info);
                 (info->Function())();
                 EndTime.SetToNow();
                 uint64_t PostNonCPUTime = m_System.m_CPU_Usage.NonCPUTime();
@@ -268,6 +274,7 @@ void CRecompiler::RecompilerMain_Lookup_validate()
             }
             else
             {
+                TryPatchExitNativeLinkBeforeExec(info);
                 (info->Function())();
             }
         }
@@ -318,6 +325,7 @@ void CRecompiler::ResetRecompCode(bool bAllocate)
         }
     }
     m_Functions.clear();
+    ClearExitNativeLinkState();
     WriteTrace(TraceRecompiler, TraceDebug, "Done");
 }
 
@@ -409,6 +417,7 @@ CCompiledFunc * CRecompiler::CompileCode()
 
 void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REASON Reason)
 {
+    UnlinkExitNativeLinks();
     if (g_GameSettings.lookUpMode == FuncFind_VirtualLookup)
     {
         ClearRecompCode_Virt(Address + 0x80000000, length, Reason);
@@ -432,7 +441,7 @@ void CRecompiler::ClearRecompCode_Phys(uint32_t Address, int length, REMOVE_REAS
                 ClearLen = g_GameSettings.rdramSize - Address;
             }
             WriteTrace(TraceRecompiler, TraceInfo, "Resetting jump table, Addr: %X  len: %d", Address, ClearLen);
-            memset((uint8_t *)JumpTable() + Address, 0, ClearLen);
+            memset(&JumpTable()[Address >> 2], 0, (size_t)(ClearLen >> 2) * sizeof(PCCompiledFunc));
         }
         else
         {
@@ -445,6 +454,8 @@ void CRecompiler::ClearRecompCode_Virt(uint32_t Address, int length, REMOVE_REAS
 {
     uint32_t AddressIndex, WriteStart;
     int DataInBlock, DataToWrite, DataLeft;
+
+    UnlinkExitNativeLinks();
 
     switch (g_GameSettings.lookUpMode)
     {
@@ -592,4 +603,46 @@ void CRecompiler::LogCodeBlock(const CCodeBlock & CodeBlock)
     m_LogFile->Log(CodeBlock.CodeLog().c_str());
     m_LogFile->Log("\r\n");
     m_LogFile->Flush();
+}
+
+void CRecompiler::ApplyExitNativeRel32Patch(uint8_t * Rel32WritePtr, const uint8_t * DestWarmEntry)
+{
+    const intptr_t Delta = (intptr_t)DestWarmEntry - (intptr_t)(Rel32WritePtr + 4);
+    const int32_t Rel = (int32_t)Delta;
+    if ((intptr_t)Rel != Delta)
+    {
+        return;
+    }
+    memcpy(Rel32WritePtr, &Rel, sizeof(Rel));
+    m_ExitLinkPatchedSites.push_back(Rel32WritePtr);
+}
+
+void CRecompiler::TryPatchExitNativeLinkBeforeExec(const CCompiledFunc * info)
+{
+    if (m_ExitLinkRel32 == nullptr)
+    {
+        return;
+    }
+    if (info != nullptr && info->EnterPC() == m_ExitLinkTargetPC && (uint32_t)PROGRAM_COUNTER == m_ExitLinkTargetPC)
+    {
+        ApplyExitNativeRel32Patch(m_ExitLinkRel32, (const uint8_t *)info->FunctionWarm());
+    }
+    m_ExitLinkRel32 = nullptr;
+}
+
+void CRecompiler::UnlinkExitNativeLinks(void)
+{
+    const int32_t Rel = 0;
+    for (size_t i = 0, n = m_ExitLinkPatchedSites.size(); i < n; i++)
+    {
+        memcpy(m_ExitLinkPatchedSites[i], &Rel, sizeof(Rel));
+    }
+    m_ExitLinkPatchedSites.clear();
+    m_ExitLinkRel32 = nullptr;
+}
+
+void CRecompiler::ClearExitNativeLinkState(void)
+{
+    m_ExitLinkPatchedSites.clear();
+    m_ExitLinkRel32 = nullptr;
 }

@@ -862,6 +862,7 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
 
 bool CCodeBlock::Compile()
 {
+    m_ExitNativeLinkSites.clear();
     m_RecompilerOps->EnterCodeBlock();
     if (GameLinkBlocks())
     {
@@ -928,11 +929,38 @@ uint32_t CCodeBlock::Finilize(CRecompMemory & RecompMem)
     }
     m_CodeHolder.copyFlattenedData(m_CompiledLocationCold, codeSize, asmjit::CopySectionFlags::kPadSectionBuffer);
     m_Recompiler.RecompPos() += codeSize;
+    if (!m_ExitNativeLinkSites.empty())
+    {
+        ApplyExitNativeLinkMovPatches();
+    }
 
 #if defined(ANDROID) && (defined(__arm__) || defined(_M_ARM))
     __clear_cache((uint8_t *)((uint32_t)m_CompiledLocationCold & ~1), m_CompiledLocationCold + codeSize);
 #endif
     return (uint32_t)codeSize;
+}
+
+void CCodeBlock::AddExitNativeLinkSite(const asmjit::Label & JmpEnd, const asmjit::Label & MovImmEnd, uint32_t MovImmSize)
+{
+    SExitNativeLinkSite Site;
+    Site.JmpEnd = JmpEnd;
+    Site.MovImmEnd = MovImmEnd;
+    Site.MovImmSize = MovImmSize;
+    m_ExitNativeLinkSites.push_back(Site);
+}
+
+void CCodeBlock::ApplyExitNativeLinkMovPatches(void)
+{
+    // Labels are resolved after flattening so exits emitted in the secondary section get their final address.
+    // Each exit stores the address of its jmp rel32 so the recompiler can patch it to the next block
+    uint8_t * const Base = m_CompiledLocationCold;
+    for (size_t i = 0, n = m_ExitNativeLinkSites.size(); i < n; i++)
+    {
+        const SExitNativeLinkSite & Site = m_ExitNativeLinkSites[i];
+        const uintptr_t Rel32Addr = (uintptr_t)(Base + m_CodeHolder.labelOffsetFromBase(Site.JmpEnd) - 4);
+        uint8_t * MovImm = Base + m_CodeHolder.labelOffsetFromBase(Site.MovImmEnd) - Site.MovImmSize;
+        memcpy(MovImm, &Rel32Addr, Site.MovImmSize < sizeof(Rel32Addr) ? Site.MovImmSize : sizeof(Rel32Addr));
+    }
 }
 
 uint32_t CCodeBlock::NextTest()
