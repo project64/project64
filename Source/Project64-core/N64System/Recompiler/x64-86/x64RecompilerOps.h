@@ -302,6 +302,7 @@ private:
 
     static uint32_t m_TempValue32;
     static uint64_t m_TempValue64;
+    static bool m_TempMemoryUnused;
 };
 
 typedef CX64RecompilerOps CRecompilerOps;

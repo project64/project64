@@ -16,6 +16,7 @@ extern "C"
 
 uint32_t CX64RecompilerOps::m_TempValue32 = 0;
 uint64_t CX64RecompilerOps::m_TempValue64 = 0;
+bool CX64RecompilerOps::m_TempMemoryUnused = false;
 
 CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock) :
     CRecompilerOpsBase(System, CodeBlock),
@@ -2058,7 +2059,45 @@ void CX64RecompilerOps::CACHE()
 
 void CX64RecompilerOps::LL()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && !m_RegWorkingSet.Is32Bit(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    asmjit::x86::Gp ValueReg;
+    if (m_Opcode.rt == 0)
+    {
+        ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    }
+    asmjit::x86::Gp AddressReg = BaseOffsetAddress();
+    CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 32, true);
+
+    m_Assembler.MoveConstToVariable(&m_Reg.m_LLBit, "LLBit", 1);
+    m_RegWorkingSet.BeforeCallDirect();
+    m_Assembler.movsxd(asmjit::x86::rdx, AddressReg.r32());
+    m_Assembler.MoveConstToX64reg(asmjit::x86::r8, (uintptr_t)&m_TempValue32, "TempValue32");
+    m_Assembler.MoveConstToX64reg(asmjit::x86::r9, (uintptr_t)&m_TempMemoryUnused, "TempMemoryUnused");
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_TLB, MemberFuncAddress(&CTLB::VAddrToPAddr), "CTLB::VAddrToPAddr");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_RegWorkingSet.AfterCallDirect();
+
+    const asmjit::x86::Gp PAddrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    m_Assembler.MoveVariableToX64reg(PAddrReg, &m_TempValue32, "TempValue32", false);
+    m_Assembler.shr(PAddrReg.r32(), 4);
+    m_Assembler.MovQwordToVariable(&m_Reg.m_CP0[CRegisters::COP0Reg_LLAddr], "m_CP0[LLAddr]", PAddrReg);
+
+    if (g_GameSettings.fastSP && m_Opcode.rt == 29)
+    {
+        m_RegWorkingSet.ResetRegisterProtection();
+        ResetMemoryStack();
+    }
 }
 
 void CX64RecompilerOps::LWC1()
