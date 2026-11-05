@@ -2702,7 +2702,6 @@ void CX64RecompilerOps::SPECIAL_BREAK()
 
 void CX64RecompilerOps::SPECIAL_SYNC()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
 }
 
 void CX64RecompilerOps::SPECIAL_MFLO()
