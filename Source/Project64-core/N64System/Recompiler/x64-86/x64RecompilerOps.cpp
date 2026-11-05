@@ -2110,24 +2110,44 @@ void CX64RecompilerOps::LD()
         m_Assembler.mov(DestReg.r64(), asmjit::x86::qword_ptr(StackReg, (int32_t)((int16_t)m_Opcode.offset)));
         m_Assembler.ror(DestReg.r64(), 32);
     }
-    else if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    else if (m_RegWorkingSet.IsConst(m_Opcode.base) && !m_RegWorkingSet.Is32Bit(m_Opcode.base))
     {
         g_Notify->BreakPoint(__FILE__, __LINE__);
     }
     else
     {
-        m_RegWorkingSet.ProtectGPR(m_Opcode.base);
-        if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+        // A constant address that is aligned and in KSEG0/KSEG1 RDRAM can be read directly,
+        // anything else (address error, TLB, IO, ROM) goes through the generic load path
+        uint32_t PAddr = 0;
+        bool KnownRdram = false;
+        if (m_RegWorkingSet.IsConst(m_Opcode.base) && !g_DebugSettings.haveReadBP)
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
+            KnownRdram = (Address & 7) == 0 && Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize();
         }
 
-        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        if (KnownRdram)
         {
-            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rt, -1);
+            const asmjit::x86::Gp & DestReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
+            m_Assembler.MoveVariable64ToX64reg(DestReg, m_MMU.Rdram() + PAddr, stdstr_f("RDRAM + 0x%X", PAddr).c_str());
+            m_Assembler.ror(DestReg.r64(), 32);
         }
-        asmjit::x86::Gp AddressReg;
-        CompileLoadMemoryValue(AddressReg, asmjit::x86::Gp(), asmjit::x86::Gp(), 64, false);
+        else
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+            if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+            {
+                g_Notify->BreakPoint(__FILE__, __LINE__);
+            }
+
+            if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+            {
+                m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            }
+            asmjit::x86::Gp AddressReg;
+            CompileLoadMemoryValue(AddressReg, asmjit::x86::Gp(), asmjit::x86::Gp(), 64, false);
+        }
     }
 
     if (g_GameSettings.fastSP && m_Opcode.rt == 29)
