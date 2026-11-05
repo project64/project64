@@ -4230,7 +4230,13 @@ void CX64RecompilerOps::SPECIAL_DSLL32()
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint64_t rtLo = m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt);
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+        }
+        m_RegWorkingSet.SetMipsReg(m_Opcode.rd, rtLo << (m_Opcode.sa + 32));
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, m_RegWorkingSet.GetMipsRegHi(m_Opcode.rd) == 0 ? CRegBase::STATE_CONST_32_SIGN : CRegBase::STATE_CONST_64);
     }
     else
     {
@@ -4280,12 +4286,20 @@ void CX64RecompilerOps::SPECIAL_DSRA32()
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const int64_t rtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg_S(m_Opcode.rt) : (m_RegWorkingSet.IsSigned(m_Opcode.rt) ? (int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) : (int64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+        {
+            m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+        }
+        m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, (uint32_t)(rtValue >> (m_Opcode.sa + 32)));
+        m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegBase::STATE_CONST_32_SIGN);
     }
     else
     {
         m_RegWorkingSet.Map_GPR_64bit(m_Opcode.rd, m_Opcode.rt);
         m_Assembler.sar(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r64(), (uint8_t)(m_Opcode.sa + 32));
+
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rd);
     }
 }
 
