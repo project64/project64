@@ -2194,58 +2194,58 @@ void CX64RecompilerOps::SDC1()
 
 void CX64RecompilerOps::SD()
 {
-    if (m_RegWorkingSet.IsConst(m_Opcode.base))
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && !m_RegWorkingSet.Is32Bit(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    uint32_t PAddr = 0;
+    bool KnownRdram = false;
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && !g_DebugSettings.haveWriteBP && !g_GameSettings.smmStoreInstruc)
     {
         const uint32_t Address = m_RegWorkingSet.GetMipsRegLo(m_Opcode.base) + (int16_t)m_Opcode.offset;
-        if (g_DebugSettings.haveWriteBP)
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-            return;
-        }
+        KnownRdram = (Address & 7) == 0 && Address >= 0x80000000 && Address < 0xC0000000 && m_MMU.VAddrToPAddr(Address, PAddr) && PAddr < m_MMU.RdramSize();
+    }
 
+    uint64_t RtValue = 0;
+    if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        RtValue = m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsReg(m_Opcode.rt) : (m_RegWorkingSet.IsSigned(m_Opcode.rt) ? (uint64_t)(int64_t)m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) : (uint64_t)m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+    }
+    else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+    {
+        m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+    }
+
+    if (KnownRdram)
+    {
+        const asmjit::x86::Gp StoreReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_RegWorkingSet.IsConst(m_Opcode.rt) ? -1 : (int32_t)m_Opcode.rt, asmjit::RegType::kX86_Gpq);
         if (m_RegWorkingSet.IsConst(m_Opcode.rt))
         {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
-        }
-        else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
-        {
-            g_Notify->BreakPoint(__FILE__, __LINE__);
+            m_Assembler.MoveConstToX64reg(StoreReg, (RtValue << 32) | (RtValue >> 32));
         }
         else
         {
-            asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
-            asmjit::x86::Gp HiReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
-            m_Assembler.mov(HiReg.r64(), TempReg.r64());
-            m_Assembler.shr(HiReg.r64(), 32);
-            SW_KnownAddress(Address, &HiReg, 0);
-            SW_KnownAddress(Address + 4, &TempReg, 0);
+            m_Assembler.ror(StoreReg.r64(), 32);
         }
+        m_Assembler.MovQwordToVariable(m_MMU.Rdram() + PAddr, stdstr_f("RDRAM + 0x%X", PAddr).c_str(), StoreReg);
+        return;
     }
-    else
+
+    asmjit::x86::Gp ValueReg;
+    if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
-        asmjit::x86::Gp ValueReg;
-        if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
+        if (m_RegWorkingSet.IsUnknown(m_Opcode.rt) || !m_RegWorkingSet.Is64Bit(m_Opcode.rt))
         {
-            if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
-            {
-                m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
-            }
-            if (m_RegWorkingSet.IsUnknown(m_Opcode.rt) || !m_RegWorkingSet.Is64Bit(m_Opcode.rt))
-            {
-                ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
-            }
-            else
-            {
-                ValueReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
-            }
+            ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rt, asmjit::RegType::kX86_Gpq);
         }
-        uint64_t RtValue = 0;
-        if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+        else
         {
-            RtValue = ((uint64_t)(m_RegWorkingSet.Is64Bit(m_Opcode.rt) ? m_RegWorkingSet.GetMipsRegHi(m_Opcode.rt) : (uint32_t)(m_RegWorkingSet.GetMipsRegLo_S(m_Opcode.rt) >> 31)) << 32) | m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt);
+            ValueReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt);
         }
-        CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), RtValue, 64);
     }
+    CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), RtValue, 64);
 }
 
 void CX64RecompilerOps::SPECIAL_SLL()
