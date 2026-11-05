@@ -2075,9 +2075,7 @@ void CX64RecompilerOps::LWC1()
     asmjit::x86::Gp AddressReg;
     CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 32, false);
 
-    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
-    m_Assembler.mov(asmjit::x86::dword_ptr(FprPtrReg), ValueReg.r32());
+    m_Assembler.MovDwordToVariable(FprAddress(FprAccess_S, m_Opcode.ft), FprName(FprAccess_S, m_Opcode.ft).c_str(), ValueReg);
 }
 
 void CX64RecompilerOps::LDC1()
@@ -2094,9 +2092,7 @@ void CX64RecompilerOps::LDC1()
     asmjit::x86::Gp AddressReg;
     CompileLoadMemoryValue(AddressReg, ValueReg, asmjit::x86::Gp(), 64, false);
 
-    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.ft], stdstr_f("m_FPR_D[%d]", m_Opcode.ft).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(FprPtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_D, m_Opcode.ft), FprName(FprAccess_D, m_Opcode.ft).c_str(), ValueReg);
 }
 
 void CX64RecompilerOps::LD()
@@ -2157,8 +2153,7 @@ void CX64RecompilerOps::SWC1()
     }
 
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(ValueReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.ft], stdstr_f("m_FPR_S[%d]", m_Opcode.ft).c_str());
-    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(ValueReg));
+    m_Assembler.MoveVariable32ToX64reg(ValueReg, FprAddress(FprAccess_S, m_Opcode.ft), FprName(FprAccess_S, m_Opcode.ft).c_str());
     CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), 0, 32);
 }
 
@@ -2173,8 +2168,7 @@ void CX64RecompilerOps::SDC1()
     }
 
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(ValueReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.ft], stdstr_f("m_FPR_D[%d]", m_Opcode.ft).c_str());
-    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(ValueReg));
+    m_Assembler.MoveVariable64ToX64reg(ValueReg, FprAddress(FprAccess_D, m_Opcode.ft), FprName(FprAccess_D, m_Opcode.ft).c_str());
     CompileStoreMemoryValue(asmjit::x86::Gp(), ValueReg, asmjit::x86::Gp(), 0, 64);
 }
 
@@ -3827,6 +3821,13 @@ void CX64RecompilerOps::COP0_MT()
     m_Assembler.CallThis(&m_Reg, MemberFuncAddress(&CRegisters::Cop0_MT), "CRegisters::Cop0_MT");
     m_Assembler.add(asmjit::x86::rsp, 32);
     m_RegWorkingSet.AfterCallDirect();
+
+    if (m_Opcode.rd == CRegisters::COP0Reg_Status && m_PipelineStage != PIPELINE_STAGE_DELAY_SLOT)
+    {
+        const uint32_t ContinuePC = m_Section->m_DelaySlot ? m_Section->m_Jump.TargetPC : m_CompilePC + 4;
+        m_Assembler.TestVariable(&m_Reg.STATUS_REGISTER, "STATUS_REGISTER", STATUS_FR);
+        CompileExit(m_CompilePC, ContinuePC, m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp), ExitReason_Normal, m_Reg.STATUS_REGISTER.FR != 0 ? &CX64Ops::JeLabel : &CX64Ops::JneLabel);
+    }
 }
 
 void CX64RecompilerOps::COP0_DMT()
@@ -3889,10 +3890,8 @@ void CX64RecompilerOps::COP1_MF()
         return;
     }
 
-    const asmjit::x86::Gp FprPtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(FprPtrReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
     m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, true, -1);
-    m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), asmjit::x86::dword_ptr(FprPtrReg));
+    m_Assembler.MoveVariable32ToX64reg(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt), FprAddress(FprAccess_S, m_Opcode.fs), FprName(FprAccess_S, m_Opcode.fs).c_str());
 }
 
 void CX64RecompilerOps::COP1_DMF()
@@ -3923,20 +3922,19 @@ void CX64RecompilerOps::COP1_MT()
 {
     CompileCop1Test();
 
-    const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(TempReg, (uint8_t *)&m_Reg.m_FPR_S[m_Opcode.fs], stdstr_f("m_FPR_S[%d]", m_Opcode.fs).c_str());
-
+    void * Fs = FprAddress(FprAccess_S, m_Opcode.fs);
+    const std::string FsName = FprName(FprAccess_S, m_Opcode.fs);
     if (m_RegWorkingSet.IsConst(m_Opcode.rt))
     {
-        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        m_Assembler.MoveConstToVariable(Fs, FsName.c_str(), m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
     }
     else if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
     {
-        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32());
+        m_Assembler.MovDwordToVariable(Fs, FsName.c_str(), m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt));
     }
     else
     {
-        m_Assembler.mov(asmjit::x86::dword_ptr(TempReg), m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt).r32());
+        m_Assembler.MovDwordToVariable(Fs, FsName.c_str(), m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt));
     }
 }
 
@@ -3994,6 +3992,27 @@ const uint32_t FlushSubnormal32[8] = {0x00000000, 0x80000000, 0x00000000, 0x8000
 
 uint32_t FpuMxcsrSave[2];
 } // namespace
+
+void * CX64RecompilerOps::FprAddress(FprAccess Access, uint32_t Reg) const
+{
+    const bool FR = m_Reg.STATUS_REGISTER.FR != 0;
+    switch (Access)
+    {
+    case FprAccess_S: return FR ? &m_Reg.m_FPR[Reg].F[0] : &m_Reg.m_FPR[Reg & ~1].F[Reg & 1];
+    case FprAccess_S_L: return &m_Reg.m_FPR[FR ? Reg : Reg & ~1].F[0];
+    case FprAccess_D: return &m_Reg.m_FPR[FR ? Reg : Reg & ~1].D;
+    case FprAccess_UW: return &m_Reg.m_FPR[Reg].UW[0];
+    case FprAccess_UDW: return &m_Reg.m_FPR[Reg].UDW;
+    }
+    g_Notify->BreakPoint(__FILE__, __LINE__);
+    return nullptr;
+}
+
+std::string CX64RecompilerOps::FprName(FprAccess Access, uint32_t Reg) const
+{
+    const uint32_t Offset = (uint32_t)((uint8_t *)FprAddress(Access, Reg) - (uint8_t *)&m_Reg.m_FPR[0]);
+    return stdstr_f((Offset & 4) != 0 ? "%s+4" : "%s", CRegName::FPR[Offset / sizeof(m_Reg.m_FPR[0])]);
+}
 
 // Saves the host MXCSR and loads one with the guest rounding mode (or the fixed RoundingMode when it is not -1),
 // all exceptions masked and no flush to zero. PtrReg is left pointing at FpuMxcsrSave for CompileFpuLeaveMxcsr
@@ -4079,12 +4098,10 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId, bool UseFt)
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(FsReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    m_Assembler.MoveVariable32ToX64reg(FsReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
     if (UseFt)
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UW[m_Opcode.ft], stdstr_f("m_FPR_UW[%d]", m_Opcode.ft).c_str());
-        m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+        m_Assembler.MoveVariable32ToX64reg(FtReg, FprAddress(FprAccess_UW, m_Opcode.ft), FprName(FprAccess_UW, m_Opcode.ft).c_str());
     }
 
     // Zero, infinity, subnormal and NaN inputs all have an exponent of 0 or 0xFF
@@ -4139,8 +4156,7 @@ void CX64RecompilerOps::COP1_S_Arithmetic(uint32_t InstId, bool UseFt)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      ResultDone:");
     m_Assembler.bind(ResultDone);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), FsReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), FsReg);
 
     m_Assembler.EnterSecondarySection();
 
@@ -4274,7 +4290,6 @@ void CX64RecompilerOps::COP1_S_ExactOp(ExactFpuOp Op)
     CompileCop1Test();
 
     const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
 
@@ -4287,8 +4302,7 @@ void CX64RecompilerOps::COP1_S_ExactOp(ExactFpuOp Op)
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    m_Assembler.MoveVariable32ToX64reg(ValueReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
 
     // CheckFPUInput32: a NaN goes to NaNInput with the absolute value in TempReg, a subnormal is unimplemented
     m_Assembler.mov(TempReg.r32(), ValueReg.r32());
@@ -4316,8 +4330,7 @@ void CX64RecompilerOps::COP1_S_ExactOp(ExactFpuOp Op)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      StoreResult:");
     m_Assembler.bind(StoreResult);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 
     m_Assembler.EnterSecondarySection();
 
@@ -4435,8 +4448,7 @@ void CX64RecompilerOps::COP1_ToInteger(int32_t RoundingMode, bool DoubleInput, b
 
     if (DoubleInput)
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-        m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+        m_Assembler.MoveVariable64ToX64reg(ValueReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
 
         // CheckFPUInput64Conv: subnormal, infinity, NaN or a magnitude of 2^53 (exponent 0x434) or more is unimplemented
         asmjit::Label InputValid = m_Assembler.newLabel();
@@ -4453,8 +4465,7 @@ void CX64RecompilerOps::COP1_ToInteger(int32_t RoundingMode, bool DoubleInput, b
     }
     else
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-        m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+        m_Assembler.MoveVariable32ToX64reg(ValueReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
 
         // CheckFPUInput32Conv: subnormal, infinity, NaN or a magnitude of 2^53 or more is unimplemented
         m_Assembler.mov(TempReg.r32(), ValueReg.r32());
@@ -4496,8 +4507,7 @@ void CX64RecompilerOps::COP1_ToInteger(int32_t RoundingMode, bool DoubleInput, b
     m_CodeBlock.Log("      Exact:");
     m_Assembler.bind(Exact);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 
     m_Assembler.EnterSecondarySection();
     m_CodeBlock.Log("");
@@ -4527,7 +4537,6 @@ void CX64RecompilerOps::COP1_Compare(bool Double)
     CompileCop1Test();
 
     const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp FsReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp FtReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp ResultReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
@@ -4543,17 +4552,13 @@ void CX64RecompilerOps::COP1_Compare(bool Double)
 
     if (Double)
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-        m_Assembler.mov(FsReg.r64(), asmjit::x86::qword_ptr(PtrReg));
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.ft], stdstr_f("m_FPR_UDW[%d]", m_Opcode.ft).c_str());
-        m_Assembler.mov(FtReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+        m_Assembler.MoveVariable64ToX64reg(FsReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
+        m_Assembler.MoveVariable64ToX64reg(FtReg, FprAddress(FprAccess_UDW, m_Opcode.ft), FprName(FprAccess_UDW, m_Opcode.ft).c_str());
     }
     else
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-        m_Assembler.mov(FsReg.r32(), asmjit::x86::dword_ptr(PtrReg));
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UW[m_Opcode.ft], stdstr_f("m_FPR_UW[%d]", m_Opcode.ft).c_str());
-        m_Assembler.mov(FtReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+        m_Assembler.MoveVariable32ToX64reg(FsReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
+        m_Assembler.MoveVariable32ToX64reg(FtReg, FprAddress(FprAccess_UW, m_Opcode.ft), FprName(FprAccess_UW, m_Opcode.ft).c_str());
     }
 
     // ucomiss/ucomisd: unordered sets ZF, PF and CF, less sets CF, equal sets ZF
@@ -4676,12 +4681,10 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt, bool Sing
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(FsReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+    m_Assembler.MoveVariable64ToX64reg(FsReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
     if (UseFt)
     {
-        m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.ft], stdstr_f("m_FPR_UDW[%d]", m_Opcode.ft).c_str());
-        m_Assembler.mov(FtReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+        m_Assembler.MoveVariable64ToX64reg(FtReg, FprAddress(FprAccess_UDW, m_Opcode.ft), FprName(FprAccess_UDW, m_Opcode.ft).c_str());
     }
 
     // Zero, infinity, subnormal and NaN inputs all have an exponent of 0 or 0x7FF
@@ -4757,8 +4760,7 @@ void CX64RecompilerOps::COP1_D_Arithmetic(uint32_t InstId, bool UseFt, bool Sing
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      ResultDone:");
     m_Assembler.bind(ResultDone);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), FsReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), FsReg);
 
     m_Assembler.EnterSecondarySection();
 
@@ -5013,8 +5015,7 @@ void CX64RecompilerOps::COP1_W_CVT_S()
     m_Assembler.mov(asmjit::x86::byte_ptr(AddrReg), ValueReg.r8());
     m_Assembler.MoveConstByteToVariable(&softfloat_exceptionFlags, "softfloat_exceptionFlags", 0);
 
-    m_Assembler.MoveVariable64ToX64reg(AddrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(AddrReg));
+    m_Assembler.MoveVariable32ToX64reg(ValueReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
 
     m_Assembler.MoveConstToX64reg(AddrReg, (uintptr_t)MxcsrRoundingMode, "MxcsrRoundingMode");
     m_Assembler.mov(TempReg.r32(), asmjit::x86::dword_ptr(AddrReg, TempReg.r64(), 2));
@@ -5040,25 +5041,21 @@ void CX64RecompilerOps::COP1_W_CVT_S()
     m_Assembler.bind(ExactLabel);
 
     m_Assembler.movd(ValueReg.r32(), asmjit::x86::xmm0);
-    m_Assembler.MoveVariable64ToX64reg(AddrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(AddrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 }
 
 void CX64RecompilerOps::COP1_W_CVT_D()
 {
     CompileCop1Test();
 
-    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
 
     // InitFpuOperation clears the cause bits, every int32 converts to a double exactly so nothing else is raised
     m_Assembler.AndConstToVariable(&m_Reg.m_FPCR[31], "_FPCR[31]", ~0x0003F000u);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_S_L[m_Opcode.fs], stdstr_f("m_FPR_S_L[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r32(), asmjit::x86::dword_ptr(PtrReg));
+    m_Assembler.MoveVariable32ToX64reg(ValueReg, FprAddress(FprAccess_S_L, m_Opcode.fs), FprName(FprAccess_S_L, m_Opcode.fs).c_str());
     m_Assembler.cvtsi2sd(asmjit::x86::xmm0, ValueReg.r32());
     m_Assembler.movq(ValueReg.r64(), asmjit::x86::xmm0);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 }
 
 void CX64RecompilerOps::COP1_L_ToFloat(bool Double)
@@ -5078,8 +5075,7 @@ void CX64RecompilerOps::COP1_L_ToFloat(bool Double)
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+    m_Assembler.MoveVariable64ToX64reg(ValueReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
 
     // A value outside -2^55 to 2^55 - 1 is unimplemented, inside that range value >> 55 is 0 or -1
     m_Assembler.mov(TempReg.r64(), ValueReg.r64());
@@ -5119,8 +5115,7 @@ void CX64RecompilerOps::COP1_L_ToFloat(bool Double)
     m_CodeBlock.Log("      Exact:");
     m_Assembler.bind(Exact);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 
     m_Assembler.EnterSecondarySection();
     m_CodeBlock.Log("");
@@ -5139,7 +5134,6 @@ void CX64RecompilerOps::COP1_D_ExactOp(bool Negate)
     CompileCop1Test();
 
     const asmjit::x86::Gp FcsrPtr = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp TempReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
 
@@ -5154,8 +5148,7 @@ void CX64RecompilerOps::COP1_D_ExactOp(bool Negate)
     m_Assembler.MoveConstToX64reg(FcsrPtr, (uintptr_t)&m_Reg.m_FPCR[31], "_FPCR[31]");
     m_Assembler.and_(asmjit::x86::dword_ptr(FcsrPtr), ~0x0003F000);
 
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
+    m_Assembler.MoveVariable64ToX64reg(ValueReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
 
     // CheckFPUInput64, values with an exponent of 0 or 0x7FF are checked in the secondary section
     m_Assembler.mov(TempReg.r64(), ValueReg.r64());
@@ -5180,8 +5173,7 @@ void CX64RecompilerOps::COP1_D_ExactOp(bool Negate)
     m_CodeBlock.Log("");
     m_CodeBlock.Log("      StoreResult:");
     m_Assembler.bind(StoreResult);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 
     m_Assembler.EnterSecondarySection();
 
@@ -5229,12 +5221,9 @@ void CX64RecompilerOps::COP1_Move()
 {
     CompileCop1Test();
 
-    const asmjit::x86::Gp PtrReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
     const asmjit::x86::Gp ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_D[m_Opcode.fs], stdstr_f("m_FPR_D[%d]", m_Opcode.fs).c_str());
-    m_Assembler.mov(ValueReg.r64(), asmjit::x86::qword_ptr(PtrReg));
-    m_Assembler.MoveVariable64ToX64reg(PtrReg, (uint8_t *)&m_Reg.m_FPR_UDW[m_Opcode.fd], stdstr_f("m_FPR_UDW[%d]", m_Opcode.fd).c_str());
-    m_Assembler.mov(asmjit::x86::qword_ptr(PtrReg), ValueReg.r64());
+    m_Assembler.MoveVariable64ToX64reg(ValueReg, FprAddress(FprAccess_D, m_Opcode.fs), FprName(FprAccess_D, m_Opcode.fs).c_str());
+    m_Assembler.MovQwordToVariable(FprAddress(FprAccess_UDW, m_Opcode.fd), FprName(FprAccess_UDW, m_Opcode.fd).c_str(), ValueReg);
 }
 
 void CX64RecompilerOps::COP1_L_CVT_S()

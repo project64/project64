@@ -636,6 +636,10 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         if (FRBitChanged)
         {
             FixFpuLocations();
+            if (m_System.m_Recomp != nullptr)
+            {
+                m_SystemEvents.QueueEvent(SysEvent_ResetRecompilerCode);
+            }
         }
         m_System.m_TLB.COP0StatusChanged();
         CheckInterrupts();

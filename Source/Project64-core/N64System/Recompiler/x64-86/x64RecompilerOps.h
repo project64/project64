@@ -275,6 +275,16 @@ private:
     void COP1_D_ExactOp(bool Negate);
     void COP1_Move();
     void CompileFpuLeaveMxcsr(const asmjit::x86::Gp & PtrReg);
+    enum FprAccess
+    {
+        FprAccess_S,
+        FprAccess_S_L,
+        FprAccess_D,
+        FprAccess_UW,
+        FprAccess_UDW,
+    };
+    void * FprAddress(FprAccess Access, uint32_t Reg) const;
+    std::string FprName(FprAccess Access, uint32_t Reg) const;
     void CompileSetFpuException(const asmjit::x86::Gp & FcsrPtr, const asmjit::x86::Gp & Flags, const asmjit::x86::Gp & Temp, asmjit::Label & Unimplemented, asmjit::Label & Exception);
 
     CRecompiler *& m_Recompiler;

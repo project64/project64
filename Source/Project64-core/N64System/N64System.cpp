@@ -1869,6 +1869,7 @@ bool CN64System::LoadState(const char * FileName)
     old_status = m_Reg.VI_STATUS_REG;
     old_width = m_Reg.VI_WIDTH_REG;
     old_dacrate = m_Reg.AI_DACRATE_REG;
+    const uint32_t old_fr = m_Reg.STATUS_REGISTER.FR;
 
     CPath SaveFile(FileName);
 
@@ -2209,6 +2210,10 @@ bool CN64System::LoadState(const char * FileName)
     m_TLB.Reset(false);
     if (m_Recomp)
     {
+        if (old_fr != m_Reg.STATUS_REGISTER.FR)
+        {
+            m_Recomp->ResetRecompCode(true);
+        }
         m_Recomp->ResetFunctionTimes();
     }
     m_CPU_Usage.ResetTimers();
