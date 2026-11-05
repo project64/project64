@@ -1856,9 +1856,11 @@ void R4300iOp::SPECIAL_DSRAV()
 
 void R4300iOp::SPECIAL_MULT()
 {
-    m_RegHI.DW = (int64_t)(m_GPR[m_Opcode.rs].W[0]) * (int64_t)(m_GPR[m_Opcode.rt].W[0]);
-    m_RegLO.DW = m_RegHI.W[0];
-    m_RegHI.DW = m_RegHI.W[1];
+    // Hardware uses rs as a 64-bit value and rt as a 35-bit value (both signed), multiplying into 64 bits
+    int64_t Rt = (int64_t)(m_GPR[m_Opcode.rt].UDW << 29) >> 29;
+    int64_t Result = (int64_t)(m_GPR[m_Opcode.rs].UDW * (uint64_t)Rt);
+    m_RegLO.DW = (int32_t)Result;
+    m_RegHI.DW = (int32_t)(Result >> 32);
 }
 
 void R4300iOp::SPECIAL_MULTU()
