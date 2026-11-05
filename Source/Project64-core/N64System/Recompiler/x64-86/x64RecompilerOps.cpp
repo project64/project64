@@ -2344,7 +2344,24 @@ void CX64RecompilerOps::SPECIAL_SLLV()
 
     if (m_RegWorkingSet.IsConst(m_Opcode.rs))
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        const uint8_t Shift = (uint8_t)(m_RegWorkingSet.GetMipsRegLo(m_Opcode.rs) & 0x1F);
+        if (m_RegWorkingSet.IsConst(m_Opcode.rt))
+        {
+            if (m_RegWorkingSet.IsMapped(m_Opcode.rd))
+            {
+                m_RegWorkingSet.UnMap_GPR(m_Opcode.rd, false);
+            }
+            m_RegWorkingSet.SetMipsRegLo(m_Opcode.rd, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt) << Shift);
+            m_RegWorkingSet.SetMipsRegState(m_Opcode.rd, CRegInfo::STATE_CONST_32_SIGN);
+        }
+        else
+        {
+            m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rd, true, m_Opcode.rt);
+            if (Shift != 0)
+            {
+                m_Assembler.shl(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rd).r32(), Shift);
+            }
+        }
     }
     else
     {
