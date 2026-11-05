@@ -823,6 +823,40 @@ void CX64RegInfo::WriteBackRegisters()
 
             SetMipsRegState(count, CRegBase::STATE_UNKNOWN);
             break;
+        case CRegBase::STATE_CONST_32_ZERO:
+        case CRegBase::STATE_CONST_64:
+        {
+            const uint32_t Values[2] = {GetMipsRegLo(count), GetMipsRegState(count) == CRegBase::STATE_CONST_64 ? GetMipsRegHi(count) : 0};
+            for (uint32_t i = 0; i < 2; i++)
+            {
+                const char * Name = i == 0 ? CRegName::GPR_Lo[count] : CRegName::GPR_Hi[count];
+                if (Values[i] == 0)
+                {
+                    if (!bEdiZero)
+                    {
+                        m_Assembler.xor_(asmjit::x86::edi, asmjit::x86::edi);
+                        bEdiZero = true;
+                    }
+                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[i], Name, asmjit::x86::edi);
+                }
+                else if (Values[i] == 0xFFFFFFFF)
+                {
+                    if (!bEsiSign)
+                    {
+                        m_Assembler.mov(asmjit::x86::esi, 0xFFFFFFFFu);
+                        bEsiSign = true;
+                    }
+                    m_Assembler.MovDwordToVariable(&m_Reg.m_GPR[count].UW[i], Name, asmjit::x86::esi);
+                }
+                else
+                {
+                    m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[count].UW[i], Name, Values[i]);
+                }
+            }
+            SetMipsRegState(count, CRegBase::STATE_UNKNOWN);
+            break;
+        }
+        case CRegBase::STATE_MAPPED_64:
         case CRegBase::STATE_MAPPED_32_SIGN:
         case CRegBase::STATE_MAPPED_32_ZERO:
             if (!GetMipsRegMap(count).isValid())
@@ -858,12 +892,13 @@ void CX64RegInfo::UnMap_GPR(uint32_t Reg, bool WriteBackValue)
 
     if (IsConst(Reg))
     {
-        if (!WriteBackValue)
+        if (WriteBackValue)
         {
-            SetMipsRegState(Reg, STATE_UNKNOWN);
-            return;
+            const uint32_t ValueHi = Is64Bit(Reg) ? GetMipsRegHi(Reg) : (IsSigned(Reg) ? (uint32_t)(GetMipsRegLo_S(Reg) >> 31) : 0);
+            m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[Reg].UW[0], CRegName::GPR_Lo[Reg], GetMipsRegLo(Reg));
+            m_Assembler.MoveConstToVariable(&m_Reg.m_GPR[Reg].UW[1], CRegName::GPR_Hi[Reg], ValueHi);
         }
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        SetMipsRegState(Reg, STATE_UNKNOWN);
         return;
     }
 
