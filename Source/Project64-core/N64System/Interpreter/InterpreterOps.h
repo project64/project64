@@ -203,6 +203,7 @@ private:
     void COP0_CO_TLBWR();
     void COP0_CO_TLBP();
     void COP0_CO_ERET();
+    void COP0_CO_NOP();
 
     // COP1 functions
     void CPO1_UNIMPLEMENTED_OP(void);

@@ -526,7 +526,7 @@ bool CCodeSection::GenerateNativeCode(uint32_t Test)
                     case R4300i_COP0_CO_TLBWR: m_RecompilerOps->COP0_CO_TLBWR(); break;
                     case R4300i_COP0_CO_TLBP: m_RecompilerOps->COP0_CO_TLBP(); break;
                     case R4300i_COP0_CO_ERET: m_RecompilerOps->COP0_CO_ERET(); break;
-                    default: m_RecompilerOps->UnknownOpcode(); break;
+                    default: break; // Undefined COP0 functions act as a NOP
                     }
                 }
                 else

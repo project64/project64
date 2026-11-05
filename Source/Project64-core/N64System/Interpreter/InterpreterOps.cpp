@@ -471,70 +471,70 @@ void R4300iOp::BuildInterpreter(bool Force32bit)
     Jump_CoP0[30] = &R4300iOp::COP0_CO;
     Jump_CoP0[31] = &R4300iOp::COP0_CO;
 
-    Jump_CoP0_Function[0] = &R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[0] = &R4300iOp::COP0_CO_NOP;
     Jump_CoP0_Function[1] = &R4300iOp::COP0_CO_TLBR;
     Jump_CoP0_Function[2] = &R4300iOp::COP0_CO_TLBWI;
-    Jump_CoP0_Function[3] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[4] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[5] = &R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[3] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[4] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[5] = &R4300iOp::COP0_CO_NOP;
     Jump_CoP0_Function[6] = &R4300iOp::COP0_CO_TLBWR;
-    Jump_CoP0_Function[7] = &R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[7] = &R4300iOp::COP0_CO_NOP;
     Jump_CoP0_Function[8] = &R4300iOp::COP0_CO_TLBP;
-    Jump_CoP0_Function[9] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[10] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[11] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[12] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[13] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[14] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[15] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[16] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[17] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[18] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[19] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[20] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[21] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[22] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[23] = &R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[9] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[10] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[11] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[12] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[13] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[14] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[15] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[16] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[17] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[18] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[19] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[20] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[21] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[22] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[23] = &R4300iOp::COP0_CO_NOP;
     Jump_CoP0_Function[24] = &R4300iOp::COP0_CO_ERET;
-    Jump_CoP0_Function[25] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[26] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[27] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[28] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[29] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[30] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[31] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[32] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[33] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[34] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[35] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[36] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[37] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[38] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[39] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[40] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[41] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[42] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[43] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[44] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[45] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[46] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[47] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[48] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[49] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[50] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[51] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[52] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[53] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[54] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[55] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[56] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[57] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[58] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[59] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[60] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[61] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[62] = &R4300iOp::UnknownOpcode;
-    Jump_CoP0_Function[63] = &R4300iOp::UnknownOpcode;
+    Jump_CoP0_Function[25] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[26] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[27] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[28] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[29] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[30] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[31] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[32] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[33] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[34] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[35] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[36] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[37] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[38] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[39] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[40] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[41] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[42] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[43] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[44] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[45] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[46] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[47] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[48] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[49] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[50] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[51] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[52] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[53] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[54] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[55] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[56] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[57] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[58] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[59] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[60] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[61] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[62] = &R4300iOp::COP0_CO_NOP;
+    Jump_CoP0_Function[63] = &R4300iOp::COP0_CO_NOP;
 
     Jump_CoP1[0] = &R4300iOp::COP1_MF;
     Jump_CoP1[1] = &R4300iOp::COP1_DMF;
@@ -2336,6 +2336,11 @@ void R4300iOp::COP0_CO_TLBWR()
 void R4300iOp::COP0_CO_TLBP()
 {
     m_TLB.Probe();
+}
+
+void R4300iOp::COP0_CO_NOP()
+{
+    // Undefined COP0 functions do not raise a reserved instruction exception, they act as a NOP
 }
 
 void R4300iOp::COP0_CO_ERET()

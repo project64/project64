@@ -699,8 +699,8 @@ bool CCodeBlock::AnalyzeInstruction(uint32_t PC, uint32_t & TargetPC, uint32_t &
                     EndBlock = true;
                     break;
                 default:
-                    g_Notify->BreakPoint(__FILE__, __LINE__);
-                    return false;
+                    // Undefined COP0 functions act as a NOP
+                    break;
                 }
             }
             else

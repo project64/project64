@@ -523,10 +523,7 @@ bool LoopAnalysis::CheckLoopRegisterUsage(CCodeSection * Section)
                     case R4300i_COP0_CO_TLBWR: break;
                     case R4300i_COP0_CO_TLBP: break;
                     case R4300i_COP0_CO_ERET: m_PipelineStage = PIPELINE_STAGE_END_BLOCK; break;
-                    default:
-                        g_Notify->DisplayError(stdstr_f("Unhandled R4300i opcode in FillSectionInfo\n%s", R4300iInstruction(m_PC, m_Command.Value).NameAndParam().c_str()).c_str());
-                        m_PipelineStage = PIPELINE_STAGE_END_BLOCK;
-                        m_PC -= 4;
+                    default: break; // Undefined COP0 functions act as a NOP
                     }
                 }
                 else
