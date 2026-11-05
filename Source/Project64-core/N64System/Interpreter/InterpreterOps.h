@@ -109,6 +109,8 @@ private:
     void LWC1_32();
     void LLD();
     void LLD_32();
+    void SCD();
+    void SCD_32();
     void LDC1();
     void LDC1_32();
     void LD();

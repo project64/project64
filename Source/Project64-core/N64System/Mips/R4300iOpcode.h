@@ -113,6 +113,7 @@ enum R4300iOpCodes
     R4300i_LD = 55,
     R4300i_SC = 56,
     R4300i_SWC1 = 57,
+    R4300i_SCD = 60,
     R4300i_SDC1 = 61,
     R4300i_SDC2 = 62,
     R4300i_SD = 63
