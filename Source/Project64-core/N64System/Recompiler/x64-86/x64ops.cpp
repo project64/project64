@@ -10,7 +10,9 @@
 CX64Ops::CX64Ops(CCodeBlock & CodeBlock) :
     asmjit::x86::Assembler(&CodeBlock.CodeHolder()),
     m_CodeBlock(CodeBlock),
-    m_CurrentSection(nullptr)
+    m_CurrentSection(nullptr),
+    m_RegisterBase(0),
+    m_RegisterBaseSize(0)
 {
     setLogger(g_DebugSettings.recordRecompilerAsm ? this : nullptr);
     setErrorHandler(&CodeBlock);
@@ -257,72 +259,32 @@ void CX64Ops::JbLabel(const char * LabelName, asmjit::Label & JumpLabel)
 
 void CX64Ops::CmpConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        cmp(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        cmp(asmjit::x86::dword_ptr(asmjit::x86::r11), Const);
-    }
+    cmp(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::CmpRegToVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        cmp(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        cmp(Reg.r32(), asmjit::x86::dword_ptr(asmjit::x86::r11));
-    }
+    cmp(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::MoveConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        mov(asmjit::x86::dword_ptr(asmjit::x86::r11), Const);
-    }
+    mov(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::MoveConst64ToVariable(void * Variable, const char * VariableName, uint64_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    const bool Imm32Fits = Const == (uint64_t)(int64_t)(int32_t)Const;
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    const asmjit::x86::Mem Mem = VariableMem(Variable, VariableName, 8, asmjit::x86::r11);
+    if (Const == (uint64_t)(int64_t)(int32_t)Const)
     {
-        if (Imm32Fits)
-        {
-            mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), static_cast<uint32_t>(Const));
-        }
-        else
-        {
-            push(asmjit::x86::rax);
-            mov(asmjit::x86::rax, Const);
-            mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), asmjit::x86::rax);
-            pop(asmjit::x86::rax);
-        }
-    }
-    else if (Imm32Fits)
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        mov(asmjit::x86::qword_ptr(asmjit::x86::r11), static_cast<uint32_t>(Const));
+        mov(Mem, static_cast<uint32_t>(Const));
     }
     else
     {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
+        push(asmjit::x86::rax);
+        mov(asmjit::x86::rax, Const);
+        mov(Mem, asmjit::x86::rax);
+        pop(asmjit::x86::rax);
     }
 }
 
@@ -348,16 +310,7 @@ void CX64Ops::MoveConstToX64reg(const asmjit::x86::Gp & Reg, uint64_t Const, con
 
 void CX64Ops::MoveVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        mov(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(Reg.r64(), (uintptr_t)Variable);
-        mov(Reg.r64(), asmjit::x86::qword_ptr(Reg.r64()));
-    }
+    mov(Reg.r64(), VariableMem(Variable, VariableName, 8, Reg));
 }
 
 void CX64Ops::MovByteToAddress(uintptr_t Address, const asmjit::x86::Gp & Src)
@@ -440,254 +393,122 @@ void CX64Ops::MovDwordToAddress(uintptr_t Address, uint32_t Value)
 
 void CX64Ops::MovDwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        if (Src.isType(asmjit::RegType::kX86_Gpq))
-        {
-            mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Src.r32());
-        }
-        else
-        {
-            mov(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Src);
-        }
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        mov(asmjit::x86::dword_ptr(asmjit::x86::r11), Src.r32());
-    }
+    mov(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Src.r32());
 }
 
 void CX64Ops::MovQwordToVariable(void * Variable, const char * VariableName, const asmjit::x86::Gp & Src)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        mov(asmjit::x86::qword_ptr_abs((uintptr_t)Variable), Src.r64());
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        mov(asmjit::x86::qword_ptr(asmjit::x86::r11), Src.r64());
-    }
+    mov(VariableMem(Variable, VariableName, 8, asmjit::x86::r11), Src.r64());
 }
 
 void CX64Ops::MoveConstByteToVariable(void * Variable, const char * VariableName, uint8_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        mov(asmjit::x86::byte_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        mov(asmjit::x86::byte_ptr(asmjit::x86::r11), Const);
-    }
+    mov(VariableMem(Variable, VariableName, 1, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::AddDwordFromVariable(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        add(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        add(Reg.r32(), asmjit::x86::dword_ptr(asmjit::x86::r11));
-    }
+    add(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::SubVariableFromX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        sub(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        sub(Reg.r32(), asmjit::x86::dword_ptr(asmjit::x86::r11));
-    }
+    sub(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::SubConstFromVariable(uint32_t Const, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        sub(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        sub(asmjit::x86::dword_ptr(asmjit::x86::r11), Const);
-    }
+    sub(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::AndConstToVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        and_(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        and_(asmjit::x86::dword_ptr(asmjit::x86::r11), Const);
-    }
+    and_(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::AndVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        and_(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        and_(Reg.r32(), asmjit::x86::dword_ptr(asmjit::x86::r11));
-    }
+    and_(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::AndVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        and_(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        and_(Reg.r64(), asmjit::x86::qword_ptr(asmjit::x86::r11));
-    }
+    and_(Reg.r64(), VariableMem(Variable, VariableName, 8, asmjit::x86::r11));
 }
 
 void CX64Ops::OrVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        or_(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        or_(Reg.r32(), asmjit::x86::dword_ptr(asmjit::x86::r11));
-    }
+    or_(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::OrVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        or_(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        or_(Reg.r64(), asmjit::x86::qword_ptr(asmjit::x86::r11));
-    }
+    or_(Reg.r64(), VariableMem(Variable, VariableName, 8, asmjit::x86::r11));
 }
 
 void CX64Ops::XorVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        xor_(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
+    xor_(Reg.r32(), VariableMem(Variable, VariableName, 4, asmjit::x86::r11));
 }
 
 void CX64Ops::XorVariable64ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        xor_(Reg.r64(), asmjit::x86::qword_ptr_abs((uintptr_t)Variable));
-    }
-    else
-    {
-        mov(asmjit::x86::r11, (uintptr_t)Variable);
-        xor_(Reg.r64(), asmjit::x86::qword_ptr(asmjit::x86::r11));
-    }
+    xor_(Reg.r64(), VariableMem(Variable, VariableName, 8, asmjit::x86::r11));
 }
 
 void CX64Ops::TestVariable(void * Variable, const char * VariableName, uint32_t Const)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
-    {
-        test(asmjit::x86::dword_ptr_abs((uintptr_t)Variable), Const);
-    }
-    else
-    {
-        g_Notify->BreakPoint(__FILE__, __LINE__);
-    }
+    test(VariableMem(Variable, VariableName, 4, asmjit::x86::r11), Const);
 }
 
 void CX64Ops::MoveVariableToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName, bool SignExtend)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    if (asmjit::Support::isUInt32((uintptr_t)Variable))
+    const asmjit::x86::Mem Mem = VariableMem(Variable, VariableName, 4, Reg);
+    if (SignExtend)
     {
-        if (SignExtend)
-        {
-            movsxd(Reg.r64(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-        }
-        else
-        {
-            mov(Reg.r32(), asmjit::x86::dword_ptr_abs((uintptr_t)Variable));
-        }
+        movsxd(Reg.r64(), Mem);
     }
     else
     {
-        mov(Reg.r64(), (uintptr_t)Variable);
-        if (SignExtend)
-        {
-            movsxd(Reg.r64(), asmjit::x86::dword_ptr(Reg.r64()));
-        }
-        else
-        {
-            mov(Reg.r32(), asmjit::x86::dword_ptr(Reg.r64()));
-        }
+        mov(Reg.r32(), Mem);
     }
 }
 
 void CX64Ops::MoveVariable32ToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    const asmjit::x86::Gpq addrReg(Reg.id());
-    mov(addrReg, reinterpret_cast<uint64_t>(Variable));
-    if (Reg.isType(asmjit::RegType::kX86_Gpq))
-    {
-        mov(Reg.r32(), asmjit::x86::dword_ptr(addrReg));
-    }
-    else
-    {
-        mov(Reg.r32(), asmjit::x86::dword_ptr(addrReg));
-    }
+    mov(Reg.r32(), VariableMem(Variable, VariableName, 4, Reg));
 }
 
 void CX64Ops::MoveVariable32SignExtendToX64reg(const asmjit::x86::Gp & Reg, void * Variable, const char * VariableName)
 {
-    AddNumberSymbol((uintptr_t)Variable, VariableName);
-    const asmjit::x86::Gpq addrReg(Reg.id());
-    mov(addrReg, reinterpret_cast<uint64_t>(Variable));
-    movsxd(Reg.r64(), asmjit::x86::dword_ptr(addrReg));
+    movsxd(Reg.r64(), VariableMem(Variable, VariableName, 4, Reg));
+}
+
+void CX64Ops::SetRegisterBase(const void * Base, uint32_t Size)
+{
+    m_RegisterBase = (uintptr_t)Base;
+    m_RegisterBaseSize = Size;
+}
+
+asmjit::x86::Mem CX64Ops::VariableMem(void * Variable, const char * VariableName, uint32_t Size, const asmjit::x86::Gp & AddressReg)
+{
+    const uintptr_t Address = (uintptr_t)Variable;
+    if (m_RegisterBaseSize != 0 && Address >= m_RegisterBase && (Address - m_RegisterBase) < m_RegisterBaseSize)
+    {
+        const int32_t Offset = (int32_t)(Address - m_RegisterBase);
+        if (Offset != 0)
+        {
+            AddNumberSymbol((uintptr_t)Offset, VariableName);
+        }
+        return asmjit::x86::ptr(asmjit::x86::r15, Offset, Size);
+    }
+    AddNumberSymbol(Address, VariableName);
+    if (asmjit::Support::isUInt32(Address))
+    {
+        return asmjit::x86::ptr_abs(Address, Size);
+    }
+    mov(AddressReg.r64(), Address);
+    return asmjit::x86::ptr(AddressReg.r64(), 0, Size);
 }
 
 void CX64Ops::AddNumberSymbol(uintptr_t Value, const char * Symbol)

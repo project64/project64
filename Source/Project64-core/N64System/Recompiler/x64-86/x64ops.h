@@ -13,6 +13,8 @@ class CX64Ops :
 public:
     CX64Ops(CCodeBlock & CodeBlock);
 
+    void SetRegisterBase(const void * Base, uint32_t Size);
+
     void JnsLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JoLabel(const char * LabelName, asmjit::Label & JumpLabel);
     void JsLabel(const char * LabelName, asmjit::Label & JumpLabel);
@@ -73,6 +75,7 @@ private:
     void AddLabelSymbol(const asmjit::Label & Label, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const char * Symbol);
     void AddNumberSymbol(uintptr_t Value, const std::string & Symbol);
+    asmjit::x86::Mem VariableMem(void * Variable, const char * VariableName, uint32_t Size, const asmjit::x86::Gp & AddressReg);
 
     static void BreakPointNotification(const char * FileName, int32_t LineNumber);
 
@@ -90,6 +93,8 @@ private:
     asmjit::Section * m_PrimarySection;
     asmjit::Section * m_SecondarySection;
     asmjit::Section * m_CurrentSection;
+    uintptr_t m_RegisterBase;
+    uint32_t m_RegisterBaseSize;
 };
 
 template <typename T>

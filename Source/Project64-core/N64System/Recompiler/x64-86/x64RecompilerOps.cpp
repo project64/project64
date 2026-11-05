@@ -32,6 +32,7 @@ CX64RecompilerOps::CX64RecompilerOps(CN64System & System, CCodeBlock & CodeBlock
     m_WarmEntryOffset(0),
     m_ExitLabelCount(0)
 {
+    m_Assembler.SetRegisterBase(&m_Reg, sizeof(CRegisters));
 }
 
 CX64RecompilerOps::~CX64RecompilerOps()
@@ -2420,8 +2421,7 @@ void CX64RecompilerOps::SPECIAL_JR()
                 }
                 else
                 {
-                    const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-                    m_Assembler.movsxd(PcReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32());
+                    const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
                     m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", PcReg);
                 }
             }
@@ -2514,8 +2514,7 @@ void CX64RecompilerOps::SPECIAL_JALR()
                 }
                 else
                 {
-                    const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
-                    m_Assembler.movsxd(PcReg, m_RegWorkingSet.GetMipsRegMap(m_Opcode.rs).r32());
+                    const asmjit::x86::Gp PcReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), m_Opcode.rs, asmjit::RegType::kX86_Gpq);
                     m_Assembler.MovQwordToVariable(&m_Reg.m_PROGRAM_COUNTER, "PROGRAM_COUNTER", PcReg);
                 }
             }
@@ -2698,10 +2697,9 @@ void CX64RecompilerOps::SPECIAL_DIV()
             m_CodeBlock.Log("");
             m_Assembler.bind(JumpLoSet);
             m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", RegRs);
-            const asmjit::x86::Gp SignReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
-            m_Assembler.mov(SignReg.r32(), RegRs.r32());
-            m_Assembler.sar(SignReg.r32(), 31);
-            m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", SignReg);
+            m_Assembler.mov(asmjit::x86::edx, RegRs.r32());
+            m_Assembler.sar(asmjit::x86::edx, 31);
+            m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", asmjit::x86::edx);
             JumpEnd = m_Assembler.newLabel();
             m_Assembler.JmpLabel(stdstr_f("EndDiv_%08X", m_CompilePC).c_str(), JumpEnd);
 
@@ -2774,10 +2772,9 @@ void CX64RecompilerOps::SPECIAL_DIVU()
 
         m_Assembler.MoveConst64ToVariable(&m_Reg.m_LO.UDW, "RegLO.UDW", (uint64_t)-1);
         m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[0], "RegHI.UW[0]", RegRs);
-        const asmjit::x86::Gp SignReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
-        m_Assembler.mov(SignReg.r32(), RegRs.r32());
-        m_Assembler.sar(SignReg.r32(), 31);
-        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", SignReg);
+        m_Assembler.mov(asmjit::x86::edx, RegRs.r32());
+        m_Assembler.sar(asmjit::x86::edx, 31);
+        m_Assembler.MovDwordToVariable(&m_Reg.m_HI.UW[1], "RegHI.UW[1]", asmjit::x86::edx);
         JumpEnd = m_Assembler.newLabel();
         m_Assembler.JmpLabel(stdstr_f("EndDivu_%08X", m_CompilePC).c_str(), JumpEnd);
 
@@ -5267,6 +5264,7 @@ void CX64RecompilerOps::EnterCodeBlock()
     m_Assembler.push(asmjit::x86::r14);
     m_Assembler.push(asmjit::x86::r15);
     m_Assembler.sub(asmjit::x86::rsp, FunctionStackSize);
+    m_Assembler.mov(asmjit::x86::r15, (uint64_t)&m_Reg);
     m_WarmEntryOffset = (uint32_t)m_Assembler.offset();
 }
 
@@ -6789,6 +6787,12 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
         return;
     }
 
+    asmjit::x86::Gp StoreReg;
+    if (ValueSize == 64)
+    {
+        StoreReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
+    }
+
     const asmjit::x86::Gp PageIndexReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
     m_Assembler.mov(PageIndexReg.r32(), AddressReg.r32());
     m_Assembler.shr(PageIndexReg.r32(), 12);
@@ -6841,7 +6845,6 @@ void CX64RecompilerOps::CompileStoreMemoryValue(asmjit::x86::Gp AddressReg, cons
     }
     else if (ValueSize == 64)
     {
-        const asmjit::x86::Gp StoreReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpq(), -1, asmjit::RegType::kX86_Gpq);
         if (!ValueReg.isValid())
         {
             m_Assembler.MoveConstToX64reg(StoreReg, (Value << 32) | (Value >> 32));

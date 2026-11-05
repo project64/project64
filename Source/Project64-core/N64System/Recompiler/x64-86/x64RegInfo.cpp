@@ -16,7 +16,6 @@ static constexpr uint32_t kX64AllocatableRegIds[] = {
     asmjit::x86::Gp::kIdR12,
     asmjit::x86::Gp::kIdR13,
     asmjit::x86::Gp::kIdR14,
-    asmjit::x86::Gp::kIdR15,
     asmjit::x86::Gp::kIdDi,
     asmjit::x86::Gp::kIdSi,
     asmjit::x86::Gp::kIdBp,
@@ -210,6 +209,10 @@ bool CX64RegInfo::IsTempMapped(REG_MAPPED Mapping)
 
 const asmjit::x86::Gp & CX64RegInfo::GetMipsRegMap(int32_t Reg) const
 {
+    if (!IsMapped(Reg))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
     return m_RegMap[Reg];
 }
 
