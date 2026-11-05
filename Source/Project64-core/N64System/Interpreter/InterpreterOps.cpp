@@ -1523,11 +1523,17 @@ void R4300iOp::SWR_32()
 
 void R4300iOp::CACHE()
 {
+    uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
+    if ((Address & 3) != 0)
+    {
+        m_Reg.TriggerAddressException(Address, EXC_RADE);
+        return;
+    }
     if (!g_LogSettings.logCache)
     {
         return;
     }
-    LogMessage("%016llX: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, m_GPR[m_Opcode.base].UW[0] + (int16_t)m_Opcode.offset);
+    LogMessage("%016llX: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, (uint32_t)Address);
 }
 
 void R4300iOp::LL()
