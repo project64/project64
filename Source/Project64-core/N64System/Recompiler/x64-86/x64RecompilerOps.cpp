@@ -2198,7 +2198,89 @@ void CX64RecompilerOps::LD()
 
 void CX64RecompilerOps::SC()
 {
-    g_Notify->BreakPoint(__FILE__, __LINE__);
+    m_RegWorkingSet.ProtectGPR(m_Opcode.base);
+    if (m_RegWorkingSet.IsMapped(m_Opcode.base) && m_RegWorkingSet.Is32Bit(m_Opcode.base) && !m_RegWorkingSet.IsSigned(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+    }
+    if (m_RegWorkingSet.IsConst(m_Opcode.base) && !m_RegWorkingSet.Is32Bit(m_Opcode.base))
+    {
+        g_Notify->BreakPoint(__FILE__, __LINE__);
+        return;
+    }
+
+    asmjit::x86::Gp ValueReg;
+    if (!m_RegWorkingSet.IsConst(m_Opcode.rt))
+    {
+        if (m_RegWorkingSet.IsMapped(m_Opcode.rt))
+        {
+            m_RegWorkingSet.ProtectGPR(m_Opcode.rt);
+            ValueReg = m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32();
+        }
+        else
+        {
+            ValueReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), m_Opcode.rt);
+        }
+    }
+    const asmjit::x86::Gp AddressReg = BaseOffsetAddress();
+    const asmjit::x86::Gp LLBitReg = m_RegWorkingSet.Map_TempReg(asmjit::x86::Gpd(), -1);
+    CRegInfo ExitRegSet = m_RegWorkingSet.WithAddedCycles(g_GameSettings.countPerOp);
+
+    m_Assembler.MoveVariableToX64reg(LLBitReg, &m_Reg.m_LLBit, "LLBit", false);
+    m_Assembler.cmp(LLBitReg.r32(), 1);
+    asmjit::Label SkipStore = m_Assembler.newLabel();
+    m_Assembler.JneLabel(stdstr_f("SC_%X_SkipStore", m_CompilePC).c_str(), SkipStore);
+
+    m_Assembler.MoveConstToVariable(&g_Reg->m_PROGRAM_COUNTER, "PROGRAM_COUNTER", m_CompilePC);
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_JUMP);
+    }
+
+    m_RegWorkingSet.BeforeCallDirect();
+    if (ValueReg.isValid() && ValueReg.id() == asmjit::x86::Gp::kIdDx && AddressReg.id() == asmjit::x86::Gp::kIdR8)
+    {
+        m_Assembler.xchg(asmjit::x86::rdx, asmjit::x86::r8);
+        m_Assembler.movsxd(asmjit::x86::rdx, asmjit::x86::edx);
+    }
+    else if (ValueReg.isValid() && ValueReg.id() == asmjit::x86::Gp::kIdDx)
+    {
+        m_Assembler.mov(asmjit::x86::r8d, ValueReg.r32());
+        m_Assembler.movsxd(asmjit::x86::rdx, AddressReg.r32());
+    }
+    else
+    {
+        m_Assembler.movsxd(asmjit::x86::rdx, AddressReg.r32());
+        if (ValueReg.isValid())
+        {
+            m_Assembler.mov(asmjit::x86::r8d, ValueReg.r32());
+        }
+        else
+        {
+            m_Assembler.mov(asmjit::x86::r8d, m_RegWorkingSet.GetMipsRegLo(m_Opcode.rt));
+        }
+    }
+    m_Assembler.sub(asmjit::x86::rsp, 32);
+    m_Assembler.CallThis(&m_MMU, MemberFuncAddress(&CMipsMemoryVM::SW_Memory), "CMipsMemoryVM::SW_Memory");
+    m_Assembler.add(asmjit::x86::rsp, 32);
+    m_Assembler.test(asmjit::x86::al, asmjit::x86::al);
+    m_RegWorkingSet.AfterCallDirect();
+    CompileExit(m_CompilePC, (uint32_t)-1, ExitRegSet, ExitReason_Exception, &CX64Ops::JeLabel);
+
+    if (m_PipelineStage != PIPELINE_STAGE_NORMAL)
+    {
+        m_Assembler.MoveConstToVariable(&g_System->m_PipelineStage, "g_System->m_PipelineStage", PIPELINE_STAGE_NORMAL);
+    }
+
+    m_CodeBlock.Log("");
+    m_CodeBlock.Log("      SC_%X_SkipStore:", m_CompilePC);
+    m_Assembler.bind(SkipStore);
+
+    if (m_Opcode.rt != 0)
+    {
+        m_RegWorkingSet.Map_GPR_32bit(m_Opcode.rt, false, -1);
+        m_Assembler.mov(m_RegWorkingSet.GetMipsRegMap(m_Opcode.rt).r32(), LLBitReg.r32());
+    }
 }
 
 void CX64RecompilerOps::SWC1()
