@@ -49,6 +49,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_CPU_TYPE), Game_CpuType);
     if (ComboBox)
     {
+        ComboBox->SetTextField(GetDlgItem(IDC_CPU_TYPE_TEXT));
         ComboBox->AddItem(wGS(CORE_RECOMPILER).c_str(), CPU_Recompiler);
         ComboBox->AddItem(wGS(CORE_INTERPTER).c_str(), CPU_Interpreter);
         if (g_DebugSettings.haveDebugger)
@@ -60,6 +61,7 @@ CGameRecompilePage::CGameRecompilePage(HWND hParent, const RECT & rcDispay)
     ComboBox = AddModComboBox(GetDlgItem(IDC_FUNCFIND), Game_FuncLookupMode);
     if (ComboBox)
     {
+        ComboBox->SetTextField(GetDlgItem(IDC_FUNCFIND_TEXT));
         ComboBox->AddItem(wGS(FLM_PLOOKUP).c_str(), FuncFind_PhysicalLookup);
         ComboBox->AddItem(wGS(FLM_VLOOKUP).c_str(), FuncFind_VirtualLookup);
         //ComboBox->AddItem(wGS(FLM_CHANGEMEM).c_str(), FuncFind_ChangeMemory);
