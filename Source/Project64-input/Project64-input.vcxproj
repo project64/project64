@@ -53,7 +53,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DeviceNotification.cpp" />
     <ClCompile Include="SdlInputBackend.cpp" />
     <ClCompile Include="Win32KeyboardScan.cpp" />
     <ClCompile Include="InputConfigUI.cpp" />
@@ -67,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
-    <ClInclude Include="DeviceNotification.h" />
     <ClInclude Include="InputSettings.h" />
     <ClInclude Include="InputSettingsID.h" />
     <ClInclude Include="N64Controller.h" />

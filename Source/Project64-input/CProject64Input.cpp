@@ -21,10 +21,19 @@ CProject64Input::~CProject64Input()
 void CProject64Input::DevicesChanged(void)
 {
     CGuard guard(m_CS);
-    if (m_Input.get() != nullptr)
+    if (m_Input.get() == nullptr)
     {
-        m_Input->DevicesChanged();
+        return;
     }
+    m_Input->DevicesChanged();
+
+    // The device list was rebuilt, so buttons have to be pointed at the new device entries
+    for (uint32_t i = 0, n = sizeof(m_Controllers) / sizeof(m_Controllers[0]); i < n; i++)
+    {
+        m_Input->MapControllerDevice(m_Controllers[i]);
+    }
+    m_Input->MapControllerDevice(m_N64Mouse);
+    m_Input->MapShortcutDevice(m_Shortcuts);
 }
 
 void CProject64Input::DeviceAdded(void)
