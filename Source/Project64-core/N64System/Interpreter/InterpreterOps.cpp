@@ -2342,7 +2342,7 @@ void R4300iOp::COP0_DMF()
 
 void R4300iOp::COP0_MT()
 {
-    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, (int64_t)m_GPR[m_Opcode.rt].W[0]);
+    m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].UDW);
 }
 
 void R4300iOp::COP0_DMT()
