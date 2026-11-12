@@ -585,11 +585,15 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
     case COP0Reg_EPC:
     case COP0Reg_WatchLo:
     case COP0Reg_WatchHi:
-    case COP0Reg_TagLo:
-    case COP0Reg_TagHi:
     case COP0Reg_ErrEPC:
     case COP0Reg_31:
         m_CP0[Reg] = Value;
+        break;
+    case COP0Reg_TagLo:
+        m_CP0[Reg] = Value & 0xFFFFFFFF;
+        break;
+    case COP0Reg_TagHi:
+        // Ignore - Always 0
         break;
     case COP0Reg_Index:
         m_CP0[Reg] = Value & 0x8000003F;
