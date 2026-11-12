@@ -64,6 +64,10 @@ public:
     bool VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused);
     bool VAddrToPAddrCached(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused, bool & Cached);
     bool VAddrCached(uint32_t VAddr) const;
+    bool Allow64BitInstructions() const
+    {
+        return m_PrivilegeMode == PrivilegeMode_Kernel || !m_AddressSize32bit;
+    }
     bool VAddrUnused32(uint32_t VAddr)
     {
         return m_PrivilegeMode != PrivilegeMode_Kernel && VAddrMemorySegment((int32_t)VAddr) == MemorySegment_Unused;

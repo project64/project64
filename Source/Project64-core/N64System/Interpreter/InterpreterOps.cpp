@@ -1108,6 +1108,10 @@ void R4300iOp::BGTZL()
 
 void R4300iOp::DADDI()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     int64_t rs = m_GPR[m_Opcode.rs].DW;
     int64_t imm = (int64_t)((int16_t)m_Opcode.immediate);
     int64_t sum = rs + imm;
@@ -1121,6 +1125,10 @@ void R4300iOp::DADDI()
 
 void R4300iOp::DADDIU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rs].DW + (int64_t)((int16_t)m_Opcode.immediate);
 }
 
@@ -1129,6 +1137,10 @@ int32_t LDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::LDL()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
@@ -1147,6 +1159,10 @@ int32_t LDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::LDR()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
@@ -1313,6 +1329,10 @@ void R4300iOp::LWR_32()
 
 void R4300iOp::LWU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
@@ -1324,6 +1344,10 @@ void R4300iOp::LWU()
 
 void R4300iOp::LWU_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
@@ -1417,6 +1441,10 @@ int32_t SDL_SHIFT[8] = {0, 8, 16, 24, 32, 40, 48, 56};
 
 void R4300iOp::SDL()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
@@ -1434,6 +1462,10 @@ void R4300iOp::SDL()
 
 void R4300iOp::SDL_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
@@ -1462,6 +1494,10 @@ int32_t SDR_SHIFT[8] = {56, 48, 40, 32, 24, 16, 8, 0};
 
 void R4300iOp::SDR()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
@@ -1479,6 +1515,10 @@ void R4300iOp::SDR()
 
 void R4300iOp::SDR_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
@@ -1625,6 +1665,10 @@ void R4300iOp::SC_32()
 
 void R4300iOp::LD()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1639,6 +1683,10 @@ void R4300iOp::LD()
 
 void R4300iOp::LD_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1653,6 +1701,10 @@ void R4300iOp::LD_32()
 
 void R4300iOp::LLD()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1666,6 +1718,10 @@ void R4300iOp::LLD()
 
 void R4300iOp::LLD_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     if (m_MMU.LD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1679,6 +1735,10 @@ void R4300iOp::LLD_32()
 
 void R4300iOp::SCD()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (m_LLBit != 1 || m_MMU.SD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1688,6 +1748,10 @@ void R4300iOp::SCD()
 
 void R4300iOp::SCD_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     if (m_LLBit != 1 || m_MMU.SD_Memory(Address, m_GPR[m_Opcode.rt].UDW))
     {
@@ -1759,12 +1823,20 @@ void R4300iOp::SDC1_32()
 
 void R4300iOp::SD()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     m_MMU.SD_Memory(Address, m_GPR[m_Opcode.rt].UDW);
 }
 
 void R4300iOp::SD_32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     m_MMU.SD_Memory(Address, m_GPR[m_Opcode.rt].UDW);
 }
@@ -1858,16 +1930,28 @@ void R4300iOp::SPECIAL_MTLO()
 
 void R4300iOp::SPECIAL_DSLLV()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rt].DW << (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
 void R4300iOp::SPECIAL_DSRLV()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].UDW = m_GPR[m_Opcode.rt].UDW >> (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
 void R4300iOp::SPECIAL_DSRAV()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rt].DW >> (m_GPR[m_Opcode.rs].UW[0] & 0x3F);
 }
 
@@ -1925,6 +2009,10 @@ void R4300iOp::SPECIAL_DIVU()
 
 void R4300iOp::SPECIAL_DMULT()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     MIPS_DWORD Tmp[3];
 
     m_RegLO.UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[0] * (uint64_t)m_GPR[m_Opcode.rt].UW[0];
@@ -1939,6 +2027,10 @@ void R4300iOp::SPECIAL_DMULT()
 
 void R4300iOp::SPECIAL_DMULTU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     MIPS_DWORD Tmp[3];
 
     m_RegLO.UDW = (uint64_t)m_GPR[m_Opcode.rs].UW[0] * (uint64_t)m_GPR[m_Opcode.rt].UW[0];
@@ -1953,6 +2045,10 @@ void R4300iOp::SPECIAL_DMULTU()
 
 void R4300iOp::SPECIAL_DDIV()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
 
     if (m_GPR[m_Opcode.rt].UDW != 0)
     {
@@ -1976,6 +2072,10 @@ void R4300iOp::SPECIAL_DDIV()
 
 void R4300iOp::SPECIAL_DDIVU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     if (m_GPR[m_Opcode.rt].UDW != 0)
     {
         m_RegLO.UDW = m_GPR[m_Opcode.rs].UDW / m_GPR[m_Opcode.rt].UDW;
@@ -2077,6 +2177,10 @@ void R4300iOp::SPECIAL_SLTU()
 
 void R4300iOp::SPECIAL_DADD()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     int64_t rs = m_GPR[m_Opcode.rs].DW;
     int64_t rt = m_GPR[m_Opcode.rt].DW;
     int64_t sum = rs + rt;
@@ -2090,11 +2194,19 @@ void R4300iOp::SPECIAL_DADD()
 
 void R4300iOp::SPECIAL_DADDU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW + m_GPR[m_Opcode.rt].DW;
 }
 
 void R4300iOp::SPECIAL_DSUB()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     int64_t rs = m_GPR[m_Opcode.rs].DW;
     int64_t rt = m_GPR[m_Opcode.rt].DW;
     int64_t sub = rs - rt;
@@ -2109,6 +2221,10 @@ void R4300iOp::SPECIAL_DSUB()
 
 void R4300iOp::SPECIAL_DSUBU()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = m_GPR[m_Opcode.rs].DW - m_GPR[m_Opcode.rt].DW;
 }
 
@@ -2162,31 +2278,55 @@ void R4300iOp::SPECIAL_TNE()
 
 void R4300iOp::SPECIAL_DSLL()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW << m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSRL()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].UDW = (m_GPR[m_Opcode.rt].UDW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSRA()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW >> m_Opcode.sa);
 }
 
 void R4300iOp::SPECIAL_DSLL32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW << (m_Opcode.sa + 32));
 }
 
 void R4300iOp::SPECIAL_DSRL32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].UDW = (m_GPR[m_Opcode.rt].UDW >> (m_Opcode.sa + 32));
 }
 
 void R4300iOp::SPECIAL_DSRA32()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rd].DW = (m_GPR[m_Opcode.rt].DW >> (m_Opcode.sa + 32));
 }
 
@@ -2347,6 +2487,10 @@ void R4300iOp::COP0_MF()
 
 void R4300iOp::COP0_DMF()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rt].DW = m_Reg.Cop0_MF((CRegisters::COP0Reg)m_Opcode.rd);
 }
 
@@ -2357,6 +2501,10 @@ void R4300iOp::COP0_MT()
 
 void R4300iOp::COP0_DMT()
 {
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].UDW);
 }
 // COP0 CO functions
@@ -2432,6 +2580,10 @@ void R4300iOp::COP1_DMF()
     {
         return;
     }
+    if (Test64BitInstructionException())
+    {
+        return;
+    }
     m_GPR[m_Opcode.rt].DW = *(int64_t *)m_FPR_D[m_Opcode.fs];
 }
 
@@ -2456,6 +2608,10 @@ void R4300iOp::COP1_MT()
 void R4300iOp::COP1_DMT()
 {
     if (TestCop1UsableException())
+    {
+        return;
+    }
+    if (Test64BitInstructionException())
     {
         return;
     }
@@ -3540,6 +3696,16 @@ bool R4300iOp::TestCop1UsableException(void)
     if (m_Reg.STATUS_REGISTER.CU1 == 0)
     {
         m_Reg.TriggerException(EXC_CPU, 1);
+        return true;
+    }
+    return false;
+}
+
+bool R4300iOp::Test64BitInstructionException(void)
+{
+    if (!m_TLB.Allow64BitInstructions())
+    {
+        m_Reg.TriggerException(EXC_II);
         return true;
     }
     return false;

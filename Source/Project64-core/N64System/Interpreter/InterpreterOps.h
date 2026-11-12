@@ -323,6 +323,7 @@ private:
     Func Jump_CoP2[32];
 
     bool TestCop1UsableException(void);
+    bool Test64BitInstructionException(void);
     bool CheckFPUInput32(const uint32_t & Value);
     bool CheckFPUInputs32(const uint32_t & Value, const uint32_t & Value2);
     bool CheckFPUInput32Conv(const float & Value);
