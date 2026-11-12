@@ -2518,6 +2518,7 @@ void R4300iOp::COP0_DMF()
 void R4300iOp::COP0_MT()
 {
     m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].UDW);
+    TestInterruptPending();
 }
 
 void R4300iOp::COP0_DMT()
@@ -2527,7 +2528,23 @@ void R4300iOp::COP0_DMT()
         return;
     }
     m_Reg.Cop0_MT((CRegisters::COP0Reg)m_Opcode.rd, m_GPR[m_Opcode.rt].UDW);
+    TestInterruptPending();
 }
+
+void R4300iOp::TestInterruptPending()
+{
+    if (!m_Reg.InterruptPending())
+    {
+        return;
+    }
+    if (m_System.m_PipelineStage == PIPELINE_STAGE_NORMAL)
+    {
+        m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
+        m_System.m_JumpToLocation = m_PROGRAM_COUNTER + 4;
+    }
+    m_System.m_TestTimer = true;
+}
+
 // COP0 CO functions
 
 void R4300iOp::COP0_CO_TLBR()

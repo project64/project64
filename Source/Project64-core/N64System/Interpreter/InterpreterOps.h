@@ -326,6 +326,7 @@ private:
 
     bool TestCop1UsableException(void);
     bool Test64BitInstructionException(void);
+    void TestInterruptPending(void);
     uint32_t PartialWordOffset(uint64_t Address) const;
     uint32_t PartialDoubleWordOffset(uint64_t Address) const;
     bool CheckFPUInput32(const uint32_t & Value);

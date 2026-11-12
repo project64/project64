@@ -656,12 +656,14 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         break;
     }
     case COP0Reg_Cause:
-        m_CP0[Reg] &= 0xFFFFCFF;
-        if ((Value & 0x300) != 0 && g_DebugSettings.haveDebugger)
-        {
-            g_Notify->DisplayError("Set IP0 or IP1");
-        }
+    {
+        COP0Cause NewCause;
+        NewCause.Value = Value;
+        CAUSE_REGISTER.PendingInterrupts &= ~(CAUSE_IP0 | CAUSE_IP1);
+        CAUSE_REGISTER.PendingInterrupts |= NewCause.PendingInterrupts & (CAUSE_IP0 | CAUSE_IP1);
+        CheckInterrupts();
         break;
+    }
     case COP0Reg_PRId:
         // Read only
         break;
@@ -742,14 +744,7 @@ void CRegisters::CheckInterrupts()
         CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP2;
     }
     MI_INTR_REG = MI_INTR_REG_Value;
-    COP0Status STATUS_REGISTER_Value = STATUS_REGISTER;
-
-    if (STATUS_REGISTER_Value.InterruptEnable == 0 || STATUS_REGISTER_Value.ExceptionLevel != 0 || STATUS_REGISTER_Value.ErrorLevel != 0)
-    {
-        return;
-    }
-
-    if ((STATUS_REGISTER_Value.Value & CAUSE_REGISTER.Value & 0xFF00) != 0)
+    if (InterruptPending())
     {
         if (m_FirstInterupt)
         {
@@ -783,6 +778,15 @@ void CRegisters::FixFpuLocations()
         m_FPR_S_L[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].F[0] : &m_FPR[i].F[0];
         m_FPR_D[i] = STATUS_REGISTER.FR == 0 ? &m_FPR[i & ~1].D : &m_FPR[i].D;
     }
+}
+
+bool CRegisters::InterruptPending() const
+{
+    if (STATUS_REGISTER.InterruptEnable == 0 || STATUS_REGISTER.ExceptionLevel != 0 || STATUS_REGISTER.ErrorLevel != 0)
+    {
+        return false;
+    }
+    return (STATUS_REGISTER.Value & CAUSE_REGISTER.Value & 0xFF00) != 0;
 }
 
 bool CRegisters::DoIntrException()
