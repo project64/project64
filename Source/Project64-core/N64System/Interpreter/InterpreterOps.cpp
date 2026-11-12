@@ -2399,6 +2399,7 @@ void R4300iOp::COP0_CO_ERET()
         m_System.m_JumpToLocation = m_Reg.EPC_REGISTER;
         m_Reg.STATUS_REGISTER.ExceptionLevel = 0;
     }
+    m_TLB.COP0StatusChanged();
     m_LLBit = 0;
     m_Reg.CheckInterrupts();
     m_System.m_TestTimer = true;

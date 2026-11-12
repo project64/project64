@@ -339,6 +339,11 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
         return LB_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_RADE);
+        return false;
+    }
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -381,6 +386,11 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
         return LH_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_RADE);
+        return false;
+    }
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -423,6 +433,11 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
         return LW_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_RADE);
+        return false;
+    }
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -465,6 +480,11 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
         return LD_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_RADE);
+        return false;
+    }
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -503,6 +523,11 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
         return SB_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_WADE);
+        return false;
+    }
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -545,6 +570,11 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
         return SH_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_WADE);
+        return false;
+    }
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -587,6 +617,11 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
         return SW_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_WADE);
+        return false;
+    }
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
@@ -629,6 +664,11 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
         return SD_PhysicalAddress(PAddr, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
+    if (m_TLB.VAddrUnused32(VAddr32))
+    {
+        m_Reg.TriggerAddressException(VAddr, EXC_WADE);
+        return false;
+    }
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;

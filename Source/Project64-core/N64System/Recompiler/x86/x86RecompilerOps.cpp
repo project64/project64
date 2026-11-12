@@ -7614,6 +7614,7 @@ void CX86RecompilerOps::COP0_CO_ERET(void)
     m_RegWorkingSet.SetBlockCycleCount(m_RegWorkingSet.GetBlockCycleCount() + g_GameSettings.countPerOp);
     m_RegWorkingSet.WriteBackRegisters();
     m_Assembler.CallFunc((uint32_t)x86_compiler_COP0_CO_ERET, "x86_compiler_COP0_CO_ERET");
+    m_Assembler.CallThis((uint32_t)&m_TLB, AddressOf(&CTLB::COP0StatusChanged), "CTLB::COP0StatusChanged", 4);
 
     UpdateCounters(m_RegWorkingSet, true, true);
     CompileExit(m_CompilePC, (uint32_t)-1, m_RegWorkingSet, ExitReason_Normal, true, nullptr);

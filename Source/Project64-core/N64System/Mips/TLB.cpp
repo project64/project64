@@ -197,7 +197,8 @@ void CTLB::WriteEntry(uint32_t Index, bool Random)
 
 void CTLB::COP0StatusChanged(void)
 {
-    m_PrivilegeMode = m_Reg.STATUS_REGISTER.PrivilegeMode;
+    bool ExceptionMode = m_Reg.STATUS_REGISTER.ExceptionLevel || m_Reg.STATUS_REGISTER.ErrorLevel;
+    m_PrivilegeMode = ExceptionMode ? PrivilegeMode_Kernel : m_Reg.STATUS_REGISTER.PrivilegeMode;
     switch (m_PrivilegeMode)
     {
     case PrivilegeMode_Kernel:
@@ -543,7 +544,7 @@ MemorySegment CTLB::VAddrMemorySegment(uint64_t VAddr)
             return MemorySegment_Mapped;
         }
     }
-    else if (m_PrivilegeMode == PrivilegeMode_Kernel)
+    else if (m_PrivilegeMode == PrivilegeMode_Supervisor)
     {
         if (VAddr <= 0x000000ffffffffffull) //xsuseg
         {

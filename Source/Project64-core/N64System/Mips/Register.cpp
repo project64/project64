@@ -851,6 +851,7 @@ void CRegisters::TriggerException(uint32_t ExceptionCode, uint32_t Coprocessor)
     CAUSE_REGISTER.BranchDelay = m_System.m_PipelineStage == PIPELINE_STAGE_JUMP || m_System.m_PipelineStage == PIPELINE_STAGE_PERMLOOP_DELAY_DONE;
     EPC_REGISTER = (int64_t)((int32_t)m_PROGRAM_COUNTER - (CAUSE_REGISTER.BranchDelay ? 4 : 0));
     STATUS_REGISTER.ExceptionLevel = 1;
+    m_System.m_TLB.COP0StatusChanged();
     m_System.m_PipelineStage = PIPELINE_STAGE_JUMP;
     m_System.m_JumpToLocation = 0xFFFFFFFF80000180;
 }
