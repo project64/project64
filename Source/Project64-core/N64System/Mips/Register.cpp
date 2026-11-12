@@ -549,6 +549,12 @@ void CRegisters::Reset(bool bPostPif, CMipsMemoryVM & MMU)
     m_System.m_TLB.COP0StatusChanged();
 }
 
+bool CRegisters::Cop0Usable() const
+{
+    bool KernelMode = STATUS_REGISTER.PrivilegeMode == PrivilegeMode_Kernel || STATUS_REGISTER.ExceptionLevel || STATUS_REGISTER.ErrorLevel;
+    return KernelMode || STATUS_REGISTER.CU0;
+}
+
 uint64_t CRegisters::Cop0_MF(COP0Reg Reg)
 {
     if (g_LogSettings.logCp0reads && Reg <= COP0Reg_31)

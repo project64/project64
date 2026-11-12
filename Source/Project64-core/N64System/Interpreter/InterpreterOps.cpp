@@ -229,6 +229,11 @@ void R4300iOp::REGIMM()
 
 void R4300iOp::COP0()
 {
+    if (!m_Reg.Cop0Usable())
+    {
+        m_Reg.TriggerException(EXC_CPU, 0);
+        return;
+    }
     (this->*Jump_CoP0[m_Opcode.rs])();
 }
 
@@ -1527,6 +1532,11 @@ void R4300iOp::SWR_32()
 
 void R4300iOp::CACHE()
 {
+    if (!m_Reg.Cop0Usable())
+    {
+        m_Reg.TriggerException(EXC_CPU, 0);
+        return;
+    }
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if ((Address & 3) != 0)
     {
