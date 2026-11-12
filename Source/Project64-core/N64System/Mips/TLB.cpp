@@ -12,7 +12,8 @@ CTLB::CTLB(CMipsMemoryVM & MMU, CRegisters & Reg, CRecompiler *& Recomp) :
     m_Reg(Reg),
     m_Recomp(Recomp),
     m_PrivilegeMode(PrivilegeMode_Kernel),
-    m_AddressSize32bit(true)
+    m_AddressSize32bit(true),
+    m_ReverseEndian(false)
 {
     WriteTrace(TraceTLB, TraceDebug, "Start");
     memset(m_tlb, 0, sizeof(m_tlb));
@@ -199,6 +200,7 @@ void CTLB::COP0StatusChanged(void)
 {
     bool ExceptionMode = m_Reg.STATUS_REGISTER.ExceptionLevel || m_Reg.STATUS_REGISTER.ErrorLevel;
     m_PrivilegeMode = ExceptionMode ? PrivilegeMode_Kernel : m_Reg.STATUS_REGISTER.PrivilegeMode;
+    m_ReverseEndian = m_PrivilegeMode == PrivilegeMode_User && m_Reg.STATUS_REGISTER.RE;
     switch (m_PrivilegeMode)
     {
     case PrivilegeMode_Kernel:

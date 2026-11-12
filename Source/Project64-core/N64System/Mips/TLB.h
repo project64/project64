@@ -64,6 +64,10 @@ public:
     bool VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused);
     bool VAddrToPAddrCached(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused, bool & Cached);
     bool VAddrCached(uint32_t VAddr) const;
+    bool ReverseEndian() const
+    {
+        return m_ReverseEndian;
+    }
     bool Allow64BitInstructions() const
     {
         return m_PrivilegeMode == PrivilegeMode_Kernel || !m_AddressSize32bit;
@@ -89,6 +93,7 @@ private:
 
     PRIVILEGE_MODE m_PrivilegeMode;
     bool m_AddressSize32bit;
+    bool m_ReverseEndian;
     CMipsMemoryVM & m_MMU;
     CRegisters & m_Reg;
     CRecompiler *& m_Recomp;

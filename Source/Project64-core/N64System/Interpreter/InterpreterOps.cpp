@@ -104,9 +104,16 @@ void R4300iOp::ExecuteOps(uint32_t Cycles)
             UpdateInstructionMemory();
             updateInstructionMemory = false;
         }
-        if (!EmulateCache || !m_MMU.InstructionCacheFetch(m_PROGRAM_COUNTER, m_Opcode.Value))
+        uint64_t FetchAddress = m_PROGRAM_COUNTER;
+        uint32_t * FetchPtr = m_InstructionPtr;
+        if (m_TLB.ReverseEndian())
         {
-            m_Opcode.Value = *m_InstructionPtr;
+            FetchAddress ^= 4;
+            FetchPtr = (uint32_t *)((uintptr_t)FetchPtr ^ 4);
+        }
+        if (!EmulateCache || !m_MMU.InstructionCacheFetch(FetchAddress, m_Opcode.Value))
+        {
+            m_Opcode.Value = *FetchPtr;
         }
         if (g_DebugSettings.haveDebugger)
         {
