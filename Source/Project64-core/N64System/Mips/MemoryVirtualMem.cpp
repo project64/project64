@@ -322,6 +322,7 @@ bool CMipsMemoryVM::UpdateMemoryValue32(uint32_t VAddr, uint32_t Value)
 
 bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
 {
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 7 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -334,9 +335,9 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return LB_DataCache((uint32_t)VAddr, PAddr, Value);
+            return LB_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return LB_PhysicalAddress(PAddr, Value);
+        return LB_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -351,12 +352,12 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
     {
-        return LB_DataCache(VAddr32, PAddr, Value);
+        return LB_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3));
+        Value = *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3 ^ EndianXor));
         return true;
     }
     return LB_VAddr32(VAddr32, Value);
@@ -369,6 +370,7 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
         m_Reg.TriggerAddressException(VAddr, EXC_RADE);
         return false;
     }
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 6 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -381,9 +383,9 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return LH_DataCache((uint32_t)VAddr, PAddr, Value);
+            return LH_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return LH_PhysicalAddress(PAddr, Value);
+        return LH_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -398,12 +400,12 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
     {
-        return LH_DataCache(VAddr32, PAddr, Value);
+        return LH_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2));
+        Value = *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2 ^ EndianXor));
         return true;
     }
     return LH_VAddr32(VAddr32, Value);
@@ -416,6 +418,7 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
         m_Reg.TriggerAddressException(VAddr, EXC_RADE);
         return false;
     }
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 4 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -428,9 +431,9 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return LW_DataCache((uint32_t)VAddr, PAddr, Value);
+            return LW_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return LW_PhysicalAddress(PAddr, Value);
+        return LW_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -445,12 +448,12 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
     {
-        return LW_DataCache(VAddr32, PAddr, Value);
+        return LW_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        Value = *(uint32_t *)(MemoryPtr + VAddr32);
+        Value = *(uint32_t *)(MemoryPtr + (VAddr32 ^ EndianXor));
         return true;
     }
     return LW_VAddr32(VAddr32, Value);
@@ -506,6 +509,7 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
 
 bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
 {
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 7 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -518,9 +522,9 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return SB_DataCache((uint32_t)VAddr, PAddr, Value);
+            return SB_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return SB_PhysicalAddress(PAddr, Value);
+        return SB_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -535,12 +539,12 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
     {
-        return SB_DataCache(VAddr32, PAddr, Value);
+        return SB_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3)) = (uint8_t)Value;
+        *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3 ^ EndianXor)) = (uint8_t)Value;
         return true;
     }
     return SB_VAddr32(VAddr32, Value);
@@ -553,6 +557,7 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
         m_Reg.TriggerAddressException(VAddr, EXC_WADE);
         return false;
     }
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 6 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -565,9 +570,9 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return SH_DataCache((uint32_t)VAddr, PAddr, Value);
+            return SH_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return SH_PhysicalAddress(PAddr, Value);
+        return SH_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -582,12 +587,12 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
     {
-        return SH_DataCache(VAddr32, PAddr, Value);
+        return SH_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2)) = (uint16_t)Value;
+        *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2 ^ EndianXor)) = (uint16_t)Value;
         return true;
     }
     return SH_VAddr32(VAddr32, Value);
@@ -600,6 +605,7 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
         m_Reg.TriggerAddressException(VAddr, EXC_WADE);
         return false;
     }
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 4 : 0;
     if ((uint64_t)((int32_t)VAddr) != VAddr)
     {
         uint32_t PAddr;
@@ -612,9 +618,9 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
         }
         if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
         {
-            return SW_DataCache((uint32_t)VAddr, PAddr, Value);
+            return SW_DataCache((uint32_t)VAddr ^ EndianXor, PAddr, Value);
         }
-        return SW_PhysicalAddress(PAddr, Value);
+        return SW_PhysicalAddress(PAddr ^ EndianXor, Value);
     }
     uint32_t VAddr32 = (uint32_t)VAddr;
     if (m_TLB.VAddrUnused32(VAddr32))
@@ -629,12 +635,12 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
     uint32_t PAddr;
     if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
     {
-        return SW_DataCache(VAddr32, PAddr, Value);
+        return SW_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
     {
-        *(uint32_t *)(MemoryPtr + VAddr32) = Value;
+        *(uint32_t *)(MemoryPtr + (VAddr32 ^ EndianXor)) = Value;
         return true;
     }
     return SW_VAddr32(VAddr32, Value);
@@ -913,7 +919,8 @@ bool CMipsMemoryVM::LB_VAddr32(uint32_t VAddr, uint8_t & Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
-    return LB_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 7 : 0;
+    return LB_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::LH_VAddr32(uint32_t VAddr, uint16_t & Value)
@@ -924,7 +931,8 @@ bool CMipsMemoryVM::LH_VAddr32(uint32_t VAddr, uint16_t & Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
-    return LH_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 6 : 0;
+    return LH_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::LW_VAddr32(uint32_t VAddr, uint32_t & Value)
@@ -935,7 +943,8 @@ bool CMipsMemoryVM::LW_VAddr32(uint32_t VAddr, uint32_t & Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_RMISS);
         return false;
     }
-    return LW_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 4 : 0;
+    return LW_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::LD_VAddr32(uint32_t VAddr, uint64_t & Value)
@@ -1087,7 +1096,8 @@ bool CMipsMemoryVM::SB_VAddr32(uint32_t VAddr, uint32_t Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
-    return SB_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 7 : 0;
+    return SB_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::SH_VAddr32(uint32_t VAddr, uint32_t Value)
@@ -1098,7 +1108,8 @@ bool CMipsMemoryVM::SH_VAddr32(uint32_t VAddr, uint32_t Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
-    return SH_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 6 : 0;
+    return SH_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::SW_VAddr32(uint32_t VAddr, uint32_t Value)
@@ -1109,7 +1120,8 @@ bool CMipsMemoryVM::SW_VAddr32(uint32_t VAddr, uint32_t Value)
         m_Reg.TriggerAddressException((int32_t)VAddr, EXC_WMISS);
         return false;
     }
-    return SW_PhysicalAddress(BaseAddress + VAddr, Value);
+    uint32_t EndianXor = m_TLB.ReverseEndian() ? 4 : 0;
+    return SW_PhysicalAddress((BaseAddress + VAddr) ^ EndianXor, Value);
 }
 
 bool CMipsMemoryVM::SD_VAddr32(uint32_t VAddr, uint64_t Value)

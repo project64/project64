@@ -1152,7 +1152,7 @@ void R4300iOp::LDL()
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].DW & LDL_MASK[Offset];
         m_GPR[m_Opcode.rt].DW += MemoryValue << LDL_SHIFT[Offset];
     }
@@ -1174,7 +1174,7 @@ void R4300iOp::LDR()
     uint64_t MemoryValue;
     if (m_MMU.LD_Memory((Address & ~7), MemoryValue))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].DW & LDR_MASK[Offset];
         m_GPR[m_Opcode.rt].DW += MemoryValue >> LDR_SHIFT[Offset];
     }
@@ -1227,7 +1227,7 @@ void R4300iOp::LWL()
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
         m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue << LWL_SHIFT[Offset]);
     }
@@ -1240,7 +1240,7 @@ void R4300iOp::LWL_32()
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWL_MASK[Offset]);
         m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue << LWL_SHIFT[Offset]);
     }
@@ -1315,7 +1315,7 @@ void R4300iOp::LWR()
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
         m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
     }
@@ -1328,7 +1328,7 @@ void R4300iOp::LWR_32()
 
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
         m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
     }
@@ -1393,9 +1393,9 @@ void R4300iOp::SWL()
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue, true))
+    if (m_MMU.MemoryValue32(m_TLB.ReverseEndian() ? (Address & ~3) ^ 4 : Address & ~3, MemoryValue, true))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         MemoryValue &= SWL_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UW[0] >> SWL_SHIFT[Offset];
         m_MMU.SW_Memory(Address & ~3, MemoryValue);
@@ -1411,9 +1411,9 @@ void R4300iOp::SWL_32()
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue, true))
+    if (m_MMU.MemoryValue32(m_TLB.ReverseEndian() ? (Address & ~3) ^ 4 : Address & ~3, MemoryValue, true))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         MemoryValue &= SWL_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UW[0] >> SWL_SHIFT[Offset];
         m_MMU.SW_Memory(Address & ~3, MemoryValue);
@@ -1456,7 +1456,7 @@ void R4300iOp::SDL()
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         MemoryValue &= SDL_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
@@ -1477,7 +1477,7 @@ void R4300iOp::SDL_32()
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         MemoryValue &= SDL_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UDW >> SDL_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
@@ -1509,7 +1509,7 @@ void R4300iOp::SDR()
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         MemoryValue &= SDR_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
@@ -1530,7 +1530,7 @@ void R4300iOp::SDR_32()
     uint64_t MemoryValue;
     if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
-        uint32_t Offset = Address & 7;
+        uint32_t Offset = PartialDoubleWordOffset(Address);
         MemoryValue &= SDR_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UDW << SDR_SHIFT[Offset];
         m_MMU.SD_Memory((Address & ~7), MemoryValue);
@@ -1546,9 +1546,9 @@ void R4300iOp::SWR()
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue, true))
+    if (m_MMU.MemoryValue32(m_TLB.ReverseEndian() ? (Address & ~3) ^ 4 : Address & ~3, MemoryValue, true))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         MemoryValue &= SWR_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
         m_MMU.SW_Memory((Address & ~0x03), MemoryValue);
@@ -1564,9 +1564,9 @@ void R4300iOp::SWR_32()
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue, true))
+    if (m_MMU.MemoryValue32(m_TLB.ReverseEndian() ? (Address & ~3) ^ 4 : Address & ~3, MemoryValue, true))
     {
-        uint32_t Offset = Address & 3;
+        uint32_t Offset = PartialWordOffset(Address);
         MemoryValue &= SWR_MASK[Offset];
         MemoryValue += m_GPR[m_Opcode.rt].UW[0] << SWR_SHIFT[Offset];
         m_MMU.SW_Memory((Address & ~0x03), MemoryValue);
@@ -1657,7 +1657,7 @@ void R4300iOp::SC()
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     if (m_LLBit != 1 || m_MMU.SW_Memory(Address, m_GPR[m_Opcode.rt].UW[0]))
     {
-        m_GPR[m_Opcode.rt].UW[0] = m_LLBit;
+        m_GPR[m_Opcode.rt].UDW = m_LLBit;
     }
 }
 
@@ -1666,7 +1666,7 @@ void R4300iOp::SC_32()
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     if (m_LLBit != 1 || m_MMU.SW_Memory(Address, m_GPR[m_Opcode.rt].UW[0]))
     {
-        m_GPR[m_Opcode.rt].UW[0] = m_LLBit;
+        m_GPR[m_Opcode.rt].UDW = m_LLBit;
     }
 }
 
@@ -3706,6 +3706,16 @@ bool R4300iOp::TestCop1UsableException(void)
         return true;
     }
     return false;
+}
+
+uint32_t R4300iOp::PartialWordOffset(uint64_t Address) const
+{
+    return m_TLB.ReverseEndian() ? (Address & 3) ^ 3 : Address & 3;
+}
+
+uint32_t R4300iOp::PartialDoubleWordOffset(uint64_t Address) const
+{
+    return m_TLB.ReverseEndian() ? (Address & 7) ^ 7 : Address & 7;
 }
 
 bool R4300iOp::Test64BitInstructionException(void)
