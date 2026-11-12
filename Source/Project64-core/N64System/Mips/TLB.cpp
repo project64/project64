@@ -233,6 +233,7 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo0.V != 0;
     m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo0.D != 0;
+    m_FastTlb[FastIndx].CACHED = m_tlb[Index].EntryLo0.C != CacheCoherency_Uncached;
     m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
@@ -251,6 +252,7 @@ void CTLB::SetupTLB_Entry(uint32_t Index, bool Random)
     m_FastTlb[FastIndx].PHYSEND = m_FastTlb[FastIndx].PHYSSTART + m_FastTlb[FastIndx].Length;
     m_FastTlb[FastIndx].VALID = m_tlb[Index].EntryLo1.V != 0;
     m_FastTlb[FastIndx].DIRTY = m_tlb[Index].EntryLo1.D != 0;
+    m_FastTlb[FastIndx].CACHED = m_tlb[Index].EntryLo1.C != CacheCoherency_Uncached;
     m_FastTlb[FastIndx].GLOBAL = m_tlb[Index].EntryLo0.GLOBAL & m_tlb[Index].EntryLo1.GLOBAL;
     m_FastTlb[FastIndx].ValidEntry = false;
     m_FastTlb[FastIndx].Random = Random;
@@ -305,7 +307,14 @@ void CTLB::TLB_Unmaped(uint32_t VAddr, uint32_t Len)
 
 bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
 {
+    bool Cached;
+    return VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached);
+}
+
+bool CTLB::VAddrToPAddrCached(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused, bool & Cached)
+{
     MemoryUnused = false;
+    Cached = false;
 #if defined(__i386__) || defined(_M_IX86)
     if (g_GameSettings.core32Bit && (uint64_t)((int32_t)VAddr) != VAddr)
     {
@@ -336,6 +345,7 @@ bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
             uint64_t AddressSelect = ((m_tlb[i].PageMask.Mask << 12) | 0xfff) + 1;
             COP0EntryLo EntryLo = (VAddr & AddressSelect) != 0 ? m_tlb[i].EntryLo1 : m_tlb[i].EntryLo0;
             PAddr = (uint32_t)((EntryLo.PFN << 12) + (VAddr & (PageMask | 0x1fff)));
+            Cached = EntryLo.C != CacheCoherency_Uncached;
             return true;
         }
         return false;
@@ -347,8 +357,24 @@ bool CTLB::VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused)
     }
     if (Segment == MemorySegment_Direct32 || Segment == MemorySegment_Cached32)
     {
+        bool Kseg0 = (uint64_t)((int32_t)VAddr) == VAddr;
+        bool Kseg0Uncached = Kseg0 && (m_Reg.CONFIG_REGISTER & 7) == CacheCoherency_Uncached;
         PAddr = VAddr & 0x7FFFFFFF;
+        Cached = Segment == MemorySegment_Cached32 && !Kseg0Uncached;
         return true;
+    }
+    return false;
+}
+
+bool CTLB::VAddrCached(uint32_t VAddr) const
+{
+    for (uint32_t i = 0; i < 64; i++)
+    {
+        const FASTTLB & Entry = m_FastTlb[i];
+        if (Entry.ValidEntry && Entry.VALID && VAddr >= Entry.VSTART && VAddr <= Entry.VEND)
+        {
+            return Entry.CACHED;
+        }
     }
     return false;
 }

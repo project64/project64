@@ -16,6 +16,8 @@
 #include <Project64-core\N64System\MemoryHandler\SPRegistersHandler.h>
 #include <Project64-core\N64System\MemoryHandler\SerialInterfaceHandler.h>
 #include <Project64-core\N64System\MemoryHandler\VideoInterfaceHandler.h>
+#include <Project64-core\N64System\Mips\DataCache.h>
+#include <Project64-core\N64System\Mips\InstructionCache.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Recompiler\RecompilerOps.h>
 #include <Project64-core\N64System\SaveType\FlashRam.h>
@@ -86,8 +88,8 @@ public:
 
     bool MemoryValue8(uint32_t VAddr, uint8_t & Value);
     bool MemoryValue16(uint32_t VAddr, uint16_t & Value);
-    bool MemoryValue32(uint32_t VAddr, uint32_t & Value);
-    bool MemoryValue64(uint32_t VAddr, uint64_t & Value);
+    bool MemoryValue32(uint32_t VAddr, uint32_t & Value, bool UseDataCache = false);
+    bool MemoryValue64(uint32_t VAddr, uint64_t & Value, bool UseDataCache = false);
 
     bool UpdateMemoryValue8(uint32_t VAddr, uint8_t Value);
     bool UpdateMemoryValue16(uint32_t VAddr, uint16_t Value);
@@ -102,6 +104,15 @@ public:
     bool SH_Memory(uint64_t VAddr, uint32_t Value);
     bool SW_Memory(uint64_t VAddr, uint32_t Value);
     bool SD_Memory(uint64_t VAddr, uint64_t Value);
+
+    void SetCacheEnabled(bool Enabled);
+    void WriteBackDataCache();
+    bool CacheEnabled() const
+    {
+        return m_CacheEnabled;
+    }
+    bool CacheOp(uint32_t Op, uint64_t VAddr);
+    bool InstructionCacheFetch(uint64_t VAddr, uint32_t & Value);
 
     int32_t MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 
@@ -153,6 +164,7 @@ private:
     static void ChangeMiIntrMask();
 
     bool MemoryBreakpoint();
+    bool CachedAddress(uint32_t VAddr, bool Write, uint32_t & PAddr) const;
 
     bool LB_VAddr32(uint32_t VAddr, uint8_t & Value);
     bool LH_VAddr32(uint32_t VAddr, uint16_t & Value);
@@ -173,6 +185,16 @@ private:
     bool SH_PhysicalAddress(uint32_t PAddr, uint32_t Value);
     bool SW_PhysicalAddress(uint32_t PAddr, uint32_t Value);
     bool SD_PhysicalAddress(uint32_t PAddr, uint64_t Value);
+
+    bool LB_DataCache(uint32_t VAddr, uint32_t PAddr, uint8_t & Value);
+    bool LH_DataCache(uint32_t VAddr, uint32_t PAddr, uint16_t & Value);
+    bool LW_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t & Value);
+    bool LD_DataCache(uint32_t VAddr, uint32_t PAddr, uint64_t & Value);
+
+    bool SB_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value);
+    bool SH_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value);
+    bool SW_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value);
+    bool SD_DataCache(uint32_t VAddr, uint32_t PAddr, uint64_t Value);
 
 #if defined(__i386__) || defined(_M_IX86)
 
@@ -219,6 +241,9 @@ private:
     uint8_t * m_RDRAM;
     uint32_t m_AllocatedRdramSize;
     CN64Rom & m_Rom;
+    CDataCache m_DataCache;
+    CInstructionCache m_InstructionCache;
+    bool m_CacheEnabled;
 
     mutable char m_strLabelName[100];
     uint32_t * m_TLB_ReadMap;

@@ -34,6 +34,7 @@ static void DebugSettingsChanged(void * /*Data*/)
     g_DebugSettings.fpuExceptionInRecompiler = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_FpuExceptionInRecompiler);
     g_DebugSettings.breakOnUnhandledMemory = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnUnhandledMemory);
     g_DebugSettings.breakOnAddressError = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_BreakOnAddressError);
+    g_DebugSettings.emulateCache = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_EmulateCache);
     g_DebugSettings.stepOnBreakOpCode = g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_StepOnBreakOpCode);
     g_DebugSettings.trackCPUStepStarted = g_DebugSettings.stepping || g_DebugSettings.exceptionBreakpoints != 0 ||
                                           (g_DebugSettings.haveDebugger && g_Settings->LoadBool(Debugger_TrackCPUStepStarted));
@@ -71,6 +72,7 @@ void SetupDebugSettings(void)
     g_Settings->RegisterChangeCB(Debugger_FpuExceptionInRecompiler, nullptr, DebugSettingsChanged);
     g_Settings->RegisterChangeCB(Debugger_BreakOnUnhandledMemory, nullptr, DebugSettingsChanged);
     g_Settings->RegisterChangeCB(Debugger_BreakOnAddressError, nullptr, DebugSettingsChanged);
+    g_Settings->RegisterChangeCB(Debugger_EmulateCache, nullptr, DebugSettingsChanged);
     g_Settings->RegisterChangeCB(Debugger_StepOnBreakOpCode, nullptr, DebugSettingsChanged);
     g_Settings->RegisterChangeCB(Debugger_TrackCPUStepStarted, nullptr, DebugSettingsChanged);
     g_Settings->RegisterChangeCB(Debugger_TrackCPUStepEnded, nullptr, DebugSettingsChanged);
@@ -105,6 +107,7 @@ void ShutdownDebugSettings(void)
     g_Settings->UnregisterChangeCB(Debugger_FpuExceptionInRecompiler, nullptr, DebugSettingsChanged);
     g_Settings->UnregisterChangeCB(Debugger_BreakOnUnhandledMemory, nullptr, DebugSettingsChanged);
     g_Settings->UnregisterChangeCB(Debugger_BreakOnAddressError, nullptr, DebugSettingsChanged);
+    g_Settings->UnregisterChangeCB(Debugger_EmulateCache, nullptr, DebugSettingsChanged);
     g_Settings->UnregisterChangeCB(Debugger_StepOnBreakOpCode, nullptr, DebugSettingsChanged);
     g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepStarted, nullptr, DebugSettingsChanged);
     g_Settings->UnregisterChangeCB(Debugger_TrackCPUStepEnded, nullptr, DebugSettingsChanged);

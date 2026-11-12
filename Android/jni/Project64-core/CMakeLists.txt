@@ -32,8 +32,10 @@ add_library(Project64-core STATIC
     N64System/MemoryHandler/SerialInterfaceHandler.cpp
     N64System/MemoryHandler/SPRegistersHandler.cpp
     N64System/MemoryHandler/VideoInterfaceHandler.cpp
+    N64System/Mips/DataCache.cpp
     N64System/Mips/Disk.cpp
     N64System/Mips/GBCart.cpp
+    N64System/Mips/InstructionCache.cpp
     N64System/Mips/MemoryVirtualMem.cpp
     N64System/Mips/Mempak.cpp
     N64System/Mips/R4300iInstruction.cpp

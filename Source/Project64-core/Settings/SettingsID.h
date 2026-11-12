@@ -246,6 +246,7 @@ enum SettingID
     Debugger_FpuExceptionInRecompiler,
     Debugger_BreakOnUnhandledMemory,
     Debugger_BreakOnAddressError,
+    Debugger_EmulateCache,
     Debugger_StepOnBreakOpCode,
     Debugger_ShowPifErrors,
     Debugger_RecordRecompilerAsm,

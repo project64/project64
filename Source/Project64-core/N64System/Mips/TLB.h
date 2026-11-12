@@ -42,6 +42,7 @@ class CTLB
         uint8_t Region;
         bool VALID;
         bool DIRTY;
+        bool CACHED;
         bool GLOBAL;
         bool ValidEntry;
         bool Random;
@@ -61,6 +62,8 @@ public:
     TLB_ENTRY & TlbEntry(int32_t Entry);
 
     bool VAddrToPAddr(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused);
+    bool VAddrToPAddrCached(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnused, bool & Cached);
+    bool VAddrCached(uint32_t VAddr) const;
     bool PAddrToVAddr(uint32_t PAddr, uint32_t & VAddr, uint32_t & Index);
     void RecordDifference(CLog & LogFile, const CTLB & rTLB);
 

@@ -66,6 +66,11 @@ union COP0EntryHi
     } Raw;
 };
 
+enum CACHE_COHERENCY : unsigned
+{
+    CacheCoherency_Uncached = 2,
+};
+
 enum PRIVILEGE_MODE : unsigned
 {
     PrivilegeMode_Kernel,

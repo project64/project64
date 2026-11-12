@@ -24,6 +24,7 @@ struct DebugSettings
     bool fpuExceptionInRecompiler;
     bool breakOnUnhandledMemory;
     bool breakOnAddressError;
+    bool emulateCache;
     bool stepOnBreakOpCode;
     bool trackCPUStepStarted;
     bool trackCPUStepEnded;

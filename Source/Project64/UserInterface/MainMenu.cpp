@@ -28,6 +28,7 @@ CMainMenu::CMainMenu(CMainGui * hMainWindow) :
     m_ChangeSettingList.push_back(Debugger_EndOnPermLoop);
     m_ChangeSettingList.push_back(Debugger_BreakOnUnhandledMemory);
     m_ChangeSettingList.push_back(Debugger_BreakOnAddressError);
+    m_ChangeSettingList.push_back(Debugger_EmulateCache);
     m_ChangeSettingList.push_back(Debugger_StepOnBreakOpCode);
     m_ChangeSettingList.push_back(Debugger_ShowPifErrors);
     m_ChangeSettingList.push_back(Debugger_ShowDListAListCount);
@@ -510,6 +511,9 @@ bool CMainMenu::ProcessMessage(HWND hWnd, DWORD /*FromAccelerator*/, DWORD MenuI
         break;
     case ID_DEBUG_BREAK_ON_ADDRESS_ERROR:
         g_Settings->SaveBool(Debugger_BreakOnAddressError, !g_Settings->LoadBool(Debugger_BreakOnAddressError));
+        break;
+    case ID_DEBUG_EMULATE_CACHE:
+        g_Settings->SaveBool(Debugger_EmulateCache, !g_Settings->LoadBool(Debugger_EmulateCache));
         break;
     case ID_DEBUG_STEP_ON_BREAK_OPCODE:
         g_Settings->SaveBool(Debugger_StepOnBreakOpCode, !g_Settings->LoadBool(Debugger_StepOnBreakOpCode));
@@ -1161,6 +1165,13 @@ void CMainMenu::FillOutMenu(HMENU hMenu)
         DebugR4300Menu.push_back(Item);
         Item.Reset(ID_DEBUG_BREAK_ON_ADDRESS_ERROR, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Break on address error");
         if (g_Settings->LoadBool(Debugger_BreakOnAddressError))
+        {
+            Item.SetItemTicked(true);
+        }
+        DebugR4300Menu.push_back(Item);
+        Item.Reset(ID_DEBUG_EMULATE_CACHE, EMPTY_STRING, EMPTY_STDSTR, nullptr, L"Emulate cache (interpreter)");
+        Item.SetItemEnabled(!CPURunning);
+        if (g_Settings->LoadBool(Debugger_EmulateCache))
         {
             Item.SetItemTicked(true);
         }

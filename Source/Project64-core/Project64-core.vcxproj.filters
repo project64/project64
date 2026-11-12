@@ -285,6 +285,9 @@
     <ClCompile Include="Multilanguage\Language.cpp">
       <Filter>Source Files\Multilanguage</Filter>
     </ClCompile>
+    <ClCompile Include="N64System\Mips\DataCache.cpp">
+      <Filter>Source Files\N64 System\Mips</Filter>
+    </ClCompile>
     <ClCompile Include="N64System\Mips\Disk.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
@@ -292,6 +295,9 @@
       <Filter>Source Files\N64 System</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Mips\GBCart.cpp">
+      <Filter>Source Files\N64 System\Mips</Filter>
+    </ClCompile>
+    <ClCompile Include="N64System\Mips\InstructionCache.cpp">
       <Filter>Source Files\N64 System\Mips</Filter>
     </ClCompile>
     <ClCompile Include="N64System\Mips\Transferpak.cpp">
@@ -644,6 +650,9 @@
     <ClInclude Include="TraceModulesProject64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="N64System\Mips\DataCache.h">
+      <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
     <ClInclude Include="N64System\Mips\Disk.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
@@ -654,6 +663,9 @@
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="N64System\Mips\GBCart.h">
+      <Filter>Header Files\N64 System\Mips</Filter>
+    </ClInclude>
+    <ClInclude Include="N64System\Mips\InstructionCache.h">
       <Filter>Header Files\N64 System\Mips</Filter>
     </ClInclude>
     <ClInclude Include="RomList\RomList.h">

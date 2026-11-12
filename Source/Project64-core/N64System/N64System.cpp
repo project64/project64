@@ -1052,6 +1052,7 @@ void CN64System::ExecuteCPU()
 void CN64System::ExecuteInterpret()
 {
     SetActiveSystem();
+    m_MMU_VM.SetCacheEnabled(g_DebugSettings.emulateCache && !m_SyncSystem);
     m_OpCodes.ExecuteOps((uint32_t)-1);
 }
 
@@ -1650,6 +1651,7 @@ bool CN64System::SaveState()
         }
     }
 
+    m_MMU_VM.WriteBackDataCache();
     uint32_t RdramSize = m_MMU_VM.RdramSize();
     uint32_t MiInterReg = g_Reg->MI_INTR_REG;
     uint32_t NextViTimer = m_SystemTimer.GetTimer(CSystemTimer::ViTimer);

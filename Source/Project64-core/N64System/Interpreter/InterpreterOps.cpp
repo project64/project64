@@ -94,6 +94,7 @@ void R4300iOp::ExecuteOps(uint32_t Cycles)
     int32_t & NextTimer = *g_NextTimer;
     bool CheckTimer = false;
     bool updateInstructionMemory = true;
+    const bool EmulateCache = m_MMU.CacheEnabled();
     m_InstructionRegion = (uint64_t)-1;
 
     while (!Done && Cycles > 0)
@@ -103,7 +104,10 @@ void R4300iOp::ExecuteOps(uint32_t Cycles)
             UpdateInstructionMemory();
             updateInstructionMemory = false;
         }
-        m_Opcode.Value = *m_InstructionPtr;
+        if (!EmulateCache || !m_MMU.InstructionCacheFetch(m_PROGRAM_COUNTER, m_Opcode.Value))
+        {
+            m_Opcode.Value = *m_InstructionPtr;
+        }
         if (g_DebugSettings.haveDebugger)
         {
             if (g_DebugSettings.haveExecutionBP && g_Debugger->ExecutionBP((uint32_t)m_PROGRAM_COUNTER))
@@ -1353,7 +1357,7 @@ void R4300iOp::SWL()
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue))
+    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue, true))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWL_MASK[Offset];
@@ -1371,7 +1375,7 @@ void R4300iOp::SWL_32()
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue))
+    if (m_MMU.MemoryValue32(Address & ~3, MemoryValue, true))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWL_MASK[Offset];
@@ -1410,7 +1414,7 @@ void R4300iOp::SDL()
 {
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
-    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
+    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDL_MASK[Offset];
@@ -1427,7 +1431,7 @@ void R4300iOp::SDL_32()
 {
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
-    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
+    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDL_MASK[Offset];
@@ -1455,7 +1459,7 @@ void R4300iOp::SDR()
 {
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
-    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
+    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDR_MASK[Offset];
@@ -1472,7 +1476,7 @@ void R4300iOp::SDR_32()
 {
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint64_t MemoryValue;
-    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue))
+    if (m_MMU.MemoryValue64((Address & ~7), MemoryValue, true))
     {
         uint32_t Offset = Address & 7;
         MemoryValue &= SDR_MASK[Offset];
@@ -1490,7 +1494,7 @@ void R4300iOp::SWR()
     uint64_t Address = m_GPR[m_Opcode.base].DW + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue))
+    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue, true))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWR_MASK[Offset];
@@ -1508,7 +1512,7 @@ void R4300iOp::SWR_32()
     uint64_t Address = m_GPR[m_Opcode.base].W[0] + (int16_t)m_Opcode.offset;
     uint32_t MemoryValue;
 
-    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue))
+    if (m_MMU.MemoryValue32((Address & ~3), MemoryValue, true))
     {
         uint32_t Offset = Address & 3;
         MemoryValue &= SWR_MASK[Offset];
@@ -1529,11 +1533,14 @@ void R4300iOp::CACHE()
         m_Reg.TriggerAddressException(Address, EXC_RADE);
         return;
     }
-    if (!g_LogSettings.logCache)
+    if (g_LogSettings.logCache)
     {
-        return;
+        LogMessage("%016llX: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, (uint32_t)Address);
     }
-    LogMessage("%016llX: Cache operation %d, 0x%08X", (m_PROGRAM_COUNTER), m_Opcode.rt, (uint32_t)Address);
+    if (m_MMU.CacheEnabled())
+    {
+        m_MMU.CacheOp(m_Opcode.rt, Address);
+    }
 }
 
 void R4300iOp::LL()

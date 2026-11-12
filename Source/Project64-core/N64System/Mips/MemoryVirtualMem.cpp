@@ -37,7 +37,10 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_TLB_ReadMap(nullptr),
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
-    m_Rom(*g_Rom)
+    m_Rom(*g_Rom),
+    m_DataCache(*this),
+    m_InstructionCache(*this),
+    m_CacheEnabled(false)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
 }
@@ -50,6 +53,8 @@ CMipsMemoryVM::~CMipsMemoryVM()
 
 void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 {
+    m_DataCache.Reset();
+    m_InstructionCache.Reset();
     if (m_MemoryReadMap != nullptr && m_MemoryWriteMap != nullptr)
     {
         memset(m_MemoryReadMap, -1, 0x100000 * sizeof(m_MemoryReadMap[0]));
@@ -249,8 +254,13 @@ bool CMipsMemoryVM::MemoryValue16(uint32_t VAddr, uint16_t & Value)
     return true;
 }
 
-bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t & Value)
+bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t & Value, bool UseDataCache)
 {
+    uint32_t PAddr;
+    if (UseDataCache && m_CacheEnabled && CachedAddress(VAddr, false, PAddr))
+    {
+        return LW_DataCache(VAddr, PAddr, Value);
+    }
     uint8_t * ptr = MemoryPtr(VAddr, 4, true);
     if (ptr == nullptr)
     {
@@ -260,8 +270,13 @@ bool CMipsMemoryVM::MemoryValue32(uint32_t VAddr, uint32_t & Value)
     return true;
 }
 
-bool CMipsMemoryVM::MemoryValue64(uint32_t VAddr, uint64_t & Value)
+bool CMipsMemoryVM::MemoryValue64(uint32_t VAddr, uint64_t & Value, bool UseDataCache)
 {
+    uint32_t PAddr;
+    if (UseDataCache && m_CacheEnabled && CachedAddress(VAddr, false, PAddr))
+    {
+        return LD_DataCache(VAddr, PAddr, Value);
+    }
     uint8_t * ptr = MemoryPtr(VAddr, 8, true);
     if (ptr == nullptr)
     {
@@ -311,10 +326,15 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return LB_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return LB_PhysicalAddress(PAddr, Value);
     }
@@ -322,6 +342,11 @@ bool CMipsMemoryVM::LB_Memory(uint64_t VAddr, uint8_t & Value)
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
+    {
+        return LB_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -343,10 +368,15 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return LH_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return LH_PhysicalAddress(PAddr, Value);
     }
@@ -354,6 +384,11 @@ bool CMipsMemoryVM::LH_Memory(uint64_t VAddr, uint16_t & Value)
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
+    {
+        return LH_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -375,10 +410,15 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return LW_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return LW_PhysicalAddress(PAddr, Value);
     }
@@ -386,6 +426,11 @@ bool CMipsMemoryVM::LW_Memory(uint64_t VAddr, uint32_t & Value)
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
+    {
+        return LW_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -407,10 +452,15 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return LD_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return LD_PhysicalAddress(PAddr, Value);
     }
@@ -418,6 +468,11 @@ bool CMipsMemoryVM::LD_Memory(uint64_t VAddr, uint64_t & Value)
     if (g_DebugSettings.haveReadBP && g_Debugger->ReadBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, false, PAddr))
+    {
+        return LD_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryReadMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -435,10 +490,15 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return SB_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return SB_PhysicalAddress(PAddr, Value);
     }
@@ -446,6 +506,11 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP8(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
+    {
+        return SB_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -467,10 +532,15 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return SH_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return SH_PhysicalAddress(PAddr, Value);
     }
@@ -478,6 +548,11 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP16(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
+    {
+        return SH_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -499,10 +574,15 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return SW_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return SW_PhysicalAddress(PAddr, Value);
     }
@@ -510,6 +590,11 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP32(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
+    {
+        return SW_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -531,10 +616,15 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
     {
         uint32_t PAddr;
         bool MemoryUnused;
-        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached))
         {
             m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_WADE : EXC_WMISS);
             return false;
+        }
+        if (m_CacheEnabled && Cached && PAddr < m_AllocatedRdramSize)
+        {
+            return SD_DataCache((uint32_t)VAddr, PAddr, Value);
         }
         return SD_PhysicalAddress(PAddr, Value);
     }
@@ -542,6 +632,11 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
     if (g_DebugSettings.haveWriteBP && g_Debugger->WriteBP64(VAddr32) && MemoryBreakpoint())
     {
         return false;
+    }
+    uint32_t PAddr;
+    if (m_CacheEnabled && CachedAddress(VAddr32, true, PAddr))
+    {
+        return SD_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
     if (MemoryPtr != (uint8_t *)-1)
@@ -583,6 +678,191 @@ bool CMipsMemoryVM::MemoryBreakpoint()
         return true;
     }
     return false;
+}
+
+void CMipsMemoryVM::SetCacheEnabled(bool Enabled)
+{
+    if (!Enabled)
+    {
+        WriteBackDataCache();
+    }
+    if (Enabled && !m_CacheEnabled)
+    {
+        m_DataCache.Reset();
+        m_InstructionCache.Reset();
+    }
+    m_CacheEnabled = Enabled;
+}
+
+void CMipsMemoryVM::WriteBackDataCache()
+{
+    if (m_CacheEnabled)
+    {
+        m_DataCache.WriteBackAll();
+    }
+}
+
+enum CACHE_OPERATION
+{
+    CacheOp_InstructionIndexInvalidate = 0x00,
+    CacheOp_InstructionIndexLoadTag = 0x04,
+    CacheOp_InstructionIndexStoreTag = 0x08,
+    CacheOp_InstructionHitInvalidate = 0x10,
+    CacheOp_InstructionFill = 0x14,
+    CacheOp_InstructionHitWriteBack = 0x18,
+    CacheOp_DataIndexWriteBackInvalidate = 0x01,
+    CacheOp_DataIndexLoadTag = 0x05,
+    CacheOp_DataIndexStoreTag = 0x09,
+    CacheOp_DataCreateDirtyExclusive = 0x0D,
+    CacheOp_DataHitInvalidate = 0x11,
+    CacheOp_DataHitWriteBackInvalidate = 0x15,
+    CacheOp_DataHitWriteBack = 0x19,
+};
+
+bool CMipsMemoryVM::CacheOp(uint32_t Op, uint64_t VAddr)
+{
+    uint32_t PAddr;
+    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    {
+        bool MemoryUnused;
+        if (!m_TLB.VAddrToPAddr(VAddr, PAddr, MemoryUnused))
+        {
+            m_Reg.TriggerAddressException(VAddr, MemoryUnused ? EXC_RADE : EXC_RMISS);
+            return false;
+        }
+    }
+    else if (((uint32_t)VAddr & 0xC0000000) == 0x80000000)
+    {
+        PAddr = (uint32_t)VAddr & 0x1FFFFFFF;
+    }
+    else
+    {
+        uint32_t BaseAddress = m_TLB_ReadMap[(uint32_t)VAddr >> 12];
+        if (BaseAddress == (uint32_t)-1)
+        {
+            m_Reg.TriggerAddressException(VAddr, EXC_RMISS);
+            return false;
+        }
+        PAddr = BaseAddress + (uint32_t)VAddr;
+    }
+
+    uint32_t VAddr32 = (uint32_t)VAddr;
+    switch (Op)
+    {
+    case CacheOp_InstructionIndexInvalidate: m_InstructionCache.IndexInvalidate(VAddr32, PAddr); break;
+    case CacheOp_InstructionIndexLoadTag: m_Reg.TAGLO_REGISTER = m_InstructionCache.IndexLoadTag(VAddr32); break;
+    case CacheOp_InstructionIndexStoreTag: m_InstructionCache.IndexStoreTag(VAddr32, (uint32_t)m_Reg.TAGLO_REGISTER); break;
+    case CacheOp_InstructionHitInvalidate: m_InstructionCache.HitInvalidate(VAddr32, PAddr); break;
+    case CacheOp_InstructionFill: m_InstructionCache.Fill(VAddr32, PAddr); break;
+    case CacheOp_InstructionHitWriteBack: m_InstructionCache.HitWriteBack(VAddr32, PAddr); break;
+    case CacheOp_DataIndexWriteBackInvalidate: m_DataCache.IndexWriteBackInvalidate(VAddr32, PAddr); break;
+    case CacheOp_DataIndexLoadTag: m_Reg.TAGLO_REGISTER = m_DataCache.IndexLoadTag(VAddr32); break;
+    case CacheOp_DataIndexStoreTag: m_DataCache.IndexStoreTag(VAddr32, (uint32_t)m_Reg.TAGLO_REGISTER); break;
+    case CacheOp_DataCreateDirtyExclusive: m_DataCache.CreateDirtyExclusive(VAddr32, PAddr); break;
+    case CacheOp_DataHitInvalidate: m_DataCache.HitInvalidate(VAddr32, PAddr); break;
+    case CacheOp_DataHitWriteBackInvalidate: m_DataCache.HitWriteBackInvalidate(VAddr32, PAddr); break;
+    case CacheOp_DataHitWriteBack: m_DataCache.HitWriteBack(VAddr32, PAddr); break;
+    }
+    return true;
+}
+
+bool CMipsMemoryVM::InstructionCacheFetch(uint64_t VAddr, uint32_t & Value)
+{
+    uint32_t PAddr;
+    if ((uint64_t)((int32_t)VAddr) != VAddr)
+    {
+        bool MemoryUnused;
+        bool Cached;
+        if (!m_TLB.VAddrToPAddrCached(VAddr, PAddr, MemoryUnused, Cached) || !Cached || PAddr >= m_AllocatedRdramSize)
+        {
+            return false;
+        }
+    }
+    else if (!CachedAddress((uint32_t)VAddr, false, PAddr))
+    {
+        return false;
+    }
+    Value = m_InstructionCache.Fetch((uint32_t)VAddr, PAddr);
+    return true;
+}
+
+bool CMipsMemoryVM::CachedAddress(uint32_t VAddr, bool Write, uint32_t & PAddr) const
+{
+    if ((VAddr & 0xE0000000) == 0xA0000000)
+    {
+        return false;
+    }
+    if ((VAddr & 0xE0000000) == 0x80000000)
+    {
+        uint32_t Kseg0Coherency = (uint32_t)(m_Reg.CONFIG_REGISTER & 7);
+        if (Kseg0Coherency == CacheCoherency_Uncached)
+        {
+            return false;
+        }
+        PAddr = VAddr & 0x1FFFFFFF;
+    }
+    else
+    {
+        uint32_t BaseAddress = Write ? m_TLB_WriteMap[VAddr >> 12] : m_TLB_ReadMap[VAddr >> 12];
+        if (BaseAddress == (uint32_t)-1 || !m_TLB.VAddrCached(VAddr))
+        {
+            return false;
+        }
+        PAddr = BaseAddress + VAddr;
+    }
+    return PAddr < m_AllocatedRdramSize;
+}
+
+bool CMipsMemoryVM::LB_DataCache(uint32_t VAddr, uint32_t PAddr, uint8_t & Value)
+{
+    Value = m_DataCache.Line(VAddr, PAddr, false)[(VAddr & 0xF) ^ 3];
+    return true;
+}
+
+bool CMipsMemoryVM::LH_DataCache(uint32_t VAddr, uint32_t PAddr, uint16_t & Value)
+{
+    Value = *(uint16_t *)(m_DataCache.Line(VAddr, PAddr, false) + ((VAddr & 0xF) ^ 2));
+    return true;
+}
+
+bool CMipsMemoryVM::LW_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t & Value)
+{
+    Value = *(uint32_t *)(m_DataCache.Line(VAddr, PAddr, false) + (VAddr & 0xC));
+    return true;
+}
+
+bool CMipsMemoryVM::LD_DataCache(uint32_t VAddr, uint32_t PAddr, uint64_t & Value)
+{
+    uint8_t * Line = m_DataCache.Line(VAddr, PAddr, false);
+    *((uint32_t *)(&Value) + 1) = *(uint32_t *)(Line + (VAddr & 0x8));
+    *((uint32_t *)(&Value) + 0) = *(uint32_t *)(Line + (VAddr & 0x8) + 4);
+    return true;
+}
+
+bool CMipsMemoryVM::SB_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value)
+{
+    m_DataCache.Line(VAddr, PAddr, true)[(VAddr & 0xF) ^ 3] = (uint8_t)Value;
+    return true;
+}
+
+bool CMipsMemoryVM::SH_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value)
+{
+    *(uint16_t *)(m_DataCache.Line(VAddr, PAddr, true) + ((VAddr & 0xF) ^ 2)) = (uint16_t)Value;
+    return true;
+}
+
+bool CMipsMemoryVM::SW_DataCache(uint32_t VAddr, uint32_t PAddr, uint32_t Value)
+{
+    *(uint32_t *)(m_DataCache.Line(VAddr, PAddr, true) + (VAddr & 0xC)) = Value;
+    return true;
+}
+
+bool CMipsMemoryVM::SD_DataCache(uint32_t VAddr, uint32_t PAddr, uint64_t Value)
+{
+    uint8_t * Line = m_DataCache.Line(VAddr, PAddr, true);
+    *(uint32_t *)(Line + (VAddr & 0x8)) = *((uint32_t *)(&Value) + 1);
+    *(uint32_t *)(Line + (VAddr & 0x8) + 4) = *((uint32_t *)(&Value));
+    return true;
 }
 
 bool CMipsMemoryVM::LB_VAddr32(uint32_t VAddr, uint8_t & Value)
