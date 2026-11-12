@@ -185,6 +185,7 @@ private:
     void REGIMM_BGEZL();
     void REGIMM_BLTZAL();
     void REGIMM_BGEZAL();
+    void REGIMM_BLTZALL();
     void REGIMM_BGEZALL();
     void REGIMM_TEQI();
     void REGIMM_TGEI();
@@ -205,6 +206,7 @@ private:
     void COP0_CO_TLBWR();
     void COP0_CO_TLBP();
     void COP0_CO_ERET();
+    void COP0_NOP();
     void COP0_CO_NOP();
 
     // COP1 functions
