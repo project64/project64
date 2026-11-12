@@ -621,7 +621,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         break;
     case COP0Reg_Count:
         m_SystemTimer.UpdateTimers();
-        m_CP0[Reg] = Value;
+        m_CP0[Reg] = Value & 0xFFFFFFFF;
         m_SystemTimer.UpdateCompareTimer();
         break;
     case COP0Reg_EntryHi:
@@ -629,7 +629,7 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
         break;
     case COP0Reg_Compare:
         m_SystemTimer.UpdateTimers();
-        m_CP0[Reg] = Value;
+        m_CP0[Reg] = Value & 0xFFFFFFFF;
         CAUSE_REGISTER.PendingInterrupts &= ~CAUSE_IP7;
         m_SystemTimer.UpdateCompareTimer();
         break;

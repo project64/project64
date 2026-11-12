@@ -162,7 +162,7 @@ void CSystemTimer::UpdateTimers()
     {
         int32_t random, wired;
         m_LastUpdate = m_NextTimer;
-        m_Reg.COUNT_REGISTER += TimeTaken;
+        m_Reg.COUNT_REGISTER = (uint32_t)(m_Reg.COUNT_REGISTER + TimeTaken);
         random = (uint32_t)m_Reg.RANDOM_REGISTER - ((TimeTaken * g_GameSettings.overClockModifier) / g_GameSettings.countPerOp);
         wired = (uint32_t)m_Reg.WIRED_REGISTER;
         if (wired > 31)
