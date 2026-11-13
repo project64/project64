@@ -24,6 +24,10 @@ RDRAMRegistersHandler::RDRAMRegistersHandler(CRegisters & Reg) :
     m_PC(Reg.m_PROGRAM_COUNTER)
 {
     memset(m_Device, 0, sizeof(m_Device));
+    for (RDRAM_DEVICE & Device : m_Device)
+    {
+        Device.DeviceType = 0xB4190010;
+    }
 }
 
 bool RDRAMRegistersHandler::Read32(uint32_t Address, uint32_t & Value)
@@ -106,7 +110,7 @@ bool RDRAMRegistersHandler::Write32(uint32_t Address, uint32_t Value, uint32_t M
 
     switch (Address & 0x3fc)
     {
-    case 0x00: Device.DeviceType = (Device.DeviceType & ~Mask) | (Value & Mask); break;
+    case 0x00: break; // Read only
     case 0x04: Device.DeviceId = (Device.DeviceId & ~Mask) | (Value & Mask); break;
     case 0x08: Device.Delay = (Device.Delay & ~Mask) | (Value & Mask); break;
     case 0x0C: Device.Mode = (Device.Mode & ~Mask) | (Value & Mask); break;

@@ -964,6 +964,7 @@ bool CMipsMemoryVM::LB_PhysicalAddress(uint32_t PAddr, uint8_t & Value)
     uint32_t Value32;
     switch (PAddr & 0xFFF00000)
     {
+    case 0x03F00000: m_RDRAMRegistersHandler.Read32(ReadAddress, Value32); break;
     case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
     default:
         if (PAddr < g_GameSettings.rdramSize)
@@ -995,10 +996,11 @@ bool CMipsMemoryVM::LB_PhysicalAddress(uint32_t PAddr, uint8_t & Value)
 
 bool CMipsMemoryVM::LH_PhysicalAddress(uint32_t PAddr, uint16_t & Value)
 {
-    uint32_t ReadAddress = PAddr & ~1;
+    uint32_t ReadAddress = PAddr & ~3;
     uint32_t Value32;
     switch (PAddr & 0xFFF00000)
     {
+    case 0x03F00000: m_RDRAMRegistersHandler.Read32(ReadAddress, Value32); break;
     case 0x1FC00000: m_PifRamHandler.Read32(ReadAddress, Value32); break;
     default:
         if (PAddr < g_GameSettings.rdramSize)
@@ -1024,7 +1026,7 @@ bool CMipsMemoryVM::LH_PhysicalAddress(uint32_t PAddr, uint16_t & Value)
             Value32 = 0;
         }
     }
-    Value = ((Value32 >> (((PAddr ^ 1) & 1) << 4)) & 0xffff);
+    Value = ((Value32 >> (((PAddr & 2) ^ 2) << 3)) & 0xffff);
     return true;
 }
 
@@ -1080,6 +1082,14 @@ bool CMipsMemoryVM::LD_PhysicalAddress(uint32_t PAddr, uint64_t & Value)
     else if (PAddr < 0x800000)
     {
         Value = 0;
+        return true;
+    }
+    else if ((PAddr & 0xFFF00000) == 0x03F00000)
+    {
+        uint32_t ValueHi, ValueLo;
+        m_RDRAMRegistersHandler.Read32(PAddr, ValueHi);
+        m_RDRAMRegistersHandler.Read32(PAddr + 4, ValueLo);
+        Value = ((uint64_t)ValueHi << 32) | ValueLo;
         return true;
     }
 
