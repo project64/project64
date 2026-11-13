@@ -542,7 +542,7 @@ bool CMipsMemoryVM::SB_Memory(uint64_t VAddr, uint32_t Value)
         return SB_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t *)-1)
+    if (MemoryPtr != (uint8_t *)-1 && !RdramRepeatMode())
     {
         *(uint8_t *)(MemoryPtr + (VAddr32 ^ 3 ^ EndianXor)) = (uint8_t)Value;
         return true;
@@ -590,7 +590,7 @@ bool CMipsMemoryVM::SH_Memory(uint64_t VAddr, uint32_t Value)
         return SH_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t *)-1)
+    if (MemoryPtr != (uint8_t *)-1 && !RdramRepeatMode())
     {
         *(uint16_t *)(MemoryPtr + (VAddr32 ^ 2 ^ EndianXor)) = (uint16_t)Value;
         return true;
@@ -638,7 +638,7 @@ bool CMipsMemoryVM::SW_Memory(uint64_t VAddr, uint32_t Value)
         return SW_DataCache(VAddr32 ^ EndianXor, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t *)-1)
+    if (MemoryPtr != (uint8_t *)-1 && !RdramRepeatMode())
     {
         *(uint32_t *)(MemoryPtr + (VAddr32 ^ EndianXor)) = Value;
         return true;
@@ -685,7 +685,7 @@ bool CMipsMemoryVM::SD_Memory(uint64_t VAddr, uint64_t Value)
         return SD_DataCache(VAddr32, PAddr, Value);
     }
     uint8_t * MemoryPtr = (uint8_t *)m_MemoryWriteMap[VAddr32 >> 12];
-    if (MemoryPtr != (uint8_t *)-1)
+    if (MemoryPtr != (uint8_t *)-1 && !RdramRepeatMode())
     {
         *(uint32_t *)(MemoryPtr + VAddr32 + 0) = *((uint32_t *)(&Value) + 1);
         *(uint32_t *)(MemoryPtr + VAddr32 + 4) = *((uint32_t *)(&Value));
@@ -1147,7 +1147,12 @@ bool CMipsMemoryVM::SB_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_GameSettings.rdramSize)
+        if (RdramRepeatMode())
+        {
+            uint32_t Word = Value << (24 - (PAddr & 3) * 8);
+            RdramRepeatWrite(PAddr, ((uint64_t)Word << 32) | Word);
+        }
+        else if (PAddr < g_GameSettings.rdramSize)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
@@ -1180,7 +1185,12 @@ bool CMipsMemoryVM::SH_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_GameSettings.rdramSize)
+        if (RdramRepeatMode())
+        {
+            uint32_t Word = Value << (16 - (PAddr & 2) * 8);
+            RdramRepeatWrite(PAddr, ((uint64_t)Word << 32) | Word);
+        }
+        else if (PAddr < g_GameSettings.rdramSize)
         {
             if (g_GameSettings.smmStoreInstruc)
             {
@@ -1219,7 +1229,11 @@ bool CMipsMemoryVM::SW_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00600000:
     case 0x00700000:
     case 0x00800000:
-        if (PAddr < g_GameSettings.rdramSize)
+        if (RdramRepeatMode())
+        {
+            RdramRepeatWrite(PAddr, ((uint64_t)Value << 32) | Value);
+        }
+        else if (PAddr < g_GameSettings.rdramSize)
         {
             if (g_GameSettings.smmStoreInstruc)
             {
@@ -1274,7 +1288,11 @@ bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
     case 0x00500000:
     case 0x00600000:
     case 0x00700000:
-        if (PAddr < g_GameSettings.rdramSize)
+        if (RdramRepeatMode())
+        {
+            RdramRepeatWrite(PAddr, Value);
+        }
+        else if (PAddr < g_GameSettings.rdramSize)
         {
             g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
             *(uint32_t *)(m_RDRAM + PAddr) = *((uint32_t *)(&Value) + 1);
@@ -1293,6 +1311,27 @@ bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
         }
     }
     return true;
+}
+
+bool CMipsMemoryVM::RdramRepeatMode() const
+{
+    return (m_Reg.MI_MODE_REG & MI_MODE_INIT) != 0;
+}
+
+void CMipsMemoryVM::RdramRepeatWrite(uint32_t PAddr, uint64_t Pattern)
+{
+    m_Reg.MI_MODE_REG &= ~MI_MODE_INIT;
+    uint32_t End = (PAddr & ~7) + (m_Reg.MI_MODE_REG & 0x7F) + 1;
+    uint32_t Window = PAddr & ~0x7FF;
+    for (uint32_t Address = PAddr; Address < End; Address++)
+    {
+        uint32_t WriteAddress = Window | (Address & 0x7FF);
+        if (WriteAddress < g_GameSettings.rdramSize)
+        {
+            m_RDRAM[WriteAddress ^ 3] = (uint8_t)(Pattern >> (56 - (Address & 7) * 8));
+        }
+    }
+    g_Recompiler->ClearRecompCode_Phys(Window & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
 }
 
 void CMipsMemoryVM::ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length)

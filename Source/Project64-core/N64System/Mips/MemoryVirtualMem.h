@@ -185,6 +185,8 @@ private:
     bool SH_PhysicalAddress(uint32_t PAddr, uint32_t Value);
     bool SW_PhysicalAddress(uint32_t PAddr, uint32_t Value);
     bool SD_PhysicalAddress(uint32_t PAddr, uint64_t Value);
+    bool RdramRepeatMode() const;
+    void RdramRepeatWrite(uint32_t PAddr, uint64_t Pattern);
 
     bool LB_DataCache(uint32_t VAddr, uint32_t PAddr, uint8_t & Value);
     bool LH_DataCache(uint32_t VAddr, uint32_t PAddr, uint16_t & Value);
