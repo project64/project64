@@ -347,7 +347,7 @@ bool CTLB::VAddrToPAddrCached(uint64_t VAddr, uint32_t & PAddr, bool & MemoryUnu
             }
             uint64_t AddressSelect = ((m_tlb[i].PageMask.Mask << 12) | 0xfff) + 1;
             COP0EntryLo EntryLo = (VAddr & AddressSelect) != 0 ? m_tlb[i].EntryLo1 : m_tlb[i].EntryLo0;
-            PAddr = (uint32_t)((EntryLo.PFN << 12) + (VAddr & (PageMask | 0x1fff)));
+            PAddr = (uint32_t)((EntryLo.PFN << 12) + (VAddr & (PageMask | 0xfff)));
             Cached = EntryLo.C != CacheCoherency_Uncached;
             return true;
         }
