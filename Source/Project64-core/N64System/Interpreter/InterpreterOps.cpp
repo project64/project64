@@ -1316,8 +1316,11 @@ void R4300iOp::LWR()
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = PartialWordOffset(Address);
-        m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
-        m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
+        m_GPR[m_Opcode.rt].UW[0] = (m_GPR[m_Opcode.rt].UW[0] & LWR_MASK[Offset]) | (MemoryValue >> LWR_SHIFT[Offset]);
+        if (Offset == 3)
+        {
+            m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].W[0];
+        }
     }
 }
 
@@ -1329,8 +1332,11 @@ void R4300iOp::LWR_32()
     if (m_MMU.LW_Memory((Address & ~3), MemoryValue))
     {
         uint32_t Offset = PartialWordOffset(Address);
-        m_GPR[m_Opcode.rt].DW = (int32_t)(m_GPR[m_Opcode.rt].W[0] & LWR_MASK[Offset]);
-        m_GPR[m_Opcode.rt].DW += (int32_t)(MemoryValue >> LWR_SHIFT[Offset]);
+        m_GPR[m_Opcode.rt].UW[0] = (m_GPR[m_Opcode.rt].UW[0] & LWR_MASK[Offset]) | (MemoryValue >> LWR_SHIFT[Offset]);
+        if (Offset == 3)
+        {
+            m_GPR[m_Opcode.rt].DW = m_GPR[m_Opcode.rt].W[0];
+        }
     }
 }
 
