@@ -1,8 +1,8 @@
 [61D116B0-FA24D60C-C:50]
 Name=San Francisco Rush - Extreme Racing (E) (M3)
 
-$Access The Rock Alcatraz bonus level
-Note=Press C-right, on any level, at the track selection screen
+$Access the Rock Alcatraz bonus level
+Note=Press C-right on any level, at the track selection screen.
 D00F4174 0002
 80100120 0006
 
@@ -16,7 +16,7 @@ $All\Keys & Cars Circuits
 50000404 0000
 81056910 FFFF
 
-$Always 1st
+$Always Place 1st
 80101409 0000
 
 $Automatic Transmission
@@ -37,7 +37,7 @@ $Gravity Modifier
 01 One Weight
 02 Two Weights
 
-$Laps To Race
+$Laps to Race
 800E7411 00??
 01 1 Lap
 02 2 laps
@@ -58,7 +58,7 @@ $No\Auto Abort
 $No\Car Collisions
 800F4120 0001
 
-$Resurrect In Place
+$Resurrect in Place
 800F4150 0001
 
 $Stop Timer

@@ -48,7 +48,7 @@ $Player 1\Infinite Run
 811698B4 0030
 
 $Player 1\Max Aggressor
-Note=Press L Button To Activate
+Note=Press L button to activate
 D02B5285 0020
 811698D4 5100
 D02B5285 0020
@@ -97,7 +97,7 @@ $Player 2\Infinite Run
 81169B88 0030
 
 $Player 2\Max Aggressor
-Note=Press L Button To Activate
+Note=Press L button to activate
 D02B528D 0020
 811698D6 5100
 D02B528D 0020

@@ -2,16 +2,16 @@
 Name=Bass Hunter 64 (E)
 
 $Access\All Lures
-Note=Codes To Be Used With Save Slot 1
+Note=Only to be used with Save Slot 1.
 8019A1A9 0003
 8119A1AA FFFF
 
 $Access\All Poles 2
-Note=Codes To Be Used With Slot 1
+Note=Only to be used with Save Slot 1.
 8019A1AC 0007
 
 $Access\Extra Boat 2
-Note=Codes To Be Used With Slot 1
+Note=Only to be used with Save Slot 1.
 8019A1AD 0001
 
 $All Lakes Available

@@ -16,14 +16,14 @@ $Have Rune Stones
 $Have Window Schards
 8104EFCA 000F
 
-$Infinite\Item On Pickup
+$Infinite\Item on Pickup
 50010100 0000
 810C5BF6 FFFF
 
-$Infinite\Keys On Pickup
+$Infinite\Keys on Pickup
 800C5C97 0006
 
-$Infinite\Max Health
+$Infinite\Health
 810C5C54 0000
 810C5C56 270F
 810C5C64 0000
@@ -46,18 +46,18 @@ $Level 99
 810C5C44 0000
 810C5C46 0063
 
-$Max Armour
+$Maximum/Armour
 810C5C34 0000
 810C5C36 FFFF
 
-$Max Magic
+$Maximum/Magic
 810C5C24 0000
 810C5C26 FFFF
 
-$Max Speed
+$Maximum/Speed
 810C5C14 0000
 810C5C16 FFFF
 
-$Max Strength
+$Maximum/Strength
 810C5C04 0000
 810C5C06 FFFF

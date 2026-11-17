@@ -1,7 +1,7 @@
 [AEBE463E-CC71464B-C:45]
 Name=AeroGauge (U)
 
-$Always 1st
+$Always Place 1st
 8013FCE0 0001
 
 $Freeze All Lap Timers
@@ -13,7 +13,7 @@ $Freeze Overall Timer
 Note=All of the Freeze All Lap Timers must be on. These codes will Stop the others from racing against you in Grand Prix mode. To win a race in Grand Prix you must finish at least one lap in the qualify round, then complete all laps in race for first.
 8013FC95 0001
 
-$Laps Of Race
+$Laps of Race
 8013FC8E 00??
 01 1 Lap
 02 2 Laps

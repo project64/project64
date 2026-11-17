@@ -13,7 +13,7 @@ $Championship Mode\Disable Right Lane Traffic
 $Championship Mode\Max Points Per Race
 813BFBFE FFFF
 
-$Championship Mode\Max Points To Next Level
+$Championship Mode\Max Points to Next Level
 813BFBFC FFFF
 
 $Championship Mode\Max Total Points
@@ -47,7 +47,7 @@ $Player 1\Car/Transmission Modifier
 01 Serpent (Manual)
 02 Kamikaze (Auto)
 03 Kamikaze (Manual)
-04 ATV (Auto
+04 ATV (Auto)
 05 ATV (Manual)
 06 Scarab (Auto)
 07 Scarab (Manual)
@@ -106,7 +106,7 @@ $Player 2\Car/Transmission Modifier
 01 Serpent (Manual)
 02 Kamikaze (Auto)
 03 Kamikaze (Manual)
-04 ATV (Auto
+04 ATV (Auto)
 05 ATV (Manual)
 06 Scarab (Auto)
 07 Scarab (Manual)
@@ -165,7 +165,7 @@ $Player 3\Car/Transmission Modifier
 01 Serpent (Manual)
 02 Kamikaze (Auto)
 03 Kamikaze (Manual)
-04 ATV (Auto
+04 ATV (Auto)
 05 ATV (Manual)
 06 Scarab (Auto)
 07 Scarab (Manual)
@@ -221,7 +221,7 @@ $Player 4\Car/Transmission Modifier
 01 Serpent (Manual)
 02 Kamikaze (Auto)
 03 Kamikaze (Manual)
-04 ATV (Auto
+04 ATV (Auto)
 05 ATV (Manual)
 06 Scarab (Auto)
 07 Scarab (Manual)

@@ -13,12 +13,12 @@ $Infinite\Max Body Stats
 50000602 0000
 811817F6 270F
 
-$Infinite\Max Health
+$Infinite\Health
 81181780 270F
 81181782 270F
 
 $Infinite\Weapons & Items
-Note=Do not put this on until in game. This gives you all Weapons, Items and Keys and infinite use of.
+Note=Do not put this on until in-game. This gives you all weapons, items, keys and infinite use of.
 50002508 0000
 80181B48 0063
 50000808 0000
@@ -28,9 +28,9 @@ $Level 999
 811817C8 270F
 
 $Level and Battle Select
-Note=The level and battle select screen can be accessed by pressing A at the main menu
+Note=The level and battle select screen can be accessed by pressing A at the main menu.
 801CFB94 0005
 
-$Press L To Levitate
+$Press L to Levitate
 D005D8D1 0020
 8124C710 3FCB

@@ -1,14 +1,14 @@
 [2C739EAC-9EF77726-C:50]
 Name=Doom 64 (E)
 
-$[Max Brightness]
+$Max Brightness
 Note=Enable this cheat on rom load to have Max Brightness (internal) and then put Jabo d3d8 on 160% Max for a extra brightness Boost.
 8005AA18 0064
 
-$Always Have\BFG
+$Always Have\BFG 9000
 8006338B 0001
 
-$Always Have\Bio Suite
+$Always Have\Bio Suit
 80063333 00??
 FF On
 00 Off
@@ -25,11 +25,11 @@ $Always Have\Double Shotgun
 $Always Have\Gun
 80063373 0001
 
-$Always Have\Have Laser Weapon
-8006338D 0001
-
-$Always Have\Have Rocket Launcher
+$Always Have\Rocket Launcher
 80063381 0001
+
+$Always Have\Laser Weapon
+8006338D 0001
 
 $Always Have\Missile Ammo
 8006339F 0064
@@ -64,7 +64,7 @@ $Infinite\Armor
 $Invincible
 8006355B 0002
 
-$Invincible And Map Markers
+$Invincible & Map Markers
 800633BB 0006
 
 $Rapid Fire

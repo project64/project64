@@ -3,8 +3,8 @@ Name=Roadsters Trophy (E) (M6)
 
 $Cheats Enabled Modifier
 8108F8F0 ????
-0004 Fast Bucks (You Get 250
-0008 Easy Money (You Get 1
+0004 Fast Bucks (You Get 250,000 Instead Of 40,000)
+0008 Easy Money (You Get 1,000,000 Instead Of 40,000)
 0010 Trophies (Second And Third Championships Wins)
 0020 Smurfing (High Pitched Voices)
 0040 Big Wheels (Big Foot Cars)
@@ -19,7 +19,7 @@ Note=Also gives you all extra features in quick race & Trophy mode
 800BAA9B 0007
 800BACAF 0007
 
-$Have\Always 1st
+$Have\Always Place 1st
 800C1F81 0001
 800C1F83 0001
 
@@ -27,14 +27,14 @@ $Have\Easy Win
 Note=Right After Start,Go, Quit Race, And you Have Won
 800BACAD 000A
 
-$Have\Infinite Supply Of Super Tires
+$Have\Infinite Supply of Super Tires
 Note=For All Cars
 5000220C 0000
 810BAD58 0F0F
 5000220C 0000
 810BAD5A 0F0F
 
-$Have\Lots Of Seasons
+$Have\Lots of Seasons
 810BACAA 03E7
 
 $Have\Max Cash
@@ -49,7 +49,7 @@ Note=For All Cars
 5000220C 0200
 810BAD56 0270
 
-$Race Options\Laps To Race Select
+$Race Options\Laps to Race Select
 800A4649 00??
 01 1 Lap
 02 2 laps
@@ -82,7 +82,7 @@ $Race Options\Track Select
 09 Titus Park
 
 $Race Options\View Select
-Note=Select your View and then at start of Race press C-Up Button
+Note=Select your View and then at start of Race press C-Up button
 D00C2171 0000
 800C2171 00??
 00 Inside Car

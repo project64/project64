@@ -4,7 +4,7 @@ Name=Micro Machines 64 Turbo (E) (M5)
 $Access All Tracks
 810B88DA 0001
 
-$Always 1st
+$Always Place 1st
 800BB1F7 0001
 
 $Always Turbo Level 1
@@ -18,5 +18,5 @@ $Always Win Head 2 Head
 $Infinite 99 Lives
 800BB1C2 0064
 
-$One Lap To Race
+$One Lap to Race
 810B88DE 0101

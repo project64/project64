@@ -4,7 +4,7 @@ Name=Mario Party 2 (U)
 $Infinite Coins Main Menu
 810F8CD2 FFFF
 
-$Lower Left Char\Item On Pick-Up
+$Lower Left Char\Item on Pick-Up
 800FD341 00??
 00 Mushroom
 01 Skeleton Key
@@ -20,7 +20,7 @@ $Lower Left Char\Item On Pick-Up
 $Lower Left Char\Rolls 10
 800DF55D 000A
 
-$Lower Right Char\Item On Pick-Up
+$Lower Right Char\Item on Pick-Up
 800FD375 00??
 00 Mushroom
 01 Skeleton Key
@@ -36,7 +36,7 @@ $Lower Right Char\Item On Pick-Up
 $Lower Right Char\Rolls 10
 800DF5A9 000A
 
-$Upper Left Char\Item On Pick-Up
+$Upper Left Char\Item on Pick-Up
 800FD2D9 00??
 00 Mushroom
 01 Skeleton Key
@@ -52,7 +52,7 @@ $Upper Left Char\Item On Pick-Up
 $Upper Left Char\Rolls 10
 800DF4C5 000A
 
-$Upper Right Char\Item On Pick-Up
+$Upper Right Char\Item on Pick-Up
 800DF30D 00??
 00 Mushroom
 01 Skeleton Key

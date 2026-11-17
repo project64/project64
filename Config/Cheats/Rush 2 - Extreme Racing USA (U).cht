@@ -160,7 +160,7 @@ $Misc\Cone Mines On
 $Misc\Damage Off
 8011CDB0 0001
 
-$Misc\Difficulty Mod
+$Misc\Difficulty Modifier
 8010C211 00??
 00 Very Easy
 01 Easy
@@ -169,7 +169,7 @@ $Misc\Difficulty Mod
 04 Very Hard
 05 Extremely Hard
 
-$Misc\Drones In Race
+$Misc\Drones in Race
 800D5761 00??
 01 1 Lap
 02 2 Laps
@@ -179,7 +179,7 @@ $Misc\Drones In Race
 06 6 Laps
 07 7 Laps
 
-$Misc\Have All Cars In Pipe
+$Misc\Have All Cars in Pipe
 810C1DCE FFFF
 
 $Misc\Heavy Gravity
@@ -233,7 +233,7 @@ $Misc\Massive Mass
 $Misc\New York Cabs
 800D9E89 0001
 
-$Misc\Resurrect In Place
+$Misc\Resurrect in Place
 8010C210 0001
 
 $Misc\Suicide Mode Humans On
@@ -272,10 +272,10 @@ $Pickup Front Tire Size\Player 2
 01 Medium
 FF Gigantic
 
-$Press GS Activate Cheat Menu
+$GameShark Button\Activate Cheat Menu
 880C2132 0001
 
-$Press R For Nitrous Boost
+$Press R for Nitrous Boost
 D00D0193 0010
 810F58DC 44CB
 D00D0193 0010

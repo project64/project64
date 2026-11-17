@@ -4,11 +4,11 @@ Name=Road Rash 64 (E)
 $Access All Bikes & Tracks
 810A7D16 0063
 
-$Access All Weapons For All Modes
+$Access All Weapons for All Modes
 50000E02 0000
 811B9EFA 0505
 
-$Always 1st
+$Always Place 1st
 810D7D96 0000
 
 $Infinite Damage
@@ -26,5 +26,5 @@ $Max Cash
 $No Music Elsewhere
 810D61AA 0000
 
-$No Music In Game
+$No Music in Game
 810D61AE 0000

@@ -1,22 +1,22 @@
 [9C7318D2-24AE0DC1-C:4A]
 Name=Beetle Adventure Racing! (J)
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\01 Coventry Cove
+$Chamipionship Mode Only\Have 100 Bonus Points\01 Coventry Cove
 8036B243 0064
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\02 Mount Mayhem
+$Chamipionship Mode Only\Have 100 Bonus Points\02 Mount Mayhem
 80351283 0064
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\03 Inferno Isle
+$Chamipionship Mode Only\Have 100 Bonus Points\03 Inferno Isle
 80364153 0064
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\04 Sunset Sands
+$Chamipionship Mode Only\Have 100 Bonus Points\04 Sunset Sands
 8034242B 0064
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\05 Metro Madness
+$Chamipionship Mode Only\Have 100 Bonus Points\05 Metro Madness
 8035CAFB 0064
 
-$[Chamipionship Mode Only]\Have 100 Bonus Points\06 Wicked Woods
+$Chamipionship Mode Only\Have 100 Bonus Points\06 Wicked Woods
 80354A33 0064
 
 $Access All\Cars
@@ -63,7 +63,7 @@ $Power-Up Select
 02 Rockets
 03 Stealer
 04 Nitros
-05 ?
+05 (?)
 06 Health
 07 Invincible
 08 Off

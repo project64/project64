@@ -2,11 +2,11 @@
 Name=Carmageddon 64 (E) (M4) (Eng-Spa-Fre-Ger)
 
 $Freeze Timer at 04:59
-Note=Do not enable until count down to race is finished
+Note=Do not enable until countdown to race is finished.
 811BDB9E 3A70
 
 $Have All Groups Completed
-Note=This gives you all Cups for all Groups.
+Note=This gives you all cups for all groups.
 50002801 0000
 801BDCDC 0002
 

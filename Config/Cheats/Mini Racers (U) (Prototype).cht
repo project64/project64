@@ -1,14 +1,14 @@
 [21548CA9-9059F32C-C:00]
 Name=Mini Racers (U) (Prototype)
 
-$[Player 1]\Infinite\Lives
+$Player 1\Infinite\Lives
 800827BB 0006
 
-$[Player 1]\Infinite\Turbo
+$Player 1\Infinite\Turbo
 80195CF3 00FF
 
-$[Player 1]\Press R to Come In 1st
-Note=Do not press this until you have finished the race and came in at whatever position. Then Press R Button to then Come In 1st
+$Player 1\Press R to Come in 1st
+Note=Do not press this until you have finished the race and came in at whatever position. Then Press R button to then Come In 1st
 D0093671 0010
 801460A3 0000
 

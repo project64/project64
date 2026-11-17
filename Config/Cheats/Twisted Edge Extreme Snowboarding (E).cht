@@ -1,7 +1,7 @@
 [E688A5B8-B14B3F18-C:50]
 Name=Twisted Edge Extreme Snowboarding (E)
 
-$[Audio Fix]
+Audio Fix
 81051840 AD99
 
 $Have All\Boards
@@ -21,5 +21,5 @@ $Low Timer
 80082A04 0000
 80182A06 0000
 
-$Max\50000 Stunt Points
+$Maximum\50000 Stunt Points
 81082AD8 C350

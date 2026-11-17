@@ -91,7 +91,7 @@ $Player 1\Infinite\Health
 8106B974 42C8
 8106B976 0000
 
-$Player 1\Max\Power
+$Player 1\Maximum\Power
 8106B980 0000
 8106B982 0BB2
 
@@ -187,7 +187,7 @@ $Player 2\Infinite\Health
 8106BA7C 42C8
 8106BA7E 0000
 
-$Player 2\Max\Power
+$Player 2\Maximum\Power
 8106BA88 0000
 8106BA8A 0BB2
 

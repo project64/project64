@@ -21,7 +21,7 @@ $Access All\Cups
 80054486 0000
 80054487 0000
 
-$Always 1st
+$Always Place 1st
 811157AE 0001
 811157B6 0000
 8110C33E 03E7
@@ -100,7 +100,7 @@ $Infinite Weapons\Player 4
 0A Orange Star
 0B Beach Ball
 
-$Laps To Race
+$Laps to Race
 8107DD1E 00??
 01 1 Lap
 02 2 laps
@@ -112,7 +112,7 @@ $Laps To Race
 08 8 Laps
 09 9 Laps
 
-$Number Of Drones In The Race
+$Number of Drones in the Race
 8110FFF6 00??
 01 1 Drone
 02 2 Drones

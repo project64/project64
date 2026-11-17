@@ -5,7 +5,7 @@ $Access\All Characters
 801E6040 FFFF
 
 $Access\All Floyd Awards
-Note=only enable One character at a time when using this code
+Note=Only enable one character at a time when using this cheat.
 50000501 0000
 801E6038 0005
 
@@ -70,7 +70,7 @@ $Lupus\Infinite\Max Ammo All Weapons
 $Lupus\Infinite\Mizar Tokens
 811E626A 03E7
 
-$Lupus\Max\Blue & White Heads
+$Lupus\Maximum\Blue & White Heads
 811E6260 03E7
 811E625E 03E7
 
@@ -109,7 +109,7 @@ $Vela\Infinite\Max Ammo All Weapons
 $Vela\Infinite\Mizar Tokens
 811E617E 03E7
 
-$Vela\Max\Blue & White Heads
+$Vela\Maximum\Blue & White Heads
 811E6174 03E7
 811E6172 03E7
 

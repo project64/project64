@@ -14,7 +14,7 @@ $Always Special\Player 4
 800FA845 0008
 
 $Character Select\Player 1
-Note=With this code, you will need to press the GS Button to be in the ring and have full access to getting in and out of the ring.
+Note=With this code, you will need to press the GameShark button to be in the ring and have full access to getting in and out of the ring.
 890F9D36 0240
 890F9D60 42B4
 8107E8B2 ????
@@ -96,7 +96,7 @@ Note=With this code, you will need to press the GS Button to be in the ring and 
 0905 Woman (Manager)
 
 $Character Select\Player 2
-Note=With this code, you will need to press the GS Button to be in the ring and have full access to getting in and out of the ring.
+Note=With this code, you will need to press the GameShark button to be in the ring and have full access to getting in and out of the ring.
 890FA0E6 0240
 890FA110 42B4
 8107E8B6 ????
@@ -178,7 +178,7 @@ Note=With this code, you will need to press the GS Button to be in the ring and 
 0905 Woman (Manager)
 
 $Character Select\Player 3
-Note=With this code, you will need to press the GS Button to be in the ring and have full access to getting in and out of the ring.
+Note=With this code, you will need to press the GameShark button to be in the ring and have full access to getting in and out of the ring.
 890FA496 0240
 890FA4C0 42B4
 8107E8BA ????
@@ -260,7 +260,7 @@ Note=With this code, you will need to press the GS Button to be in the ring and 
 0905 Woman (Manager)
 
 $Character Select\Player 4
-Note=With this code, you will need to press the GS Button to be in the ring and have full access to getting in and out of the ring.
+Note=With this code, you will need to press the GameShark button to be in the ring and have full access to getting in and out of the ring.
 890FA846 0240
 890FA870 42B4
 8107E8BE ????
@@ -344,13 +344,13 @@ Note=With this code, you will need to press the GS Button to be in the ring and 
 $Extra Characters & Modes
 8107F07C FFFF
 
-$Get Title Belt In 1-Match
+$Get Title Belt in 1-Match
 80038AAB 0008
 
 $Infinite Time
 800FAF87 0000
 
-$Infinite Time Out Of Ring
+$Infinite Time Out of Ring
 800FACE8 0014
 
 $Spirit Select\Player 1

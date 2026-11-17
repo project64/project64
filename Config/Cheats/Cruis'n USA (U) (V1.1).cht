@@ -54,7 +54,7 @@ $Player 1\Gearbox Type Modifier
 00 Automatic
 01 Manual
 
-$Player 1\Lights & Sirens For Police Car & School Bus P1
+$Player 1\Lights & Sirens for Police Car & School Bus P1
 8115053A 0001
 8114E38A 0001
 
@@ -69,9 +69,9 @@ $Player 2\Gearbox Type Modifier
 00 Automatic
 01 Manual
 
-$Player 2\Lights & Sirens For Police Car & School Bus P2
+$Player 2\Lights & Sirens for Police Car & School Bus P2
 811508D6 0001
 8114E3A2 0001
 
-$Stop Elapsed Time And No Traffic
+$Stop Elapsed Time & No Traffic
 80150949 0000

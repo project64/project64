@@ -74,7 +74,7 @@ $Mini Game Island\99 Coins
 $Mini Game Island\Always Clear Level
 800F32BB 0063
 
-$Mini Game Island\Press GS For 99 Lives
+$Mini Game Island\Press GameShark Button for 99 Lives
 880F37BB 0063
 
 $Mini Game Island\World Level Select
@@ -117,7 +117,7 @@ $Mini Game\Unlimited 99 lives
 800F3767 0063
 
 $Top Left Character\Coin Options
-Note=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing  & spoiling the result.
+Note=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing & spoiling the result.
 800F32B8 00??
 00 0 Coins
 0A 10 Coins

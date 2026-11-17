@@ -1,12 +1,12 @@
 [53ED2DC4-06258002-C:50]
 Name=Star Wars Episode I - Racer (E) (M3)
 
-$Always 1st
+$Always Place 1st
 80121C8C 0001
 80125489 0001
 
-$Enable In-Game cheat Menu & Cheats
-Note=Here you can Activate the IN-Built Cheats Menu. At the Front Screen Just Press C-Button Right.This will open up All Tracks & Characters In Free Play & Time Attack. Also In A Race, Press The Start/Pause button to Access the In-Cheat-Menu Option.You can also choose how many Pod's Racers are in the Race & also how many Laps are in the Race in Free Play & Time Attack
+$Enable In-Game Cheat Menu & Cheats
+Note=Here you can activate the In-Game Cheats Menu. At the Front Screen Just Press C button Right. This will open up All Tracks & Characters In Free Play & Time Attack. Also In A Race, Press The Start/Pause button to Access the In-Cheat-Menu Option. You can also choose how many Pod's Racers are in the Race & also how many Laps are in the Race in Free Play & Time Attack
 810A0D27 000A
 810A0D2A FFFF
 

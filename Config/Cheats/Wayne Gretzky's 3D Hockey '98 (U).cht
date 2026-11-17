@@ -1,14 +1,14 @@
 [5A9D3859-97AAE710-C:45]
 Name=Wayne Gretzky's 3D Hockey '98 (U)
 
-$Anger metre always full
+$Anger Meter Always Full
 800D5978 00FF
 800D5666 00FF
 
 $Crunched Players
 810DBA6C 3F00
 
-$Difficulty Mod
+$Difficulty Modifier
 80120639 00??
 00 Very Easy
 01 Easy
@@ -18,7 +18,7 @@ $Difficulty Mod
 $Extra Teams
 80115A0C 0001
 
-$Get In Fights Constantly
+$Get in Fights Constantly
 800CF766 0020
 
 $Players\Head Size
@@ -34,7 +34,7 @@ $Players\Height Size
 3FC0 Large
 4080 Giants
 
-$Team 1\Score pts
+$Team 1\Score Points
 8011C061 00??
 00 Zero Points
 1E 30 Points
@@ -42,9 +42,9 @@ $Team 1\Score pts
 4B 75 Points
 63 99 Points
 
-$Team 2\Score pts
+$Team 2\Score Points
 8011F571 ????
-0000 ero Points
+0000 Zero Points
 1E03 0 Points
 2305 0 Points
 4B07 5 Points

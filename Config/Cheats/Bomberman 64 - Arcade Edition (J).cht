@@ -7,7 +7,7 @@ $Bomb Select
 03 Jelly Bomb
 04 Shock Wave Bomb
 05 Blue Remote Bomb
-06 Red Beem Bomb
+06 Red Beam Bomb
 07 Invisible Mine Bomb
 1D Crazy Bomb
 00 Clear All Special Bombs.
@@ -38,19 +38,19 @@ $Infinite\Timer
 800FDD72 002A
 
 $Invincible
-Note=Enemies & Bomb Blasts cant harm you.But if you walk & keep laying Bombs it will most likly freeze.so try to avoid constant bombing while walking.Turn cheat to off to go back to normal.
+Note=Enemies & Bomb Blasts cant harm you. But if you walk & keep laying Bombs it will most likly freeze. so try to avoid constant bombing while walking. Turn cheat to off to go back to normal.
 8024A3A8 00??
 00 Off
 01 On
 
 $Walk through\Blocks
-Note=Walk through Blocks like they are not there.Turn cheat to off to go back to normal.
+Note=Walk through Blocks like they are not there. Turn cheat to off to go back to normal.
 8024A3A5 00??
 00 Off
 01 On
 
 $Walk through\Bombs
-Note=Walk through Bombs like they are not there.Turn cheat to off to go back to normal.
+Note=Walk through Bombs like they are not there. Turn cheat to off to go back to normal.
 8024A3A6 00??
 00 Off
 01 On

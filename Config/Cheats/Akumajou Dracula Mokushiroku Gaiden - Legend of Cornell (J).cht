@@ -5,7 +5,7 @@ $Enable All Characters
 D02E4082 0000
 802E4083 0004
 
-$Hard Mode Selected In A New Game
+$Hard Mode Selected in a New Game
 Note=With this code, you will not see the hard level status until you save and restart the game file. No special items are required to access this feature with this code turned on.
 8032630F 0002
 
@@ -154,7 +154,7 @@ Note=For Henry, Hold B
 811CA1A6 0040
 801D5753 0006
 
-$Selection Options\[Press F9 For Wolfman Can Use Weapons]
+$Selection Options\GameShark Button\Wolfman Can Use Weapons
 Note=For Cornell
 881CC4E7 00??
 02 Yes
@@ -211,7 +211,7 @@ Note=With this code, you must use the appropiate level mod before you attemp to 
 37 Lever & Gear In Castle
 38 Harpie
 39 Harpie Destroyed
-44 Death(Grim Reaper)
+44 Death (Grim Reaper)
 45 Death Is Destroyed
 46 Castle Drawbridge Closes And Ortega Appears
 47 Thirsty Man
@@ -224,7 +224,7 @@ Note=With this code, you must use the appropiate level mod before you attemp to 
 56 Actrise Appears Again Before Fight With Carrie
 57 Actrise Defeated By Carrie
 
-$Selection Options\Day Select For Adult Henry
+$Selection Options\Day Select for Adult Henry
 801CC4CF 00??
 00 7 Days
 01 6 Days
@@ -283,7 +283,7 @@ $Selection Options\Level Select\Inter
 2A Outer Wall
 2C Fall From Sky Ouside Of Castlevania Opening
 2D Another Free Fall. Forest Where Girl Runs In Opening
-2E Black Room(?)
+2E Black Room (?)
 
 $Selection Options\Level Select\Main
 801CC829 00??
@@ -333,7 +333,7 @@ $Selection Options\Level Select\Main
 2A Outer Wall
 2C Fall From Sky Ouside Of Castlevania Opening
 2D Another Free Fall. Forest Where Girl Runs In Opening
-2E Black Room(?)
+2E Black Room (?)
 
 $Selection Options\Status Select
 801CC534 00??

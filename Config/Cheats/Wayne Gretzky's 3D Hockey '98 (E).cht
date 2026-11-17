@@ -1,14 +1,14 @@
 [661B45F3-9ED6266D-C:50]
 Name=Wayne Gretzky's 3D Hockey '98 (E) (M4)
 
-$Anger metre always full
+$Anger Meter Always Full
 800D9B38 00FF
 800D9826 00FF
 
 $Crunched Players
 800DFC2D 003F
 
-$Difficulty Mod
+$Difficulty Modifier
 801247F9 00??
 00 Very Easy
 01 Easy
@@ -18,7 +18,7 @@ $Difficulty Mod
 $Extra Teams
 80115A0C 0001
 
-$Get In Fights Constantly
+$Get in Fights Constantly
 800D3926 0020
 
 $Max Score\Team 1

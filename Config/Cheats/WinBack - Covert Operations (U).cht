@@ -7,12 +7,12 @@ $All Bosses 1 Hit Deaths
 $Enable\Max Power Mode
 8015D417 0001
 
-$Flashlight Mod
+$Flashlight Modifier
 80179448 00??
 01 On
 00 Off
 
-$Have All\Weapons,Items & Infinite Ammo\Player 1
+$Have All\Weapons, Items & Infinite Ammo\Player 1
 8017AA9F 001E
 8017AAB3 0008
 8017AAB7 0009
@@ -29,7 +29,7 @@ $Have All\Weapons,Items & Infinite Ammo\Player 1
 $Have Trial Mode Unlocked
 8110DCEE 0004
 
-$Have\All Characters In Multi
+$Have\All Characters in Multiplayer
 8115D412 FFFF
 8115D410 0003
 8015D411 0003

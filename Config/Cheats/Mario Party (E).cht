@@ -62,7 +62,7 @@ $Mini Game\Unlimited 99 lives
 800FFF58 0063
 
 $Top Left Character\Coin Options
-Note=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing  & spoiling the result.
+Note=If you want to have full 255 Coins,1st use the 100 Option then put on 255. this will stop the numbers from changing & spoiling the result.
 800FFAA9 00??
 00 0 Coins
 0A 10 Coins

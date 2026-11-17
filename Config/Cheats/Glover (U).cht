@@ -1,7 +1,7 @@
 [8E6E01FF-CCB4F948-C:45]
 Name=Glover (U)
 
-$GS Button For 40 Gems
+$GameShark Button for 40 Gems
 8829018F 0028
 
 $Infinite\Action Modifier
@@ -46,6 +46,6 @@ $Infinite\Health
 $Infinite\Lives
 80290193 000A
 
-$Press L To Levitate
+$Press L to Levitate
 D02AE905 0020
 81290334 43E0

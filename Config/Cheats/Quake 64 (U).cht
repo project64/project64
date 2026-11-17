@@ -33,36 +33,36 @@ $Infinite\Bio Suit
 $Infinite\Health
 81163930 42C8
 
-$Multi\Have All Weapons\Player 1
+$Multiplayer\Have All Weapons\Player 1
 8016634B 007F
 
-$Multi\Have All Weapons\Player 2
+$Multiplayer\Have All Weapons\Player 2
 8016661B 007F
 
-$Multi\Infinite Ammo\Player 1
+$Multiplayer\Infinite Ammo\Player 1
 50000402 0000
 8116638C 03E7
 
-$Multi\Infinite Ammo\Player 2
+$Multiplayer\Infinite Ammo\Player 2
 50000402 0000
 8116665C 03E7
 
-$Multi\Infinite Armor\Player 1
+$Multiplayer\Infinite Armor\Player 1
 811662A4 42C8
 
-$Multi\Infinite Armor\Player 2
+$Multiplayer\Infinite Armor\Player 2
 81166574 42C8
 
-$Multi\Infinite Bio Suit\Player 1
+$Multiplayer\Infinite Bio Suit\Player 1
 811662E0 42C8
 
-$Multi\Infinite Bio Suit\Player 2
+$Multiplayer\Infinite Bio Suit\Player 2
 811665B0 42C8
 
-$Multi\Infinite Health\Player 1
+$Multiplayer\Infinite Health\Player 1
 81166290 42C8
 
-$Multi\Infinite Health\Player 2
+$Multiplayer\Infinite Health\Player 2
 81166560 42C8
 
 $Rapid Fire

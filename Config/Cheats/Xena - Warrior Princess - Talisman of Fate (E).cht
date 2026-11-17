@@ -1,7 +1,7 @@
 [0A1667C7-293346A6-C:50]
 Name=Xena - Warrior Princess - Talisman of Fate (E)
 
-$1 Win To Win\Player 1
+$1 Win to Win\Player 1
 D00C0983 0000
 800C0983 0001
 
@@ -30,7 +30,7 @@ $Join River Team
 Note=Select Quest Mode
 810BF482 0001
 
-$Needs 1 Win To Win\Player 2
+$Needs 1 Win to Win\Player 2
 D00C0985 0000
 800C0985 0001
 

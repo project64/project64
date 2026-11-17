@@ -1,10 +1,10 @@
 [056EAB63-C215FCD5-C:4A]
 Name=Dual Heroes (J)
 
-$Infinite\Energy\Player 1
+$Infinite\Health\Player 1
 81224DC4 00FF
 
-$Infinite\Energy\Player 2
+$Infinite\Health\Player 2
 81224DC6 00FF
 
 $Infinite\Time

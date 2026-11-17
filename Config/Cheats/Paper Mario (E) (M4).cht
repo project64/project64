@@ -30,11 +30,11 @@ $Access\Max Star Pieces
 8010DD9F 0063
 
 $Access\Max Star Points
-Note=You will level up, everytime you get a Star point
+Note=You will level up everytime you get a Star point.
 8010DDA0 0063
 
 $Access\Ultra Rank
-Note=This will give you Goombario,Kooper,Bombette,Parakarry,Bow Watt, Sushie & Lakilester
+Note=This will give you Goombario, Kooper, Bombette, Parakarry, Bow Watt, Sushie and Lakilester.
 50000C08 0000
 8010DDAD 0002
 50000C08 0000
@@ -45,6 +45,6 @@ Note=Do not enable this code before you have made a save, when a new game is sta
 50000601 0000
 8010DD91 0063
 
-$Press L Button  For Moon Jump
+$Press L Button for Moon Jump
 D0071337 0020
 8010DAF4 0043

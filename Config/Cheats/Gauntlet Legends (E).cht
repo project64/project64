@@ -10,19 +10,19 @@ $Access All Window Shards
 810AE6C6 07FF
 
 $Access Skill Level 99
-Note=And Get A Familiar
+Note=And get a familiar.
 800FD38A FFFF
 
 $Always Max Turbo Attack
 810FD4AE FF64
 
 $Get All Stuff
-Note=Opens Up New Levels Etc,
+Note=Opens Up new levels etc.
 50001410 0000
 810C5DA6 FFFF
 
-$Infinite Use Of Items
-Note=On Pick-Ups Only
+$Infinite Use of Items
+Note=On pick-ups only.
 50001310 0000
 800C5EC6 FFFF
 
@@ -33,9 +33,9 @@ $New Player Name
 810FD372 3639
 
 $Start With Big Familiar
-Note=Do not use this with Small Familiar Code
+Note=Do not use this with 'Small Familiar' cheat.
 810FD512 0202
 
 $Start With Small Familiar
-Note=Do not use this with Big Familiar Code
+Note=Do not use this with 'Big Familiar' cheat.
 810FD512 0102

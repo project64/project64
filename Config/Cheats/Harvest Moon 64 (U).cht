@@ -1,7 +1,7 @@
 [98DF9DFC-6606C189-C:45]
 Name=Harvest Moon 64 (U)
 
-$Belongings\Slot 01
+$Belongings\Slot 1
 80189084 00??
 00 Nothing
 01 Weeds
@@ -56,9 +56,9 @@ $Belongings\Slot 01
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -68,7 +68,7 @@ $Belongings\Slot 01
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 02
+$Belongings\Slot 2
 80189085 00??
 00 Nothing
 01 Weeds
@@ -123,9 +123,9 @@ $Belongings\Slot 02
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -135,7 +135,7 @@ $Belongings\Slot 02
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 03
+$Belongings\Slot 3
 80189086 00??
 00 Nothing
 01 Weeds
@@ -190,9 +190,9 @@ $Belongings\Slot 03
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -202,7 +202,7 @@ $Belongings\Slot 03
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 04
+$Belongings\Slot 4
 80189087 00??
 00 Nothing
 01 Weeds
@@ -257,9 +257,9 @@ $Belongings\Slot 04
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -269,7 +269,7 @@ $Belongings\Slot 04
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 05
+$Belongings\Slot 5
 80189088 00??
 00 Nothing
 01 Weeds
@@ -324,9 +324,9 @@ $Belongings\Slot 05
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -336,7 +336,7 @@ $Belongings\Slot 05
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 06
+$Belongings\Slot 6
 80189089 00??
 00 Nothing
 01 Weeds
@@ -391,9 +391,9 @@ $Belongings\Slot 06
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -403,7 +403,7 @@ $Belongings\Slot 06
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 07
+$Belongings\Slot 7
 8018908A 00??
 00 Nothing
 01 Weeds
@@ -458,9 +458,9 @@ $Belongings\Slot 07
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -470,7 +470,7 @@ $Belongings\Slot 07
 3E Yellow Bag
 3F Purple Bag
 
-$Belongings\Slot 08
+$Belongings\Slot 8
 8018908B 00??
 00 Nothing
 01 Weeds
@@ -525,9 +525,9 @@ $Belongings\Slot 08
 32 Pontata Root
 33 Chicken
 34 Chocolate Bar Picture
-35 ???
+35 (?)
 36 Blue Egg Shaped Device
-37 ??
+37 (?)
 38 Chocolate Bar Picture
 39 Fodder
 3A White Bag
@@ -540,7 +540,7 @@ $Belongings\Slot 08
 $Have\All Pics
 8118905A FFFF
 
-$Have\Max Shipped In Bin!
+$Have\Max Shipped in Bin!
 8023738A FFFF
 
 $Have\Win Dog Races
@@ -555,7 +555,7 @@ $Infinite\Chicken Feed
 $Infinite\Flower Card Points
 802373F0 0063
 
-$Infinite\Fodder Spout (Sheep And Cows)
+$Infinite\Fodder Spout (Sheep and Cows)
 81180714 0063
 
 $Infinite\Horse Stamina
@@ -564,7 +564,7 @@ $Infinite\Horse Stamina
 $Infinite\Lumber
 81189E50 03E7
 
-$Infinite\Medals For Horse & Dog Races
+$Infinite\Medals for Horse & Dog Races
 81189B06 270F
 81205206 270F
 
@@ -577,17 +577,17 @@ $Infinite\Stamina
 $Infinite\Watering Can Uses
 8016FBCD 0004
 
-$Item\Slot 01
+$Item\Slot 1
 8018908E 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -602,17 +602,17 @@ $Item\Slot 01
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 02
+$Item\Slot 2
 8018908F 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -627,17 +627,17 @@ $Item\Slot 02
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 03
+$Item\Slot 3
 80189090 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -652,17 +652,17 @@ $Item\Slot 03
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 04
+$Item\Slot 4
 80189091 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -677,17 +677,17 @@ $Item\Slot 04
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 05
+$Item\Slot 5
 80189092 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -702,17 +702,17 @@ $Item\Slot 05
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 06
+$Item\Slot 6
 80189093 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -727,17 +727,17 @@ $Item\Slot 06
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 07
+$Item\Slot 7
 80189094 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -752,17 +752,17 @@ $Item\Slot 07
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 08
+$Item\Slot 8
 80189095 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -777,17 +777,17 @@ $Item\Slot 08
 14 Flower Bath Crystals
 15 Stamina Carrot
 
-$Item\Slot 09
+$Item\Slot 9
 80189096 00??
 00 Nothing
 01 Ocarina
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -809,10 +809,10 @@ $Item\Slot 10
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -834,10 +834,10 @@ $Item\Slot 11
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -859,10 +859,10 @@ $Item\Slot 12
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -884,10 +884,10 @@ $Item\Slot 13
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -909,10 +909,10 @@ $Item\Slot 14
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -934,10 +934,10 @@ $Item\Slot 15
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -959,10 +959,10 @@ $Item\Slot 16
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -984,10 +984,10 @@ $Item\Slot 17
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1009,10 +1009,10 @@ $Item\Slot 18
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1034,10 +1034,10 @@ $Item\Slot 19
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1059,10 +1059,10 @@ $Item\Slot 20
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1084,10 +1084,10 @@ $Item\Slot 21
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1109,10 +1109,10 @@ $Item\Slot 22
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1134,10 +1134,10 @@ $Item\Slot 23
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1159,10 +1159,10 @@ $Item\Slot 24
 02 Flower Card
 03 Cake Card
 04 Broken Music Box
-05 ??
+05 (?)
 06 Old Wine
-07 ??
-08 ??
+07 (?)
+08 (?)
 09 Book From Library
 0A Scroll To Bury
 0B Marble
@@ -1192,7 +1192,7 @@ $Make\Maria Love You
 $Make\Popuri Love You
 801C3F91 00FF
 
-$Tool\Slot 01
+$Tool\Slot 1
 80189075 00??
 00 Nothing
 01 Sickle
@@ -1217,18 +1217,18 @@ $Tool\Slot 01
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 02
+$Tool\Slot 2
 80189076 00??
 00 Nothing
 01 Sickle
@@ -1253,18 +1253,18 @@ $Tool\Slot 02
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 03
+$Tool\Slot 3
 80189077 00??
 00 Nothing
 01 Sickle
@@ -1289,18 +1289,18 @@ $Tool\Slot 03
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 04
+$Tool\Slot 4
 80189078 00??
 00 Nothing
 01 Sickle
@@ -1325,18 +1325,18 @@ $Tool\Slot 04
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 05
+$Tool\Slot 5
 80189079 00??
 00 Nothing
 01 Sickle
@@ -1361,18 +1361,18 @@ $Tool\Slot 05
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 06
+$Tool\Slot 6
 8018907A 00??
 00 Nothing
 01 Sickle
@@ -1397,18 +1397,18 @@ $Tool\Slot 06
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 07
+$Tool\Slot 7
 8018907B 00??
 00 Nothing
 01 Sickle
@@ -1433,18 +1433,18 @@ $Tool\Slot 07
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture
 
-$Tool\Slot 08
+$Tool\Slot 8
 8018907C 00??
 00 Nothing
 01 Sickle
@@ -1469,13 +1469,13 @@ $Tool\Slot 08
 14 Bird Feed
 15 Ball No Picture
 16 Feeding Bottle
-17 ??
+17 (?)
 18 Fishing Pole
 19 Miracle Potion
 1A Medicine For Cows
 1B Grass Seeds
 1C Blue Feather
 1D Empty Bottle
-1E ??
+1E (?)
 1F Weeds No Picture
 20 Boulder No Picture

@@ -19,23 +19,23 @@ $Infinite\Character Creation Points
 $Infinite\Time to Choose Play
 81080152 0028
 
-$Max\Accuracy
+$Maximum\Accuracy
 8106FDB8 0064
 
-$Max\Catch
+$Maximum\Catch
 8106FDC2 0064
 
-$Max\Endurance
+$Maximum\Endurance
 8106FDC4 0064
 
-$Max\Hands
+$Maximum\Hands
 8106FDBE 0064
 
-$Max\Range
+$Maximum\Range
 8106FDBA 0064
 
-$Max\Scramble
+$Maximum\Scramble
 8106FDBC 0064
 
-$Max\Speed
+$Maximum\Speed
 8106FDC0 0064

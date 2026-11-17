@@ -17,7 +17,7 @@ Note=Here you can Choose Options with Mario with His Cap off & in His Hand,Do no
 26 Invisible Metal Mario Cap In Hand
 28 Flying Mario Cap In Hand
 
-$Funny Mario Options\Mario's Cap\On & An Extra in His Hand
+$Funny Mario Options\Mario's Cap\On & an Extra in His Hand
 Note=Here you can Choose Options with Mario with His Cap on & An Extra in His Hand,Do not use with any other Mario with/without Options,Use only one at a time
 8031D9C7 00??
 30 Cap In Hand
@@ -40,7 +40,7 @@ Note=I have Managed to put a Have 175 Stars Option in for you,once the Code is a
 50000D02 0000
 81203F0C FFFF
 
-$Have All\Maxed Out Coin Records For All Levels
+$Have All\Maxed Out Coin Records for All Levels
 80203F25 00FF
 50000702 0000
 81203F26 FFFF
@@ -73,6 +73,6 @@ Note=Here you can Choose Options with Mario with His Cap on,Do not use with any 
 16 Invisible Metal Mario
 19 Flying Mario
 
-$Press GS For 255 Coins
-Note=Press GS Once on a Level To Get that amount of Coins
+$GameShark Button\255 Coins
+Note=Press GameShark button once on a level to get 255 coins.
 8931DA68 00FF

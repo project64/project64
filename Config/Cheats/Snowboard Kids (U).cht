@@ -5,7 +5,7 @@ $1 Lap Race
 D0122288 0000
 80122288 0009
 
-$999 Trick Game Pts
+$999 Trick Game Points
 81122040 03E7
 
 $Access Gold Medals
@@ -19,7 +19,7 @@ $Infinite\Cash
 801222EA C350
 
 $Infinite\Lucky Dip
-Note="Lucky Dip is Infinite Usage Of What Ever You Get From Each Red Box"
+Note=Infinite usage of whatever you get from each red box.
 80122294 0003
 
 $Infinite\Tools Options
