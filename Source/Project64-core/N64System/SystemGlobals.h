@@ -27,6 +27,9 @@ extern CN64Rom * g_DDRom; // 64DD IPL ROM
 class CN64Disk;
 extern CN64Disk * g_Disk; // 64DD disk
 
+class CGameSharkCart;
+extern CGameSharkCart * g_GameShark; // GameShark / Action Replay cartridge between the console and the game
+
 class CSystemTimer;
 extern CSystemTimer * g_SystemTimer;
 

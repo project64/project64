@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "RomMemoryHandler.h"
+#include <Project64-core\N64System\GameSharkCart.h>
 #include <Project64-core\N64System\Mips\Register.h>
 #include <Project64-core\N64System\N64Rom.h>
 #include <Project64-core\N64System\N64System.h>
@@ -24,6 +25,11 @@ bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
     if (g_DDRom == nullptr)
     {
         m_Reg.PI_CART_ADDR_REG = (Address + 4) & ~1;
+    }
+    if (g_GameShark != nullptr && g_GameShark->Read32(ReadAddr, Value))
+    {
+        // Answered by the GameShark cartridge instead of the game plugged in to it
+        return true;
     }
     if (m_RomWrittenTo)
     {
@@ -53,8 +59,13 @@ bool RomMemoryHandler::Read32(uint32_t Address, uint32_t & Value)
     return true;
 }
 
-bool RomMemoryHandler::Write32(uint32_t /*Address*/, uint32_t Value, uint32_t Mask)
+bool RomMemoryHandler::Write32(uint32_t Address, uint32_t Value, uint32_t Mask)
 {
+    if (g_GameShark != nullptr)
+    {
+        // Registers and flash of the GameShark cartridge, the bus timing below is the same for it
+        g_GameShark->Write32(Address, Value & Mask);
+    }
     if (!m_RomWrittenTo)
     {
         m_RomWrittenTo = true;

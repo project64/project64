@@ -3519,6 +3519,11 @@ void CX86RecompilerOps::LW_KnownAddress(const asmjit::x86::Gp & Reg, uint32_t VA
             {
                 m_Assembler.MoveVariableToX86reg(Reg, g_DDRom->GetRomAddress() + (PAddr - 0x06000000), stdstr_f("DDRom + %X", (PAddr - 0x06000000)).c_str());
             }
+            else if (PAddr < 0x03F00000)
+            {
+                // RDRAM address space without RDRAM installed reads as zero (see CMipsMemoryVM::LW_PhysicalAddress)
+                m_Assembler.MoveConstToX86reg(Reg, 0);
+            }
             else
             {
                 m_Assembler.MoveConstToX86reg(Reg, ((PAddr & 0xFFFF) << 16) | (PAddr & 0xFFFF));

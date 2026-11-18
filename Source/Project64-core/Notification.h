@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Project64-core/Multilanguage.h>
+#include <string>
 
 #ifndef _MSC_VER
 #define __interface struct
@@ -26,6 +27,9 @@ public:
 
     // Ask a yes/no question to the user, yes = true, no = false
     virtual bool AskYesNoQuestion(const char * Question) const = 0;
+
+    // Ask for the game ROM to plug in to a GameShark cartridge, false = cancelled
+    virtual bool SelectGameSharkGame(const char * Message, const char * Title, std::string & FileName) const = 0;
 
     virtual void BreakPoint(const char * FileName, int32_t LineNumber) = 0;
 

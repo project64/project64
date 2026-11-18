@@ -28,6 +28,11 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
     switch (Address & 0x1FFFFFFF)
     {
     case 0x04800018: Value = SI_STATUS_REG; break;
+    case 0x04800014:
+        // Not a register. The GameShark firmware polls this address for the busy bits
+        // instead of SI_STATUS_REG before it accesses the PIF RAM, and expects them clear
+        Value = 0;
+        break;
     default:
         Value = 0;
         if (g_DebugSettings.haveDebugger)
@@ -44,6 +49,7 @@ bool SerialInterfaceHandler::Read32(uint32_t Address, uint32_t & Value)
         case 0x04800004: LogMessage("%016llX: read from SI_PIF_ADDR_RD64B_REG (%08X)", m_PC, Value); break;
         case 0xA4800010: LogMessage("%016llX: read from SI_PIF_ADDR_WR64B_REG (%08X)", m_PC, Value); break;
         case 0x04800018: LogMessage("%016llX: read from SI_STATUS_REG (%08X)", m_PC, Value); break;
+        case 0x04800014: LogMessage("%016llX: read from unused SI address 0x04800014 (%08X)", m_PC, Value); break;
         default:
             if (g_DebugSettings.haveDebugger)
             {

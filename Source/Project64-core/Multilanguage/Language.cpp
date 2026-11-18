@@ -522,6 +522,11 @@ void CLanguage::LoadDefaultStrings(void)
     DEF_STR(MSG_ROM_INVALID_IMAGE_FILE, "Invalid image file");
     DEF_STR(MSG_ROM_FAILED_ROM_ALLOCATE, "Failed to allocate for rom");
     DEF_STR(MSG_ROM_FAILED_TO_OPEN, "Failed to open rom");
+    DEF_STR(MSG_GAMESHARK_SELECT_GAME, "GameShark / Action Replay firmware detected.\n\nSelect the game ROM to plug in to the top of the cartridge.\n\nOnly a game with the CIC that matches the active key code can start.\nKey code: %s\n\nAs on a console, the GameShark only starts games with the CIC that matches its key code. Other games stop at a black screen. To use a game with a different CIC, change the key code first in the GameShark menu (Key Codes).");
+    DEF_STR(MSG_GAMESHARK_SELECT_TITLE, "Select game ROM for GameShark (key code: %s)");
+    DEF_STR(MSG_GAMESHARK_KEY_MISMATCH, "The CIC of this game (%s) does not match the active key code of the GameShark firmware (%s).\nOn a console this combination does not start, the screen stays black.\n\nStart anyway?");
+    DEF_STR(MSG_GAMESHARK_FIRMWARE_FAILED, "Failed to load the GameShark firmware");
+    DEF_STR(MSG_GAMESHARK_NOT_A_GAME, "The selected file is a GameShark firmware, select a game ROM instead");
 
     /*** Android ***/
 

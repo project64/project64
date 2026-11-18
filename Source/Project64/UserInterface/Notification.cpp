@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <CommDlg.h>
+#include <Common/path.h>
 #include <time.h>
 
 CNotificationImp & Notify(void)
@@ -149,6 +151,52 @@ bool CNotificationImp::AskYesNoQuestion(const char * Question) const
     }
     int result = MessageBox(Parent, stdstr(Question).ToUTF16().c_str(), wGS(MSG_MSGBOX_WARNING_TITLE).c_str(), MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2 | MB_SETFOREGROUND);
     return result == IDYES;
+}
+
+bool CNotificationImp::SelectGameSharkGame(const char * Message, const char * Title, std::string & FileName) const
+{
+    WriteTrace(TraceUserInterface, TraceDebug, "Start");
+    WindowMode();
+
+    HWND Parent = nullptr;
+    if (m_hWnd)
+    {
+        Parent = reinterpret_cast<HWND>(m_hWnd->GetWindowHandle());
+    }
+    if (MessageBox(Parent, stdstr(Message).ToUTF16().c_str(), L"GameShark", MB_OKCANCEL | MB_ICONINFORMATION | MB_SETFOREGROUND) != IDOK)
+    {
+        return false;
+    }
+
+    const wchar_t * Filter = L"N64 ROMs (*.zip, *.7z, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.7z;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+    std::wstring InitialDir = stdstr(g_Settings->LoadStringVal(RomList_GameDir)).ToUTF16();
+    std::wstring TitleW = stdstr(Title).ToUTF16();
+    CPath CurrentDir(CPath::CURRENT_DIRECTORY);
+
+    wchar_t SelectedFile[MAX_PATH];
+    memset(SelectedFile, 0, sizeof(SelectedFile));
+    OPENFILENAMEW OpenFileName;
+    memset(&OpenFileName, 0, sizeof(OpenFileName));
+    OpenFileName.lStructSize = sizeof(OpenFileName);
+    OpenFileName.hwndOwner = Parent;
+    OpenFileName.lpstrFilter = Filter;
+    OpenFileName.lpstrFile = SelectedFile;
+    OpenFileName.nMaxFile = MAX_PATH;
+    OpenFileName.lpstrInitialDir = InitialDir.c_str();
+    OpenFileName.lpstrTitle = TitleW.c_str();
+    OpenFileName.Flags = OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
+
+    bool res = GetOpenFileNameW(&OpenFileName) != 0;
+    if (CPath(CPath::CURRENT_DIRECTORY) != CurrentDir)
+    {
+        CurrentDir.ChangeDirectory();
+    }
+    if (!res)
+    {
+        return false;
+    }
+    FileName = stdstr().FromUTF16(SelectedFile);
+    return true;
 }
 
 void CNotificationImp::SetGfxPlugin(CGfxPlugin * Plugin)

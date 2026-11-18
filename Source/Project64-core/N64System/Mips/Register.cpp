@@ -582,8 +582,11 @@ void CRegisters::Cop0_MT(COP0Reg Reg, uint64_t Value)
 
     switch (Reg)
     {
-    case COP0Reg_EPC:
     case COP0Reg_WatchLo:
+        m_CP0[Reg] = Value;
+        m_System.m_MMU_VM.WatchPointChanged();
+        break;
+    case COP0Reg_EPC:
     case COP0Reg_WatchHi:
     case COP0Reg_TagLo:
     case COP0Reg_TagHi:

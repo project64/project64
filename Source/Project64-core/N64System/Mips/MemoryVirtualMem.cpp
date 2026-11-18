@@ -2,6 +2,7 @@
 
 #include <Common\MemoryManagement.h>
 #include <Project64-core\Debugger.h>
+#include <Project64-core\N64System\GameSharkCart.h>
 #include <Project64-core\N64System\Mips\Disk.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\N64Rom.h>
@@ -37,7 +38,9 @@ CMipsMemoryVM::CMipsMemoryVM(CN64System & System, bool SavesReadOnly) :
     m_TLB_ReadMap(nullptr),
     m_TLB_WriteMap(nullptr),
     m_RDRAM(nullptr),
-    m_Rom(*g_Rom)
+    m_Rom(*g_Rom),
+    m_WatchAddr((uint32_t)-1),
+    m_WatchPage((uint32_t)-1)
 {
     g_Settings->RegisterChangeCB(Game_RDRamSize, this, (CSettings::SettingChangedFunc)RdramChanged);
 }
@@ -50,6 +53,8 @@ CMipsMemoryVM::~CMipsMemoryVM()
 
 void CMipsMemoryVM::Reset(bool /*EraseMemory*/)
 {
+    m_WatchAddr = (uint32_t)-1;
+    m_WatchPage = (uint32_t)-1;
     if (m_MemoryReadMap != nullptr && m_MemoryWriteMap != nullptr)
     {
         memset(m_MemoryReadMap, -1, 0x100000 * sizeof(m_MemoryReadMap[0]));
@@ -217,6 +222,15 @@ uint8_t * CMipsMemoryVM::MemoryPtr(uint32_t VAddr, uint32_t Size, bool Read)
     if (PAddr >= 0x04001000 && (PAddr + Size) <= 0x04002000)
     {
         return (uint8_t *)&m_SPRegistersHandler.Imem()[PAddr - 0x04001000];
+    }
+    if (Read && g_GameShark != nullptr && PAddr >= 0x10000000 && PAddr < 0x20000000)
+    {
+        // Firmware of the GameShark cartridge, its exception handler runs straight from the flash
+        uint8_t * GameSharkPtr = g_GameShark->MemoryPtr(PAddr, Size);
+        if (GameSharkPtr != nullptr)
+        {
+            return GameSharkPtr;
+        }
     }
     if (Read && PAddr >= 0x10000000 && (PAddr + Size) < (0x10000000 + m_Rom.GetRomSize()))
     {
@@ -723,6 +737,13 @@ bool CMipsMemoryVM::LW_PhysicalAddress(uint32_t PAddr, uint32_t & Value)
         {
             Value = *(uint32_t *)(m_RDRAM + PAddr);
         }
+        else if (PAddr < 0x03F00000)
+        {
+            // RDRAM address space without RDRAM installed reads as zero, the same as the byte, halfword
+            // and doubleword loads. On a console the GameShark key code dialog box reads its colours
+            // from here (0x02027DF8, firmware bug) and comes out black
+            Value = 0;
+        }
         else if (PAddr >= 0x10000000 && PAddr < 0x20000000)
         {
             m_RomMemoryHandler.Read32(PAddr, Value);
@@ -805,6 +826,10 @@ bool CMipsMemoryVM::SD_VAddr32(uint32_t VAddr, uint64_t Value)
 
 bool CMipsMemoryVM::SB_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 {
+    if ((PAddr & ~7) == m_WatchAddr && WatchPointHit())
+    {
+        return false;
+    }
     switch (PAddr & 0xFFF00000)
     {
     case 0x00000000:
@@ -817,7 +842,10 @@ bool CMipsMemoryVM::SB_PhysicalAddress(uint32_t PAddr, uint32_t Value)
     case 0x00700000:
         if (PAddr < g_GameSettings.rdramSize)
         {
-            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
+            if (g_Recompiler != nullptr)
+            {
+                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
+            }
             *(uint8_t *)(m_RDRAM + (PAddr ^ 3)) = (uint8_t)Value;
         }
         break;
@@ -838,6 +866,10 @@ bool CMipsMemoryVM::SB_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SH_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 {
+    if ((PAddr & ~7) == m_WatchAddr && WatchPointHit())
+    {
+        return false;
+    }
     switch (PAddr & 0xFFF00000)
     {
     case 0x00000000:
@@ -852,9 +884,17 @@ bool CMipsMemoryVM::SH_PhysicalAddress(uint32_t PAddr, uint32_t Value)
         {
             if (g_GameSettings.smmStoreInstruc)
             {
-                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                if (g_Recompiler != nullptr)
+                {
+                    g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                }
                 m_TLB_WriteMap[(0x80000000 + PAddr) >> 12] = PAddr - (0x80000000 + PAddr);
                 m_TLB_WriteMap[(0xA0000000 + PAddr) >> 12] = PAddr - (0xA0000000 + PAddr);
+                *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = (uint16_t)Value;
+            }
+            else if (m_WatchPage == (PAddr >> 12))
+            {
+                // Page is only in the slow path because of the watch point
                 *(uint16_t *)(m_RDRAM + (PAddr ^ 2)) = (uint16_t)Value;
             }
         }
@@ -876,6 +916,10 @@ bool CMipsMemoryVM::SH_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SW_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 {
+    if ((PAddr & ~7) == m_WatchAddr && WatchPointHit())
+    {
+        return false;
+    }
     switch (PAddr & 0xFFF00000)
     {
     case 0x00000000:
@@ -891,9 +935,17 @@ bool CMipsMemoryVM::SW_PhysicalAddress(uint32_t PAddr, uint32_t Value)
         {
             if (g_GameSettings.smmStoreInstruc)
             {
-                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                if (g_Recompiler != nullptr)
+                {
+                    g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0x1000, CRecompiler::Remove_ProtectedMem);
+                }
                 m_TLB_WriteMap[(0x80000000 + PAddr) >> 12] = PAddr - (0x80000000 + PAddr);
                 m_TLB_WriteMap[(0xA0000000 + PAddr) >> 12] = PAddr - (0xA0000000 + PAddr);
+                *(uint32_t *)(m_RDRAM + PAddr) = Value;
+            }
+            else if (m_WatchPage == (PAddr >> 12))
+            {
+                // Page is only in the slow path because of the watch point
                 *(uint32_t *)(m_RDRAM + PAddr) = Value;
             }
         }
@@ -932,6 +984,10 @@ bool CMipsMemoryVM::SW_PhysicalAddress(uint32_t PAddr, uint32_t Value)
 
 bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
 {
+    if ((PAddr & ~7) == m_WatchAddr && WatchPointHit())
+    {
+        return false;
+    }
     switch (PAddr & 0xFFF00000)
     {
     case 0x00000000:
@@ -944,7 +1000,10 @@ bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
     case 0x00700000:
         if (PAddr < g_GameSettings.rdramSize)
         {
-            g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
+            if (g_Recompiler != nullptr)
+            {
+                g_Recompiler->ClearRecompCode_Phys(PAddr & ~0xFFF, 0xFFC, CRecompiler::Remove_ProtectedMem);
+            }
             *(uint32_t *)(m_RDRAM + PAddr) = *((uint32_t *)(&Value) + 1);
             *(uint32_t *)(m_RDRAM + PAddr + 4) = *((uint32_t *)(&Value) + 0);
         }
@@ -960,6 +1019,48 @@ bool CMipsMemoryVM::SD_PhysicalAddress(uint32_t PAddr, uint64_t Value)
             g_Notify->BreakPoint(__FILE__, __LINE__);
         }
     }
+    return true;
+}
+
+void CMipsMemoryVM::WatchPointChanged(void)
+{
+    // Write watch point (WatchLo bit 0). It is only emulated while a GameShark cartridge
+    // is attached, its firmware uses it to notice the game replacing the exception vector.
+    // The page with the watched address is taken out of the fast write map, so every
+    // store to it comes through the S?_PhysicalAddress functions
+    if (m_WatchPage != (uint32_t)-1 && m_MemoryWriteMap != nullptr)
+    {
+        for (uint32_t i = 0; i < 2; i++)
+        {
+            size_t Address = (i == 0 ? 0x80000000 : 0xA0000000) + ((size_t)m_WatchPage << 12);
+            m_MemoryWriteMap[Address >> 12] = (size_t)((m_RDRAM + (Address & 0x1FFFFFFF)) - Address);
+        }
+    }
+    m_WatchAddr = (uint32_t)-1;
+    m_WatchPage = (uint32_t)-1;
+
+    uint32_t WatchLo = (uint32_t)m_Reg.m_CP0[CRegisters::COP0Reg_WatchLo];
+    if (g_GameShark == nullptr || (WatchLo & 1) == 0)
+    {
+        return;
+    }
+    m_WatchAddr = WatchLo & 0x1FFFFFF8;
+    if (m_WatchAddr < m_AllocatedRdramSize && m_MemoryWriteMap != nullptr)
+    {
+        m_WatchPage = m_WatchAddr >> 12;
+        m_MemoryWriteMap[(0x80000000 + m_WatchAddr) >> 12] = (size_t)-1;
+        m_MemoryWriteMap[(0xA0000000 + m_WatchAddr) >> 12] = (size_t)-1;
+    }
+}
+
+bool CMipsMemoryVM::WatchPointHit(void)
+{
+    if (m_Reg.STATUS_REGISTER.ExceptionLevel != 0 || m_Reg.STATUS_REGISTER.ErrorLevel != 0)
+    {
+        // Watch exceptions are not taken while an exception is being handled
+        return false;
+    }
+    m_Reg.TriggerException(EXC_WATCH);
     return true;
 }
 

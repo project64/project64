@@ -27,6 +27,7 @@ public:
 
     // Ask a yes/no question to the user, yes = true, no = false
     bool AskYesNoQuestion(const char * Question) const;
+    bool SelectGameSharkGame(const char * Message, const char * Title, std::string & FileName) const;
     void BreakPoint(const char * FileName, int32_t LineNumber);
 
     void AppInitDone(void);

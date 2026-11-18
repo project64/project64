@@ -10,6 +10,7 @@
 #include <Project64-audio/AudioMain.h>
 #include <Project64-audio/trace.h>
 #include <string.h>
+#include <vector>
 
 SoundDriverBase::SoundDriverBase() :
     m_MaxBufferSize(MAX_SIZE),
@@ -31,13 +32,40 @@ bool SoundDriverBase::Initialize()
 
 void SoundDriverBase::AI_SetFrequency(uint32_t Frequency, uint32_t BufferSize)
 {
+    // Samples that are buffered but not played yet. The AI plays a buffer at the rate that is
+    // set when it is played, and some software writes AI_LEN before AI_DACRATE (the GameShark
+    // firmware does for its menu sounds), so they are kept and played at the new rate
+    std::vector<uint8_t> Pending;
+    {
+        CGuard guard(m_CS);
+        Pending.resize(m_BufferRemaining);
+        for (uint32_t i = 0; i < m_BufferRemaining; i++)
+        {
+            Pending[i] = m_Buffer[(m_CurrentReadLoc + i) % m_MaxBufferSize];
+        }
+    }
+
     SetFrequency(Frequency, BufferSize);
+
+    CGuard guard(m_CS);
     m_MaxBufferSize = (BufferSize * 8);
     if (m_MaxBufferSize > MAX_SIZE)
     {
         m_MaxBufferSize = MAX_SIZE;
     }
-    m_CurrentReadLoc = m_CurrentWriteLoc = m_BufferRemaining = 0;
+    uint32_t KeepBytes = (uint32_t)Pending.size();
+    if (KeepBytes > m_MaxBufferSize)
+    {
+        KeepBytes = m_MaxBufferSize;
+    }
+    KeepBytes &= ~3;
+    if (KeepBytes > 0)
+    {
+        memcpy(m_Buffer, Pending.data(), KeepBytes);
+    }
+    m_CurrentReadLoc = 0;
+    m_CurrentWriteLoc = KeepBytes % m_MaxBufferSize;
+    m_BufferRemaining = KeepBytes;
 }
 
 void SoundDriverBase::AI_LenChanged(uint8_t *start, uint32_t length)

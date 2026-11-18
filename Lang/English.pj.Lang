@@ -535,6 +535,11 @@
 #2066#  "Invalid image file"
 #2067#  "Failed to allocate for rom"
 #2068#  "Failed to open rom"
+#2069#  "GameShark / Action Replay firmware detected.\n\nSelect the game ROM to plug in to the top of the cartridge.\n\nOnly a game with the CIC that matches the active key code can start.\nKey code: %s\n\nAs on a console, the GameShark only starts games with the CIC that matches its key code. Other games stop at a black screen. To use a game with a different CIC, change the key code first in the GameShark menu (Key Codes)."
+#2070#  "Select game ROM for GameShark (key code: %s)"
+#2071#  "The CIC of this game (%s) does not match the active key code of the GameShark firmware (%s).\nOn a console this combination does not start, the screen stays black.\n\nStart anyway?"
+#2072#  "Failed to load the GameShark firmware"
+#2073#  "The selected file is a GameShark firmware, select a game ROM instead"
 
 /*** Android ***/
 

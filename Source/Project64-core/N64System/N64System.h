@@ -45,13 +45,15 @@ public:
     SAVE_CHIP_TYPE m_SaveUsing;
 
     // Methods
-    static bool LoadFileImage(const char * FileLoc);
+    static bool LoadFileImage(const char * FileLoc, const char * RecentFileLoc = nullptr);
     static bool LoadFileImageIPL(const char * FileLoc);
     static bool LoadDiskImage(const char * FileLoc, const bool Expansion);
     static bool SelectAndLoadFileImageIPL(Country country, bool combo);
     static bool RunFileImage(const char * FileLoc);
     static bool RunDiskImage(const char * FileLoc);
     static bool RunDiskComboImage(const char * FileLoc, const char * FileLocDisk);
+    static bool RunGameSharkImage(const char * FileLoc);
+    static void RemoveGameShark(void);
     static void RunLoadedImage(void);
     static void CloseSystem(void);
 

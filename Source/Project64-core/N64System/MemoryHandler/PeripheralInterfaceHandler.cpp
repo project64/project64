@@ -3,6 +3,7 @@
 #include "PeripheralInterfaceHandler.h"
 #include <Common\MemoryManagement.h>
 #include <Project64-core\Debugger.h>
+#include <Project64-core\N64System\GameSharkCart.h>
 #include <Project64-core\N64System\Mips\Disk.h>
 #include <Project64-core\N64System\Mips\MemoryVirtualMem.h>
 #include <Project64-core\N64System\Mips\Register.h>
@@ -531,6 +532,11 @@ void PeripheralInterfaceHandler::ReadBlock(uint32_t Address, uint8_t * Block, ui
         uint32_t RomSize = g_Rom->GetRomSize();
         for (uint32_t i = 0, n = (BlockLen + 1) & ~1; i < n; i++)
         {
+            if (g_GameShark != nullptr && g_GameShark->ReadByte(Address + i, Block[i]))
+            {
+                // Answered by the GameShark cartridge instead of the game plugged in to it
+                continue;
+            }
             uint32_t Pos = ((ReadPos + i) ^ 3);
             Block[i] = Pos < RomSize ? ROM[Pos] : 0;
         }

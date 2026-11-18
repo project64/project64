@@ -76,6 +76,7 @@ add_library(Project64-core STATIC
     N64System/SpeedLimiter.cpp
     N64System/SystemGlobals.cpp
     N64System/EmulationThread.cpp
+    N64System/GameSharkCart.cpp
     N64System/N64Disk.cpp
     Plugins/AudioPlugin.cpp
     Plugins/GFXplugin.cpp

@@ -168,7 +168,12 @@ void ChangeSize()
             rdp.scale_y = (float)g_res_y / rdp.vi_height * aspect;
         }
         rdp.offset_y = ((float)g_res_y - rdp.vi_height * rdp.scale_y) * 0.5f;
-        if (((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
+        // A frame buffer twice as wide as the picture is taken as two fields drawn by the RDP, so the
+        // display list coordinates are halved. A frame that the CPU wrote (no display list) is shown
+        // by drawViRegBG straight from the VI registers, line by line, and keeps its height. The
+        // GameShark firmware draws its menu this way into a 640 wide buffer and scrolls it with
+        // VI_ORIGIN, only 320 pixels of each line are shown
+        if (!no_dlist && ((uint32_t)rdp.vi_width <= (*gfx.VI_WIDTH_REG) / 2) && (rdp.vi_width > rdp.vi_height))
             rdp.scale_y *= 0.5f;
 
         rdp.scissor_o.ul_x = 0;

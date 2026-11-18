@@ -106,6 +106,7 @@ public:
     int32_t MemoryFilter(uint32_t dwExptCode, void * lpExceptionPointer);
 
     void ClearMemoryWriteMap(uint32_t VAddr, uint32_t Length);
+    void WatchPointChanged(void);
 
     // Functions for TLB notification
     void TLB_Mapped(uint32_t VAddr, uint32_t Len, uint32_t PAddr, bool bReadOnly);
@@ -174,6 +175,8 @@ private:
     bool SW_PhysicalAddress(uint32_t PAddr, uint32_t Value);
     bool SD_PhysicalAddress(uint32_t PAddr, uint64_t Value);
 
+    bool WatchPointHit(void);
+
 #if defined(__i386__) || defined(_M_IX86)
 
     typedef struct _X86_CONTEXT
@@ -219,6 +222,8 @@ private:
     uint8_t * m_RDRAM;
     uint32_t m_AllocatedRdramSize;
     CN64Rom & m_Rom;
+    uint32_t m_WatchAddr; // Physical address of the write watch point, -1 = none
+    uint32_t m_WatchPage; // Page taken out of the write map for the watch point, -1 = none
 
     mutable char m_strLabelName[100];
     uint32_t * m_TLB_ReadMap;

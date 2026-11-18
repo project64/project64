@@ -103,7 +103,11 @@ EXPORT void CALL AiDacrateChanged(int SystemType)
 
         Frequency = (video_clock / (g_Dacrate + 1));
 
-        if (Frequency < 8000)
+        // Rates below 8000 Hz are valid on the hardware (the 14-bit DACRATE goes down to about
+        // 2970 Hz) and are used, for example the GameShark firmware plays its menu sounds at
+        // about 4400 Hz. Only reject what is clearly not a playback rate, the same limit as the
+        // OpenSL ES driver uses
+        if (Frequency < 4000)
         {
             WriteTrace(TraceAudioDriver, TraceDebug, "Not audio data!");
             return;

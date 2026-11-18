@@ -120,6 +120,12 @@ bool CNotificationImp::AskYesNoQuestion(const char * /*Question*/) const
     return false;
 }
 
+// Ask for the game ROM to plug in to a GameShark cartridge, not supported on Android
+bool CNotificationImp::SelectGameSharkGame(const char * /*Message*/, const char * /*Title*/, std::string & /*FileName*/) const
+{
+    return false;
+}
+
 void CNotificationImp::BreakPoint(const char * FileName, int32_t LineNumber)
 {
     TraceFlushLog();

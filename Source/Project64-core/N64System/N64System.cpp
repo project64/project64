@@ -6,6 +6,7 @@
 #include <Project64-core/Debugger.h>
 #include <Project64-core/Logging.h>
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
+#include <Project64-core/N64System/GameSharkCart.h>
 #include <Project64-core/N64System/Mips/Disk.h>
 #include <Project64-core/N64System/Mips/Mempak.h>
 #include <Project64-core/N64System/Mips/R4300iInstruction.h>
@@ -346,7 +347,7 @@ void CN64System::ExternalEvent(SystemEvent action)
     }
 }
 
-bool CN64System::LoadFileImage(const char * FileLoc)
+bool CN64System::LoadFileImage(const char * FileLoc, const char * RecentFileLoc)
 {
     WriteTrace(TraceN64System, TraceDebug, "Start (FileLoc: %s)", FileLoc);
     CloseSystem();
@@ -403,7 +404,8 @@ bool CN64System::LoadFileImage(const char * FileLoc)
 
         if (g_Disk == nullptr || !g_Rom->IsLoadedRomDDIPL())
         {
-            g_Settings->SaveString(Game_File, FileLoc);
+            // RecentFileLoc: file the user opened when it is not the ROM itself (GameShark firmware)
+            g_Settings->SaveString(Game_File, RecentFileLoc != nullptr ? RecentFileLoc : FileLoc);
         }
         g_Settings->SaveBool(GameRunning_LoadingInProgress, false);
         WriteTrace(TraceN64System, TraceDebug, "Finished loading (GoodName: %s)", g_Settings->LoadStringVal(Rdb_GoodName).c_str());
@@ -531,8 +533,112 @@ bool CN64System::LoadDiskImage(const char * FileLoc, const bool Expansion)
     return true;
 }
 
+void CN64System::RemoveGameShark(void)
+{
+    if (g_GameShark != nullptr)
+    {
+        // The CPU thread uses the cartridge, it has to be stopped before the cartridge goes
+        CloseSystem();
+        delete g_GameShark;
+        g_GameShark = nullptr;
+    }
+}
+
+bool CN64System::RunGameSharkImage(const char * FileLoc)
+{
+    WriteTrace(TraceN64System, TraceDebug, "Start (FileLoc: %s)", FileLoc);
+
+    // GameShark / Action Replay firmware: it can not run by itself, the cartridge has no CIC
+    // and no IPL3. It borrows both from the game cartridge plugged in to the top of it
+    CGameSharkCart * Cart = new CGameSharkCart();
+    if (!Cart->LoadFirmware(FileLoc))
+    {
+        delete Cart;
+        g_Notify->DisplayError(MSG_GAMESHARK_FIRMWARE_FAILED);
+        return false;
+    }
+    std::string KeyName = Cart->ActiveKeyDescription();
+
+    std::string GameFile;
+    std::string Message = stdstr_f(g_Lang->GetString(MSG_GAMESHARK_SELECT_GAME).c_str(), KeyName.c_str());
+    std::string Title = stdstr_f(g_Lang->GetString(MSG_GAMESHARK_SELECT_TITLE).c_str(), KeyName.c_str());
+    if (!g_Notify->SelectGameSharkGame(Message.c_str(), Title.c_str(), GameFile) || GameFile.empty())
+    {
+        delete Cart;
+        return false;
+    }
+    if (CGameSharkCart::IsFirmwareFile(GameFile.c_str()))
+    {
+        delete Cart;
+        g_Notify->DisplayError(MSG_GAMESHARK_NOT_A_GAME);
+        return false;
+    }
+
+    RemoveGameShark();
+    if (g_Disk != nullptr)
+    {
+        g_Disk->UnallocateDiskImage();
+        delete g_Disk;
+        g_Disk = nullptr;
+    }
+    if (g_DDRom != nullptr)
+    {
+        g_DDRom->UnallocateRomImage();
+        delete g_DDRom;
+        g_DDRom = nullptr;
+    }
+    if (!LoadFileImage(GameFile.c_str(), FileLoc))
+    {
+        delete Cart;
+        return false;
+    }
+    g_Settings->SaveBool(Setting_EnableDisk, false);
+
+    int Cic = 0;
+    switch (g_Rom->CicChipID())
+    {
+    case CIC_NUS_6101: Cic = 6101; break;
+    case CIC_NUS_6102: Cic = 6102; break;
+    case CIC_NUS_6103: Cic = 6103; break;
+    case CIC_NUS_6105: Cic = 6105; break;
+    case CIC_NUS_6106: Cic = 6106; break;
+    case CIC_NUS_5101: Cic = 5101; break;
+    default: break;
+    }
+    if (g_Rom->IsLoadedRomDDIPL() || Cart->CheckKey(Cic, g_Rom->GetRomAddress(), g_Rom->GetRomSize()) == CGameSharkCart::KeyCheck_Mismatch)
+    {
+        // The IPL3 of the game checks the key code (CRC1/CRC2) in the header of the firmware
+        // and stops when it is for a different CIC, same as on the console
+        std::string CicName = Cic != 0 ? stdstr_f("CIC-NUS-%d", Cic) : std::string("?");
+        if (!g_Notify->AskYesNoQuestion(stdstr_f(g_Lang->GetString(MSG_GAMESHARK_KEY_MISMATCH).c_str(), CicName.c_str(), KeyName.c_str()).c_str()))
+        {
+            delete Cart;
+            g_Settings->SaveString(Game_File, "");
+            delete g_Rom;
+            g_Rom = nullptr;
+            return false;
+        }
+    }
+
+    // Recent ROM list: the game ROM, then the firmware on top of it
+    g_Settings->SaveString(Game_File, GameFile.c_str());
+    g_Settings->SaveString(Game_File, FileLoc);
+
+    g_GameShark = Cart;
+    g_GameShark->PowerOn();
+    RunLoadedImage();
+    WriteTrace(TraceN64System, TraceDebug, "Done");
+    return true;
+}
+
 bool CN64System::RunFileImage(const char * FileLoc)
 {
+    if (CGameSharkCart::IsFirmwareFile(FileLoc))
+    {
+        return RunGameSharkImage(FileLoc);
+    }
+    RemoveGameShark();
+
     // Uninitialize g_Disk and g_DDRom to prevent exception when ending emulation of a regular ROM after playing 64DD content previously
     if (g_Disk != nullptr)
     {
@@ -572,6 +678,7 @@ bool CN64System::RunFileImage(const char * FileLoc)
 
 bool CN64System::RunDiskImage(const char * FileLoc)
 {
+    RemoveGameShark();
     if (!LoadDiskImage(FileLoc, false))
     {
         return false;
@@ -590,6 +697,7 @@ bool CN64System::RunDiskImage(const char * FileLoc)
 
 bool CN64System::RunDiskComboImage(const char * FileLoc, const char * FileLocDisk)
 {
+    RemoveGameShark();
     if (!LoadDiskImage(FileLocDisk, true))
     {
         return false;
@@ -638,6 +746,11 @@ void CN64System::CloseSystem()
         g_BaseSystem->CloseCpu();
         delete g_BaseSystem;
         g_BaseSystem = nullptr;
+    }
+    if (g_GameShark != nullptr)
+    {
+        // Changes the firmware made to its flash go to the IPS file, never to the firmware file
+        g_GameShark->SaveChanges();
     }
     WriteTrace(TraceN64System, TraceDebug, "Done");
 }
@@ -883,6 +996,11 @@ void CN64System::PluginReset()
 
 void CN64System::ApplyGSButton(void)
 {
+    if (g_GameShark != nullptr && !m_SyncSystem)
+    {
+        // Button on the GameShark cartridge, the trainer of the firmware polls it
+        g_GameShark->PressButton();
+    }
     if (m_Reg.STATUS_REGISTER.InterruptEnable != 0)
     {
         g_Enhancements->ApplyGSButton(m_MMU_VM, !m_SyncSystem);
@@ -900,6 +1018,11 @@ void CN64System::Reset(bool bInitReg, bool ClearMenory)
     g_Settings->SaveBool(GameRunning_InReset, true);
     NotifyCallback(CN64SystemCB_Reset);
     RefreshGameSettings();
+    if (g_GameShark != nullptr && bInitReg && !m_SyncSystem)
+    {
+        // Reset puts the cartridge back in front of the game, the IPL3 boots the firmware again
+        g_GameShark->PowerOn();
+    }
     m_MMU_VM.Reset(ClearMenory);
 
     m_CyclesToSkip = 0;
@@ -1019,6 +1142,12 @@ void CN64System::ExecuteCPU()
 
     if (g_Settings->LoadBool(Setting_ForceInterpreterCPU))
     {
+        cpuType = CPU_Interpreter;
+    }
+    else if (g_GameShark != nullptr)
+    {
+        // The firmware of the GameShark depends on the write watch point exception (WatchLo)
+        // to keep its hook on the exception vector, only the interpreter raises it
         cpuType = CPU_Interpreter;
     }
     else
@@ -2245,6 +2374,13 @@ bool CN64System::LoadState(const char * FileName)
             SyncSystem();
         }
     }
+    if (g_GameShark != nullptr && !m_SyncSystem)
+    {
+        // The state of the cartridge is not part of a save state. States are taken while the
+        // firmware menu or a game is running, the cartridge is out of the way of the game then
+        g_GameShark->EnterGameMode();
+    }
+    m_MMU_VM.WatchPointChanged();
     NotifyCallback(CN64SystemCB_LoadedGameState);
     std::string LoadMsg = g_Lang->GetString(MSG_LOADED_STATE);
     g_Notify->DisplayMessage(3, stdstr_f("%s %s", LoadMsg.c_str(), stdstr(SaveFile.GetNameExtension()).c_str()).c_str());

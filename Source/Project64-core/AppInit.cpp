@@ -6,6 +6,7 @@
 
 #include "Settings/SettingType/SettingsType-Application.h"
 #include <Project64-core/N64System/Enhancement/Enhancements.h>
+#include <Project64-core/N64System/GameSharkCart.h>
 #include <Project64-core/N64System/Mips/MemoryVirtualMem.h>
 #include <Project64-core/N64System/N64Disk.h>
 #include <Project64-core/N64System/N64Rom.h>
@@ -302,6 +303,11 @@ void AppCleanup(void)
     {
         delete g_Disk;
         g_Disk = nullptr;
+    }
+    if (g_GameShark)
+    {
+        delete g_GameShark;
+        g_GameShark = nullptr;
     }
     if (g_Plugins)
     {

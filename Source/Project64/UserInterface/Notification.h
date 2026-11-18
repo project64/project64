@@ -36,6 +36,9 @@ public:
     // Ask a yes/no question to the user, yes = true, no = false
     virtual bool AskYesNoQuestion(const char * Question) const;
 
+    // Ask for the game ROM to plug in to a GameShark cartridge, false = cancelled
+    virtual bool SelectGameSharkGame(const char * Message, const char * Title, std::string & FileName) const;
+
     virtual void BreakPoint(const char * FileName, int32_t LineNumber);
 
     void SetWindowCaption(const wchar_t * Caption);

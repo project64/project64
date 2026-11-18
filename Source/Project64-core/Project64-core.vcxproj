@@ -83,6 +83,7 @@
     <ClCompile Include="N64System\Mips\SystemTiming.cpp" />
     <ClCompile Include="N64System\Mips\TLB.cpp" />
     <ClCompile Include="N64System\Mips\Transferpak.cpp" />
+    <ClCompile Include="N64System\GameSharkCart.cpp" />
     <ClCompile Include="N64System\N64Disk.cpp" />
     <ClCompile Include="N64System\N64Rom.cpp" />
     <ClCompile Include="N64System\N64System.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="N64System\Mips\SystemTiming.h" />
     <ClInclude Include="N64System\Mips\TLB.h" />
     <ClInclude Include="N64System\Mips\Transferpak.h" />
+    <ClInclude Include="N64System\GameSharkCart.h" />
     <ClInclude Include="N64System\N64Disk.h" />
     <ClInclude Include="N64System\N64Rom.h" />
     <ClInclude Include="N64System\N64System.h" />
