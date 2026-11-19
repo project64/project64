@@ -304,7 +304,10 @@ void AudioInterfaceHandler::LenChanged()
             g_Plugins->Audio()->AiLenChanged();
             CPU_Usage.StartTimer(PreviousType);
         }
-        g_Plugins->Audio()->AiLenChanged();
+        else
+        {
+            g_Plugins->Audio()->AiLenChanged();
+        }
         WriteTrace(TraceAudio, TraceDebug, "Plugin AiLenChanged Done");
     }
     WriteTrace(TraceAudio, TraceDebug, "Done");
