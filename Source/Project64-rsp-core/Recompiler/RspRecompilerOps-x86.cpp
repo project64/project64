@@ -7292,7 +7292,7 @@ void CRSPRecompilerOps::Opcode_LDV(void)
 #else
     char Reg[256];
     int offset = (m_OpCode.voffset << 3);
-    uint8_t * Jump[2];
+    uint8_t *Jump[3], *LoopEntry;
 
     CPU_Message("  %X %s", m_CompilePC, RSPInstruction(m_CompilePC, m_OpCode.Value).NameAndParam().c_str());
 
@@ -7338,14 +7338,33 @@ void CRSPRecompilerOps::Opcode_LDV(void)
         AddConstToX86Reg(x86_EBX, offset);
     }
     AndConstToX86Reg(x86_EBX, 0x0fff);
-    TestConstToX86Reg(7, x86_EBX);
+    TestConstToX86Reg(3, x86_EBX);
     JneLabel32("Unaligned", 0);
     Jump[0] = RecompPos - 4;
+    CompConstToX86reg(x86_EBX, 0xFFC);
+    JeLabel32("Unaligned", 0);
+    Jump[2] = RecompPos - 4;
 
     CompilerToggleBuffer();
     CPU_Message("   Unaligned:");
     x86_SetBranch32b(Jump[0], RecompPos);
-    Cheat_r4300iOpcodeNoMessage(&RSPOp::LDV, "RSPOp::LDV");
+    x86_SetBranch32b(Jump[2], RecompPos);
+    sprintf(Reg, "m_Vect[%i].UB[%i]", m_OpCode.rt, 15 - m_OpCode.del);
+    MoveOffsetToX86reg((size_t)&m_Vect[m_OpCode.vt].u8((uint8_t)(15 - m_OpCode.del)), Reg, x86_EDI);
+    MoveConstToX86reg(m_OpCode.del == 12 ? 4 : 8, x86_ECX);
+
+    CPU_Message("   Loop:");
+    LoopEntry = RecompPos;
+    MoveX86RegToX86Reg(x86_EBX, x86_EAX);
+    AndConstToX86Reg(x86_EAX, 0x0fff);
+    XorConstToX86Reg(x86_EAX, 3);
+    MoveN64MemToX86regByte(x86_EDX, x86_EAX);
+    MoveX86regByteToX86regPointer(x86_EDX, x86_EDI);
+    IncX86reg(x86_EBX); // Address
+    DecX86reg(x86_EDI); // Vector pointer
+    DecX86reg(x86_ECX); // Counter
+    JneLabel8("Loop", 0);
+    x86_SetBranch8b(RecompPos - 1, LoopEntry);
     JmpLabel32("Done", 0);
     Jump[1] = RecompPos - 4;
     CompilerToggleBuffer();
