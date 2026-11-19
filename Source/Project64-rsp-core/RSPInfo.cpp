@@ -104,8 +104,8 @@ void RspPluginLoaded(void)
     Compiler.bDest = true;
     Compiler.bAlignVector = false;
     Compiler.bFlags = true;
-    Compiler.bReOrdering = false;
-    Compiler.bSections = false;
+    Compiler.bReOrdering = true;
+    Compiler.bSections = true;
     Compiler.bAccum = true;
     Compiler.bGPRConstants = true;
 #endif
